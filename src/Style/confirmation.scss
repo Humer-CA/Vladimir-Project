@@ -1,0 +1,23 @@
+@use "../index.scss";
+
+.confirmation {
+  &__title {
+    font-size: 1rem;
+  }
+
+  &__text {
+    padding: 0;
+  }
+
+  &__btn {
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    gap: 30px;
+
+
+    @media (max-width: 700px) {
+      gap: 10px;
+    }
+  }
+}
