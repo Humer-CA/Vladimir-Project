@@ -46,7 +46,8 @@ const schema = yup.object().shape({
     .required(),
   firstname: yup.string().required(),
   lastname: yup.string().required(),
-  // department: yup.string().required(),
+  department_name: yup.string().required(),
+  subunit_name: yup.string().required(),
   // position: yup.string().required(),
   username: yup.string().required().label("Username"),
   role_id: yup
@@ -113,7 +114,8 @@ const AddUserAccount = (props) => {
       employee_id: null,
       firstname: "",
       lastname: "",
-      // department: "",
+      department_name: "",
+      subunit_name: "",
       // position: "",
       username: "",
       role_id: null,
@@ -121,16 +123,18 @@ const AddUserAccount = (props) => {
   });
 
   useEffect(() => {
-    if (isPostError && postError?.status === 422) {
-      setError("sedar_employee", {
-        type: "validate",
-        message: postError?.data?.errors.employee_id,
-      }),
-        setError("username", {
-          type: "validate",
-          message: postError?.data?.errors.username,
-        });
-    } else if (isPostError && postError?.status !== 422) {
+    const errorData =
+      (isPostError || isUpdateError) &&
+      (postError?.status === 422 || updateError?.status === 422);
+
+    if (errorData) {
+      const errors = (postError?.data || updateError?.data)?.errors || {};
+
+      Object.entries(errors).forEach(([name, [message]]) =>
+        setError(name, { type: "validate", message })
+      );
+    }
+    const showToast = () => {
       dispatch(
         openToast({
           message: "Something went wrong. Please try again.",
@@ -138,8 +142,10 @@ const AddUserAccount = (props) => {
           variant: "error",
         })
       );
-    }
-  }, [isPostError]);
+    };
+
+    errorData && showToast();
+  }, [isPostError, isUpdateError]);
 
   useEffect(() => {
     if (isPostSuccess || isUpdateSuccess) {
@@ -169,7 +175,8 @@ const AddUserAccount = (props) => {
       });
       setValue("firstname", data.firstname);
       setValue("lastname", data.lastname);
-      // setValue("department", data.department);
+      setValue("department_name", data.department_name);
+      setValue("subunit_name", data.subunit_name);
       // setValue("position", data.position);
       setValue("username", data.username);
       setValue("role_id", data.role);
@@ -184,6 +191,8 @@ const AddUserAccount = (props) => {
       employee_id: formData.employee_id,
       firstname: formData.firstname,
       lastname: formData.lastname,
+      department_name: formData.department_name,
+      subunit_name: formData.subunit_name,
       username: formData.username,
       role_id: formData.role_id?.id,
     };
@@ -264,7 +273,8 @@ const AddUserAccount = (props) => {
                 setValue("employee_id", value?.general_info?.full_id_number);
                 setValue("firstname", value?.general_info?.first_name);
                 setValue("lastname", value?.general_info?.last_name);
-                // setValue("department", value.unit_info.department_name);
+                setValue("department_name", value.unit_info.department_name);
+                setValue("subunit_name", value.unit_info.subunit_name);
                 // setValue("position", value.position_info.position_name);
                 setValue(
                   "username",
@@ -283,6 +293,9 @@ const AddUserAccount = (props) => {
               } else {
                 setValue("employee_id", null);
                 setValue("firstname", "");
+                setValue("lastname", "");
+                setValue("department_name", "");
+                setValue("subunit_name", "");
                 setValue("lastname", "");
                 setValue("username", "");
               }
@@ -327,9 +340,9 @@ const AddUserAccount = (props) => {
             disabled
           />
 
-          {/* <CustomTextField
+          <CustomTextField
             control={control}
-            name="department"
+            name="department_name"
             label="Department"
             type="text"
             color="secondary"
@@ -339,6 +352,17 @@ const AddUserAccount = (props) => {
           />
 
           <CustomTextField
+            control={control}
+            name="subunit_name"
+            label="Sub Unit"
+            type="text"
+            color="secondary"
+            size="small"
+            fullWidth
+            disabled
+          />
+
+          {/* <CustomTextField
             control={control}
             name="position"
             label="Position"
