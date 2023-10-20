@@ -16,6 +16,7 @@ import {
   Badge,
   MonetizationOn,
   FactCheck,
+  Segment,
 } from "@mui/icons-material";
 import Cards from "../../Components/Reusable/Cards";
 
@@ -49,22 +50,30 @@ const MasterlistList = [
   },
 
   {
+    icon: <Segment />,
+    label: "Sub Unit",
+    description: "Adding, editing and archiving of Sub Unit masterlist",
+    path: "/masterlist/sub-unit",
+  },
+
+  {
     icon: <Groups2Rounded />,
     label: "Division",
-    description: "Adding, editing and archiving of division masterlist",
+    description: "Adding, editing and archiving of Division masterlist",
     path: "/masterlist/division",
   },
 
   {
     icon: <BackupTableRounded />,
     label: "Type of Request",
-    description: "Adding of user using based on the Sedar System API",
+    description: "Adding, editing and archiving of Type of Request masterlist",
     path: "/masterlist/type-of-request",
   },
   {
     icon: <MonetizationOn />,
     label: "Capex",
-    description: "Adding of user using based on the Sedar System API",
+    description:
+      "Adding, editing and archiving of Capex and Sub Capex masterlist",
     path: "/masterlist/capex",
   },
 
@@ -78,7 +87,7 @@ const MasterlistList = [
   {
     icon: <FactCheck />,
     label: "Status Category",
-    description: "Adding of user using based on the Sedar System API",
+    description: "Setting up of Fixed Asset status masterlist",
     path: "/masterlist/status-category",
   },
 ];

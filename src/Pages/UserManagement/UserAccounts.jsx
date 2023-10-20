@@ -101,7 +101,6 @@ const UserAccounts = () => {
     // console.log(page + 1);
     setPage(page + 1);
   };
-
   const {
     data: users,
     isLoading: usersLoading,
@@ -290,8 +289,8 @@ const UserAccounts = () => {
           "Employee ID": item?.employee_id,
           Firstname: item?.firstname,
           Lastname: item?.lastname,
-          Department: item?.department_name,
-          "Sub Unit": item?.sub_unit_name,
+          Department: item?.department,
+          "Sub Unit": item?.subunit,
           Username: item?.username,
           Role: item?.role?.role_name,
           Status: item?.is_active === true ? "Active" : "Inactive",
@@ -395,11 +394,9 @@ const UserAccounts = () => {
 
                     <TableCell className="tbl-cell">
                       <TableSortLabel
-                        active={orderBy === `department_name`}
-                        direction={
-                          orderBy === `department_name` ? order : `asc`
-                        }
-                        onClick={() => onSort(`department_name`)}
+                        active={orderBy === `department`}
+                        direction={orderBy === `department` ? order : `asc`}
+                        onClick={() => onSort(`department`)}
                       >
                         Department
                       </TableSortLabel>
@@ -407,9 +404,9 @@ const UserAccounts = () => {
 
                     <TableCell className="tbl-cell">
                       <TableSortLabel
-                        active={orderBy === `subunit_name`}
-                        direction={orderBy === `subunit_name` ? order : `asc`}
-                        onClick={() => onSort(`subunit_name`)}
+                        active={orderBy === `subunit`}
+                        direction={orderBy === `subunit` ? order : `asc`}
+                        onClick={() => onSort(`subunit`)}
                       >
                         Sub Unit
                       </TableSortLabel>
@@ -481,11 +478,11 @@ const UserAccounts = () => {
                               </TableCell>
 
                               <TableCell className="tbl-cell">
-                                {users.department_name}
+                                {users.department}
                               </TableCell>
 
                               <TableCell className="tbl-cell">
-                                {users.subunit_name}
+                                {users.subunit}
                               </TableCell>
 
                               <TableCell

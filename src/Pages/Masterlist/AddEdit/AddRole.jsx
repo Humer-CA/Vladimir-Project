@@ -417,12 +417,12 @@ const AddRole = (props) => {
 
           <FormControlLabel
             disabled={data.action === "view"}
-            label="Division"
-            value="division"
+            label="Sub Unit"
+            value="sub-unit"
             control={
               <Checkbox
                 {...register("access_permission")}
-                checked={watch("access_permission")?.includes("division")}
+                checked={watch("access_permission")?.includes("account-title")}
               />
             }
           />
@@ -435,6 +435,18 @@ const AddRole = (props) => {
             mx: 2,
           }}
         >
+          <FormControlLabel
+            disabled={data.action === "view"}
+            label="Division"
+            value="division"
+            control={
+              <Checkbox
+                {...register("access_permission")}
+                checked={watch("access_permission")?.includes("sub-unit")}
+              />
+            }
+          />
+
           <FormControlLabel
             disabled={data.action === "view"}
             label="Type of Request"

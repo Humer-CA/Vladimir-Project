@@ -64,6 +64,7 @@ import {
   AssignmentTurnedIn,
   ExpandLessRounded,
   ExpandMoreRounded,
+  Segment,
 } from "@mui/icons-material";
 
 const Sidebar = () => {
@@ -148,6 +149,13 @@ const Sidebar = () => {
           icon: Badge,
           path: "/masterlist/account-title",
           permission: "account-title",
+        },
+
+        {
+          label: "Sub Unit",
+          icon: Segment,
+          path: "/masterlist/sub-unit",
+          permission: "sub-unit",
         },
 
         {

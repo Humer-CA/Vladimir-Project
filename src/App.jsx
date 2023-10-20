@@ -55,6 +55,7 @@ import Acquisition from "./Pages/Request/Acquisition";
 
 import PageNotFound from "./Pages/PageNotFound";
 import Confirmation from "./Components/Reusable/Confirmation";
+import SubUnit from "./Pages/Masterlist/SubUnit";
 
 const router = createBrowserRouter([
   {
@@ -114,6 +115,11 @@ const router = createBrowserRouter([
               {
                 path: "account-title",
                 element: <AccountTitle />,
+              },
+
+              {
+                path: "sub-unit",
+                element: <SubUnit />,
               },
 
               {
