@@ -36,6 +36,7 @@ import { useGetSedarUsersApiQuery } from "../../../Redux/Query/SedarUserApi";
 import { useGetRoleAllApiQuery } from "../../../Redux/Query/UserManagement/RoleManagementApi";
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
 import { LoadingButton } from "@mui/lab";
+import { useGetDepartmentAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Department";
 
 const schema = yup.object().shape({
   id: yup.string().nullable(),
@@ -46,8 +47,8 @@ const schema = yup.object().shape({
     .required(),
   firstname: yup.string().required(),
   lastname: yup.string().required(),
-  department_name: yup.string().required(),
-  subunit_name: yup.string().required(),
+  department_id: yup.number().required(),
+  subunit_id: yup.number().required(),
   // position: yup.string().required(),
   username: yup.string().required().label("Username"),
   role_id: yup
@@ -88,6 +89,20 @@ const AddUserAccount = (props) => {
     isSuccess: isSedarSuccess,
     isError: isSedarError,
   } = useGetSedarUsersApiQuery();
+
+  const {
+    data: departmentData = [],
+    isLoading: isDepartmentLoading,
+    isSuccess: isDepartmentSuccess,
+    isError: isDepartmentError,
+  } = useGetDepartmentAllApiQuery();
+
+  // const {
+  //   data: subUnitData = [],
+  //   isLoading: isSubUnitLoading,
+  //   isSuccess: isSubUnitSuccess,
+  //   isError: isSubUnitError,
+  // } = useGetSubUnitUsersApiQuery();
   // console.log(sedarData);
 
   const {
@@ -114,8 +129,8 @@ const AddUserAccount = (props) => {
       employee_id: null,
       firstname: "",
       lastname: "",
-      department_name: "",
-      subunit_name: "",
+      department_id: null,
+      subunit_id: null,
       // position: "",
       username: "",
       role_id: null,
@@ -175,8 +190,8 @@ const AddUserAccount = (props) => {
       });
       setValue("firstname", data.firstname);
       setValue("lastname", data.lastname);
-      setValue("department_name", data.department_name);
-      setValue("subunit_name", data.subunit_name);
+      // setValue("department_id", data.department_id);
+      // setValue("subunit_id", data.subunit_id);
       // setValue("position", data.position);
       setValue("username", data.username);
       setValue("role_id", data.role);
@@ -191,8 +206,8 @@ const AddUserAccount = (props) => {
       employee_id: formData.employee_id,
       firstname: formData.firstname,
       lastname: formData.lastname,
-      department_name: formData.department_name,
-      subunit_name: formData.subunit_name,
+      department_id: formData.department_id,
+      subunit_id: formData.subunit_id,
       username: formData.username,
       role_id: formData.role_id?.id,
     };
@@ -220,6 +235,8 @@ const AddUserAccount = (props) => {
     limit: 100,
     matchFrom: "any",
   });
+
+  // console.log(departmentData);
 
   return (
     <Box className="add-userAccount">
@@ -273,8 +290,8 @@ const AddUserAccount = (props) => {
                 setValue("employee_id", value?.general_info?.full_id_number);
                 setValue("firstname", value?.general_info?.first_name);
                 setValue("lastname", value?.general_info?.last_name);
-                setValue("department_name", value.unit_info.department_name);
-                setValue("subunit_name", value.unit_info.subunit_name);
+                // setValue("department_id", value.unit_info.department_id);
+                // setValue("subunit_id", value.unit_info.subunit_id);
                 // setValue("position", value.position_info.position_name);
                 setValue(
                   "username",
@@ -294,9 +311,8 @@ const AddUserAccount = (props) => {
                 setValue("employee_id", null);
                 setValue("firstname", "");
                 setValue("lastname", "");
-                setValue("department_name", "");
-                setValue("subunit_name", "");
-                setValue("lastname", "");
+                // setValue("department_id", "");
+                // setValue("subunit_id", "");
                 setValue("username", "");
               }
 
@@ -339,10 +355,10 @@ const AddUserAccount = (props) => {
             fullWidth
             disabled
           />
-
+          {/* 
           <CustomTextField
             control={control}
-            name="department_name"
+            name="department_id"
             label="Department"
             type="text"
             color="secondary"
@@ -353,15 +369,14 @@ const AddUserAccount = (props) => {
 
           <CustomTextField
             control={control}
-            name="subunit_name"
+            name="subunit_id"
             label="Sub Unit"
             type="text"
             color="secondary"
             size="small"
             fullWidth
             disabled
-          />
-
+          /> */}
           {/* <CustomTextField
             control={control}
             name="position"
@@ -379,9 +394,90 @@ const AddUserAccount = (props) => {
             color="secondary.main"
             sx={{ fontFamily: "Anton", fontSize: "1rem" }}
           >
-            USERNAME AND PERMISSION
+            CHARGING
           </Typography>
 
+          <CustomAutoComplete
+            autoComplete
+            name="department_id"
+            control={control}
+            options={departmentData}
+            loading={isDepartmentLoading}
+            size="small"
+            getOptionLabel={(option) => option.department_name}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
+            renderInput={(params) => (
+              <TextField
+                color="secondary"
+                {...params}
+                label="Department"
+                error={!!errors?.department_id?.message}
+                helperText={errors?.department_id?.message}
+              />
+            )}
+            disablePortal
+            fullWidth
+          />
+
+          <CustomAutoComplete
+            autoComplete
+            name="subunit_id"
+            control={control}
+            options={roleData}
+            loading={isRoleLoading}
+            size="small"
+            getOptionLabel={(option) => option.role_name}
+            isOptionEqualToValue={(option, value) =>
+              option.role_name === value.role_name
+            }
+            renderInput={(params) => (
+              <TextField
+                color="secondary"
+                {...params}
+                label="Sub Unit"
+                error={!!errors?.role_id?.message}
+                helperText={errors?.role_id?.message}
+              />
+            )}
+            disablePortal
+            fullWidth
+          />
+
+          <CustomAutoComplete
+            autoComplete
+            required
+            name="subunit_id"
+            control={control}
+            options={
+              departmentData?.filter((obj) => {
+                return obj?.id === watch("subunit_id")?.id;
+              })[0]?.sub_unit || []
+            }
+            loading={isSubUnitLoading}
+            size="small"
+            getOptionLabel={(option) => option.subunit_name}
+            isOptionEqualToValue={(option, value) =>
+              option.subunit_id === value.subunit_id
+            }
+            renderInput={(params) => (
+              <TextField
+                color="secondary"
+                {...params}
+                label="Minor Category  "
+                error={!!errors?.subunit_id}
+                helperText={errors?.subunit_id?.message}
+              />
+            )}
+          />
+
+          <Divider sx={{ py: 0.5 }} />
+
+          <Typography
+            color="secondary.main"
+            sx={{ fontFamily: "Anton", fontSize: "1rem" }}
+          >
+            USERNAME AND PERMISSION
+          </Typography>
           <CustomTextField
             control={control}
             name="username"
@@ -394,7 +490,6 @@ const AddUserAccount = (props) => {
             fullWidth
             disabled={data.status}
           />
-
           <CustomAutoComplete
             autoComplete
             name="role_id"
@@ -418,7 +513,6 @@ const AddUserAccount = (props) => {
             disablePortal
             fullWidth
           />
-
           {/* <Box>
             <FormControl
               fullWidth
@@ -469,9 +563,7 @@ const AddUserAccount = (props) => {
               </Box>
             </FormControl>
           </Box> */}
-
           <Divider sx={{ pb: 0.5 }} />
-
           <Box className="add-userAccount__buttons">
             <LoadingButton
               type="submit"

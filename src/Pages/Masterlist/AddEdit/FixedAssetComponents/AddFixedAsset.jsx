@@ -673,8 +673,8 @@ const AddFixedAsset = (props) => {
 
   // SUBMIT HANDLER
   const onSubmitHandler = (formData) => {
-    const hasEmptyField = Object.values(formData).some((value) => value === "");
-    setIsButtonDisabled(hasEmptyField);
+    // const hasEmptyField = Object.values(formData).some((value) => value === "");
+    // setIsButtonDisabled(hasEmptyField);
 
     const newObj = {
       ...formData,
@@ -783,6 +783,7 @@ const AddFixedAsset = (props) => {
             }}
           >
             <Typography sx={sxSubtitle}>Type of Asset</Typography>
+
             <CustomAutoComplete
               control={control}
               name="type_of_request_id"

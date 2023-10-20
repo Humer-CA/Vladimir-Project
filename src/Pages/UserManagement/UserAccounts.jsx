@@ -47,7 +47,7 @@ import moment from "moment";
 const UserAccounts = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateUser, setUpdateUser] = useState({
     status: false,
@@ -92,9 +92,9 @@ const UserAccounts = () => {
 
   const drawer = useSelector((state) => state.booleanState.drawer);
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -112,7 +112,7 @@ const UserAccounts = () => {
   } = useGetUserAccountsApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
@@ -290,6 +290,8 @@ const UserAccounts = () => {
           "Employee ID": item?.employee_id,
           Firstname: item?.firstname,
           Lastname: item?.lastname,
+          Department: item?.department_name,
+          "Sub Unit": item?.sub_unit_name,
           Username: item?.username,
           Role: item?.role?.role_name,
           Status: item?.is_active === true ? "Active" : "Inactive",
@@ -391,6 +393,28 @@ const UserAccounts = () => {
                       </TableSortLabel>
                     </TableCell>
 
+                    <TableCell className="tbl-cell">
+                      <TableSortLabel
+                        active={orderBy === `department_name`}
+                        direction={
+                          orderBy === `department_name` ? order : `asc`
+                        }
+                        onClick={() => onSort(`department_name`)}
+                      >
+                        Department
+                      </TableSortLabel>
+                    </TableCell>
+
+                    <TableCell className="tbl-cell">
+                      <TableSortLabel
+                        active={orderBy === `subunit_name`}
+                        direction={orderBy === `subunit_name` ? order : `asc`}
+                        onClick={() => onSort(`subunit_name`)}
+                      >
+                        Sub Unit
+                      </TableSortLabel>
+                    </TableCell>
+
                     <TableCell className="tbl-cell">Role</TableCell>
 
                     <TableCell className="tbl-cell">
@@ -454,6 +478,14 @@ const UserAccounts = () => {
 
                               <TableCell className="tbl-cell">
                                 {users.lastname}
+                              </TableCell>
+
+                              <TableCell className="tbl-cell">
+                                {users.department_name}
+                              </TableCell>
+
+                              <TableCell className="tbl-cell">
+                                {users.subunit_name}
                               </TableCell>
 
                               <TableCell
@@ -551,7 +583,7 @@ const UserAccounts = () => {
               page={usersSuccess ? users.current_page - 1 : 0}
               rowsPerPage={usersSuccess ? parseInt(users?.per_page) : 5}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
               sx={{ flexWrap: "wrap" }}
             />
           </Box>
