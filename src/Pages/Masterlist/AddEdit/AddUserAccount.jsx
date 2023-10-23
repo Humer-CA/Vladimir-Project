@@ -191,6 +191,7 @@ const AddUserAccount = (props) => {
     }
   }, [isPostSuccess, isUpdateSuccess]);
 
+  console.log(watch("department_id"));
   useEffect(() => {
     if (data.status) {
       setValue("id", data.id);
@@ -202,8 +203,8 @@ const AddUserAccount = (props) => {
       });
       setValue("firstname", data.firstname);
       setValue("lastname", data.lastname);
-      // setValue("department_id", data.department_id);
-      // setValue("subunit_id", data.subunit_id);
+      setValue("department_id", data.department);
+      setValue("subunit_id", data.subunit);
       // setValue("position", data.position);
       setValue("username", data.username);
       setValue("role_id", data.role);
@@ -274,79 +275,87 @@ const AddUserAccount = (props) => {
             EMPLOYEE DETAILS
           </Typography>
 
-          <CustomAutoComplete
-            name="sedar_employee"
-            control={control}
-            size="small"
-            disabled={!!data.status}
-            required
-            includeInputInList
-            disablePortal
-            fullWidth
-            filterOptions={filterOptions}
-            options={sedarData}
-            loading={isSedarLoading}
-            getOptionLabel={(option) =>
-              option?.general_info?.full_id_number_full_name
-            }
-            isOptionEqualToValue={(option, value) =>
-              option?.general_info?.full_id_number ===
-              value?.general_info?.full_id_number
-            }
-            onChange={(_, value) => {
-              if (value) {
-                setValue("employee_id", value?.general_info?.full_id_number);
-                setValue("firstname", value?.general_info?.first_name);
-                setValue("lastname", value?.general_info?.last_name);
-                // setValue("department_id", value.unit_info.department_id);
-                // setValue("subunit_id", value.unit_info.subunit_id);
-                // setValue("position", value.position_info.position_name);
-                setValue(
-                  "username",
-                  value?.general_info?.first_name
-                    .split(" ")
-                    .map((name) => {
-                      return name.charAt(0);
-                    })
-                    .toString()
-                    .replace(",", "")
-                    .toLowerCase() +
-                    value?.general_info?.last_name
-                      .toLowerCase()
-                      .replace(/ /gm, "")
-                );
-              } else {
-                setValue("employee_id", null);
-                setValue("firstname", "");
-                setValue("lastname", "");
-                // setValue("department_id", "");
-                // setValue("subunit_id", "");
-                setValue("username", "");
+          {data.status ? (
+            <CustomTextField
+              control={control}
+              name="employee_id"
+              label="Employee ID"
+              type="text"
+              color="secondary"
+              size="small"
+              fullWidth
+              disabled
+            />
+          ) : (
+            <CustomAutoComplete
+              name="sedar_employee"
+              control={control}
+              size="small"
+              disabled={!!data.status}
+              required
+              includeInputInList
+              disablePortal
+              fullWidth
+              filterOptions={filterOptions}
+              options={sedarData}
+              loading={isSedarLoading}
+              getOptionLabel={(option) =>
+                option?.general_info?.full_id_number_full_name
               }
+              isOptionEqualToValue={(option, value) =>
+                option?.general_info?.full_id_number ===
+                value?.general_info?.full_id_number
+              }
+              onChange={(_, value) => {
+                if (value) {
+                  setValue("employee_id", value?.general_info?.full_id_number);
+                  setValue("firstname", value?.general_info?.first_name);
+                  setValue("lastname", value?.general_info?.last_name);
+                  // setValue("department_id", value.unit_info.department_id);
+                  // setValue("subunit_id", value.unit_info.subunit_id);
+                  // setValue("position", value.position_info.position_name);
+                  setValue(
+                    "username",
+                    value?.general_info?.first_name
+                      .split(" ")
+                      .map((name) => {
+                        return name.charAt(0);
+                      })
+                      .toString()
+                      .replace(",", "")
+                      .toLowerCase() +
+                      value?.general_info?.last_name
+                        .toLowerCase()
+                        .replace(/ /gm, "")
+                  );
+                } else {
+                  setValue("employee_id", null);
+                  setValue("firstname", "");
+                  setValue("lastname", "");
+                  // setValue("department_id", "");
+                  // setValue("subunit_id", "");
+                  setValue("username", "");
+                }
 
-              return value;
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Employee ID"
-                color="secondary"
-                error={
-                  !!errors?.sedar_employee?.message
-                  // !!errors?.employee_id?.message
-                }
-                helperText={
-                  errors?.sedar_employee?.message
-                  // errors?.employee_id?.message
-                }
-                // sx={{
-                //   ".MuiOutlinedInput-root ": {
-                //     backgroundColor: "background.light",
-                //   },
-                // }}
-              />
-            )}
-          />
+                return value;
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Employee ID"
+                  color="secondary"
+                  error={
+                    !!errors?.sedar_employee?.message ||
+                    !!errors?.employee_id?.message
+                  }
+                  helperText={
+                    errors?.sedar_employee?.message ||
+                    errors?.employee_id?.message
+                  }
+                />
+              )}
+            />
+          )}
 
           <CustomTextField
             control={control}
