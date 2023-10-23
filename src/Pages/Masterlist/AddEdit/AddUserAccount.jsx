@@ -37,6 +37,7 @@ import { useGetRoleAllApiQuery } from "../../../Redux/Query/UserManagement/RoleM
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
 import { LoadingButton } from "@mui/lab";
 import { useGetDepartmentAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Department";
+import { useGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUnit";
 
 const schema = yup.object().shape({
   id: yup.string().nullable(),
@@ -47,8 +48,20 @@ const schema = yup.object().shape({
     .required(),
   firstname: yup.string().required(),
   lastname: yup.string().required(),
-  department_id: yup.number().required(),
-  subunit_id: yup.number().required(),
+  department_id: yup
+    .string()
+    .transform((value) => {
+      return value?.id.toString();
+    })
+    .required()
+    .label("Department"),
+  subunit_id: yup
+    .string()
+    .transform((value) => {
+      return value?.subunit_id.toString();
+    })
+    .required()
+    .label("Subunit"),
   // position: yup.string().required(),
   username: yup.string().required().label("Username"),
   role_id: yup
@@ -80,6 +93,7 @@ const AddUserAccount = (props) => {
       isLoading: isUpdateLoading,
       isSuccess: isUpdateSuccess,
       isError: isUpdateError,
+      error: updateError,
     },
   ] = useUpdateUserApiMutation();
 
@@ -97,20 +111,18 @@ const AddUserAccount = (props) => {
     isError: isDepartmentError,
   } = useGetDepartmentAllApiQuery();
 
-  // const {
-  //   data: subUnitData = [],
-  //   isLoading: isSubUnitLoading,
-  //   isSuccess: isSubUnitSuccess,
-  //   isError: isSubUnitError,
-  // } = useGetSubUnitUsersApiQuery();
-  // console.log(sedarData);
+  const {
+    data: subUnitData = [],
+    isLoading: isSubUnitLoading,
+    isSuccess: isSubUnitSuccess,
+    isError: isSubUnitError,
+  } = useGetSubUnitAllApiQuery();
 
   const {
     data: roleData = [],
     isLoading: isRoleLoading,
     isError: isRoleError,
   } = useGetRoleAllApiQuery();
-  // console.log(roleData);
 
   const {
     handleSubmit,
@@ -196,9 +208,7 @@ const AddUserAccount = (props) => {
       setValue("username", data.username);
       setValue("role_id", data.role);
     }
-    // console.log(data);
   }, [data]);
-  // console.log(watch("employee_id"));
 
   const onSubmitHandler = (formData) => {
     const newFormData = {
@@ -235,8 +245,6 @@ const AddUserAccount = (props) => {
     limit: 100,
     matchFrom: "any",
   });
-
-  // console.log(departmentData);
 
   return (
     <Box className="add-userAccount">
@@ -323,8 +331,14 @@ const AddUserAccount = (props) => {
                 {...params}
                 label="Employee ID"
                 color="secondary"
-                error={!!errors?.sedar_employee?.message}
-                helperText={errors?.sedar_employee?.message}
+                error={
+                  !!errors?.sedar_employee?.message
+                  // !!errors?.employee_id?.message
+                }
+                helperText={
+                  errors?.sedar_employee?.message
+                  // errors?.employee_id?.message
+                }
                 // sx={{
                 //   ".MuiOutlinedInput-root ": {
                 //     backgroundColor: "background.light",
@@ -423,36 +437,7 @@ const AddUserAccount = (props) => {
             autoComplete
             name="subunit_id"
             control={control}
-            options={roleData}
-            loading={isRoleLoading}
-            size="small"
-            getOptionLabel={(option) => option.role_name}
-            isOptionEqualToValue={(option, value) =>
-              option.role_name === value.role_name
-            }
-            renderInput={(params) => (
-              <TextField
-                color="secondary"
-                {...params}
-                label="Sub Unit"
-                error={!!errors?.role_id?.message}
-                helperText={errors?.role_id?.message}
-              />
-            )}
-            disablePortal
-            fullWidth
-          />
-
-          <CustomAutoComplete
-            autoComplete
-            required
-            name="subunit_id"
-            control={control}
-            options={
-              departmentData?.filter((obj) => {
-                return obj?.id === watch("subunit_id")?.id;
-              })[0]?.sub_unit || []
-            }
+            options={watch("department_id")?.subunit || []}
             loading={isSubUnitLoading}
             size="small"
             getOptionLabel={(option) => option.subunit_name}
@@ -463,7 +448,7 @@ const AddUserAccount = (props) => {
               <TextField
                 color="secondary"
                 {...params}
-                label="Minor Category  "
+                label="Subunit  "
                 error={!!errors?.subunit_id}
                 helperText={errors?.subunit_id?.message}
               />

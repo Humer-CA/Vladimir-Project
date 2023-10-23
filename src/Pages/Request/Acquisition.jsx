@@ -37,6 +37,7 @@ import {
 import { Help, ReportProblem } from "@mui/icons-material";
 import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 import NoRecordsFound from "../../Layout/NoRecordsFound";
+import AddTypeOfRequest from "../Masterlist/AddEdit/AddTypeOfRequest";
 
 const TypeOfRequest = () => {
   const [search, setSearch] = useState("");
@@ -360,10 +361,10 @@ const TypeOfRequest = () => {
         </>
       )}
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        {/* <AddTypeOfRequest
+        <AddTypeOfRequest
           data={updateTypeOfRequest}
           onUpdateResetHandler={onUpdateResetHandler}
-        /> */}
+        />
       </Dialog>
     </Box>
   );

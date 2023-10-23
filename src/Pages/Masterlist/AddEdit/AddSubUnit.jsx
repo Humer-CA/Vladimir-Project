@@ -135,23 +135,17 @@ const AddSubUnit = (props) => {
   useEffect(() => {
     if (data.status) {
       setValue("id", data.id);
-      setValue("department_id", data.department);
-      setValue("sub_unit_name", data.subunit);
+      setValue("department_id", data.department_id);
+      setValue("sub_unit_name", data.sub_unit_name);
     }
   }, [data]);
 
   const onSubmitHandler = (formData) => {
-    const newFormData = {
-      id: formData.id,
-      department_id: formData.department_id,
-      sub_unit_name: formData.sub_unit_name,
-    };
-    console.log(newFormData);
-    // if (data.status) {
-    //   updateSubUnit(formData);
-    //   return;
-    // }
-    // postSubUnit(formData);
+    if (data.status) {
+      updateSubUnit(formData);
+      return;
+    }
+    postSubUnit(formData);
   };
 
   const handleCloseDrawer = () => {
