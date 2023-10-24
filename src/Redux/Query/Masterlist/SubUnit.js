@@ -51,7 +51,7 @@ export const subUnitApi = createApi({
     }),
 
     patchSubUnitApi: builder.mutation({
-      query: (id, status) => ({
+      query: ({ id, status }) => ({
         url: `/archived-sub-unit/${id}`,
         method: "PATCH",
         body: {

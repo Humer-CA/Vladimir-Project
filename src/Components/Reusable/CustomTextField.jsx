@@ -57,6 +57,7 @@ const CustomTextField = (props) => {
 
                 ".Mui-disabled": {
                   backgroundColor: "background.light",
+                  borderRadius: "12px",
                 },
               }}
             />

@@ -34,7 +34,7 @@ const schema = yup.object().shape({
 });
 
 const AddSubUnit = (props) => {
-  const { data, onUpdateResetHandler } = props;
+  const { data, onUpdateResetHandler, tagged } = props;
   const dispatch = useDispatch();
 
   const [
@@ -146,7 +146,7 @@ const AddSubUnit = (props) => {
   };
 
   console.log(data);
-  console.log(errors);
+  // console.log(errors);
 
   return (
     <Box className="add-masterlist">
@@ -163,6 +163,7 @@ const AddSubUnit = (props) => {
         className="add-masterlist__content"
       >
         <CustomAutoComplete
+          disabled={data.tagged === true}
           autoComplete
           name="department_id"
           control={control}
@@ -185,6 +186,7 @@ const AddSubUnit = (props) => {
         />
 
         <CustomTextField
+          disabled={data.tagged === true}
           control={control}
           name="subunit_name"
           label="Sub Unit"

@@ -110,6 +110,8 @@ const SubUnit = () => {
     { refetchOnMountOrArgChange: true }
   );
 
+  console.log(subUnitData?.data?.tagged);
+
   const [patchSubUnitApi, { isLoading }] = usePatchSubUnitApiMutation();
 
   const onArchiveRestoreHandler = async (id) => {
@@ -174,12 +176,13 @@ const SubUnit = () => {
   };
 
   const onUpdateHandler = (props) => {
-    const { id, department, subunit_name } = props;
+    const { id, department, subunit_name, tagged } = props;
     setUpdateSubUnit({
       status: true,
       id: id,
       department,
       subunit_name,
+      tagged,
     });
   };
 
