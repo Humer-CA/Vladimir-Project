@@ -14,6 +14,7 @@ const CustomTablePagination = (props) => {
 
   return (
     <TablePagination
+      className="mcontainer__pagination"
       component="div"
       rowsPerPageOptions={[
         5,

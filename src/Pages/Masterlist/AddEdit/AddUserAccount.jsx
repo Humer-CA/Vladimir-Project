@@ -58,7 +58,7 @@ const schema = yup.object().shape({
   subunit_id: yup
     .string()
     .transform((value) => {
-      return value?.subunit_id.toString();
+      return value?.id.toString();
     })
     .required()
     .label("Subunit"),
@@ -138,7 +138,7 @@ const AddUserAccount = (props) => {
     defaultValues: {
       id: "",
       sedar_employee: null,
-      employee_id: null,
+      employee_id: null || "",
       firstname: "",
       lastname: "",
       department_id: null,
@@ -191,7 +191,6 @@ const AddUserAccount = (props) => {
     }
   }, [isPostSuccess, isUpdateSuccess]);
 
-  console.log(watch("department_id"));
   useEffect(() => {
     if (data.status) {
       setValue("id", data.id);
@@ -246,6 +245,25 @@ const AddUserAccount = (props) => {
     limit: 100,
     matchFrom: "any",
   });
+
+  // console.log("subunit:", subUnitData);
+  // console.log("department:", watch("department_id"));
+
+  // const subUnitDataList = departmentData?.filter((item) => {
+  //   return item?.subUnitData?.some((department) => {
+  //     return department?.id;
+  //   });
+  // });
+
+  const subUnitDataList = departmentData?.filter((item) => {
+    return (item?.subunit || []).some((department) => department?.id);
+  });
+
+  // const subUnitDataList = departmentData?.filter((item) =>
+  //   item?.subunit.some((subItem) => subItem?.subunit_id)
+  // );
+
+  console.log(subUnitDataList);
 
   return (
     <Box className="add-userAccount">
@@ -378,38 +396,6 @@ const AddUserAccount = (props) => {
             fullWidth
             disabled
           />
-          {/* 
-          <CustomTextField
-            control={control}
-            name="department_id"
-            label="Department"
-            type="text"
-            color="secondary"
-            size="small"
-            fullWidth
-            disabled
-          />
-
-          <CustomTextField
-            control={control}
-            name="subunit_id"
-            label="Sub Unit"
-            type="text"
-            color="secondary"
-            size="small"
-            fullWidth
-            disabled
-          /> */}
-          {/* <CustomTextField
-            control={control}
-            name="position"
-            label="Position"
-            type="text"
-            color="secondary"
-            size="small"
-            fullWidth
-            disabled
-          /> */}
 
           <Divider sx={{ py: 0.5 }} />
 
@@ -446,18 +432,20 @@ const AddUserAccount = (props) => {
             autoComplete
             name="subunit_id"
             control={control}
-            options={watch("department_id")?.subunit || []}
+            options={
+              departmentData?.filter((item) =>
+                item?.subunit.some((subItem) => subItem?.subunit_id)
+              ) || []
+            }
             loading={isSubUnitLoading}
             size="small"
             getOptionLabel={(option) => option.subunit_name}
-            isOptionEqualToValue={(option, value) =>
-              option.subunit_id === value.subunit_id
-            }
+            isOptionEqualToValue={(option, value) => option.id === value.id}
             renderInput={(params) => (
               <TextField
                 color="secondary"
                 {...params}
-                label="Subunit  "
+                label="Subunit"
                 error={!!errors?.subunit_id}
                 helperText={errors?.subunit_id?.message}
               />

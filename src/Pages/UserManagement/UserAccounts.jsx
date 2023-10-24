@@ -55,6 +55,8 @@ const UserAccounts = () => {
     employee_id: "",
     firstname: "",
     lastname: "",
+    department_id: "",
+    sub_unit_name: "",
     username: "",
     role_id: null,
   });
@@ -193,14 +195,25 @@ const UserAccounts = () => {
   };
 
   const onUpdateHandler = (props) => {
-    const { id, employee_id, firstname, lastname, username, role, role_id } =
-      props;
+    const {
+      id,
+      employee_id,
+      firstname,
+      lastname,
+      department,
+      subunit,
+      username,
+      role,
+      role_id,
+    } = props;
     setUpdateUser({
       status: true,
       id: id,
       employee_id: employee_id,
       firstname: firstname,
       lastname: lastname,
+      department,
+      subunit,
       username: username,
       role: role,
       role_id: role_id,
@@ -214,6 +227,8 @@ const UserAccounts = () => {
       employee_id: null,
       firstname: "",
       lastname: "",
+      department_id: null,
+      sub_unit_name: "",
       username: "",
       role_id: null,
     });
@@ -301,7 +316,6 @@ const UserAccounts = () => {
 
       await excelExport(newObj, "Vladimir-UserAccounts.xlsx");
     } catch (err) {
-      console.log(err);
       if (err?.status === 422) {
         dispatch(
           openToast({
@@ -478,11 +492,11 @@ const UserAccounts = () => {
                               </TableCell>
 
                               <TableCell className="tbl-cell">
-                                {users.department}
+                                {users.department?.department_name}
                               </TableCell>
 
                               <TableCell className="tbl-cell">
-                                {users.subunit}
+                                {users.subunit?.sub_unit_name}
                               </TableCell>
 
                               <TableCell

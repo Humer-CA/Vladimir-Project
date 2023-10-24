@@ -3,7 +3,10 @@ import Moment from "moment";
 import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
 import ActionMenu from "../../Components/Reusable/ActionMenu";
 import ErrorFetching from "../ErrorFetching";
-// import AddTypeOfRequest from "./AddEdit/AddTypeOfRequest";
+// import AddAcquisition from "./AddEdit/AddAcquisition";
+import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
+import NoRecordsFound from "../../Layout/NoRecordsFound";
+// import AddAcquisition from "../Masterlist/AddEdit/AddAcquisition";
 import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
 
 // RTK
@@ -15,9 +18,9 @@ import {
   onLoading,
 } from "../../Redux/StateManagement/confirmSlice";
 import {
-  useGetTypeOfRequestApiQuery,
-  usePostTypeOfRequestStatusApiMutation,
-} from "../../Redux/Query/Masterlist/TypeOfRequest";
+  useGetAcquisitionApiQuery,
+  usePostAcquisitionStatusApiMutation,
+} from "../../Redux/Query/Request/Acquisition";
 
 // MUI
 import {
@@ -35,19 +38,16 @@ import {
   Typography,
 } from "@mui/material";
 import { Help, ReportProblem } from "@mui/icons-material";
-import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
-import NoRecordsFound from "../../Layout/NoRecordsFound";
-import AddTypeOfRequest from "../Masterlist/AddEdit/AddTypeOfRequest";
 
-const TypeOfRequest = () => {
+const Acquisition = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(1);
-  const [updateTypeOfRequest, setUpdateTypeOfRequest] = useState({
+  const [updateAcquisition, setUpdateAcquisition] = useState({
     status: false,
     id: null,
-    type_of_request_name: "",
+    // type_of_request_name: "",
   });
 
   const drawer = useSelector((state) => state.booleanState.drawer);
@@ -91,13 +91,13 @@ const TypeOfRequest = () => {
   };
 
   const {
-    data: typeOfRequestData,
-    isLoading: typeOfRequestLoading,
-    isSuccess: typeOfRequestSuccess,
-    isError: typeOfRequestError,
+    data: acquisitionData,
+    isLoading: acquisitionLoading,
+    isSuccess: acquisitionSuccess,
+    isError: acquisitionError,
     error: errorData,
     refetch,
-  } = useGetTypeOfRequestApiQuery(
+  } = useGetAcquisitionApiQuery(
     {
       page: page,
       limit: limit,
@@ -107,8 +107,8 @@ const TypeOfRequest = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const [postTypeOfRequestStatusApi, { isLoading }] =
-    usePostTypeOfRequestStatusApiMutation();
+  const [postAcquisitionStatusApi, { isLoading }] =
+    usePostAcquisitionStatusApiMutation();
 
   const dispatch = useDispatch();
 
@@ -137,7 +137,7 @@ const TypeOfRequest = () => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            const result = await postTypeOfRequestStatusApi({
+            const result = await postAcquisitionStatusApi({
               id: id,
               status: status === "active" ? false : true,
             }).unwrap();
@@ -174,19 +174,19 @@ const TypeOfRequest = () => {
   };
 
   const onUpdateHandler = (props) => {
-    const { id, type_of_request_name } = props;
-    setUpdateTypeOfRequest({
+    const { id } = props;
+    setUpdateAcquisition({
       status: true,
       id: id,
-      type_of_request_name: type_of_request_name,
+      // type_of_request_name: type_of_request_name,
     });
   };
 
   const onUpdateResetHandler = () => {
-    setUpdateTypeOfRequest({
+    setUpdateAcquisition({
       status: false,
       id: null,
-      type_of_request_name: "",
+      // type_of_request_name: "",
     });
   };
 
@@ -194,7 +194,7 @@ const TypeOfRequest = () => {
     setPage(1);
   };
 
-  // console.log(typeOfRequestData);
+  // console.log(AcquisitionData);
 
   return (
     <Box className="mcontainer">
@@ -204,11 +204,11 @@ const TypeOfRequest = () => {
       >
         Acquisition
       </Typography>
-      {typeOfRequestLoading && <MasterlistSkeleton onAdd={true} />}
-      {typeOfRequestError && (
+      {acquisitionLoading && <MasterlistSkeleton onAdd={true} />}
+      {acquisitionError && (
         <ErrorFetching refetch={refetch} error={errorData} />
       )}
-      {typeOfRequestData && !typeOfRequestError && (
+      {acquisitionData && !acquisitionError && (
         <>
           <Box className="mcontainer__wrapper">
             <MasterlistToolbar
@@ -243,13 +243,37 @@ const TypeOfRequest = () => {
 
                       <TableCell className="tbl-cell">
                         <TableSortLabel
-                          active={orderBy === `type_of_request_name`}
-                          direction={
-                            orderBy === `type_of_request_name` ? order : `asc`
-                          }
-                          onClick={() => onSort(`type_of_request_name`)}
+                        // active={orderBy === `type_of_request_name`}
+                        // direction={
+                        //   orderBy === `type_of_request_name` ? order : `asc`
+                        // }
+                        // onClick={() => onSort(`type_of_request_name`)}
                         >
-                          Type of Request
+                          Transaction No.
+                        </TableSortLabel>
+                      </TableCell>
+
+                      <TableCell className="tbl-cell">
+                        <TableSortLabel
+                        // active={orderBy === `type_of_request_name`}
+                        // direction={
+                        //   orderBy === `type_of_request_name` ? order : `asc`
+                        // }
+                        // onClick={() => onSort(`type_of_request_name`)}
+                        >
+                          Quantity of PO
+                        </TableSortLabel>
+                      </TableCell>
+
+                      <TableCell className="tbl-cell">
+                        <TableSortLabel
+                        // active={orderBy === `type_of_request_name`}
+                        // direction={
+                        //   orderBy === `type_of_request_name` ? order : `asc`
+                        // }
+                        // onClick={() => onSort(`type_of_request_name`)}
+                        >
+                          View
                         </TableSortLabel>
                       </TableCell>
 
@@ -272,12 +296,12 @@ const TypeOfRequest = () => {
                   </TableHead>
 
                   <TableBody>
-                    {typeOfRequestData?.data?.data?.length === 0 ? (
+                    {acquisitionData?.data?.data?.length === 0 ? (
                       <NoRecordsFound />
                     ) : (
                       <>
-                        {typeOfRequestSuccess &&
-                          [...typeOfRequestData?.data?.data]
+                        {acquisitionSuccess &&
+                          [...acquisitionData?.data?.data]
                             ?.sort(comparator(order, orderBy))
                             ?.map((data) => (
                               <TableRow
@@ -293,7 +317,7 @@ const TypeOfRequest = () => {
                                 </TableCell>
 
                                 <TableCell className="tbl-cell text-weight">
-                                  {data.type_of_request_name}
+                                  {/* {data.type_of_request_name} */}
                                 </TableCell>
 
                                 <TableCell className="tbl-cell text-center">
@@ -350,10 +374,10 @@ const TypeOfRequest = () => {
             </Box>
 
             <CustomTablePagination
-              total={typeOfRequestData?.data?.total}
-              success={typeOfRequestSuccess}
-              current_page={typeOfRequestData?.data?.current_page}
-              per_page={typeOfRequestData?.data?.per_page}
+              total={acquisitionData?.data?.total}
+              success={acquisitionSuccess}
+              current_page={acquisitionData?.data?.current_page}
+              per_page={acquisitionData?.data?.per_page}
               onPageChange={pageHandler}
               onRowsPerPageChange={limitHandler}
             />
@@ -361,13 +385,13 @@ const TypeOfRequest = () => {
         </>
       )}
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        <AddTypeOfRequest
-          data={updateTypeOfRequest}
+        {/* <AddAcquisition
+          data={updateAcquisition}
           onUpdateResetHandler={onUpdateResetHandler}
-        />
+        /> */}
       </Dialog>
     </Box>
   );
 };
 
-export default TypeOfRequest;
+export default Acquisition;

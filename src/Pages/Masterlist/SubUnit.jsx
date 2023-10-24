@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 import ErrorFetching from "../ErrorFetching";
@@ -8,7 +8,10 @@ import ActionMenu from "../../Components/Reusable/ActionMenu";
 
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
-import { useGetSubUnitApiQuery } from "../../Redux/Query/Masterlist/SubUnit";
+import {
+  useGetSubUnitApiQuery,
+  usePatchSubUnitApiMutation,
+} from "../../Redux/Query/Masterlist/SubUnit";
 import {
   closeConfirm,
   onLoading,
@@ -30,6 +33,9 @@ import {
 } from "@mui/material";
 import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
 import Moment from "moment";
+import NoRecordsFound from "../../Layout/NoRecordsFound";
+import CustomChip from "../../Components/Reusable/CustomChip";
+import { Help, ReportProblem } from "@mui/icons-material";
 
 const SubUnit = () => {
   const [page, setPage] = useState(1);
@@ -104,6 +110,8 @@ const SubUnit = () => {
     { refetchOnMountOrArgChange: true }
   );
 
+  const [patchSubUnitApi, { isLoading }] = usePatchSubUnitApiMutation();
+
   const onArchiveRestoreHandler = async (id) => {
     dispatch(
       openConfirm({
@@ -129,7 +137,7 @@ const SubUnit = () => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            const result = await postSubUnitStatusApi({
+            const result = await patchSubUnitApi({
               id: id,
               status: status === "active" ? false : true,
             }).unwrap();
@@ -145,7 +153,7 @@ const SubUnit = () => {
             if (err?.status === 422) {
               dispatch(
                 openToast({
-                  message: err.data.error,
+                  message: err.data.errors.status,
                   duration: 5000,
                   variant: "error",
                 })
@@ -166,18 +174,20 @@ const SubUnit = () => {
   };
 
   const onUpdateHandler = (props) => {
-    const { id, subunit_name } = props;
+    const { id, department, subunit_name } = props;
     setUpdateSubUnit({
       status: true,
       id: id,
-      subunit_name: subunit_name,
+      department,
+      subunit_name,
     });
   };
 
   const onUpdateResetHandler = () => {
     setUpdateSubUnit({
-      status: false,
+      status: true,
       id: null,
+      department_id: null,
       subunit_name: "",
     });
   };
@@ -231,7 +241,17 @@ const SubUnit = () => {
                           direction={orderBy === `subunit_name` ? order : `asc`}
                           onClick={() => onSort(`subunit_name`)}
                         >
-                          Type of Request
+                          Sub Unit
+                        </TableSortLabel>
+                      </TableCell>
+
+                      <TableCell className="tbl-cell">
+                        <TableSortLabel
+                          active={orderBy === `subunit_name`}
+                          direction={orderBy === `subunit_name` ? order : `asc`}
+                          onClick={() => onSort(`subunit_name`)}
+                        >
+                          Department
                         </TableSortLabel>
                       </TableCell>
 
@@ -278,32 +298,12 @@ const SubUnit = () => {
                                   {data.subunit_name}
                                 </TableCell>
 
+                                <TableCell className="tbl-cell">
+                                  {data?.department?.department_name}
+                                </TableCell>
+
                                 <TableCell className="tbl-cell text-center">
-                                  {data.is_active ? (
-                                    <Chip
-                                      size="small"
-                                      variant="contained"
-                                      sx={{
-                                        background: "#27ff811f",
-                                        color: "active.dark",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label="ACTIVE"
-                                    />
-                                  ) : (
-                                    <Chip
-                                      size="small"
-                                      variant="contained"
-                                      sx={{
-                                        background: "#fc3e3e34",
-                                        color: "error.light",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label="INACTIVE"
-                                    />
-                                  )}
+                                  <CustomChip status={status} />
                                 </TableCell>
 
                                 <TableCell className="tbl-cell tr-cen-pad45">

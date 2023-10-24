@@ -124,9 +124,6 @@ const FixedAsset = (props) => {
   const drawer1 = useSelector(
     (state) => state.booleanState.drawerMultiple.drawer1
   );
-  const drawer2 = useSelector(
-    (state) => state.booleanState.drawerMultiple.drawer2
-  );
 
   const add = useSelector((state) => state.booleanState.add);
   const importFile = useSelector((state) => state.booleanState.importFile);
@@ -193,6 +190,7 @@ const FixedAsset = (props) => {
   // console.log(fixedAssetData);
 
   const dispatch = useDispatch();
+
   const onUpdateResetHandler = () => {
     setUpdateFixedAsset({
       status: false,

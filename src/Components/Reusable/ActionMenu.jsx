@@ -64,6 +64,7 @@ const ActionMenu = (props) => {
   };
 
   const handleArchiveRestore = () => {
+    // console.log(data?.id, status);
     onArchiveRestoreHandler(data?.id, status);
     handleClose();
   };
@@ -89,6 +90,7 @@ const ActionMenu = (props) => {
   };
 
   const handleEdit = () => {
+    // console.log(data);
     onUpdateHandler(data);
     dispatch(openDrawer());
     dispatch(openDialog());

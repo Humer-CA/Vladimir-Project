@@ -30,7 +30,7 @@ const schema = yup.object().shape({
     .required()
     .label("Department"),
 
-  sub_unit_name: yup.string().required().label("Sub Unit"),
+  subunit_name: yup.string().required().label("Sub Unit"),
 });
 
 const AddSubUnit = (props) => {
@@ -80,40 +80,9 @@ const AddSubUnit = (props) => {
     defaultValues: {
       id: "",
       department_id: null,
-      sub_unit_name: "",
+      subunit_name: "",
     },
   });
-
-  // useEffect(() => {
-  //   if (
-  //     (isPostError || isUpdateError) &&
-  //     (postError?.status === 422 || updateError?.status === 422)
-  //   ) {
-  //     setError("department_id", {
-  //       type: "validate",
-  //       message:
-  //         postError?.data?.errors.department_id ||
-  //         updateError?.data?.errors.department_id,
-  //     });
-  //     setError("sub_unit_name", {
-  //       type: "validate",
-  //       message:
-  //         postError?.data?.errors.sub_unit_name ||
-  //         updateError?.data?.errors.sub_unit_name,
-  //     });
-  //   } else if (
-  //     (isPostError && postError?.status !== 422) ||
-  //     (isUpdateError && updateError?.status !== 422)
-  //   ) {
-  //     dispatch(
-  //       openToast({
-  //         message: "Something went wrong. Please try again.",
-  //         duration: 5000,
-  //         variant: "error",
-  //       })
-  //     );
-  //   }
-  // }, [isPostError, isUpdateError]);
 
   useEffect(() => {
     if (isPostSuccess || isUpdateSuccess) {
@@ -133,10 +102,30 @@ const AddSubUnit = (props) => {
   }, [isPostSuccess, isUpdateSuccess]);
 
   useEffect(() => {
+    if (isPostError && postError?.status === 422) {
+      dispatch(
+        openToast({
+          message: postError?.data?.message,
+          duration: 5000,
+          variant: "error",
+        })
+      );
+    } else if (isPostError && postError?.status !== 422) {
+      dispatch(
+        openToast({
+          message: "Something went wrong. Please try again.",
+          duration: 5000,
+          variant: "error",
+        })
+      );
+    }
+  }, [isPostError]);
+
+  useEffect(() => {
     if (data.status) {
       setValue("id", data.id);
-      setValue("department_id", data.department_id);
-      setValue("sub_unit_name", data.sub_unit_name);
+      setValue("department_id", data.department);
+      setValue("subunit_name", data.subunit_name);
     }
   }, [data]);
 
@@ -156,6 +145,7 @@ const AddSubUnit = (props) => {
     dispatch(closeDrawer());
   };
 
+  console.log(data);
   console.log(errors);
 
   return (
@@ -196,13 +186,13 @@ const AddSubUnit = (props) => {
 
         <CustomTextField
           control={control}
-          name="sub_unit_name"
+          name="subunit_name"
           label="Sub Unit"
           type="text"
           color="secondary"
           size="small"
-          error={!!errors?.sub_unit_name}
-          helperText={errors?.sub_unit_name?.message}
+          error={!!errors?.subunit_name}
+          helperText={errors?.subunit_name?.message}
           fullWidth
         />
 
@@ -215,8 +205,8 @@ const AddSubUnit = (props) => {
             disabled={
               watch("department_id") === null ||
               watch("department_id") === "" ||
-              watch("sub_unit_name") === null ||
-              watch("sub_unit_name") === ""
+              watch("subunit_name") === null ||
+              watch("subunit_name") === ""
             }
           >
             {data.status ? "Update" : "Create"}
