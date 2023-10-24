@@ -212,25 +212,15 @@ const AddUserAccount = (props) => {
 
   const onSubmitHandler = (formData) => {
     const newFormData = {
-      id: formData.id,
-      employee_id: formData.employee_id,
-      firstname: formData.firstname,
-      lastname: formData.lastname,
-      department_id: formData.department_id,
-      subunit_id: formData.subunit_id,
-      username: formData.username,
+      ...formData,
       role_id: formData.role_id?.id,
+      password: formData.username,
     };
 
     if (data.status) {
       return updateUser(newFormData);
     }
-
-    const obj = {
-      ...newFormData,
-      password: newFormData.username,
-    };
-    postUser(obj);
+    postUser(newFormData);
   };
 
   const handleCloseDrawer = () => {
@@ -245,25 +235,6 @@ const AddUserAccount = (props) => {
     limit: 100,
     matchFrom: "any",
   });
-
-  // console.log("subunit:", subUnitData);
-  // console.log("department:", watch("department_id"));
-
-  // const subUnitDataList = departmentData?.filter((item) => {
-  //   return item?.subUnitData?.some((department) => {
-  //     return department?.id;
-  //   });
-  // });
-
-  const subUnitDataList = departmentData?.filter((item) => {
-    return (item?.subunit || []).some((department) => department?.id);
-  });
-
-  // const subUnitDataList = departmentData?.filter((item) =>
-  //   item?.subunit.some((subItem) => subItem?.subunit_id)
-  // );
-
-  console.log(subUnitDataList);
 
   return (
     <Box className="add-userAccount">
@@ -424,6 +395,7 @@ const AddUserAccount = (props) => {
                 helperText={errors?.department_id?.message}
               />
             )}
+            onChange={setValue("subunit_id", null)}
             disablePortal
             fullWidth
           />
@@ -433,8 +405,8 @@ const AddUserAccount = (props) => {
             name="subunit_id"
             control={control}
             options={
-              departmentData?.filter((item) =>
-                item?.subunit.some((subItem) => subItem?.subunit_id)
+              subUnitData?.filter(
+                (item) => item?.department?.id === watch("department_id")?.id
               ) || []
             }
             loading={isSubUnitLoading}
