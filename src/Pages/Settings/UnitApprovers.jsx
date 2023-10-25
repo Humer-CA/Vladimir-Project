@@ -3,7 +3,7 @@ import Moment from "moment";
 import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
 import ActionMenu from "../../Components/Reusable/ActionMenu";
 import ErrorFetching from "../ErrorFetching";
-import AddAssignedApprovers from "./AddEdit/AddAssignedApprovers";
+import AddUnitApprovers from "./AddEdit/AddUnitApprovers";
 
 // RTK
 import { useDispatch, useSelector } from "react-redux";
@@ -14,11 +14,11 @@ import {
   onLoading,
 } from "../../Redux/StateManagement/confirmSlice";
 import {
-  useGetAssignedApproversApiQuery,
-  usePostAssignedApproversStatusApiMutation,
-  useDeleteAssignedApproversApiMutation,
-  useGetAssignedApproversIdApiQuery,
-} from "../../Redux/Query/Settings/AssignedApprovers";
+  useGetUnitApproversApiQuery,
+  usePostUnitApproversStatusApiMutation,
+  useDeleteUnitApproversApiMutation,
+  useGetUnitApproversIdApiQuery,
+} from "../../Redux/Query/Settings/UnitApprovers";
 
 // MUI
 import {
@@ -44,14 +44,14 @@ import {
   closeDrawer,
   openDrawer,
 } from "../../Redux/StateManagement/booleanStateSlice";
-// import AddAssignedApprovers from "../Masterlist/AddEdit/Settings/AddAssignedApprovers";
+// import AddUnitApprovers from "../Masterlist/AddEdit/Settings/AddUnitApprovers";
 
-const AssignedApprovers = () => {
+const UnitApprovers = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(1);
-  const [updateAssignedApprovers, setUpdateAssignedApprovers] = useState({
+  const [updateUnitApprovers, setUpdateUnitApprovers] = useState({
     status: false,
     id: null,
     requester_id: null,
@@ -99,13 +99,13 @@ const AssignedApprovers = () => {
   };
 
   const {
-    data: assignedApproversData,
-    isLoading: assignedApproversLoading,
-    isSuccess: assignedApproversSuccess,
-    isError: assignedApproversError,
+    data: unitApproversData,
+    isLoading: unitApproversLoading,
+    isSuccess: unitApproversSuccess,
+    isError: unitApproversError,
     error: errorData,
     refetch,
-  } = useGetAssignedApproversApiQuery(
+  } = useGetUnitApproversApiQuery(
     {
       page: page,
       limit: limit,
@@ -115,20 +115,22 @@ const AssignedApprovers = () => {
     { refetchOnMountOrArgChange: true }
   );
 
+  console.log(unitApproversData);
+
   // const {
-  //   data: assignedApproversIdApi,
-  //   isLoading: assignedApproversIdApiLoading,
-  //   isSuccess: assignedApproversIdApiSuccess,
-  //   isFetching: assignedApproversIdApiFetching,
-  //   isError: assignedApproversIdApiError,
-  //   refetch: assignedApproversIdApiRefetch,
-  // } = useGetAssignedApproversIdApiQuery();
+  //   data: unitApproversIdApi,
+  //   isLoading: unitApproversIdApiLoading,
+  //   isSuccess: unitApproversIdApiSuccess,
+  //   isFetching: unitApproversIdApiFetching,
+  //   isError: unitApproversIdApiError,
+  //   refetch: unitApproversIdApiRefetch,
+  // } = useGetUnitApproversIdApiQuery();
 
-  const [postAssignedApproversStatusApi, { isLoading: isStatusLoading }] =
-    usePostAssignedApproversStatusApiMutation();
+  const [postUnitApproversStatusApi, { isLoading: isStatusLoading }] =
+    usePostUnitApproversStatusApiMutation();
 
-  const [deleteAssignedApproversApi, { isLoading }] =
-    useDeleteAssignedApproversApiMutation();
+  const [deleteUnitApproversApi, { isLoading }] =
+    useDeleteUnitApproversApiMutation();
 
   const dispatch = useDispatch();
 
@@ -157,7 +159,7 @@ const AssignedApprovers = () => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            const result = await postAssignedApproversStatusApi({
+            const result = await postUnitApproversStatusApi({
               id: id,
               status: status === "active" ? false : true,
             }).unwrap();
@@ -217,7 +219,7 @@ const AssignedApprovers = () => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            let result = await deleteAssignedApproversApi(id).unwrap();
+            let result = await deleteUnitApproversApi(id).unwrap();
             console.log(result);
             setPage(1);
             dispatch(
@@ -253,7 +255,7 @@ const AssignedApprovers = () => {
 
   const onUpdateHandler = (props) => {
     const { id, requester_details, approvers } = props;
-    setUpdateAssignedApprovers({
+    setUpdateUnitApprovers({
       status: true,
       action: "update",
       id: id,
@@ -263,7 +265,7 @@ const AssignedApprovers = () => {
   };
 
   const onUpdateResetHandler = () => {
-    setUpdateAssignedApprovers({
+    setUpdateUnitApprovers({
       status: false,
       id: null,
       requester_details: null,
@@ -273,7 +275,7 @@ const AssignedApprovers = () => {
 
   const onViewHandler = (props) => {
     const { id, requester_details, approvers } = props;
-    setUpdateAssignedApprovers({
+    setUpdateUnitApprovers({
       status: true,
       action: "view",
       id: id,
@@ -294,19 +296,19 @@ const AssignedApprovers = () => {
 
   return (
     <>
-      {assignedApproversLoading && (
+      {unitApproversLoading && (
         <MasterlistSkeleton category={true} onAdd={true} />
       )}
 
-      {assignedApproversError && (
+      {unitApproversError && (
         <ErrorFetching
           refetch={refetch}
-          category={assignedApproversData}
+          category={unitApproversData}
           error={errorData}
         />
       )}
 
-      {assignedApproversData && !assignedApproversError && (
+      {unitApproversData && !unitApproversError && (
         <>
           <Box className="mcontainer__wrapper">
             <MasterlistToolbar
@@ -375,12 +377,12 @@ const AssignedApprovers = () => {
                   </TableHead>
 
                   <TableBody>
-                    {assignedApproversData?.data?.data?.length === 0 ? (
+                    {unitApproversData?.data?.data?.length === 0 ? (
                       <NoRecordsFound />
                     ) : (
                       <>
-                        {assignedApproversSuccess &&
-                          [...assignedApproversData?.data?.data]
+                        {unitApproversSuccess &&
+                          [...unitApproversData?.data?.data]
                             ?.sort(comparator(order, orderBy))
                             ?.map((data, index) => (
                               <TableRow
@@ -495,23 +497,21 @@ const AssignedApprovers = () => {
                   15,
                   {
                     label: "All",
-                    value: parseInt(assignedApproversData?.data?.total),
+                    value: parseInt(unitApproversData?.data?.total),
                   },
                 ]}
                 component="div"
                 count={
-                  assignedApproversSuccess
-                    ? assignedApproversData?.data?.total
-                    : 0
+                  unitApproversSuccess ? unitApproversData?.data?.total : 0
                 }
                 page={
-                  assignedApproversSuccess
-                    ? assignedApproversData?.data?.current_page - 1
+                  unitApproversSuccess
+                    ? unitApproversData?.data?.current_page - 1
                     : 0
                 }
                 rowsPerPage={
-                  assignedApproversSuccess
-                    ? parseInt(assignedApproversData?.data?.per_page)
+                  unitApproversSuccess
+                    ? parseInt(unitApproversData?.data?.per_page)
                     : 5
                 }
                 onPageChange={pageHandler}
@@ -528,8 +528,8 @@ const AssignedApprovers = () => {
           sx: { borderRadius: "10px", maxWidth: "1200px" },
         }}
       >
-        <AddAssignedApprovers
-          data={updateAssignedApprovers}
+        <AddUnitApprovers
+          data={updateUnitApprovers}
           onUpdateResetHandler={onUpdateResetHandler}
         />
       </Dialog>
@@ -540,9 +540,9 @@ const AssignedApprovers = () => {
         PaperProps={{ sx: { borderRadius: "10px" } }}
       >
         <ViewTagged
-          data={updateAssignedApprovers}
+          data={updateUnitApprovers}
           mapData={mapApproversData}
-          setViewDepartment={setUpdateAssignedApprovers}
+          setViewDepartment={setUpdateUnitApprovers}
           name="Approvers"
         />
       </Dialog> */}
@@ -550,4 +550,4 @@ const AssignedApprovers = () => {
   );
 };
 
-export default AssignedApprovers;
+export default UnitApprovers;

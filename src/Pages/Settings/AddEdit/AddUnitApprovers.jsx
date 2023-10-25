@@ -29,14 +29,15 @@ import { openToast } from "../../../Redux/StateManagement/toastSlice";
 import { LoadingButton } from "@mui/lab";
 import { Add, Close, DragIndicator } from "@mui/icons-material";
 import {
-  useArrangeAssignedApproversApiMutation,
-  usePostAssignedApproversApiMutation,
-} from "../../../Redux/Query/Settings/AssignedApprovers";
-import { useGetUserAccountAllApiQuery } from "../../../Redux/Query/UserManagement/UserAccountsApi";
+  useArrangeUnitApproversApiMutation,
+  usePostUnitApproversApiMutation,
+} from "../../../Redux/Query/Settings/UnitApprovers";
+// import { useGetUserAccountAllApiQuery } from "../../../Redux/Query/UserManagement/UserAccountsApi";
+import { useGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUnit";
 
 const schema = yup.object().shape({
   id: yup.string(),
-  requester_id: yup
+  subunit_id: yup
     .object()
     .required()
     .typeError("Requester is required")
@@ -45,13 +46,13 @@ const schema = yup.object().shape({
   approver_id: yup.array().required().label("Approver"),
 });
 
-const AddAssignedApprovers = (props) => {
+const AddUnitApprovers = (props) => {
   const { data, onUpdateResetHandler } = props;
   const [selectedApprovers, setSelectedApprovers] = useState(null);
   const dispatch = useDispatch();
 
   const [
-    postAssignedApprovers,
+    postUnitApprovers,
     {
       data: postData,
       isLoading: isPostLoading,
@@ -59,7 +60,7 @@ const AddAssignedApprovers = (props) => {
       isError: isPostError,
       error: postError,
     },
-  ] = usePostAssignedApproversApiMutation();
+  ] = usePostUnitApproversApiMutation();
 
   const [
     updateApproverSettings,
@@ -70,14 +71,23 @@ const AddAssignedApprovers = (props) => {
       isError: isUpdateError,
       error: updateError,
     },
-  ] = useArrangeAssignedApproversApiMutation();
+  ] = useArrangeUnitApproversApiMutation();
+
+  // const {
+  //   data: userAccount = [],
+  //   isLoading: isUserAccountLoading,
+  //   isSuccess: isUserAccountSuccess,
+  //   isError: isUserAccountError,
+  // } = useGetUserAccountAllApiQuery();
 
   const {
-    data: userAccount = [],
-    isLoading: isUserAccountLoading,
-    isSuccess: isUserAccountSuccess,
-    isError: isUserAccountError,
-  } = useGetUserAccountAllApiQuery();
+    data: subUnitData = [],
+    isLoading: isSubUnitLoading,
+    isSuccess: isSubUnitSuccess,
+    isError: isSubUnitError,
+  } = useGetSubUnitAllApiQuery();
+
+  console.log(subUnitData);
 
   const {
     data: approverData = [],
@@ -99,7 +109,7 @@ const AddAssignedApprovers = (props) => {
     resolver: yupResolver(schema),
     defaultValues: {
       id: "",
-      requester_id: null,
+      subunit_id: null,
       approver_id: [],
     },
   });
@@ -149,7 +159,7 @@ const AddAssignedApprovers = (props) => {
 
   useEffect(() => {
     if (data.status) {
-      setValue("requester_id", data.requester_details);
+      setValue("subunit_id", data.subunit);
       setValue(
         "approver_id",
         data.approvers?.map((item) => {
@@ -185,7 +195,7 @@ const AddAssignedApprovers = (props) => {
 
   const onSubmitHandler = (formData) => {
     const newFormData = {
-      requester_id: formData.requester_id?.id,
+      subunit_id: formData.subunit_id?.id,
       approver_id: formData.approver_id.map((item) => item?.id),
     };
 
@@ -197,7 +207,7 @@ const AddAssignedApprovers = (props) => {
       return;
     }
 
-    postAssignedApprovers(newFormData);
+    postUnitApprovers(newFormData);
   };
 
   const handleCloseDrawer = () => {
@@ -213,7 +223,7 @@ const AddAssignedApprovers = (props) => {
     matchFrom: "any",
   });
 
-  // console.log(watch("requester_id")?.employee_id);
+  // console.log(watch("subunit_id")?.employee_id);
   console.log(selectedApprovers?.approver?.employee_id);
 
   return (
@@ -241,8 +251,8 @@ const AddAssignedApprovers = (props) => {
       >
         <Divider />
 
-        <CustomAutoComplete
-          name="requester_id"
+        {/* <CustomAutoComplete
+          name="subunit_id"
           control={control}
           size="small"
           required
@@ -261,8 +271,34 @@ const AddAssignedApprovers = (props) => {
               {...params}
               label="Requester"
               color="secondary"
-              error={!!errors?.requester_id?.message}
-              helperText={errors?.requester_id?.message}
+              error={!!errors?.subunit_id?.message}
+              helperText={errors?.subunit_id?.message}
+            />
+          )}
+        />*/}
+
+        <CustomAutoComplete
+          name="subunit_id"
+          control={control}
+          size="small"
+          required
+          fullWidth
+          disabled={data.action === "view" || data.action === "update"}
+          // includeInputInList
+          filterOptions={filterOptions}
+          options={subUnitData}
+          loading={isSubUnitLoading}
+          getOptionLabel={(option) =>
+            `(${option.employee_id}) - ${option.firstname} ${option.lastname}`
+          }
+          isOptionEqualToValue={(option, value) => option?.id === value?.id}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Requester"
+              color="secondary"
+              error={!!errors?.subunit_id?.message}
+              helperText={errors?.subunit_id?.message}
             />
           )}
         />
@@ -289,7 +325,7 @@ const AddAssignedApprovers = (props) => {
               getOptionDisabled={(option) => {
                 return (
                   option?.approver?.employee_id ===
-                    watch("requester_id")?.employee_id ||
+                    watch("subunit_id")?.employee_id ||
                   watch("approver_id").some((data) => data?.id === option.id)
                 );
               }}
@@ -452,4 +488,4 @@ const AddAssignedApprovers = (props) => {
   );
 };
 
-export default AddAssignedApprovers;
+export default AddUnitApprovers;

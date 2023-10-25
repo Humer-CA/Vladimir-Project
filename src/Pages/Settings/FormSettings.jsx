@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, MenuItem, Select, Stack, Typography } from "@mui/material";
-import AssignedApprover from "./AssignedApprovers";
+import AssignedApprover from "./UnitApprovers";
 
 const FaStatusCategory = () => {
   const [value, setValue] = useState("option1");
@@ -41,7 +41,7 @@ const FaStatusCategory = () => {
             color: "secondary.main",
           }}
         >
-          <MenuItem value="option1">Assigned Approver</MenuItem>
+          <MenuItem value="option1">Unit Approvers</MenuItem>
           {/* <MenuItem value="option2">Cycle Count Status</MenuItem> */}
           {/* <MenuItem value="option3">Asset Movement Status</MenuItem> */}
           {/* <MenuItem value="option4">Depreciation Status</MenuItem> */}

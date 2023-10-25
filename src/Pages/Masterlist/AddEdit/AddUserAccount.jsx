@@ -395,7 +395,10 @@ const AddUserAccount = (props) => {
                 helperText={errors?.department_id?.message}
               />
             )}
-            onChange={setValue("subunit_id", null)}
+            onChange={(_, value) => {
+              setValue("subunit_id", null);
+              return value;
+            }}
             disablePortal
             fullWidth
           />
@@ -404,11 +407,9 @@ const AddUserAccount = (props) => {
             autoComplete
             name="subunit_id"
             control={control}
-            options={
-              subUnitData?.filter(
-                (item) => item?.department?.id === watch("department_id")?.id
-              ) || []
-            }
+            options={subUnitData?.filter(
+              (item) => item?.department?.id === watch("department_id")?.id
+            )}
             loading={isSubUnitLoading}
             size="small"
             getOptionLabel={(option) => option.subunit_name}

@@ -80,7 +80,7 @@ const MasterlistList = [
   {
     icon: <ManageAccountsSharp />,
     label: "Category",
-    description: "Use for adding of role/permissions per user",
+    description: "Adding of Major and Minor Category masterlist",
     path: "/masterlist/category",
   },
 

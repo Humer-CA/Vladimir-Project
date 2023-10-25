@@ -62,7 +62,7 @@ import { assetMovementStatusApi } from "../Query/Masterlist/Status/AssetMovement
 import { depreciationStatusApi } from "../Query/Masterlist/Status/DepreciationStatus";
 
 import { approverSettingsApi } from "../Query/Settings/ApproverSettings";
-import { assignedApproversApi } from "../Query/Settings/AssignedApprovers";
+import { unitApproversApi } from "../Query/Settings/UnitApprovers";
 import { acquisitionApi } from "../Query/Request/Acquisition";
 import { subUnitApi } from "../Query/Masterlist/SubUnit";
 
@@ -130,7 +130,7 @@ export const store = configureStore({
 
     // Settings
     [approverSettingsApi.reducerPath]: approverSettingsApi.reducer,
-    [assignedApproversApi.reducerPath]: assignedApproversApi.reducer,
+    [unitApproversApi.reducerPath]: unitApproversApi.reducer,
 
     // Request
     [acquisitionApi.reducerPath]: acquisitionApi.reducer,
@@ -182,7 +182,7 @@ export const store = configureStore({
 
       // Settings
       approverSettingsApi.middleware,
-      assignedApproversApi.middleware,
+      unitApproversApi.middleware,
 
       // Request
       acquisitionApi.middleware,

@@ -496,7 +496,7 @@ const UserAccounts = () => {
                               </TableCell>
 
                               <TableCell className="tbl-cell">
-                                {users.subunit?.sub_unit_name}
+                                {users.subunit?.subunit_name}
                               </TableCell>
 
                               <TableCell

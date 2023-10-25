@@ -24,7 +24,7 @@ const SettingsList = [
   {
     icon: <SettingsApplications />,
     label: "Form Settings",
-    description: "Use for adding of role/permissions per user",
+    description: "Setup Settings for Unit Approvers",
     path: "/settings/form-settings",
   },
 ];
