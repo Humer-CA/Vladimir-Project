@@ -20,12 +20,12 @@ export const unitApproversApi = createApi({
   endpoints: (builder) => ({
     getUnitApproversApi: builder.query({
       query: (params) =>
-        `assign-approver?search=${params.search}&limit=${params.limit}&status=${params.status}&page=${params.page}`,
+        `department-unit-approvers?search=${params.search}&per_page=${params.perPage}&status=${params.status}&page=${params.page}`,
       providesTags: ["UnitApprovers"],
     }),
 
     getUnitApproversAllApi: builder.query({
-      query: () => `/assign-approver`,
+      query: () => `/department-unit-approvers?pagination=none`,
       transformResponse: (response) => response.data,
       providesTags: ["UnitApprovers"],
     }),
@@ -45,7 +45,7 @@ export const unitApproversApi = createApi({
 
     postUnitApproversApi: builder.mutation({
       query: (data) => ({
-        url: `/assign-approver`,
+        url: `/department-unit-approvers`,
         method: "POST",
         body: data,
       }),

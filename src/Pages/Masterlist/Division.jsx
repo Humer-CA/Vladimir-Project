@@ -231,9 +231,7 @@ const Division = () => {
       </Typography>
 
       {divisionLoading && <MasterlistSkeleton onAdd={true} />}
-
       {divisionError && <ErrorFetching refetch={refetch} error={errorData} />}
-
       {divisionData && !divisionError && (
         <Box className="mcontainer__wrapper">
           <MasterlistToolbar

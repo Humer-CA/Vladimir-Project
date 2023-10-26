@@ -44,12 +44,13 @@ import {
   closeDrawer,
   openDrawer,
 } from "../../Redux/StateManagement/booleanStateSlice";
+import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
 // import AddUnitApprovers from "../Masterlist/AddEdit/Settings/AddUnitApprovers";
 
 const UnitApprovers = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateUnitApprovers, setUpdateUnitApprovers] = useState({
     status: false,
@@ -88,9 +89,9 @@ const UnitApprovers = () => {
   };
 
   // Table Properties --------------------------------
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -108,7 +109,7 @@ const UnitApprovers = () => {
   } = useGetUnitApproversApiQuery(
     {
       page: page,
-      limit: limit,
+      perPage: perPage,
       status: status,
       search: search,
     },
@@ -332,25 +333,25 @@ const UnitApprovers = () => {
                         },
                       }}
                     >
-                      <TableCell className="tbl-cell text-center">
+                      <TableCell className="tbl-cell">
                         <TableSortLabel
-                          active={orderBy === `requester_id`}
-                          direction={orderBy === `requester_id` ? order : `asc`}
-                          onClick={() => onSort(`requester_id`)}
+                          active={orderBy === `subunit_name`}
+                          direction={orderBy === `subunit_name` ? order : `asc`}
+                          onClick={() => onSort(`subunit_name`)}
                         >
-                          ID No.
+                          Sub Unit
                         </TableSortLabel>
                       </TableCell>
 
                       <TableCell className="tbl-cell">
                         <TableSortLabel
-                          active={orderBy === `requester_name`}
+                          active={orderBy === `department_name`}
                           direction={
-                            orderBy === `requester_name` ? order : `asc`
+                            orderBy === `department_name` ? order : `asc`
                           }
-                          onClick={() => onSort(`requester_name`)}
+                          onClick={() => onSort(`department_name`)}
                         >
-                          Requester
+                          Department
                         </TableSortLabel>
                       </TableCell>
 
@@ -377,12 +378,12 @@ const UnitApprovers = () => {
                   </TableHead>
 
                   <TableBody>
-                    {unitApproversData?.data?.data?.length === 0 ? (
+                    {unitApproversData?.data?.length === 0 ? (
                       <NoRecordsFound />
                     ) : (
                       <>
                         {unitApproversSuccess &&
-                          [...unitApproversData?.data?.data]
+                          [...unitApproversData?.data]
                             ?.sort(comparator(order, orderBy))
                             ?.map((data, index) => (
                               <TableRow
@@ -393,17 +394,22 @@ const UnitApprovers = () => {
                                   },
                                 }}
                               >
-                                <TableCell className="tbl-cell tr-cen-pad45">
-                                  {data.id}
-                                </TableCell>
-
                                 <TableCell
-                                  className="tbl-cell text-weight"
+                                  className="tbl-cell"
                                   sx={{
                                     textTransform: "capitalize",
                                   }}
                                 >
-                                  {`${data.requester_details?.firstname} ${data.requester_details?.lastname} `}
+                                  {data?.subunit_name}
+                                </TableCell>
+
+                                <TableCell
+                                  className="tbl-cell"
+                                  sx={{
+                                    textTransform: "capitalize",
+                                  }}
+                                >
+                                  {data?.department_name}
                                 </TableCell>
 
                                 <TableCell
@@ -425,41 +431,7 @@ const UnitApprovers = () => {
                                   >
                                     <Typography fontSize={13}>View</Typography>
                                   </Button>
-
-                                  {/* {data?.approvers?.map((items) => {
-                                      return `${items?.approver_details?.firstname} `;
-                                    })} */}
-
-                                  {/* <ViewTagged /> */}
                                 </TableCell>
-
-                                {/* <TableCell className="tbl-cell text-center">
-                                  {data.status ? (
-                                    <Chip
-                                      size="small"
-                                      variant="contained"
-                                      sx={{
-                                        background: "#27ff811f",
-                                        color: "active.dark",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label="ACTIVE"
-                                    />
-                                  ) : (
-                                    <Chip
-                                      size="small"
-                                      variant="contained"
-                                      sx={{
-                                        background: "#fc3e3e34",
-                                        color: "error.light",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label="INACTIVE"
-                                    />
-                                  )}
-                                </TableCell> */}
 
                                 <TableCell className="tbl-cell tr-cen-pad45">
                                   {Moment(data.created_at).format(
@@ -489,35 +461,14 @@ const UnitApprovers = () => {
               </TableContainer>
             </Box>
 
-            <Box className="mcontainer__pagination">
-              <TablePagination
-                rowsPerPageOptions={[
-                  5,
-                  10,
-                  15,
-                  {
-                    label: "All",
-                    value: parseInt(unitApproversData?.data?.total),
-                  },
-                ]}
-                component="div"
-                count={
-                  unitApproversSuccess ? unitApproversData?.data?.total : 0
-                }
-                page={
-                  unitApproversSuccess
-                    ? unitApproversData?.data?.current_page - 1
-                    : 0
-                }
-                rowsPerPage={
-                  unitApproversSuccess
-                    ? parseInt(unitApproversData?.data?.per_page)
-                    : 5
-                }
-                onPageChange={pageHandler}
-                onRowsPerPageChange={limitHandler}
-              />
-            </Box>
+            <CustomTablePagination
+              total={unitApproversData?.data?.total}
+              success={unitApproversSuccess}
+              current_page={unitApproversData?.data?.current_page}
+              per_page={unitApproversData?.data?.perPage}
+              onPageChange={pageHandler}
+              onRowsPerPageChange={perPageHandler}
+            />
           </Box>
         </>
       )}
@@ -533,19 +484,6 @@ const UnitApprovers = () => {
           onUpdateResetHandler={onUpdateResetHandler}
         />
       </Dialog>
-
-      {/* <Dialog
-        open={dialog}
-        onClose={() => dispatch(closeDialog())}
-        PaperProps={{ sx: { borderRadius: "10px" } }}
-      >
-        <ViewTagged
-          data={updateUnitApprovers}
-          mapData={mapApproversData}
-          setViewDepartment={setUpdateUnitApprovers}
-          name="Approvers"
-        />
-      </Dialog> */}
     </>
   );
 };

@@ -492,10 +492,12 @@ const UserAccounts = () => {
                               </TableCell>
 
                               <TableCell className="tbl-cell">
+                                {users.department?.department_code} -{" "}
                                 {users.department?.department_name}
                               </TableCell>
 
                               <TableCell className="tbl-cell">
+                                {users.subunit?.subunit_code} -{" "}
                                 {users.subunit?.subunit_name}
                               </TableCell>
 

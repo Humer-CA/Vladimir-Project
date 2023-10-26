@@ -97,7 +97,7 @@ const SubUnit = () => {
     data: subUnitData,
     isLoading: subUnitLoading,
     isSuccess: subUnitSuccess,
-    isError: isPostError,
+    isError: subUnitError,
     error: errorData,
     refetch,
   } = useGetSubUnitApiQuery(
@@ -110,7 +110,7 @@ const SubUnit = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  console.log(subUnitData?.data?.tagged);
+  // console.log(subUnitData?.data?.tagged);
 
   const [patchSubUnitApi, { isLoading }] = usePatchSubUnitApiMutation();
 
@@ -203,147 +203,158 @@ const SubUnit = () => {
       >
         Sub Unit
       </Typography>
+
       {subUnitLoading && <MasterlistSkeleton onAdd={true} />}
-      {isPostError && <ErrorFetching refetch={refetch} error={errorData} />}
-      {subUnitData && !isPostError && (
-        <>
-          <Box className="mcontainer__wrapper">
-            <MasterlistToolbar
-              path="#"
-              onStatusChange={setStatus}
-              onSearchChange={setSearch}
-              onSetPage={setPage}
-              onAdd={() => {}}
-            />
+      {subUnitError && <ErrorFetching refetch={refetch} error={errorData} />}
+      {subUnitData && !subUnitError && (
+        <Box className="mcontainer__wrapper">
+          <MasterlistToolbar
+            path="#"
+            onStatusChange={setStatus}
+            onSearchChange={setSearch}
+            onSetPage={setPage}
+            onAdd={() => {}}
+          />
 
-            <Box>
-              <TableContainer className="mcontainer__th-body">
-                <Table className="mcontainer__table" stickyHeader>
-                  <TableHead>
-                    <TableRow
-                      sx={{
-                        "& > *": {
-                          fontWeight: "bold!important",
-                          whiteSpace: "nowrap",
-                        },
-                      }}
-                    >
-                      <TableCell className="tbl-cell text-center">
-                        <TableSortLabel
-                          active={orderBy === `id`}
-                          direction={orderBy === `id` ? order : `asc`}
-                          onClick={() => onSort(`id`)}
-                        >
-                          ID No.
-                        </TableSortLabel>
-                      </TableCell>
+          <Box>
+            <TableContainer className="mcontainer__th-body">
+              <Table className="mcontainer__table" stickyHeader>
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      "& > *": {
+                        fontWeight: "bold!important",
+                        whiteSpace: "nowrap",
+                      },
+                    }}
+                  >
+                    <TableCell className="tbl-cell text-center">
+                      <TableSortLabel
+                        active={orderBy === `id`}
+                        direction={orderBy === `id` ? order : `asc`}
+                        onClick={() => onSort(`id`)}
+                      >
+                        ID No.
+                      </TableSortLabel>
+                    </TableCell>
 
-                      <TableCell className="tbl-cell">
-                        <TableSortLabel
-                          active={orderBy === `subunit_name`}
-                          direction={orderBy === `subunit_name` ? order : `asc`}
-                          onClick={() => onSort(`subunit_name`)}
-                        >
-                          Sub Unit
-                        </TableSortLabel>
-                      </TableCell>
+                    <TableCell className="tbl-cell">
+                      <TableSortLabel
+                        active={orderBy === `subunit_name`}
+                        direction={orderBy === `subunit_name` ? order : `asc`}
+                        onClick={() => onSort(`subunit_name`)}
+                      >
+                        Sub Unit Code
+                      </TableSortLabel>
+                    </TableCell>
 
-                      <TableCell className="tbl-cell">
-                        <TableSortLabel
-                          active={orderBy === `subunit_name`}
-                          direction={orderBy === `subunit_name` ? order : `asc`}
-                          onClick={() => onSort(`subunit_name`)}
-                        >
-                          Department
-                        </TableSortLabel>
-                      </TableCell>
+                    <TableCell className="tbl-cell">
+                      <TableSortLabel
+                        active={orderBy === `subunit_name`}
+                        direction={orderBy === `subunit_name` ? order : `asc`}
+                        onClick={() => onSort(`subunit_name`)}
+                      >
+                        Sub Unit
+                      </TableSortLabel>
+                    </TableCell>
 
-                      <TableCell className="tbl-cell text-center">
-                        Status
-                      </TableCell>
+                    <TableCell className="tbl-cell">
+                      <TableSortLabel
+                        active={orderBy === `subunit_name`}
+                        direction={orderBy === `subunit_name` ? order : `asc`}
+                        onClick={() => onSort(`subunit_name`)}
+                      >
+                        Department
+                      </TableSortLabel>
+                    </TableCell>
 
-                      <TableCell className="tbl-cell text-center">
-                        <TableSortLabel
-                          active={orderBy === `created_at`}
-                          direction={orderBy === `created_at` ? order : `asc`}
-                          onClick={() => onSort(`created_at`)}
-                        >
-                          Date Created
-                        </TableSortLabel>
-                      </TableCell>
+                    <TableCell className="tbl-cell text-center">
+                      Status
+                    </TableCell>
 
-                      <TableCell className="tbl-cell">Action</TableCell>
-                    </TableRow>
-                  </TableHead>
+                    <TableCell className="tbl-cell text-center">
+                      <TableSortLabel
+                        active={orderBy === `created_at`}
+                        direction={orderBy === `created_at` ? order : `asc`}
+                        onClick={() => onSort(`created_at`)}
+                      >
+                        Date Created
+                      </TableSortLabel>
+                    </TableCell>
 
-                  <TableBody>
-                    {subUnitData?.data?.length === 0 ? (
-                      <NoRecordsFound />
-                    ) : (
-                      <>
-                        {subUnitSuccess &&
-                          [...subUnitData?.data]
-                            ?.sort(comparator(order, orderBy))
-                            ?.map((data) => (
-                              <TableRow
-                                key={data.id}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    borderBottom: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell className="tbl-cell tr-cen-pad45">
-                                  {data.id}
-                                </TableCell>
+                    <TableCell className="tbl-cell">Action</TableCell>
+                  </TableRow>
+                </TableHead>
 
-                                <TableCell className="tbl-cell text-weight">
-                                  {data.subunit_name}
-                                </TableCell>
+                <TableBody>
+                  {subUnitData?.data?.length === 0 ? (
+                    <NoRecordsFound />
+                  ) : (
+                    <>
+                      {subUnitSuccess &&
+                        [...subUnitData?.data]
+                          ?.sort(comparator(order, orderBy))
+                          ?.map((data) => (
+                            <TableRow
+                              key={data.id}
+                              hover={true}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  borderBottom: 0,
+                                },
+                              }}
+                            >
+                              <TableCell className="tbl-cell tr-cen-pad45">
+                                {data.id}
+                              </TableCell>
 
-                                <TableCell className="tbl-cell">
-                                  {data?.department?.department_name}
-                                </TableCell>
+                              <TableCell className="tbl-cell text-weight">
+                                {data.subunit_code}
+                              </TableCell>
 
-                                <TableCell className="tbl-cell text-center">
-                                  <CustomChip status={status} />
-                                </TableCell>
+                              <TableCell className="tbl-cell text-weight">
+                                {data.subunit_name}
+                              </TableCell>
+                              <TableCell className="tbl-cell">
+                                {data?.department?.department_name}
+                              </TableCell>
 
-                                <TableCell className="tbl-cell tr-cen-pad45">
-                                  {Moment(data.created_at).format(
-                                    "MMM DD, YYYY"
-                                  )}
-                                </TableCell>
+                              <TableCell className="tbl-cell text-center">
+                                <CustomChip status={status} />
+                              </TableCell>
 
-                                <TableCell className="tbl-cell ">
-                                  <ActionMenu
-                                    status={status}
-                                    data={data}
-                                    onUpdateHandler={onUpdateHandler}
-                                    onArchiveRestoreHandler={
-                                      onArchiveRestoreHandler
-                                    }
-                                  />
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                      </>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
+                              <TableCell className="tbl-cell tr-cen-pad45">
+                                {Moment(data.created_at).format("MMM DD, YYYY")}
+                              </TableCell>
 
-            <CustomTablePagination
-              total={subUnitData?.total}
-              success={subUnitSuccess}
-              current_page={subUnitData?.current_page}
-              per_page={subUnitData?.per_page}
-              onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
-            />
+                              <TableCell className="tbl-cell ">
+                                <ActionMenu
+                                  status={status}
+                                  data={data}
+                                  onUpdateHandler={onUpdateHandler}
+                                  onArchiveRestoreHandler={
+                                    onArchiveRestoreHandler
+                                  }
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                    </>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Box>
-        </>
+
+          <CustomTablePagination
+            total={subUnitData?.total}
+            success={subUnitSuccess}
+            current_page={subUnitData?.current_page}
+            per_page={subUnitData?.per_page}
+            onPageChange={pageHandler}
+            onRowsPerPageChange={limitHandler}
+          />
+        </Box>
       )}
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
         <AddSubUnit
