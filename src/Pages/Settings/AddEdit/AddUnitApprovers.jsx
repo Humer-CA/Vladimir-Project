@@ -198,10 +198,7 @@ const AddUnitApprovers = (props) => {
     };
 
     if (data.status) {
-      updateApproverSettings({
-        id: data.id,
-        approver_id: formData.approver_id.map((item) => item?.id),
-      });
+      updateApproverSettings(newFormData);
       return;
     }
 
@@ -304,9 +301,12 @@ const AddUnitApprovers = (props) => {
                   watch("approver_id").some((data) => data?.id === option.id)
                 );
               }}
-              options={approverData?.filter(
-                (item) => item?.subunit?.id === watch("subunit_id")?.id
-              )}
+              options={
+                approverData
+                //   approverData?.filter(
+                //   (item) => item?.subunit?.id === watch("subunit_id")?.id
+                // )
+              }
               getOptionLabel={(option) =>
                 `(${option?.approver?.employee_id}) - ${option?.approver?.firstname} ${option?.approver?.lastname}`
               }

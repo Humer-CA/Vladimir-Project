@@ -257,7 +257,6 @@ const UnitApprovers = () => {
     setUpdateUnitApprovers({
       status: true,
       action: "update",
-      id: id,
       subunit,
       approvers,
     });
@@ -266,20 +265,18 @@ const UnitApprovers = () => {
   const onUpdateResetHandler = () => {
     setUpdateUnitApprovers({
       status: false,
-      id: null,
       subunit_id: null,
       approvers: [],
     });
   };
 
   const onViewHandler = (props) => {
-    const { id, requester_details, approvers } = props;
+    const { subunit, approvers } = props;
     setUpdateUnitApprovers({
       status: true,
       action: "view",
-      id: id,
-      requester_details: requester_details,
-      approvers: approvers,
+      subunit,
+      approvers,
     });
   };
 
@@ -292,6 +289,8 @@ const UnitApprovers = () => {
   const onSetPage = () => {
     setPage(1);
   };
+
+  console.log(unitApproversData?.data);
 
   return (
     <>
@@ -463,7 +462,7 @@ const UnitApprovers = () => {
               total={unitApproversData?.total}
               success={unitApproversSuccess}
               current_page={unitApproversData?.current_page}
-              perPage={unitApproversData?.per_page}
+              per_page={unitApproversData?.per_page}
               onPageChange={pageHandler}
               onRowsPerPageChange={perPageHandler}
             />

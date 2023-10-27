@@ -244,7 +244,7 @@ const PrintFixedAsset = () => {
       tagNumber: [],
       search: "",
       startDate: startDate,
-      endDate: startDate,
+      endDate: endDate,
       // endDate: new Date(),
     },
   });
@@ -464,37 +464,31 @@ const PrintFixedAsset = () => {
     }
   };
 
-  // const disabledItems = () => {
-  //   if (watch("search") === "") {
-  //     return watch("startDate") === null || watch("endDate") === null;
-  //   }
+  // const textFieldSx = {
+  //   textField: {
+  //     size: "small",
+  //     fullWidth: isSmallScreen ? true : false,
+
+  //     sx: {
+  //       width: isSmallScreen ? "100%" : "170px",
+  //       "& .Mui-focused.MuiFormLabel-root": {
+  //         color: "secondary.main",
+  //       },
+  //       "& .MuiOutlinedInput-notchedOutline": {
+  //         borderRadius: "10px",
+  //       },
+
+  //       "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+  //         borderColor: "#344955!important",
+  //       },
+
+  //       ".Mui-disabled": {
+  //         backgroundColor: "white",
+  //         borderRadius: "12px",
+  //       },
+  //     },
+  //   },
   // };
-
-  const textFieldSx = {
-    textField: {
-      size: "small",
-      fullWidth: isSmallScreen ? true : false,
-
-      sx: {
-        width: isSmallScreen ? "100%" : "170px",
-        "& .Mui-focused.MuiFormLabel-root": {
-          color: "secondary.main",
-        },
-        "& .MuiOutlinedInput-notchedOutline": {
-          borderRadius: "10px",
-        },
-
-        "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-          borderColor: "#344955!important",
-        },
-
-        ".Mui-disabled": {
-          backgroundColor: "white",
-          borderRadius: "12px",
-        },
-      },
-    },
-  };
 
   return (
     <>
@@ -535,24 +529,6 @@ const PrintFixedAsset = () => {
           gap={1}
         >
           <Stack sx={{ width: isSmallScreen ? "100%" : "350px" }}>
-            {/* <TextField
-              name="search"
-              label="Search"
-              type="text"
-              color="secondary"
-              size="small"
-              autoComplete="off"
-              error={!!errors?.search}
-              helperText={errors?.search?.message}
-              fullWidth={isSmallScreen ? true : false}
-              onKeyDown={searchHandler}
-              sx={{
-                ".MuiOutlinedInput-notchedOutline": {
-                  borderRadius: "12px",
-                },
-              }}
-            /> */}
-
             <CustomTextField
               control={control}
               name="search"
@@ -575,38 +551,6 @@ const PrintFixedAsset = () => {
               gap={1}
               width={isSmallScreen ? "100%" : null}
             >
-              {/* <DatePicker
-                name="startDate"
-                label="Start Date"
-                slotProps={textFieldSx}
-                disableFuture
-                onChange={(value) => {
-                  setFilteredDate({
-                    ...filteredDate,
-                    startDate: value,
-                  });
-                }}
-              />
-
-              <DatePicker
-                name="endDate"
-                label="End Date"
-                slotProps={textFieldSx}
-                disableFuture
-                disabled={
-                  filteredDate.startDate === "" ||
-                  filteredDate.startDate === null
-                }
-                onChange={(value) => {
-                  setFilteredDate({
-                    ...filteredDate,
-                    endDate: value,
-                  });
-
-                  // console.log(filteredDate);
-                }}
-              /> */}
-
               <CustomDatePicker
                 control={control}
                 name="startDate"
@@ -617,6 +561,10 @@ const PrintFixedAsset = () => {
                 fullWidth
                 disableFuture
                 reduceAnimations
+                onChange={(_, value) => {
+                  setValue("endDate", null);
+                  return value;
+                }}
               />
 
               <CustomDatePicker
@@ -625,7 +573,6 @@ const PrintFixedAsset = () => {
                 label="End Date"
                 size="small"
                 views={["year", "month", "day"]}
-                // openTo="year"
                 fullWidth
                 disableFuture
                 reduceAnimations
@@ -716,16 +663,6 @@ const PrintFixedAsset = () => {
                       Vladimir Tag #
                     </TableSortLabel>
                   </TableCell>
-
-                  {/* <TableCell>
-                    <TableSortLabel
-                      active={orderBy === `sub_capex`}
-                      direction={orderBy === `sub_capex` ? order : `asc`}
-                      onClick={() => onSort(`sub_capex`)}
-                    >
-                      CAPEX
-                    </TableSortLabel>
-                  </TableCell> */}
 
                   <TableCell>
                     <TableSortLabel disabled>Chart Of Accounts</TableSortLabel>

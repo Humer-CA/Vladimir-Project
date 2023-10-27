@@ -53,8 +53,8 @@ export const unitApproversApi = createApi({
     }),
 
     arrangeUnitApproversApi: builder.mutation({
-      query: ({ id, ...data }) => ({
-        url: `/arrange-layer/${id}`,
+      query: ({ subunit_id, ...data }) => ({
+        url: `/arrange-layer/${subunit_id}`,
         method: "PUT",
         body: data,
       }),
