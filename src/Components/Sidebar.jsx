@@ -68,6 +68,7 @@ import {
 } from "@mui/icons-material";
 
 const Sidebar = () => {
+  const [state, setState] = useState(false);
   const [masterListCollapse, setMasterListCollapse] = useState(false);
   const [userCollapse, setUserCollapse] = useState(false);
   const [settingsCollapse, setSettingsCollapse] = useState(false);
@@ -413,25 +414,46 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const location = useLocation();
 
+  // useEffect(() => {
+  //   if (!collapse) {
+  //     closeCollapse();
+  //   }
+
+  //   if (pathname === "/") {
+  //     closeCollapse();
+  //   }
+
+  //   if (collapse && pathname.match(/masterlist/)) {
+  //     setMasterListCollapse(true);
+  //   } else if (collapse && pathname.match(/user-management/)) {
+  //     setUserCollapse(true);
+  //   } else if (collapse && pathname.match(/settings/)) {
+  //     setSettingsCollapse(true);
+  //   } else if (collapse && pathname.match(/request/)) {
+  //     setRequestCollapse(true);
+  //   } else if (collapse && pathname.match(/reports/)) {
+  //     setReportCollapse(true);
+  //   }
+  // }, [collapse, pathname]);
+
   useEffect(() => {
-    if (!collapse) {
+    if (collapse) {
+      const routes = [
+        "masterlist",
+        "user-management",
+        "settings",
+        "request",
+        "reports",
+      ];
+      const match = routes.find((route) => pathname.includes(route));
+      if (match) {
+        const stateVariable = `${match}Collapse`;
+        setState(stateVariable, true);
+      }
+    } else if (pathname === "/") {
       closeCollapse();
-    }
-
-    if (pathname === "/") {
+    } else {
       closeCollapse();
-    }
-
-    if (collapse && pathname.match(/masterlist/)) {
-      setMasterListCollapse(true);
-    } else if (collapse && pathname.match(/user-management/)) {
-      setUserCollapse(true);
-    } else if (collapse && pathname.match(/settings/)) {
-      setSettingsCollapse(true);
-    } else if (collapse && pathname.match(/request/)) {
-      setRequestCollapse(true);
-    } else if (collapse && pathname.match(/reports/)) {
-      setReportCollapse(true);
     }
   }, [collapse, pathname]);
 

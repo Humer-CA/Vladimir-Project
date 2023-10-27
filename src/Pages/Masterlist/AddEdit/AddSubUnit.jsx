@@ -105,7 +105,7 @@ const AddSubUnit = (props) => {
     if (isPostError && postError?.status === 422) {
       dispatch(
         openToast({
-          message: postError?.data?.message,
+          message: postError?.data?.errors?.subunit_name,
           duration: 5000,
           variant: "error",
         })

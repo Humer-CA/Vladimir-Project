@@ -295,7 +295,8 @@ const ApproverSettings = () => {
                                     textTransform: "capitalize",
                                   }}
                                 >
-                                  {data.full_name}
+                                  {data.approver?.firstname}{" "}
+                                  {data.approver?.lastname}
                                 </TableCell>
 
                                 <TableCell className="tbl-cell text-center">

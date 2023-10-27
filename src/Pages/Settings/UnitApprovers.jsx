@@ -116,8 +116,6 @@ const UnitApprovers = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  console.log(unitApproversData);
-
   // const {
   //   data: unitApproversIdApi,
   //   isLoading: unitApproversIdApiLoading,
@@ -255,13 +253,13 @@ const UnitApprovers = () => {
   };
 
   const onUpdateHandler = (props) => {
-    const { id, requester_details, approvers } = props;
+    const { id, subunit, approvers } = props;
     setUpdateUnitApprovers({
       status: true,
       action: "update",
       id: id,
-      requester_details: requester_details,
-      approvers: approvers,
+      subunit,
+      approvers,
     });
   };
 
@@ -269,7 +267,7 @@ const UnitApprovers = () => {
     setUpdateUnitApprovers({
       status: false,
       id: null,
-      requester_details: null,
+      subunit_id: null,
       approvers: [],
     });
   };
@@ -400,7 +398,7 @@ const UnitApprovers = () => {
                                     textTransform: "capitalize",
                                   }}
                                 >
-                                  {data?.subunit_name}
+                                  {data?.subunit?.subunit_name}
                                 </TableCell>
 
                                 <TableCell
@@ -462,10 +460,10 @@ const UnitApprovers = () => {
             </Box>
 
             <CustomTablePagination
-              total={unitApproversData?.data?.total}
+              total={unitApproversData?.total}
               success={unitApproversSuccess}
-              current_page={unitApproversData?.data?.current_page}
-              per_page={unitApproversData?.data?.perPage}
+              current_page={unitApproversData?.current_page}
+              perPage={unitApproversData?.per_page}
               onPageChange={pageHandler}
               onRowsPerPageChange={perPageHandler}
             />

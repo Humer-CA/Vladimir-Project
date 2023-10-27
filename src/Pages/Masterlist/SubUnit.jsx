@@ -188,10 +188,11 @@ const SubUnit = () => {
 
   const onUpdateResetHandler = () => {
     setUpdateSubUnit({
-      status: true,
+      status: false,
       id: null,
       department_id: null,
       subunit_name: "",
+      // tagged: tagged,
     });
   };
 
@@ -235,16 +236,6 @@ const SubUnit = () => {
                         onClick={() => onSort(`id`)}
                       >
                         ID No.
-                      </TableSortLabel>
-                    </TableCell>
-
-                    <TableCell className="tbl-cell">
-                      <TableSortLabel
-                        active={orderBy === `subunit_name`}
-                        direction={orderBy === `subunit_name` ? order : `asc`}
-                        onClick={() => onSort(`subunit_name`)}
-                      >
-                        Sub Unit Code
                       </TableSortLabel>
                     </TableCell>
 
@@ -309,13 +300,11 @@ const SubUnit = () => {
                               </TableCell>
 
                               <TableCell className="tbl-cell text-weight">
-                                {data.subunit_code}
+                                ({data.subunit_code}) - {data.subunit_name}
                               </TableCell>
 
-                              <TableCell className="tbl-cell text-weight">
-                                {data.subunit_name}
-                              </TableCell>
                               <TableCell className="tbl-cell">
+                                ({data?.department?.department_code}) -{" "}
                                 {data?.department?.department_name}
                               </TableCell>
 

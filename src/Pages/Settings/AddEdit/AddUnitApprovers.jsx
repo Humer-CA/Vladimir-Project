@@ -40,8 +40,8 @@ const schema = yup.object().shape({
   subunit_id: yup
     .object()
     .required()
-    .typeError("Requester is required")
-    .label("Requester"),
+    .typeError("Sub Unit is required")
+    .label("Sub Unit"),
 
   approver_id: yup.array().required().label("Approver"),
 });
@@ -86,8 +86,6 @@ const AddUnitApprovers = (props) => {
     isSuccess: isSubUnitSuccess,
     isError: isSubUnitError,
   } = useGetSubUnitAllApiQuery();
-
-  console.log(subUnitData);
 
   const {
     data: approverData = [],
@@ -223,9 +221,6 @@ const AddUnitApprovers = (props) => {
     matchFrom: "any",
   });
 
-  // console.log(watch("subunit_id")?.employee_id);
-  console.log(selectedApprovers?.approver?.employee_id);
-
   return (
     <Box className="add-masterlist" width="550px">
       <Typography
@@ -251,32 +246,6 @@ const AddUnitApprovers = (props) => {
       >
         <Divider />
 
-        {/* <CustomAutoComplete
-          name="subunit_id"
-          control={control}
-          size="small"
-          required
-          fullWidth
-          disabled={data.action === "view" || data.action === "update"}
-          // includeInputInList
-          filterOptions={filterOptions}
-          options={userAccount}
-          loading={isUserAccountLoading}
-          getOptionLabel={(option) =>
-            `(${option.employee_id}) - ${option.firstname} ${option.lastname}`
-          }
-          isOptionEqualToValue={(option, value) => option?.id === value?.id}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Requester"
-              color="secondary"
-              error={!!errors?.subunit_id?.message}
-              helperText={errors?.subunit_id?.message}
-            />
-          )}
-        />*/}
-
         <CustomAutoComplete
           name="subunit_id"
           control={control}
@@ -289,18 +258,23 @@ const AddUnitApprovers = (props) => {
           options={subUnitData}
           loading={isSubUnitLoading}
           getOptionLabel={(option) =>
-            `(${option.employee_id}) - ${option.firstname} ${option.lastname}`
+            `(${option.subunit_code}) - ${option.subunit_name}`
           }
           isOptionEqualToValue={(option, value) => option?.id === value?.id}
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Requester"
+              label="Sub Unit"
               color="secondary"
               error={!!errors?.subunit_id?.message}
               helperText={errors?.subunit_id?.message}
             />
           )}
+          onChange={(_, value) => {
+            setSelectedApprovers(null);
+            setValue("approvers_id", []);
+            return value;
+          }}
         />
 
         <Stack
@@ -318,9 +292,10 @@ const AddUnitApprovers = (props) => {
           >
             <Autocomplete
               value={selectedApprovers}
+              loading={isApproverLoading}
+              disabled={data.action === "view"}
               size="small"
               fullWidth
-              disabled={data.action === "view"}
               filterOptions={filterOptions}
               getOptionDisabled={(option) => {
                 return (
@@ -329,8 +304,9 @@ const AddUnitApprovers = (props) => {
                   watch("approver_id").some((data) => data?.id === option.id)
                 );
               }}
-              options={approverData}
-              loading={isApproverLoading}
+              options={approverData?.filter(
+                (item) => item?.subunit?.id === watch("subunit_id")?.id
+              )}
               getOptionLabel={(option) =>
                 `(${option?.approver?.employee_id}) - ${option?.approver?.firstname} ${option?.approver?.lastname}`
               }

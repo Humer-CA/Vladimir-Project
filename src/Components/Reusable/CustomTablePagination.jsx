@@ -8,6 +8,7 @@ const CustomTablePagination = (props) => {
     total,
     current_page,
     per_page,
+    perPage,
     onPageChange,
     onRowsPerPageChange,
   } = props;
@@ -27,7 +28,7 @@ const CustomTablePagination = (props) => {
       ]}
       count={success ? total : 0}
       page={success ? current_page - 1 : 0}
-      rowsPerPage={success ? parseInt(per_page) : 5}
+      rowsPerPage={success ? parseInt(per_page || perPage) : 5}
       onPageChange={onPageChange}
       onRowsPerPageChange={onRowsPerPageChange}
     />
