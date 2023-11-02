@@ -3,10 +3,10 @@ import Moment from "moment";
 import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
 import ActionMenu from "../../Components/Reusable/ActionMenu";
 import ErrorFetching from "../ErrorFetching";
-// import AddAcquisition from "./AddEdit/AddAcquisition";
+// import AddRequisition from "./AddEdit/AddRequisition";
 import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 import NoRecordsFound from "../../Layout/NoRecordsFound";
-// import AddAcquisition from "../Masterlist/AddEdit/AddAcquisition";
+// import AddRequisition from "../Masterlist/AddEdit/AddRequisition";
 import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
 
 // RTK
@@ -18,9 +18,9 @@ import {
   onLoading,
 } from "../../Redux/StateManagement/confirmSlice";
 import {
-  useGetAcquisitionApiQuery,
-  usePostAcquisitionStatusApiMutation,
-} from "../../Redux/Query/Request/Acquisition";
+  useGetRequisitionApiQuery,
+  usePostRequisitionStatusApiMutation,
+} from "../../Redux/Query/Request/Requisition";
 
 // MUI
 import {
@@ -39,12 +39,12 @@ import {
 } from "@mui/material";
 import { Help, ReportProblem } from "@mui/icons-material";
 
-const Acquisition = () => {
+const Requisition = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(1);
-  const [updateAcquisition, setUpdateAcquisition] = useState({
+  const [updateRequisition, setUpdateRequisition] = useState({
     status: false,
     id: null,
     // type_of_request_name: "",
@@ -91,13 +91,13 @@ const Acquisition = () => {
   };
 
   const {
-    data: acquisitionData,
-    isLoading: acquisitionLoading,
-    isSuccess: acquisitionSuccess,
-    isError: acquisitionError,
+    data: requisitionData,
+    isLoading: requisitionLoading,
+    isSuccess: requisitionSuccess,
+    isError: requisitionError,
     error: errorData,
     refetch,
-  } = useGetAcquisitionApiQuery(
+  } = useGetRequisitionApiQuery(
     {
       page: page,
       limit: limit,
@@ -107,8 +107,8 @@ const Acquisition = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const [postAcquisitionStatusApi, { isLoading }] =
-    usePostAcquisitionStatusApiMutation();
+  const [postRequisitionStatusApi, { isLoading }] =
+    usePostRequisitionStatusApiMutation();
 
   const dispatch = useDispatch();
 
@@ -137,7 +137,7 @@ const Acquisition = () => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            const result = await postAcquisitionStatusApi({
+            const result = await postRequisitionStatusApi({
               id: id,
               status: status === "active" ? false : true,
             }).unwrap();
@@ -175,7 +175,7 @@ const Acquisition = () => {
 
   const onUpdateHandler = (props) => {
     const { id } = props;
-    setUpdateAcquisition({
+    setUpdateRequisition({
       status: true,
       id: id,
       // type_of_request_name: type_of_request_name,
@@ -183,7 +183,7 @@ const Acquisition = () => {
   };
 
   const onUpdateResetHandler = () => {
-    setUpdateAcquisition({
+    setUpdateRequisition({
       status: false,
       id: null,
       // type_of_request_name: "",
@@ -194,7 +194,7 @@ const Acquisition = () => {
     setPage(1);
   };
 
-  // console.log(AcquisitionData);
+  // console.log(RequisitionData);
 
   return (
     <Box className="mcontainer">
@@ -202,13 +202,13 @@ const Acquisition = () => {
         className="mcontainer__title"
         sx={{ fontFamily: "Anton", fontSize: "2rem" }}
       >
-        Acquisition
+        Requisition
       </Typography>
-      {acquisitionLoading && <MasterlistSkeleton onAdd={true} />}
-      {acquisitionError && (
+      {requisitionLoading && <MasterlistSkeleton onAdd={true} />}
+      {requisitionError && (
         <ErrorFetching refetch={refetch} error={errorData} />
       )}
-      {acquisitionData && !acquisitionError && (
+      {requisitionData && !requisitionError && (
         <>
           <Box className="mcontainer__wrapper">
             <MasterlistToolbar
@@ -296,12 +296,12 @@ const Acquisition = () => {
                   </TableHead>
 
                   <TableBody>
-                    {acquisitionData?.data?.data?.length === 0 ? (
+                    {requisitionData?.data?.data?.length === 0 ? (
                       <NoRecordsFound />
                     ) : (
                       <>
-                        {acquisitionSuccess &&
-                          [...acquisitionData?.data?.data]
+                        {requisitionSuccess &&
+                          [...requisitionData?.data?.data]
                             ?.sort(comparator(order, orderBy))
                             ?.map((data) => (
                               <TableRow
@@ -374,10 +374,10 @@ const Acquisition = () => {
             </Box>
 
             <CustomTablePagination
-              total={acquisitionData?.data?.total}
-              success={acquisitionSuccess}
-              current_page={acquisitionData?.data?.current_page}
-              per_page={acquisitionData?.data?.per_page}
+              total={requisitionData?.data?.total}
+              success={requisitionSuccess}
+              current_page={requisitionData?.data?.current_page}
+              per_page={requisitionData?.data?.per_page}
               onPageChange={pageHandler}
               onRowsPerPageChange={limitHandler}
             />
@@ -385,8 +385,8 @@ const Acquisition = () => {
         </>
       )}
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        {/* <AddAcquisition
-          data={updateAcquisition}
+        {/* <AddRequisition
+          data={updateRequisition}
           onUpdateResetHandler={onUpdateResetHandler}
         /> */}
       </Dialog>
@@ -394,4 +394,4 @@ const Acquisition = () => {
   );
 };
 
-export default Acquisition;
+export default Requisition;

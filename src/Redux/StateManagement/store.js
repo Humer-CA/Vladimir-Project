@@ -63,7 +63,7 @@ import { depreciationStatusApi } from "../Query/Masterlist/Status/DepreciationSt
 
 import { approverSettingsApi } from "../Query/Settings/ApproverSettings";
 import { unitApproversApi } from "../Query/Settings/UnitApprovers";
-import { acquisitionApi } from "../Query/Request/Acquisition";
+import { requisitionApi } from "../Query/Request/Requisition";
 import { subUnitApi } from "../Query/Masterlist/SubUnit";
 
 export const store = configureStore({
@@ -133,7 +133,7 @@ export const store = configureStore({
     [unitApproversApi.reducerPath]: unitApproversApi.reducer,
 
     // Request
-    [acquisitionApi.reducerPath]: acquisitionApi.reducer,
+    [requisitionApi.reducerPath]: requisitionApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -185,7 +185,7 @@ export const store = configureStore({
       unitApproversApi.middleware,
 
       // Request
-      acquisitionApi.middleware,
+      requisitionApi.middleware,
     ]),
 });
 

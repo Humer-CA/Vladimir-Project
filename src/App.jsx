@@ -51,7 +51,7 @@ import Settings from "./Pages/Settings";
 import ApproverSettings from "./Pages/Settings/ApproverSettings";
 import FormSettings from "./Pages/Settings/FormSettings";
 
-import Acquisition from "./Pages/Request/Acquisition";
+import Requisition from "./Pages/Request/Requisition";
 
 import PageNotFound from "./Pages/PageNotFound";
 import Confirmation from "./Components/Reusable/Confirmation";
@@ -221,8 +221,8 @@ const router = createBrowserRouter([
             // element: <Request />,
             children: [
               {
-                path: "acquisition",
-                element: <Acquisition />,
+                path: "requisition",
+                element: <Requisition />,
               },
               {
                 path: "transfer",

@@ -306,10 +306,10 @@ const Sidebar = () => {
       permission: "request",
       children: [
         {
-          label: "Acquisition",
+          label: "Requisition",
           icon: AssignmentTurnedIn,
-          path: "/request/acquisition",
-          permission: "acquisition",
+          path: "/request/requisition",
+          permission: "requisition",
         },
         {
           label: "Transfer",

@@ -595,12 +595,12 @@ const AddRole = (props) => {
         >
           <FormControlLabel
             disabled={data.action === "view"}
-            label="Acquisition"
-            value="acquisition"
+            label="Requisition"
+            value="requisition"
             control={
               <Checkbox
                 {...register("access_permission")}
-                checked={watch("access_permission")?.includes("acquisition")}
+                checked={watch("access_permission")?.includes("requisition")}
               />
             }
           />
@@ -689,7 +689,7 @@ const AddRole = (props) => {
     "form-settings",
 
     // Request
-    "acquisition",
+    "requisition",
     "transfer",
     "pull-out",
     "disposal",
@@ -711,7 +711,7 @@ const AddRole = (props) => {
 
   const settings = ["approver-settings", "form-settings"];
 
-  const request = ["acquisition", "transfer", "pull-out", "disposal"];
+  const request = ["requisition", "transfer", "pull-out", "disposal"];
 
   // console.log(watch("access_permission"));
 
@@ -1053,7 +1053,7 @@ const AddRole = (props) => {
                                 setValue("access_permission", [
                                   ...new Set([
                                     ...watch("access_permission"),
-                                    "acquisition",
+                                    "requisition",
                                     "transfer",
                                     "pull-out",
                                     "disposal",
