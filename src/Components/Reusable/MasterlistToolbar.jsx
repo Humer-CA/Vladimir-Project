@@ -71,6 +71,7 @@ const MasterlistToolbar = (props) => {
     onSync,
     hideArchive,
     faStatus,
+    handleAddRequest,
   } = props;
 
   const dispatch = useDispatch();

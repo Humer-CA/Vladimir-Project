@@ -8,6 +8,7 @@ import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 import NoRecordsFound from "../../Layout/NoRecordsFound";
 // import AddRequisition from "../Masterlist/AddEdit/AddRequisition";
 import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
+import AddRequisition from "./AddEdit/AddRequisition";
 
 // RTK
 import { useDispatch, useSelector } from "react-redux";
@@ -25,6 +26,7 @@ import {
 // MUI
 import {
   Box,
+  Button,
   Chip,
   Dialog,
   Table,
@@ -36,8 +38,10 @@ import {
   TableRow,
   TableSortLabel,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
-import { Help, ReportProblem } from "@mui/icons-material";
+import { Help, LibraryAdd, ReportProblem } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 const Requisition = () => {
   const [search, setSearch] = useState("");
@@ -50,6 +54,7 @@ const Requisition = () => {
     // type_of_request_name: "",
   });
 
+  const isSmallScreen = useMediaQuery("(max-width: 500px)");
   const drawer = useSelector((state) => state.booleanState.drawer);
 
   // Table Sorting --------------------------------
@@ -216,8 +221,24 @@ const Requisition = () => {
               onStatusChange={setStatus}
               onSearchChange={setSearch}
               onSetPage={setPage}
-              onAdd={() => {}}
+              // onAdd={() => {}}
             />
+            <Box className="masterlist-toolbar__addBtn" sx={{ mt: 0.25 }}>
+              <Button
+                component={Link}
+                to={"/requisition/add-request"}
+                variant="contained"
+                startIcon={isSmallScreen ? null : <LibraryAdd />}
+                size="small"
+                sx={isSmallScreen ? { minWidth: "50px", px: 0 } : null}
+              >
+                {isSmallScreen ? (
+                  <LibraryAdd color="black" sx={{ fontSize: "20px" }} />
+                ) : (
+                  "Add"
+                )}
+              </Button>
+            </Box>
 
             <Box>
               <TableContainer className="mcontainer__th-body">
@@ -385,10 +406,10 @@ const Requisition = () => {
         </>
       )}
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        {/* <AddRequisition
+        <AddRequisition
           data={updateRequisition}
           onUpdateResetHandler={onUpdateResetHandler}
-        /> */}
+        />
       </Dialog>
     </Box>
   );
