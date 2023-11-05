@@ -56,6 +56,8 @@ import Requisition from "./Pages/Request/Requisition";
 import PageNotFound from "./Pages/PageNotFound";
 import Confirmation from "./Components/Reusable/Confirmation";
 import SubUnit from "./Pages/Masterlist/SubUnit";
+import AddRequisition from "./Pages/Request/AddEdit/AddRequisition";
+import Request from "./Pages/Request";
 
 const router = createBrowserRouter([
   {
@@ -218,12 +220,13 @@ const router = createBrowserRouter([
 
           {
             path: "request",
-            // element: <Request />,
+            element: <Request />,
             children: [
               {
                 path: "requisition",
                 element: <Requisition />,
               },
+
               {
                 path: "transfer",
                 // element: <UserAccounts />,
@@ -237,6 +240,11 @@ const router = createBrowserRouter([
                 // element: <Category />,
               },
             ],
+          },
+
+          {
+            path: "request/requisition/add-requisition",
+            element: <AddRequisition />,
           },
 
           {

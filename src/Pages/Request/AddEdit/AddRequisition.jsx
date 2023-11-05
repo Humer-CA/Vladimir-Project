@@ -573,12 +573,6 @@ const AddRequisition = (props) => {
       setValue("months_depreciated", data.months_depreciated);
       setValue("scrap_value", data.scrap_value);
       setValue("depreciable_basis", data.depreciable_basis);
-      // setValue("accumulated_cost", data.accumulated_cost);
-      // setValue("start_depreciation", startDepreciationFormat);
-      // setValue("end_depreciation", endDepreciationFormat);
-      // setValue("depreciation_per_year", data.depreciation_per_year);
-      // setValue("depreciation_per_month", data.depreciation_per_month);
-      // setValue("remaining_book_value", data.remaining_book_value);
     }
   }, [data]);
 
@@ -684,7 +678,7 @@ const AddRequisition = (props) => {
   // console.log(data);
 
   return (
-    <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} className="">
+    <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
       <Box>
         <IconButton onClick={handleCloseDrawer}>
           <ArrowForwardIosRounded color="secondary" />

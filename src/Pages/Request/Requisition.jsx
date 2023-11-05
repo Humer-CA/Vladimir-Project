@@ -41,7 +41,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { Help, LibraryAdd, ReportProblem } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Requisition = () => {
   const [search, setSearch] = useState("");
@@ -54,6 +54,7 @@ const Requisition = () => {
     // type_of_request_name: "",
   });
 
+  const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width: 500px)");
   const drawer = useSelector((state) => state.booleanState.drawer);
 
@@ -199,6 +200,10 @@ const Requisition = () => {
     setPage(1);
   };
 
+  const handleAddRequisition = () => {
+    navigate(`add-requisition`);
+  };
+
   // console.log(RequisitionData);
 
   return (
@@ -217,16 +222,15 @@ const Requisition = () => {
         <>
           <Box className="mcontainer__wrapper">
             <MasterlistToolbar
-              path="#"
               onStatusChange={setStatus}
               onSearchChange={setSearch}
               onSetPage={setPage}
               // onAdd={() => {}}
             />
+
             <Box className="masterlist-toolbar__addBtn" sx={{ mt: 0.25 }}>
               <Button
-                component={Link}
-                to={"/requisition/add-request"}
+                onClick={handleAddRequisition}
                 variant="contained"
                 startIcon={isSmallScreen ? null : <LibraryAdd />}
                 size="small"
@@ -405,12 +409,12 @@ const Requisition = () => {
           </Box>
         </>
       )}
-      <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
+      {/* <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
         <AddRequisition
           data={updateRequisition}
           onUpdateResetHandler={onUpdateResetHandler}
         />
-      </Dialog>
+      </Dialog> */}
     </Box>
   );
 };
