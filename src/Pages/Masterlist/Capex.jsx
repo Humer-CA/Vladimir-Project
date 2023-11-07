@@ -370,12 +370,12 @@ const Capex = () => {
                   </TableHead>
 
                   <TableBody>
-                    {capexData?.data?.data?.length === 0 ? (
+                    {capexData?.data?.length === 0 ? (
                       <NoRecordsFound />
                     ) : (
                       <>
                         {capexData &&
-                          [...capexData.data?.data]
+                          [...capexData.data]
                             .sort(comparator(order, orderBy))
                             .map((data) => (
                               <CapexCollapsableTable
@@ -418,14 +418,12 @@ const Capex = () => {
                   5,
                   10,
                   15,
-                  { label: "All", value: parseInt(capexData?.data?.total) },
+                  { label: "All", value: parseInt(capexData?.total) },
                 ]}
                 component="div"
-                count={capexSuccess ? capexData?.data?.total : 0}
-                page={capexSuccess ? capexData?.data?.current_page - 1 : 0}
-                rowsPerPage={
-                  capexSuccess ? parseInt(capexData?.data?.per_page) : 5
-                }
+                count={capexSuccess ? capexData?.total : 0}
+                page={capexSuccess ? capexData?.current_page - 1 : 0}
+                rowsPerPage={capexSuccess ? parseInt(capexData?.per_page) : 5}
                 onPageChange={pageHandler}
                 onRowsPerPageChange={limitHandler}
               />

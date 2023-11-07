@@ -846,6 +846,7 @@ const PrintFixedAsset = () => {
           flexDirection="row"
           width="100%"
           justifyContent="space-between"
+          flexWrap="wrap"
           alignItems="center"
         >
           <Box sx={{ pl: "5px" }}>

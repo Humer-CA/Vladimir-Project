@@ -110,6 +110,7 @@ const schema = yup.object().shape({
   //   })
   //   .required()
   //   .label("Division"),
+
   major_category_id: yup
     .string()
     .transform((value) => {

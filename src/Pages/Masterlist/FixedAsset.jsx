@@ -70,11 +70,11 @@ const FixedAsset = (props) => {
   const navigate = useNavigate();
   const { excelExport } = useExcel();
   const [search, setSearch] = useState("");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("active");
   // const [scanAsset, setScanAsset] = useState(false);
-  const [faStatus, setFaStatus] = useState("");
+  // const [faStatus, setFaStatus] = useState("");
   const [updateFixedAsset, setUpdateFixedAsset] = useState({
     status: false,
     id: "",
@@ -160,9 +160,9 @@ const FixedAsset = (props) => {
 
   // Table Properties --------------------------------
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -180,7 +180,7 @@ const FixedAsset = (props) => {
   } = useGetFixedAssetApiQuery(
     {
       page: page,
-      limit: limit,
+      perPage: perPage,
       status: status,
       search: search,
     },
@@ -262,6 +262,8 @@ const FixedAsset = (props) => {
   const onSetPage = () => {
     setPage(1);
   };
+
+  console.log(fixedAssetData);
 
   return (
     <Box className="mcontainer">
@@ -544,13 +546,13 @@ const FixedAsset = (props) => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 15, 50]}
               component="div"
-              count={fixedAssetSuccess ? fixedAssetData.total : 0}
-              page={fixedAssetSuccess ? fixedAssetData.current_page - 1 : 0}
+              count={fixedAssetSuccess ? fixedAssetData?.total : 0}
+              page={fixedAssetSuccess ? fixedAssetData?.current_page - 1 : 0}
               rowsPerPage={
                 fixedAssetSuccess ? parseInt(fixedAssetData?.per_page) : 5
               }
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
         </Box>
@@ -637,7 +639,7 @@ const FixedAsset = (props) => {
             margin: "0",
             width: "80%",
             maxWidth: "1200px",
-            maxHeight: "90%",
+            maxHeight: "95%",
             padding: "20px",
             backgroundColor: "white",
           },

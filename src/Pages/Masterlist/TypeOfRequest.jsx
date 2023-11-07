@@ -41,7 +41,7 @@ import CustomTablePagination from "../../Components/Reusable/CustomTablePaginati
 const TypeOfRequest = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateTypeOfRequest, setUpdateTypeOfRequest] = useState({
     status: false,
@@ -79,9 +79,9 @@ const TypeOfRequest = () => {
   };
 
   // Table Properties --------------------------------
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -99,7 +99,7 @@ const TypeOfRequest = () => {
   } = useGetTypeOfRequestApiQuery(
     {
       page: page,
-      limit: limit,
+      perPage: perPage,
       status: status,
       search: search,
     },
@@ -271,12 +271,12 @@ const TypeOfRequest = () => {
                   </TableHead>
 
                   <TableBody>
-                    {typeOfRequestData?.data?.data?.length === 0 ? (
+                    {typeOfRequestData?.data?.length === 0 ? (
                       <NoRecordsFound />
                     ) : (
                       <>
                         {typeOfRequestSuccess &&
-                          [...typeOfRequestData?.data?.data]
+                          [...typeOfRequestData?.data]
                             ?.sort(comparator(order, orderBy))
                             ?.map((data) => (
                               <TableRow
@@ -349,12 +349,12 @@ const TypeOfRequest = () => {
             </Box>
 
             <CustomTablePagination
-              total={typeOfRequestData?.data?.total}
+              total={typeOfRequestData?.total}
               success={typeOfRequestSuccess}
-              current_page={typeOfRequestData?.data?.current_page}
-              per_page={typeOfRequestData?.data?.per_page}
+              current_page={typeOfRequestData?.current_page}
+              per_page={typeOfRequestData?.per_page}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
         </>
