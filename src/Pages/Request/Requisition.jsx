@@ -204,7 +204,7 @@ const Requisition = () => {
     navigate(`add-requisition`);
   };
 
-  // console.log(RequisitionData);
+  console.log(requisitionData);
 
   return (
     <Box className="mcontainer">
@@ -321,7 +321,7 @@ const Requisition = () => {
                   </TableHead>
 
                   <TableBody>
-                    {requisitionData?.data?.data?.length === 0 ? (
+                    {requisitionData?.data?.length === 0 ? (
                       <NoRecordsFound />
                     ) : (
                       <>
