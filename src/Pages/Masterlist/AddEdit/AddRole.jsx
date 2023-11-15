@@ -179,180 +179,139 @@ const AddRole = (props) => {
     dispatch(closeDrawer());
   };
 
+  const CheckboxItem = ({ label, value }) => (
+    <FormControlLabel
+      disabled={data.action === "view"}
+      label={label}
+      value={value}
+      control={
+        <Checkbox
+          {...register("access_permission")}
+          checked={watch("access_permission")?.includes(value)}
+        />
+      }
+    />
+  );
+
+  const CheckboxGroup = ({ items, ml = 3 }) => (
+    <Box sx={{ display: "flex", flexDirection: "column", ml }}>
+      {items.map((item) => (
+        <CheckboxItem key={item.value} {...item} />
+      ))}
+    </Box>
+  );
+
+  // const Children = () => {
+  //   return (
+  //     <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+  //       <Box
+  //         sx={{
+  //           display: "flex",
+  //           flexDirection: "column",
+  //           ml: 3,
+  //         }}
+  //       >
+  //         <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
+  //           <CheckboxItem label="Dashboard" value="dashboard" />
+  //           <CheckboxItem label="Masterlist" value="masterlist" />
+  //           <CheckboxItem label="User Management" value="user-management" />
+  //           <CheckboxItem label="Fixed Assets" value="fixed-assets" />
+  //           <CheckboxItem label="Printing of Tag" value="print-fa" />
+  //           <CheckboxItem label="Settings" value="settings" />
+  //           <CheckboxItem label="Request" value="request" />
+  //         </Box>
+  //       </Box>
+
+  //       <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
+  //         <FormControlLabel
+  //           disabled={data.action === "view"}
+  //           label="Asset for Tagging"
+  //           value="asset-for-tagging"
+  //           control={
+  //             <Checkbox
+  //               {...register("access_permission")}
+  //               checked={watch("access_permission")?.includes(
+  //                 "asset-for-tagging"
+  //               )}
+  //             />
+  //           }
+  //         />
+
+  //         <FormControlLabel
+  //           disabled={data.action === "view"}
+  //           label="Asset List"
+  //           value="asset-list"
+  //           control={
+  //             <Checkbox
+  //               {...register("access_permission")}
+  //               checked={watch("access_permission")?.includes("asset-list")}
+  //             />
+  //           }
+  //         />
+
+  //         <FormControlLabel
+  //           disabled={data.action === "view"}
+  //           label="On Hand"
+  //           value="on-hand"
+  //           control={
+  //             <Checkbox
+  //               {...register("access_permission")}
+  //               checked={watch("access_permission")?.includes("on-hand")}
+  //             />
+  //           }
+  //         />
+
+  //         <FormControlLabel
+  //           disabled={data.action === "view"}
+  //           label="Disposal"
+  //           value="disposal"
+  //           control={
+  //             <Checkbox
+  //               {...register("access_permission")}
+  //               checked={watch("access_permission")?.includes("disposal")}
+  //             />
+  //           }
+  //         />
+
+  //         <FormControlLabel
+  //           disabled={data.action === "view"}
+  //           label="Reports"
+  //           value="reports"
+  //           control={
+  //             <Checkbox
+  //               {...register("access_permission")}
+  //               checked={watch("access_permission")?.includes("reports")}
+  //             />
+  //           }
+  //         />
+  //       </Box>
+  //     </Box>
+  //   );
+  // };
+
   const Children = () => {
+    const firstGroup = [
+      { label: "Dashboard", value: "dashboard" },
+      { label: "Masterlist", value: "masterlist" },
+      { label: "User Management", value: "user-management" },
+      { label: "Fixed Assets", value: "fixed-assets" },
+      { label: "Printing of Tag", value: "print-fa" },
+      { label: "Settings", value: "settings" },
+    ];
+
+    const secondGroup = [
+      { label: "Request", value: "request" },
+      { label: "Asset for Tagging", value: "asset-for-tagging" },
+      { label: "Asset List", value: "asset-list" },
+      { label: "On Hand", value: "on-hand" },
+      { label: "Disposal", value: "disposal" },
+      { label: "Reports", value: "reports" },
+    ];
+
     return (
       <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            ml: 3,
-          }}
-        >
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Dashboard"
-            value="dashboard"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("dashboard")}
-              />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Masterlist"
-            value="masterlist"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("masterlist")}
-                // onChange={(e) => {
-                //   if (e.target.checked) {
-                //     setValue("access_permission", [
-                //       ...watch("access_permission"),
-                //       "masterlist",
-                //     ]);
-                //   } else {
-                //     const masterlistEmptyValue = watch(
-                //       "access_permission"
-                //     ).filter((perm) => !masterlistValue.includes(perm));
-
-                //     setValue("access_permission", masterlistEmptyValue);
-                //   }
-                // }}
-              />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="User Management"
-            value="user-management"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes(
-                  "user-management"
-                )}
-              />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Fixed Assets"
-            value="fixed-assets"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("fixed-assets")}
-              />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Printing of Tag"
-            value="print-fa"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("print-fa")}
-              />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Settings"
-            value="settings"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("settings")}
-              />
-            }
-          />
-        </Box>
-
-        <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Request"
-            value="request"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("request")}
-              />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Asset for Tagging"
-            value="asset-for-tagging"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes(
-                  "asset-for-tagging"
-                )}
-              />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Asset List"
-            value="asset-list"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("asset-list")}
-              />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="On Hand"
-            value="on-hand"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("on-hand")}
-              />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Disposal"
-            value="disposal"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("disposal")}
-              />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Reports"
-            value="reports"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("reports")}
-              />
-            }
-          />
-        </Box>
+        <CheckboxGroup items={firstGroup} ml={3} />
+        <CheckboxGroup items={secondGroup} ml={3} />
       </Box>
     );
   };
@@ -442,7 +401,7 @@ const AddRole = (props) => {
             control={
               <Checkbox
                 {...register("access_permission")}
-                checked={watch("access_permission")?.includes("sub-unit")}
+                checked={watch("access_permission")?.includes("division")}
               />
             }
           />
@@ -504,9 +463,21 @@ const AddRole = (props) => {
   };
 
   const UserManagement = () => {
+    const userManagerment1 = [
+      { label: "User Accounts", value: "user-accounts" },
+      { label: "Role Management", value: "role-management" },
+    ];
+
+    const userManagerment2 = [
+      { label: "User (Requestor)", value: "user-requestor" },
+      { label: "User (Approver)", value: "user-approver" },
+    ];
+
     return (
       <Stack flexDirection="row" flexWrap="wrap">
-        <FormGroup
+        <CheckboxGroup items={userManagerment1} ml={3} />
+        <CheckboxGroup items={userManagerment2} ml={3} />
+        {/* <FormGroup
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -538,7 +509,7 @@ const AddRole = (props) => {
               />
             }
           />
-        </FormGroup>
+        </FormGroup> */}
       </Stack>
     );
   };
@@ -683,6 +654,8 @@ const AddRole = (props) => {
     // UserManagement
     "user-accounts",
     "role-management",
+    "user-requestor",
+    "user-approver",
 
     // Settings
     "approver-settings",

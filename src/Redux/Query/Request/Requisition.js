@@ -20,7 +20,7 @@ export const requisitionApi = createApi({
   endpoints: (builder) => ({
     getRequisitionApi: builder.query({
       query: (params) =>
-        `asset-request?=${params.search}&limit=${params.limit}&status=${params.status}&page=${params.page}`,
+        `asset-request?=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
       providesTags: ["Requisition"],
     }),
 

@@ -46,7 +46,7 @@ import { Link, useNavigate } from "react-router-dom";
 const Requisition = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setperPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateRequisition, setUpdateRequisition] = useState({
     status: false,
@@ -86,9 +86,9 @@ const Requisition = () => {
   };
 
   // Table Properties --------------------------------
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -106,7 +106,7 @@ const Requisition = () => {
   } = useGetRequisitionApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
@@ -326,7 +326,7 @@ const Requisition = () => {
                     ) : (
                       <>
                         {requisitionSuccess &&
-                          [...requisitionData?.data?.data]
+                          [...requisitionData?.data]
                             ?.sort(comparator(order, orderBy))
                             ?.map((data) => (
                               <TableRow
@@ -399,22 +399,22 @@ const Requisition = () => {
             </Box>
 
             <CustomTablePagination
-              total={requisitionData?.data?.total}
+              total={requisitionData?.total}
               success={requisitionSuccess}
-              current_page={requisitionData?.data?.current_page}
-              per_page={requisitionData?.data?.per_page}
+              current_page={requisitionData?.current_page}
+              per_page={requisitionData?.per_page}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
         </>
       )}
-      {/* <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
+      <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
         <AddRequisition
           data={updateRequisition}
           onUpdateResetHandler={onUpdateResetHandler}
         />
-      </Dialog> */}
+      </Dialog>
     </Box>
   );
 };

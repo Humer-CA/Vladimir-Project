@@ -25,12 +25,16 @@ import {
   Paper,
   Radio,
   RadioGroup,
+  Stack,
   TextField,
   Typography,
   createFilterOptions,
   useMediaQuery,
 } from "@mui/material";
-import { ArrowForwardIosRounded } from "@mui/icons-material";
+import {
+  ArrowBackIosRounded,
+  ArrowForwardIosRounded,
+} from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
 // RTK
@@ -55,6 +59,7 @@ import { useGetAssetStatusAllApiQuery } from "../../../Redux/Query/Masterlist/St
 import { useGetAssetMovementStatusAllApiQuery } from "../../../Redux/Query/Masterlist/Status/AssetMovementStatus";
 import { useGetCycleCountStatusAllApiQuery } from "../../../Redux/Query/Masterlist/Status/CycleCountStatus";
 import { useGetDepreciationStatusAllApiQuery } from "../../../Redux/Query/Masterlist/Status/DepreciationStatus";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -283,6 +288,8 @@ const AddRequisition = (props) => {
 
   const isFullWidth = useMediaQuery("(max-width: 600px)");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  console.log(data);
 
   const [
     postRequisition,
@@ -465,31 +472,31 @@ const AddRequisition = (props) => {
 
   // GPT error fetching ----------------------------------------------------------
 
-  useEffect(() => {
-    const errorData =
-      (isPostError || isUpdateError) &&
-      (postError?.status === 422 || updateError?.status === 422);
+  // useEffect(() => {
+  //   const errorData =
+  //     (isPostError || isUpdateError) &&
+  //     (postError?.status === 422 || updateError?.status === 422);
 
-    if (errorData) {
-      const errors = (postError?.data || updateError?.data)?.errors || {};
+  //   if (errorData) {
+  //     const errors = (postError?.data || updateError?.data)?.errors || {};
 
-      Object.entries(errors).forEach(([name, [message]]) =>
-        setError(name, { type: "validate", message })
-      );
-    }
+  //     Object.entries(errors).forEach(([name, [message]]) =>
+  //       setError(name, { type: "validate", message })
+  //     );
+  //   }
 
-    const showToast = () => {
-      dispatch(
-        openToast({
-          message: "Something went wrong. Please try again.",
-          duration: 5000,
-          variant: "error",
-        })
-      );
-    };
+  //   const showToast = () => {
+  //     dispatch(
+  //       openToast({
+  //         message: "Something went wrong. Please try again.",
+  //         duration: 5000,
+  //         variant: "error",
+  //       })
+  //     );
+  //   };
 
-    errorData && showToast();
-  }, [isPostError, isUpdateError]);
+  //   errorData && showToast();
+  // }, [isPostError, isUpdateError]);
 
   useEffect(() => {
     if (isPostSuccess || isUpdateSuccess) {
@@ -508,74 +515,74 @@ const AddRequisition = (props) => {
     }
   }, [isPostSuccess, isUpdateSuccess]);
 
-  useEffect(() => {
-    const acquisitionDateFormat = new Date(data.acquisition_date);
-    const releaseDateFormat = new Date(data.release_date);
-    const voucherDateFormat = new Date(data.voucher_date);
-    const startDepreciationFormat = new Date(data.start_depreciation);
-    const endDepreciationFormat = new Date(data.end_depreciation);
+  // useEffect(() => {
+  //   const acquisitionDateFormat = new Date(data.acquisition_date);
+  //   const releaseDateFormat = new Date(data.release_date);
+  //   const voucherDateFormat = new Date(data.voucher_date);
+  //   const startDepreciationFormat = new Date(data.start_depreciation);
+  //   const endDepreciationFormat = new Date(data.end_depreciation);
 
-    if (data.status) {
-      setValue("id", data.id);
-      setValue("type_of_request_id", data.type_of_request);
+  //   if (data.status) {
+  //     setValue("id", data.id);
+  //     setValue("type_of_request_id", data.type_of_request);
 
-      setValue("sub_capex_id", data.sub_capex);
-      setValue("charging", data.department);
-      setValue("is_old_asset", data.is_old_asset?.toString());
-      setValue("tag_number", data.tag_number);
-      setValue("tag_number_old", data.tag_number_old);
+  //     setValue("sub_capex_id", data.sub_capex);
+  //     setValue("charging", data.department);
+  //     setValue("is_old_asset", data.is_old_asset?.toString());
+  //     setValue("tag_number", data.tag_number);
+  //     setValue("tag_number_old", data.tag_number_old);
 
-      // setValue("division_id", data.division);
-      setValue("major_category_id", data.major_category);
-      setValue("minor_category_id", data.minor_category);
+  //     // setValue("division_id", data.division);
+  //     setValue("major_category_id", data.major_category);
+  //     setValue("minor_category_id", data.minor_category);
 
-      setValue("company_id", data.company);
-      setValue("department_id", data.department);
-      setValue("location_id", data.location);
-      setValue("account_title_id", data.account_title);
+  //     setValue("company_id", data.company);
+  //     setValue("department_id", data.department);
+  //     setValue("location_id", data.location);
+  //     setValue("account_title_id", data.account_title);
 
-      setValue("asset_description", data.asset_description);
-      setValue("asset_specification", data.asset_specification);
-      setValue("acquisition_date", acquisitionDateFormat);
-      setValue("accountability", data.accountability);
+  //     setValue("asset_description", data.asset_description);
+  //     setValue("asset_specification", data.asset_specification);
+  //     setValue("acquisition_date", acquisitionDateFormat);
+  //     setValue("accountability", data.accountability);
 
-      setValue("accountable", {
-        general_info: {
-          full_id_number: data.accountable.split(" ")[0],
-          full_id_number_full_name: data.accountable,
-        },
-      });
+  //     setValue("accountable", {
+  //       general_info: {
+  //         full_id_number: data.accountable.split(" ")[0],
+  //         full_id_number_full_name: data.accountable,
+  //       },
+  //     });
 
-      setValue(
-        "cellphone_number",
-        data.cellphone_number === "-" ? null : data.cellphone_number.slice(2)
-      );
-      setValue("brand", data.brand);
-      setValue("care_of", data.care_of);
-      setValue("voucher", data.voucher);
-      setValue(
-        "voucher_date",
-        data.voucher_date === "-" ? null : voucherDateFormat
-      );
-      setValue("receipt", data.receipt);
-      setValue("quantity", data.quantity);
-      setValue("asset_status_id", data.asset_status);
-      setValue("cycle_count_status_id", data.cycle_count_status);
-      setValue("movement_status_id", data.movement_status);
+  //     setValue(
+  //       "cellphone_number",
+  //       data.cellphone_number === "-" ? null : data.cellphone_number.slice(2)
+  //     );
+  //     setValue("brand", data.brand);
+  //     setValue("care_of", data.care_of);
+  //     setValue("voucher", data.voucher);
+  //     setValue(
+  //       "voucher_date",
+  //       data.voucher_date === "-" ? null : voucherDateFormat
+  //     );
+  //     setValue("receipt", data.receipt);
+  //     setValue("quantity", data.quantity);
+  //     setValue("asset_status_id", data.asset_status);
+  //     setValue("cycle_count_status_id", data.cycle_count_status);
+  //     setValue("movement_status_id", data.movement_status);
 
-      setValue("depreciation_method", data.depreciation_method);
-      setValue("est_useful_life", data.est_useful_life);
-      setValue("depreciation_status_id", data.depreciation_status);
-      setValue(
-        "release_date",
-        data.voucher_date === "-" ? null : releaseDateFormat
-      );
-      setValue("acquisition_cost", data.acquisition_cost);
-      setValue("months_depreciated", data.months_depreciated);
-      setValue("scrap_value", data.scrap_value);
-      setValue("depreciable_basis", data.depreciable_basis);
-    }
-  }, [data]);
+  //     setValue("depreciation_method", data.depreciation_method);
+  //     setValue("est_useful_life", data.est_useful_life);
+  //     setValue("depreciation_status_id", data.depreciation_status);
+  //     setValue(
+  //       "release_date",
+  //       data.voucher_date === "-" ? null : releaseDateFormat
+  //     );
+  //     setValue("acquisition_cost", data.acquisition_cost);
+  //     setValue("months_depreciated", data.months_depreciated);
+  //     setValue("scrap_value", data.scrap_value);
+  //     setValue("depreciable_basis", data.depreciable_basis);
+  //   }
+  // }, [data]);
 
   useEffect(() => {
     if (watch("acquisition_cost") && watch("scrap_value")) {
@@ -599,57 +606,11 @@ const AddRequisition = (props) => {
 
   // SUBMIT HANDLER
   const onSubmitHandler = (formData) => {
-    // const hasEmptyField = Object.values(formData).some((value) => value === "");
-    // setIsButtonDisabled(hasEmptyField);
-
-    const newObj = {
-      ...formData,
-      cellphone_number: formData.cellphone_number
-        ? "09" + formData.cellphone_number
-        : null,
-
-      acquisition_date: moment(new Date(formData.acquisition_date)).format(
-        "YYYY-MM-DD"
-      ),
-
-      release_date:
-        formData.release_date === null
-          ? null
-          : moment(new Date(formData.release_date)).format("YYYY-MM-DD"),
-
-      voucher_date:
-        formData.voucher_date === null
-          ? null
-          : moment(new Date(formData.voucher_date)).format("YYYY-MM-DD"),
-
-      start_depreciation:
-        formData.start_depreciation === null
-          ? null
-          : moment(new Date(formData.start_depreciation)).format("YYYY-MM"),
-
-      end_depreciation:
-        formData.end_depreciation === null
-          ? null
-          : moment(new Date(formData.end_depreciation)).format("YYYY-MM"),
-      accountable: formData.accountable === null ? null : formData.accountable,
-
-      months_depreciated:
-        formData.months_depreciated === null ? 0 : formData.months_depreciated,
-
-      acquisition_cost:
-        formData.acquisition_cost === null ? 0 : formData.acquisition_cost,
-
-      scrap_value: formData.scrap_value === null ? 0 : formData.scrap_value,
-
-      depreciable_basis:
-        formData.depreciable_basis === null ? 0 : formData.depreciable_basis,
-    };
-
     if (data.status) {
-      updateRequisition(newObj);
+      updateRequisition(formData);
       return;
     }
-    postRequisition(newObj);
+    postRequisition(formData);
   };
 
   const handleCloseDrawer = () => {
@@ -672,92 +633,109 @@ const AddRequisition = (props) => {
     matchFrom: "any",
   });
 
-  const isFormValid = Object.keys(errors).length === 0;
-
   // console.log(errors);
   // console.log(watch("depreciation_method"));
   // console.log(data);
 
   return (
-    <Box component="form" onSubmit={handleSubmit(onSubmitHandler)}>
-      <Box>
-        <IconButton onClick={handleCloseDrawer}>
-          <ArrowForwardIosRounded color="secondary" />
-        </IconButton>
-        <Typography
-          color="secondary.main"
-          sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}
+    <>
+      <Box className="mcontainer" sx={{ gap: 2 }}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          startIcon={<ArrowBackIosRounded color="secondary" />}
+          onClick={() => navigate(-1)}
+          sx={{ width: "90px" }}
         >
-          {data.status ? "Edit Requisition" : "Add Requisition"}
-        </Typography>
-      </Box>
+          <Typography color="secondary.main" sx={{ pl: 0.5 }}>
+            Back
+          </Typography>
+        </Button>
 
-      <Divider />
-
-      <Box>
-        <Box>
+        <Box className="">
           <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "15px",
-              width: "100%",
-            }}
+            component="form"
+            onSubmit={handleSubmit(onSubmitHandler)}
+            sx={{ maxWidth: "250px" }}
           >
-            <Typography sx={sxSubtitle}>Type of Asset</Typography>
+            <Box>
+              <Typography
+                color="secondary.main"
+                sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}
+              >
+                {/* {data.status ? "Edit Requisition" : "Add Requisition"} */}
+              </Typography>
+            </Box>
 
-            <CustomAutoComplete
-              control={control}
-              name="type_of_request_id"
-              options={typeOfRequestData}
-              loading={isTypeOfRequestLoading}
-              size="small"
-              getOptionLabel={(option) => option.type_of_request_name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderInput={(params) => (
-                <TextField
-                  color="secondary"
-                  {...params}
-                  label="Type of Request"
-                  error={!!errors?.type_of_request_id}
-                  helperText={errors?.type_of_request_id?.message}
-                />
-              )}
-              onChange={(_, value) => {
-                setValue("sub_capex_id", null);
-                // setValue("project_name", "");
-                return value;
-              }}
-            />
+            <Box>
+              <Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "15px",
+                    width: "100%",
+                  }}
+                >
+                  <Typography sx={sxSubtitle}>Type of Asset</Typography>
 
-            {watch("type_of_request_id")?.type_of_request_name === "Capex" && (
-              <CustomAutoComplete
-                control={control}
-                name="sub_capex_id"
-                options={subCapexData}
-                loading={isSubCapexLoading}
-                size="small"
-                getOptionLabel={(option) =>
-                  `${option.sub_capex}  (${option.sub_project})`
-                }
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderInput={(params) => (
-                  <TextField
-                    color="secondary"
-                    {...params}
-                    label="CAPEX"
-                    error={!!errors?.sub_capex_id}
-                    helperText={errors?.sub_capex_id?.message}
+                  <CustomAutoComplete
+                    control={control}
+                    name="type_of_request_id"
+                    options={typeOfRequestData}
+                    loading={isTypeOfRequestLoading}
+                    size="small"
+                    getOptionLabel={(option) => option.type_of_request_name}
+                    isOptionEqualToValue={(option, value) =>
+                      option.id === value.id
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        color="secondary"
+                        {...params}
+                        label="Type of Request"
+                        error={!!errors?.type_of_request_id}
+                        helperText={errors?.type_of_request_id?.message}
+                      />
+                    )}
+                    onChange={(_, value) => {
+                      setValue("sub_capex_id", null);
+                      // setValue("project_name", "");
+                      return value;
+                    }}
                   />
-                )}
-                // onChange={(_, value) => {
-                //   setValue("project_name", value.project_name);
-                //   return value;
-                // }}
-              />
-            )}
 
-            {/* {watch("type_of_request_id")?.type_of_request_name === "Capex" ? (
+                  {watch("type_of_request_id")?.type_of_request_name ===
+                    "Capex" && (
+                    <CustomAutoComplete
+                      control={control}
+                      name="sub_capex_id"
+                      options={subCapexData}
+                      loading={isSubCapexLoading}
+                      size="small"
+                      getOptionLabel={(option) =>
+                        `${option.sub_capex}  (${option.sub_project})`
+                      }
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
+                      renderInput={(params) => (
+                        <TextField
+                          color="secondary"
+                          {...params}
+                          label="CAPEX"
+                          error={!!errors?.sub_capex_id}
+                          helperText={errors?.sub_capex_id?.message}
+                        />
+                      )}
+                      // onChange={(_, value) => {
+                      //   setValue("project_name", value.project_name);
+                      //   return value;
+                      // }}
+                    />
+                  )}
+
+                  {/* {watch("type_of_request_id")?.type_of_request_name === "Capex" ? (
               <CustomTextField
                 control={control}
                 disabled
@@ -769,8 +747,8 @@ const AddRequisition = (props) => {
                 fullWidth
               />
             ) : null} */}
-          </Box>
-          {/* 
+                </Box>
+                {/* 
           <CustomAutoComplete
             autoComplete
             name="charging"
@@ -791,1013 +769,363 @@ const AddRequisition = (props) => {
               />
             )}
           /> */}
-        </Box>
+              </Box>
 
-        <Divider />
+              <Divider />
 
-        {/* <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-          }}
-        >
-          <Typography sx={sxSubtitle}>Asset Status</Typography>
-          <CustomRadioGroup control={control} name="is_old_asset">
-            <FormControlLabel
-              value={0}
-              label="New Asset"
-              control={<Radio size="small" />}
-              onChange={(_, value) => {
-                setValue("tag_number", "");
-                setValue("tag_number_old", "");
-                return value;
-              }}
-            />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "15px",
+                  width: "100%",
+                }}
+              >
+                <Typography sx={sxSubtitle}>Set the Category</Typography>
 
-            {parseInt(watch("is_old_asset")) === 0 ? (
-              <Box className="addRequisition__status" sx={{ my: "5px" }}>
                 <CustomAutoComplete
                   autoComplete
-                  name="charging"
+                  required
+                  disableClearable
+                  name="major_category_id"
                   control={control}
-                  options={departmentData}
-                  loading={isDepartmentLoading}
+                  options={majorCategoryData}
+                  loading={isMajorCategoryLoading}
                   size="small"
-                  getOptionLabel={(option) => option.department_name}
+                  getOptionLabel={(option) => option.major_category_name}
                   isOptionEqualToValue={(option, value) =>
-                    option.department_name === value.department_name
+                    option.major_category_name === value.major_category_name
                   }
                   renderInput={(params) => (
                     <TextField
                       color="secondary"
                       {...params}
-                      label="Charged Department"
-                      error={!!errors?.charging}
-                      helperText={errors?.charging?.message}
+                      label="Major Category  "
+                      error={!!errors?.major_category_id}
+                      helperText={errors?.major_category_id?.message}
                     />
                   )}
-                  fullWidth
-                />
-              </Box>
-            ) : null}
-
-            <FormControlLabel
-              value={1}
-              label="Old Asset"
-              control={<Radio size="small" />}
-              onChange={(_, value) => {
-                if (data.status) {
-                  setValue("tag_number", data.tag_number);
-                  setValue("tag_number_old", data.tag_number_old);
-                  return value;
-                }
-              }}
-            />
-
-            {parseInt(watch("is_old_asset")) ? (
-              <Box className="addRequisition__status" sx={{ mt: "5px" }}>
-                <CustomNumberField
-                  control={control}
-                  name="tag_number"
-                  label="Tag Number"
-                  color="secondary"
-                  size="small"
-                  error={!!errors?.tag_number}
-                  helperText={errors?.tag_number?.message}
-                  fullWidth
-                />
-
-                <CustomNumberField
-                  control={control}
-                  name="tag_number_old"
-                  label="Old Tag Number"
-                  color="secondary"
-                  size="small"
-                  error={!!errors?.tag_number_old}
-                  helperText={errors?.tag_number_old?.message}
-                  fullWidth
-                />
-              </Box>
-            ) : null}
-          </CustomRadioGroup>
-        </Box>
-
-        <Divider /> */}
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "15px",
-            width: "100%",
-          }}
-        >
-          <Typography sx={sxSubtitle}>Set the Category</Typography>
-
-          <CustomAutoComplete
-            autoComplete
-            required
-            disableClearable
-            name="major_category_id"
-            control={control}
-            options={majorCategoryData}
-            loading={isMajorCategoryLoading}
-            size="small"
-            getOptionLabel={(option) => option.major_category_name}
-            isOptionEqualToValue={(option, value) =>
-              option.major_category_name === value.major_category_name
-            }
-            renderInput={(params) => (
-              <TextField
-                color="secondary"
-                {...params}
-                label="Major Category  "
-                error={!!errors?.major_category_id}
-                helperText={errors?.major_category_id?.message}
-              />
-            )}
-            onChange={(_, value) => {
-              const filteredMajorCategoryData = majorCategoryData?.filter(
-                (obj) => {
-                  return obj.major_category_name === value.major_category_name;
-                }
-              );
-              const isIncluded =
-                filteredMajorCategoryData[0]?.minor_category.some(
-                  (category) => {
-                    return (
-                      category.id === data.minor_category?.minor_category_id
+                  onChange={(_, value) => {
+                    const filteredMajorCategoryData = majorCategoryData?.filter(
+                      (obj) => {
+                        return (
+                          obj.major_category_name === value.major_category_name
+                        );
+                      }
                     );
-                  }
-                );
+                    const isIncluded =
+                      filteredMajorCategoryData[0]?.minor_category.some(
+                        (category) => {
+                          return (
+                            category.id ===
+                            data.minor_category?.minor_category_id
+                          );
+                        }
+                      );
 
-              if (!isIncluded) {
-                setValue("minor_category_id", null);
-              }
+                    if (!isIncluded) {
+                      setValue("minor_category_id", null);
+                    }
 
-              setValue("est_useful_life", value.est_useful_life);
-              return value;
-            }}
-          />
-
-          <CustomAutoComplete
-            autoComplete
-            required
-            name="minor_category_id"
-            control={control}
-            options={
-              majorCategoryData?.filter((obj) => {
-                return obj?.id === watch("major_category_id")?.id;
-              })[0]?.minor_category || []
-            }
-            loading={isMinorCategoryLoading}
-            size="small"
-            getOptionLabel={(option) => option.minor_category_name}
-            isOptionEqualToValue={(option, value) =>
-              option.minor_category_name === value.minor_category_name
-            }
-            renderInput={(params) => (
-              <TextField
-                color="secondary"
-                {...params}
-                label="Minor Category  "
-                error={!!errors?.minor_category_id}
-                helperText={errors?.minor_category_id?.message}
-              />
-            )}
-            onChange={(_, value) => {
-              setValue("account_title_id", value.account_title);
-              return value;
-            }}
-          />
-        </Box>
-
-        <Divider />
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "15px",
-            width: "100%",
-          }}
-        >
-          <Typography sx={sxSubtitle}>Chart of Accounts (COA)</Typography>
-
-          {/* OLD Departments */}
-          <CustomAutoComplete
-            autoComplete
-            name="department_id"
-            control={control}
-            options={departmentData}
-            loading={isDepartmentLoading}
-            size="small"
-            getOptionLabel={(option) =>
-              option.department_code + " - " + option.department_name
-            }
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            renderInput={(params) => (
-              <TextField
-                color="secondary"
-                {...params}
-                label="Department"
-                error={!!errors?.department_id}
-                helperText={errors?.department_id?.message}
-              />
-            )}
-            onChange={(_, value) => {
-              const companyID = companyData?.find(
-                (item) => item.sync_id === value.company.company_sync_id
-              );
-
-              if (value) {
-                setValue("company_id", companyID);
-              } else {
-                setValue("company_id", null);
-              }
-
-              return value;
-            }}
-          />
-
-          <CustomAutoComplete
-            autoComplete
-            name="company_id"
-            control={control}
-            options={companyData}
-            loading={isCompanyLoading}
-            size="small"
-            getOptionLabel={(option) =>
-              option.company_code + " - " + option.company_name
-            }
-            isOptionEqualToValue={(option, value) =>
-              option.company_id === value.company_id
-            }
-            renderInput={(params) => (
-              <TextField
-                color="secondary"
-                {...params}
-                label="Company"
-                error={!!errors?.company_id}
-                helperText={errors?.company_id?.message}
-              />
-            )}
-            disabled
-          />
-
-          <CustomAutoComplete
-            autoComplete
-            name="location_id"
-            control={control}
-            options={locationData?.filter((item) => {
-              return item.departments.some((department) => {
-                return department?.sync_id === watch("department_id")?.sync_id;
-              });
-            })}
-            loading={isLocationLoading}
-            size="small"
-            getOptionLabel={(option) =>
-              option.location_code + " - " + option.location_name
-            }
-            isOptionEqualToValue={(option, value) =>
-              option.location_id === value.location_id
-            }
-            renderInput={(params) => (
-              <TextField
-                color="secondary"
-                {...params}
-                label="Location"
-                error={!!errors?.location_id}
-                helperText={errors?.location_id?.message}
-              />
-            )}
-          />
-
-          <CustomAutoComplete
-            name="account_title_id"
-            disabled
-            control={control}
-            options={accountTitleData}
-            loading={isAccountTitleLoading}
-            size="small"
-            // disabled
-            getOptionLabel={(option) =>
-              option.account_title_code + " - " + option.account_title_name
-            }
-            isOptionEqualToValue={(option, value) =>
-              option.account_title_code === value.account_title_code
-            }
-            renderInput={(params) => (
-              <TextField
-                color="secondary"
-                {...params}
-                label="Account Title  "
-                error={!!errors?.account_title_id}
-                helperText={errors?.account_title_id?.message}
-              />
-            )}
-          />
-        </Box>
-
-        <Divider />
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "15px",
-            width: "100%",
-          }}
-        >
-          <Typography sx={sxSubtitle}>Asset Information</Typography>
-
-          <CustomTextField
-            control={control}
-            name="asset_description"
-            label="Asset Description"
-            type="text"
-            color="secondary"
-            size="small"
-            disabled={data?.print_count >= 1}
-            error={!!errors?.asset_description}
-            helperText={errors?.asset_description?.message}
-            fullWidth
-            multiline
-          />
-
-          <CustomTextField
-            control={control}
-            name="asset_specification"
-            label="Asset Specification"
-            type="text"
-            color="secondary"
-            size="small"
-            error={!!errors?.asset_specification}
-            helperText={errors?.asset_specification?.message}
-            fullWidth
-            multiline
-          />
-
-          <CustomDatePicker
-            control={control}
-            name="acquisition_date"
-            label="Acquisition Date"
-            size="small"
-            views={["year", "month", "day"]}
-            openTo="year"
-            error={!!errors?.acquisition_date}
-            helperText={errors?.acquisition_date?.message}
-            fullWidth={isFullWidth ? true : false}
-            maxDate={new Date()}
-            reduceAnimations
-          />
-
-          <CustomAutoComplete
-            autoComplete
-            name="accountability"
-            control={control}
-            options={["Personal Issued", "Common"]}
-            size="small"
-            isOptionEqualToValue={(option, value) => option === value}
-            renderInput={(params) => (
-              <TextField
-                color="secondary"
-                {...params}
-                label="Accountability  "
-                error={!!errors?.accountability}
-                helperText={errors?.accountability?.message}
-              />
-            )}
-          />
-
-          {/* {watch("type_of_request_id")?.type_of_request_name === "Capex" ? (
-              <CustomTextField
-                control={control}
-                disabled
-                name="project_name"
-                label="Project Name"
-                type="text"
-                color="secondary"
-                size="small"
-                fullWidth
-              />
-            ) : null} */}
-
-          {watch("accountability") === "Personal Issued" && (
-            <CustomAutoComplete
-              name="accountable"
-              control={control}
-              size="small"
-              includeInputInList
-              disablePortal
-              filterOptions={filterOptions}
-              options={sedarData}
-              loading={isSedarLoading}
-              getOptionLabel={
-                (option) => option.general_info?.full_id_number_full_name
-                // `(${option.general_info?.full_id_number}) - ${option.general_info?.full_name}`
-              }
-              isOptionEqualToValue={(option, value) =>
-                option.general_info?.full_id_number ===
-                value.general_info?.full_id_number
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Accountable"
-                  color="secondary"
-                  error={!!errors?.accountable?.message}
-                  helperText={errors?.accountable?.message}
+                    setValue("est_useful_life", value.est_useful_life);
+                    return value;
+                  }}
                 />
-              )}
-            />
-          )}
 
-          <CustomPatternfield
-            control={control}
-            color="secondary"
-            name="cellphone_number"
-            label="Cellphone # (optional)"
-            type="text"
-            size="small"
-            error={!!errors?.cellphone_number}
-            helperText={errors?.cellphone_number?.message}
-            format="(09##) - ### - ####"
-            // allowEmptyFormatting
-            valueIsNumericString
-            fullWidth
-          />
-
-          <CustomTextField
-            autoComplete="off"
-            control={control}
-            name="brand"
-            label="Brand (optional)"
-            type="text"
-            color="secondary"
-            size="small"
-            error={!!errors?.brand}
-            helperText={errors?.brand?.message}
-            fullWidth
-          />
-
-          <CustomTextField
-            autoComplete="off"
-            control={control}
-            name="care_of"
-            label="Care of (optional)"
-            type="text"
-            color="secondary"
-            size="small"
-            error={!!errors?.care_of}
-            helperText={errors?.care_of?.message}
-            fullWidth
-          />
-
-          <Box>
-            <CustomTextField
-              autoComplete="off"
-              control={control}
-              name="voucher"
-              label="Voucher (optional)"
-              type="text"
-              color="secondary"
-              size="small"
-              error={!!errors?.voucher}
-              helperText={errors?.voucher?.message}
-              fullWidth
-            />
-
-            <CustomDatePicker
-              control={control}
-              name="voucher_date"
-              label="Voucher Date"
-              size="small"
-              views={["year", "month", "day"]}
-              openTo="year"
-              error={!!errors?.voucher_date}
-              helperText={errors?.voucher_date?.message}
-              fullWidth={isFullWidth ? true : false}
-              maxDate={new Date()}
-              reduceAnimations
-            />
-          </Box>
-
-          <CustomTextField
-            autoComplete="off"
-            control={control}
-            name="receipt"
-            label="Receipt (optional)"
-            type="text"
-            color="secondary"
-            size="small"
-            error={!!errors?.receipt}
-            helperText={errors?.receipt?.message}
-            fullWidth
-          />
-
-          <Box>
-            <CustomNumberField
-              autoComplete="off"
-              control={control}
-              name="quantity"
-              label="Quantity"
-              type="number"
-              color="secondary"
-              size="small"
-              // isAllowed={(values) => {
-              //   const { floatValue } = values;
-              //   return floatValue >= 1;
-              // }}
-              disabled
-              error={!!errors?.quantity}
-              helperText={errors?.quantity?.message}
-              fullWidth={isFullWidth ? true : false}
-            />
-
-            <CustomAutoComplete
-              autoComplete
-              size="small"
-              name="asset_status_id"
-              control={control}
-              options={assetStatusData}
-              loading={isAssetStatusLoading}
-              getOptionLabel={(option) => option.asset_status_name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderInput={(params) => (
-                <TextField
-                  color="secondary"
-                  {...params}
-                  label="Asset Status"
-                  error={!!errors?.asset_status}
-                  helperText={errors?.asset_status?.message}
-                />
-              )}
-              fullWidth
-            />
-          </Box>
-
-          <Box>
-            <CustomAutoComplete
-              autoComplete
-              size="small"
-              name="cycle_count_status_id"
-              control={control}
-              options={cycleCountStatusData}
-              loading={isCycleCountStatusLoading}
-              getOptionLabel={(option) => option.cycle_count_status_name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderInput={(params) => (
-                <TextField
-                  color="secondary"
-                  {...params}
-                  label="Cycle Count Status"
-                  error={!!errors?.cycle_count_status}
-                  helperText={errors?.cycle_count_status?.message}
-                />
-              )}
-              fullWidth
-            />
-
-            <CustomAutoComplete
-              autoComplete
-              size="small"
-              name="movement_status_id"
-              control={control}
-              options={movementStatusData}
-              loading={isMovementStatusStatusLoading}
-              getOptionLabel={(option) => option.movement_status_name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderInput={(params) => (
-                <TextField
-                  color="secondary"
-                  {...params}
-                  label="Movement Status"
-                  error={!!errors?.movement_status}
-                  helperText={errors?.movement_status?.message}
-                />
-              )}
-              fullWidth
-            />
-          </Box>
-
-          {/* <Box className="addRequisition__status">
-            <CustomAutoComplete
-              autoComplete
-              name="cycle_count_status"
-              control={control}
-              options={cycleCountStatusData}
-              size="small"
-              isOptionEqualToValue={(option, value) => option === value}
-              renderInput={(params) => (
-                <TextField
-                  color="secondary"
-                  {...params}
-                  label="Cycle Count Status"
-                  error={!!errors?.faStatus}
-                  helperText={errors?.faStatus?.message}
-                />
-              )}
-              fullWidth
-            />
-
-            <CustomAutoComplete
-              autoComplete
-              name="faStatus"
-              control={control}
-              options={[
-                "Good",
-                "For Disposal",
-                // "Disposed",
-                "For Repair",
-                "Spare",
-                "Sold",
-                "Write Off",
-              ]}
-              size="small"
-              isOptionEqualToValue={(option, value) => option === value}
-              renderInput={(params) => (
-                <TextField
-                  color="secondary"
-                  {...params}
-                  label="Asset Status"
-                  error={!!errors?.faStatus}
-                  helperText={errors?.faStatus?.message}
-                />
-              )}
-              fullWidth
-            />requisitionLoading
-          </Box> */}
-        </Box>
-
-        <Divider />
-
-        <Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "15px",
-              width: "100%",
-              mb: "5px",
-            }}
-          >
-            <Typography sx={sxSubtitle}>Depreciation</Typography>
-
-            <CustomAutoComplete
-              autoComplete
-              name="depreciation_method"
-              control={control}
-              options={["STL", "One Time", "Supplier Rebase"]}
-              size="small"
-              renderInput={(params) => (
-                <TextField
-                  color="secondary"
-                  {...params}
-                  label="Depreciation Method"
-                  error={!!errors?.depreciation_method}
-                  helperText={errors?.depreciation_method?.message}
-                />
-              )}
-              onChange={(_, value) => {
-                if (value === "Supplier Rebase") {
-                  setValue(
-                    "depreciation_status_id",
-                    depreciationStatusData.find(
-                      (item) =>
-                        item.depreciation_status_name === "Fully Depreciated"
-                    )
-                  );
-                  setValue("acquisition_cost", 0);
-                  setValue("months_depreciated", 0);
-                  setValue("scrap_value", 0);
-                  setValue("depreciable_basis", 0);
-                } else {
-                  setValue("depreciation_status_id", null);
-                }
-                return value;
-              }}
-            />
-
-            <CustomAutoComplete
-              autoComplete
-              disabled={watch("depreciation_method") === "Supplier Rebase"}
-              size="small"
-              name="depreciation_status_id"
-              control={control}
-              options={depreciationStatusData}
-              loading={isDepreciationStatusLoading}
-              getOptionLabel={(option) => option.depreciation_status_name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderInput={(params) => (
-                <TextField
-                  color="secondary"
-                  {...params}
-                  label="Depreciation Status"
-                  error={!!errors?.depreciation_status_id}
-                  helperText={errors?.depreciation_status_id?.message}
-                />
-              )}
-              fullWidth
-            />
-
-            {watch("depreciation_method") !== "Supplier Rebase" && (
-              <CustomDatePicker
-                control={control}
-                name="release_date"
-                label="Release Date"
-                size="small"
-                views={["year", "month", "day"]}
-                openTo="year"
-                error={!!errors?.release_date}
-                helperText={errors?.release_date?.message}
-                fullWidth={isFullWidth ? true : false}
-                minDate={watch("acquisition_date")}
-                maxDate={
-                  new Date()
-                  // moment()
-                  //   .add(parseInt(watch("est_useful_life")) * 12, "months")
-                  //   .format("YYYY-MM-DD")
-                }
-                // onChange={(e) => {
-                //   setValue(
-                //     "months_depreciated",
-                //     moment().diff(moment(e).add(1, "months"), "months")
-                //   );
-                //   return e;
-                // }}
-                onChange={(e) => {
-                  const selectedDate = new Date(e);
-                  const today = new Date();
-                  const monthsDepreciated =
-                    selectedDate.getFullYear() === today.getFullYear() &&
-                    selectedDate.getMonth() === today.getMonth()
-                      ? 0
-                      : moment().diff(
-                          moment(selectedDate).add(1, "months"),
-                          "months"
-                        ) + 1;
-                  setValue("months_depreciated", monthsDepreciated);
-                  return e;
-                }}
-                reduceAnimations
-                slotProps={{
-                  popper: {
-                    modifiers: [
-                      {
-                        name: "viewHeightModifier",
-                        enabled: true,
-                        phase: "beforeWrite",
-                        fn: ({ state }) => {
-                          state.styles.popper.height = "320px";
-                          if (state.placement.includes("top-start")) {
-                            state.styles.popper = {
-                              ...state.styles.popper,
-                              display: "flex",
-                              alignItems: "flex-end",
-                            };
-                          }
-                          if (state.placement.includes("bottom")) {
-                            state.styles.popper = {
-                              ...state.styles.popper,
-                              display: "block",
-                            };
-                          }
-                        },
-                      },
-                    ],
-                  },
-                }}
-              />
-            )}
-
-            <Box>
-              <CustomNumberField
-                control={control}
-                disabled
-                color="secondary"
-                name="est_useful_life"
-                label="Estimated Useful Life"
-                type="text"
-                size="small"
-                error={!!errors?.est_useful_life}
-                helperText={errors?.est_useful_life?.message}
-                fullWidth={
-                  watch("depreciation_method") !== "Supplier Rebase"
-                    ? isFullWidth
-                      ? false
-                      : true
-                    : true
-                }
-              />
-
-              {watch("depreciation_method") !== "Supplier Rebase" && (
-                <CustomNumberField
-                  autoComplete="off"
-                  // disabled
+                <CustomAutoComplete
+                  autoComplete
+                  required
+                  name="minor_category_id"
                   control={control}
-                  name="months_depreciated"
-                  label="Months Depreciated"
+                  options={
+                    majorCategoryData?.filter((obj) => {
+                      return obj?.id === watch("major_category_id")?.id;
+                    })[0]?.minor_category || []
+                  }
+                  loading={isMinorCategoryLoading}
+                  size="small"
+                  getOptionLabel={(option) => option.minor_category_name}
+                  isOptionEqualToValue={(option, value) =>
+                    option.minor_category_name === value.minor_category_name
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      color="secondary"
+                      {...params}
+                      label="Minor Category  "
+                      error={!!errors?.minor_category_id}
+                      helperText={errors?.minor_category_id?.message}
+                    />
+                  )}
+                  onChange={(_, value) => {
+                    setValue("account_title_id", value.account_title);
+                    return value;
+                  }}
+                />
+              </Box>
+
+              <Divider />
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "15px",
+                  width: "100%",
+                }}
+              >
+                <Typography sx={sxSubtitle}>Chart of Accounts (COA)</Typography>
+
+                {/* OLD Departments */}
+                <CustomAutoComplete
+                  autoComplete
+                  name="department_id"
+                  control={control}
+                  options={departmentData}
+                  loading={isDepartmentLoading}
+                  size="small"
+                  getOptionLabel={(option) =>
+                    option.department_code + " - " + option.department_name
+                  }
+                  isOptionEqualToValue={(option, value) =>
+                    option.id === value.id
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      color="secondary"
+                      {...params}
+                      label="Department"
+                      error={!!errors?.department_id}
+                      helperText={errors?.department_id?.message}
+                    />
+                  )}
+                  onChange={(_, value) => {
+                    const companyID = companyData?.find(
+                      (item) => item.sync_id === value.company.company_sync_id
+                    );
+
+                    if (value) {
+                      setValue("company_id", companyID);
+                    } else {
+                      setValue("company_id", null);
+                    }
+
+                    return value;
+                  }}
+                />
+
+                <CustomAutoComplete
+                  autoComplete
+                  name="company_id"
+                  control={control}
+                  options={companyData}
+                  loading={isCompanyLoading}
+                  size="small"
+                  getOptionLabel={(option) =>
+                    option.company_code + " - " + option.company_name
+                  }
+                  isOptionEqualToValue={(option, value) =>
+                    option.company_id === value.company_id
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      color="secondary"
+                      {...params}
+                      label="Company"
+                      error={!!errors?.company_id}
+                      helperText={errors?.company_id?.message}
+                    />
+                  )}
+                  disabled
+                />
+
+                <CustomAutoComplete
+                  autoComplete
+                  name="location_id"
+                  control={control}
+                  options={locationData?.filter((item) => {
+                    return item.departments.some((department) => {
+                      return (
+                        department?.sync_id === watch("department_id")?.sync_id
+                      );
+                    });
+                  })}
+                  loading={isLocationLoading}
+                  size="small"
+                  getOptionLabel={(option) =>
+                    option.location_code + " - " + option.location_name
+                  }
+                  isOptionEqualToValue={(option, value) =>
+                    option.location_id === value.location_id
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      color="secondary"
+                      {...params}
+                      label="Location"
+                      error={!!errors?.location_id}
+                      helperText={errors?.location_id?.message}
+                    />
+                  )}
+                />
+
+                <CustomAutoComplete
+                  name="account_title_id"
+                  disabled
+                  control={control}
+                  options={accountTitleData}
+                  loading={isAccountTitleLoading}
+                  size="small"
+                  // disabled
+                  getOptionLabel={(option) =>
+                    option.account_title_code +
+                    " - " +
+                    option.account_title_name
+                  }
+                  isOptionEqualToValue={(option, value) =>
+                    option.account_title_code === value.account_title_code
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      color="secondary"
+                      {...params}
+                      label="Account Title  "
+                      error={!!errors?.account_title_id}
+                      helperText={errors?.account_title_id?.message}
+                    />
+                  )}
+                />
+              </Box>
+
+              <Divider />
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "15px",
+                  width: "100%",
+                }}
+              >
+                <Typography sx={sxSubtitle}>Asset Information</Typography>
+
+                <CustomTextField
+                  control={control}
+                  name="asset_description"
+                  label="Asset Description"
+                  type="text"
                   color="secondary"
                   size="small"
-                  error={!!errors?.months_depreciated}
-                  helperText={errors?.months_depreciated?.message}
-                  // isAllowed={(values) => {
-                  //   const { floatValue } = values;
-                  //   return floatValue >= 1;
-                  // }}
-                  thousandSeparator
+                  disabled={data?.print_count >= 1}
+                  error={!!errors?.asset_description}
+                  helperText={errors?.asset_description?.message}
                   fullWidth
+                  multiline
                 />
-              )}
+
+                <CustomTextField
+                  control={control}
+                  name="asset_specification"
+                  label="Asset Specification"
+                  type="text"
+                  color="secondary"
+                  size="small"
+                  error={!!errors?.asset_specification}
+                  helperText={errors?.asset_specification?.message}
+                  fullWidth
+                  multiline
+                />
+
+                <CustomDatePicker
+                  control={control}
+                  name="acquisition_date"
+                  label="Acquisition Date"
+                  size="small"
+                  views={["year", "month", "day"]}
+                  openTo="year"
+                  error={!!errors?.acquisition_date}
+                  helperText={errors?.acquisition_date?.message}
+                  fullWidth={isFullWidth ? true : false}
+                  maxDate={new Date()}
+                  reduceAnimations
+                />
+
+                <CustomAutoComplete
+                  autoComplete
+                  name="accountability"
+                  control={control}
+                  options={["Personal Issued", "Common"]}
+                  size="small"
+                  isOptionEqualToValue={(option, value) => option === value}
+                  renderInput={(params) => (
+                    <TextField
+                      color="secondary"
+                      {...params}
+                      label="Accountability  "
+                      error={!!errors?.accountability}
+                      helperText={errors?.accountability?.message}
+                    />
+                  )}
+                />
+
+                {watch("accountability") === "Personal Issued" && (
+                  <CustomAutoComplete
+                    name="accountable"
+                    control={control}
+                    size="small"
+                    includeInputInList
+                    disablePortal
+                    filterOptions={filterOptions}
+                    options={sedarData}
+                    loading={isSedarLoading}
+                    getOptionLabel={
+                      (option) => option.general_info?.full_id_number_full_name
+                      // `(${option.general_info?.full_id_number}) - ${option.general_info?.full_name}`
+                    }
+                    isOptionEqualToValue={(option, value) =>
+                      option.general_info?.full_id_number ===
+                      value.general_info?.full_id_number
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Accountable"
+                        color="secondary"
+                        error={!!errors?.accountable?.message}
+                        helperText={errors?.accountable?.message}
+                      />
+                    )}
+                  />
+                )}
+              </Box>
             </Box>
 
-            {watch("depreciation_method") !== "Supplier Rebase" && (
-              <Box>
-                <CustomNumberField
-                  autoComplete="off"
-                  control={control}
-                  name="acquisition_cost"
-                  label="Acquisition Cost"
-                  color="secondary"
-                  size="small"
-                  error={!!errors?.acquisition_cost}
-                  helperText={errors?.acquisition_cost?.message}
-                  prefix="₱"
-                  isAllowed={(values) => {
-                    const { floatValue } = values;
-                    return floatValue >= 1;
-                  }}
-                  thousandSeparator
-                  fullWidth
-                  // onChange={(_, value) => {
-                  //   setValue("scrap_value", 0);
-                  //   setValue("depreciable_basis", watch("acquisition_cost"));
-                  //   return value;
-                  // }}
-                />
+            <Divider />
 
-                <CustomNumberField
-                  autoComplete="off"
-                  control={control}
-                  color="secondary"
-                  name="scrap_value"
-                  label="Scrap Value"
-                  size="small"
-                  error={!!errors?.scrap_value}
-                  helperText={errors?.scrap_value?.message}
-                  prefix="₱"
-                  thousandSeparator
-                  isAllowed={(values) => {
-                    const { floatValue } = values;
-                    return floatValue <= watch("acquisition_cost");
-                  }}
-                  fullWidth
-                />
-              </Box>
-            )}
+            <Box>
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                size="small"
+                loading={isUpdateLoading || isPostLoading}
+                // disabled={watch("release_date") === null}
+              >
+                {/* {data.status ? "Update" : "Create"} */}
+              </LoadingButton>
 
-            {watch("depreciation_method") !== "Supplier Rebase" && (
-              <CustomNumberField
-                // autoComplete="off"
-                control={control}
-                disabled
-                name="depreciable_basis"
-                label="Depreciable Basis"
+              <Button
+                variant="outlined"
                 color="secondary"
                 size="small"
-                prefix="₱"
-                thousandSeparator
-                fullWidth
-                error={!!errors?.depreciable_basis}
-                helperText={errors?.depreciable_basis?.message}
-                // isAllowed={(values) => {
-                //   const { floatValue } = values;
-                //   return floatValue >= 1;
-                // }}
-              />
-            )}
-
-            {/* <CustomNumberField
-                autoComplete="off"
-                control={control}
-                name="accumulated_cost"
-                label="Accumulated Cost"
-                color="secondary"
-                size="small"
-                error={!!errors?.accumulated_cost?.message}
-                helperText={errors?.accumulated_cost?.message}
-                prefix="₱"
-                isAllowed={(values) => {
-                  const { floatValue } = values;
-                  return floatValue >= 1;
-                }}
-                thousandSeparator
-                fullWidth
-              /> */}
-
-            {/* <Box className="addRequisition__status">
-              <CustomDatePicker
-                control={control}
-                name="start_depreciation"
-                label="Start Depreciation"
-                size="small"
-                views={["month", "year"]}
-                error={!!errors?.start_depreciation}
-                helperText={errors?.start_depreciation?.message}
-                fullWidth={isFullWidth ? true : false}
-              />
-
-              <CustomDatePicker
-                control={control}
-                name="end_depreciation"
-                label="End Depreciation"
-                views={["month", "year"]}
-                error={!!errors?.end_depreciation}
-                helperText={errors?.end_depreciation?.message}
-                fullWidth={isFullWidth ? true : false}
-              />
-            </Box> */}
-
-            {/* <CustomNumberField
-                control={control}
-                name="depreciation_per_year"
-                label="Depreciation per Year"
-                color="secondary"
-                size="small"
-                error={!!errors?.depreciation_per_year}
-                helperText={errors?.depreciation_per_year?.message}
-                prefix="₱"
-                isAllowed={(values) => {
-                  const { floatValue } = values;
-                  return floatValue >= 1;
-                }}
-                thousandSeparator
-                fullWidth
-              />
-
-              <CustomNumberField
-                control={control}
-                name="depreciation_per_month"
-                label="Depreciation per Month"
-                color="secondary"
-                size="small"
-                error={!!errors?.depreciation_per_month}
-                helperText={errors?.depreciation_per_month?.message}
-                prefix="₱"
-                isAllowed={(values) => {
-                  const { floatValue } = values;
-                  return floatValue >= 1;
-                }}
-                thousandSeparator
-                fullWidth
-              />
-
-              <CustomNumberField
-                autoComplete="off"
-                control={control}
-                name="remaining_book_value"
-                label="Remaining Book Value"
-                color="secondary"
-                size="small"
-                error={!!errors?.remaining_book_value}
-                helperText={errors?.remaining_book_value?.message}
-                prefix="₱"
-                isAllowed={(values) => {
-                  const { floatValue } = values;
-                  return floatValue >= 1;
-                }}
-                thousandSeparator
-                fullWidth
-              /> */}
+                onClick={handleCloseDrawer}
+              >
+                Cancel
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Box>
-
-      <Divider />
-
-      <Box>
-        <LoadingButton
-          type="submit"
-          variant="contained"
-          size="small"
-          loading={isUpdateLoading || isPostLoading}
-          // disabled={watch("release_date") === null}
-        >
-          {data.status ? "Update" : "Create"}
-        </LoadingButton>
-
-        <Button
-          variant="outlined"
-          color="secondary"
-          size="small"
-          onClick={handleCloseDrawer}
-        >
-          Cancel
-        </Button>
-      </Box>
-    </Box>
+    </>
   );
 };
 
