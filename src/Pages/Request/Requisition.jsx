@@ -8,7 +8,7 @@ import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 import NoRecordsFound from "../../Layout/NoRecordsFound";
 // import AddRequisition from "../Masterlist/AddEdit/AddRequisition";
 import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
-import AddRequisition from "./AddEdit/AddRequisition";
+import AddRequisition from "./Add Requisition/AddRequisition";
 
 // RTK
 import { useDispatch, useSelector } from "react-redux";
@@ -159,7 +159,7 @@ const Requisition = () => {
             if (err?.status === 422) {
               dispatch(
                 openToast({
-                  message: err.data.error,
+                  message: err.data.errors?.detail,
                   duration: 5000,
                   variant: "error",
                 })

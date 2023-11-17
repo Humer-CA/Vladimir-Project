@@ -56,7 +56,7 @@ import Requisition from "./Pages/Request/Requisition";
 import PageNotFound from "./Pages/PageNotFound";
 import Confirmation from "./Components/Reusable/Confirmation";
 import SubUnit from "./Pages/Masterlist/SubUnit";
-import AddRequisition from "./Pages/Request/AddEdit/AddRequisition";
+import AddRequisition from "./Pages/Request/Add Requisition/AddRequisition";
 import Request from "./Pages/Request";
 
 const router = createBrowserRouter([

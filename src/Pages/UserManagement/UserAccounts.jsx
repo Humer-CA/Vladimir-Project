@@ -174,7 +174,7 @@ const UserAccounts = () => {
             if (err?.status === 422) {
               dispatch(
                 openToast({
-                  message: err.data.error,
+                  message: err.data.errors?.detail,
                   duration: 5000,
                   variant: "error",
                 })
@@ -275,7 +275,7 @@ const UserAccounts = () => {
             if (err?.status === 422) {
               dispatch(
                 openToast({
-                  message: err.data.error,
+                  message: err.data.errors?.detail,
                   duration: 5000,
                   variant: "error",
                 })
@@ -319,7 +319,7 @@ const UserAccounts = () => {
       if (err?.status === 422) {
         dispatch(
           openToast({
-            message: err.data.error,
+            message: err.data.errors?.detail,
             duration: 5000,
             variant: "error",
           })

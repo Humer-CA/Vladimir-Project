@@ -1,0 +1,31 @@
+@use "../../index.scss";
+
+.request {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-left: 10px;
+  gap: 10px;
+  width: 100%;
+  position: relative;
+  //   max-width: 270px;
+
+  &__form {
+    width: 250px;
+    padding-right: 8px;
+    margin-top: 10px;
+    overflow: auto;
+    height: calc(100vh - 280px);
+  }
+
+  &__table {
+    width: 80%;
+    overflow: auto;
+    height: 100%;
+    // max-width: 80%;
+  }
+
+  &__table-height {
+    height: calc(100vh - 380px);
+  }
+}
