@@ -1,8 +1,4 @@
-import {
-  TextField as MuiTextField,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { TextField as MuiTextField, Typography } from "@mui/material";
 import { Controller } from "react-hook-form";
 
 const CustomTextField = (props) => {
@@ -31,6 +27,7 @@ const CustomTextField = (props) => {
           <>
             <MuiTextField
               {...textfield}
+              size="small"
               autoComplete="off"
               inputRef={ref}
               value={value}

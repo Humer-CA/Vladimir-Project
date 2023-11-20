@@ -3,6 +3,7 @@ import "../../../Style/Request/request.scss";
 import CustomTextField from "../../../Components/Reusable/CustomTextField";
 import CustomAutoComplete from "../../../Components/Reusable/CustomAutoComplete";
 import CustomDatePicker from "../../../Components/Reusable/CustomDatePicker";
+import CustomAttachment from "../../../Components/Reusable/CustomAttachment";
 import { useGetSedarUsersApiQuery } from "../../../Redux/Query/SedarUserApi";
 
 import { useForm } from "react-hook-form";
@@ -29,6 +30,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import {
+  AddToPhotos,
   ArrowBackIosRounded,
   ArrowForwardIosRounded,
 } from "@mui/icons-material";
@@ -49,6 +51,7 @@ import {
 import { useGetTypeOfRequestAllApiQuery } from "../../../Redux/Query/Masterlist/TypeOfRequest";
 import { useNavigate } from "react-router-dom";
 import NoRecordsFound from "../../../Layout/NoRecordsFound";
+import { useGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUnit";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -77,13 +80,13 @@ const schema = yup.object().shape({
     .required()
     .label("Department"),
 
-  location_id: yup
+  subunit_id: yup
     .string()
     .transform((value) => {
       return value?.id.toString();
     })
     .required()
-    .label("Location"),
+    .label("Department"),
 
   account_title_id: yup
     .string()
@@ -120,7 +123,6 @@ const AddRequisition = (props) => {
   const isFullWidth = useMediaQuery("(max-width: 600px)");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log(data);
 
   const [
     postRequisition,
@@ -153,14 +155,6 @@ const AddRequisition = (props) => {
   } = useGetTypeOfRequestAllApiQuery();
 
   const {
-    data: companyData = [],
-    isLoading: isCompanyLoading,
-    isSuccess: isCompanySuccess,
-    isError: isCompanyError,
-    refetch: isCompanyRefetch,
-  } = useGetCompanyAllApiQuery();
-
-  const {
     data: departmentData = [],
     isLoading: isDepartmentLoading,
     isSuccess: isDepartmentSuccess,
@@ -169,20 +163,11 @@ const AddRequisition = (props) => {
   } = useGetDepartmentAllApiQuery();
 
   const {
-    data: locationData = [],
-    isLoading: isLocationLoading,
-    isSuccess: isLocationSuccess,
-    isError: isLocationError,
-    refetch: isLocationRefetch,
-  } = useGetLocationAllApiQuery();
-
-  const {
-    data: accountTitleData = [],
-    isLoading: isAccountTitleLoading,
-    isSuccess: isAccountTitleSuccess,
-    isError: isAccountTitleError,
-    refetch: isAccountTitleRefetch,
-  } = useGetAccountTitleAllApiQuery();
+    data: subUnitData = [],
+    isLoading: isSubUnitLoading,
+    isSuccess: isSubUnitSuccess,
+    isError: isSubUnitError,
+  } = useGetSubUnitAllApiQuery();
 
   const {
     data: sedarData = [],
@@ -205,23 +190,17 @@ const AddRequisition = (props) => {
     resolver: yupResolver(schema),
     defaultValues: {
       id: "",
-
       type_of_request_id: null,
       sub_capex_id: null,
-      // project_name: "",
-      charging: null,
-
-      is_old_asset: "0",
-      tag_number: "",
-      tag_number_old: "",
 
       // division_id: null,
-      major_category_id: null,
-      minor_category_id: null,
-      company_id: null,
+      // major_category_id: null,
+      // minor_category_id: null,
+      // company_id: null,
       department_id: null,
-      location_id: null,
-      account_title_id: null,
+      subunit_id: null,
+      // location_id: null,
+      // account_title_id: null,
 
       asset_description: "",
       asset_specification: "",
@@ -229,11 +208,6 @@ const AddRequisition = (props) => {
       accountability: null,
       accountable: null,
       cellphone_number: null,
-      brand: "",
-      care_of: "",
-      voucher: "",
-      voucher_date: null,
-      receipt: "",
       quantity: 1,
     },
   });
@@ -339,6 +313,8 @@ const AddRequisition = (props) => {
     matchFrom: "any",
   });
 
+  const attachmentType = ["Budgeted", "Unbudgeted"];
+
   // console.log(errors);
   // console.log(watch("depreciation_method"));
   // console.log(data);
@@ -384,7 +360,7 @@ const AddRequisition = (props) => {
                     width: "100%",
                   }}
                 >
-                  <Typography sx={sxSubtitle}>Type of Asset</Typography>
+                  <Typography sx={sxSubtitle}>Request Information</Typography>
 
                   <CustomAutoComplete
                     control={control}
@@ -415,13 +391,8 @@ const AddRequisition = (props) => {
                   <CustomAutoComplete
                     control={control}
                     name="attachment-type"
-                    options={requestList}
-                    // loading={isTypeOfRequestLoading}
+                    options={attachmentType}
                     size="small"
-                    getOptionLabel={(option) => option.label}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
                     renderInput={(params) => (
                       <TextField
                         color="secondary"
@@ -444,9 +415,7 @@ const AddRequisition = (props) => {
                     width: "100%",
                   }}
                 >
-                  <Typography sx={sxSubtitle}>
-                    Chart of Accounts (COA)
-                  </Typography>
+                  <Typography sx={sxSubtitle}>Charging Information</Typography>
 
                   {/* OLD Departments */}
                   <CustomAutoComplete
@@ -456,9 +425,7 @@ const AddRequisition = (props) => {
                     options={departmentData}
                     loading={isDepartmentLoading}
                     size="small"
-                    getOptionLabel={(option) =>
-                      option.department_code + " - " + option.department_name
-                    }
+                    getOptionLabel={(option) => option.department_name}
                     isOptionEqualToValue={(option, value) =>
                       option.id === value.id
                     }
@@ -467,110 +434,45 @@ const AddRequisition = (props) => {
                         color="secondary"
                         {...params}
                         label="Department"
-                        error={!!errors?.department_id}
+                        error={!!errors?.department_id?.message}
                         helperText={errors?.department_id?.message}
                       />
                     )}
                     onChange={(_, value) => {
-                      const companyID = companyData?.find(
-                        (item) => item.sync_id === value.company.company_sync_id
-                      );
-
-                      if (value) {
-                        setValue("company_id", companyID);
-                      } else {
-                        setValue("company_id", null);
-                      }
-
+                      setValue("subunit_id", null);
                       return value;
                     }}
+                    disablePortal
+                    fullWidth
                   />
 
                   <CustomAutoComplete
                     autoComplete
-                    name="company_id"
+                    name="subunit_id"
                     control={control}
-                    options={companyData}
-                    loading={isCompanyLoading}
-                    size="small"
-                    getOptionLabel={(option) =>
-                      option.company_code + " - " + option.company_name
-                    }
-                    isOptionEqualToValue={(option, value) =>
-                      option.company_id === value.company_id
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        color="secondary"
-                        {...params}
-                        label="Company"
-                        error={!!errors?.company_id}
-                        helperText={errors?.company_id?.message}
-                      />
+                    options={subUnitData?.filter(
+                      (item) =>
+                        item?.department?.id === watch("department_id")?.id
                     )}
-                    disabled
-                  />
-
-                  <CustomAutoComplete
-                    autoComplete
-                    name="location_id"
-                    control={control}
-                    options={locationData?.filter((item) => {
-                      return item.departments.some((department) => {
-                        return (
-                          department?.sync_id ===
-                          watch("department_id")?.sync_id
-                        );
-                      });
-                    })}
-                    loading={isLocationLoading}
+                    loading={isSubUnitLoading}
                     size="small"
-                    getOptionLabel={(option) =>
-                      option.location_code + " - " + option.location_name
-                    }
+                    getOptionLabel={(option) => option.subunit_name}
                     isOptionEqualToValue={(option, value) =>
-                      option.location_id === value.location_id
+                      option.id === value.id
                     }
                     renderInput={(params) => (
                       <TextField
                         color="secondary"
                         {...params}
-                        label="Location"
-                        error={!!errors?.location_id}
-                        helperText={errors?.location_id?.message}
-                      />
-                    )}
-                  />
-
-                  <CustomAutoComplete
-                    name="account_title_id"
-                    disabled
-                    control={control}
-                    options={accountTitleData}
-                    loading={isAccountTitleLoading}
-                    size="small"
-                    // disabled
-                    getOptionLabel={(option) =>
-                      option.account_title_code +
-                      " - " +
-                      option.account_title_name
-                    }
-                    isOptionEqualToValue={(option, value) =>
-                      option.account_title_code === value.account_title_code
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        color="secondary"
-                        {...params}
-                        label="Account Title  "
-                        error={!!errors?.account_title_id}
-                        helperText={errors?.account_title_id?.message}
+                        label="Subunit"
+                        error={!!errors?.subunit_id}
+                        helperText={errors?.subunit_id?.message}
                       />
                     )}
                   />
                 </Box>
 
-                <Divider />
+                <Divider sx={{ py: 0.5 }} />
 
                 <Box
                   sx={{
@@ -681,20 +583,63 @@ const AddRequisition = (props) => {
                     flexDirection: "column",
                     gap: "15px",
                     width: "100%",
+                    pb: "10px",
                   }}
                 >
                   <Typography sx={sxSubtitle}>Attachments</Typography>
+
+                  <CustomAttachment
+                    control={control}
+                    name="letter_of_request"
+                    label="Letter of Request"
+                    error={!!errors?.attachment}
+                    helperText={errors?.attachment?.message}
+                    multiline
+                  />
+
+                  <CustomAttachment
+                    control={control}
+                    name="quotation"
+                    label="Quotation"
+                    error={!!errors?.attachment}
+                    helperText={errors?.attachment?.message}
+                    multiline
+                  />
+
+                  <CustomAttachment
+                    control={control}
+                    name="specification"
+                    label="Specification (Form)"
+                    error={!!errors?.attachment}
+                    helperText={errors?.attachment?.message}
+                    multiline
+                  />
+
+                  <CustomAttachment
+                    control={control}
+                    name="tool_of_trade"
+                    label="Tool of Trade"
+                    error={!!errors?.attachment}
+                    helperText={errors?.attachment?.message}
+                    multiline
+                  />
+
+                  <CustomAttachment
+                    control={control}
+                    name="other_attachment"
+                    label="Other Attachments"
+                    error={!!errors?.attachment}
+                    helperText={errors?.attachment?.message}
+                    multiline
+                  />
                 </Box>
               </Stack>
             </Box>
+
             <Divider sx={{ pb: 1, mb: 1 }} />
-            <Button
-              variant="contained"
-              size="small"
-              loading={isUpdateLoading || isPostLoading}
-              fullWidth
-            >
-              ADD
+
+            <Button variant="contained" size="small" fullWidth sx={{ gap: 1 }}>
+              <AddToPhotos /> <Typography variant="p">ADD</Typography>
             </Button>
           </Box>
 
@@ -866,6 +811,7 @@ const AddRequisition = (props) => {
                 variant="outlined"
                 size="small"
                 color="secondary"
+                onClick={() => navigate(-1)}
               >
                 Cancel
               </Button>

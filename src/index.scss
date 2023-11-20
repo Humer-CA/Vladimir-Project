@@ -328,3 +328,11 @@ img {
 .pad {
   padding: 50px;
 }
+
+input::file-selector-button {
+  display: none;
+}
+
+input::placeholder {
+  color: gray;
+}

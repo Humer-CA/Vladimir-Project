@@ -263,8 +263,6 @@ const FixedAsset = (props) => {
     setPage(1);
   };
 
-  console.log(fixedAssetData);
-
   return (
     <Box className="mcontainer">
       <Typography
