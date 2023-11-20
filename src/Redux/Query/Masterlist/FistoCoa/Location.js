@@ -24,8 +24,8 @@ export const locationApi = createApi({
     }),
 
     getLocationAllApi: builder.query({
-      query: () => `/location/`,
-      transformResponse: (response) => response.data,
+      query: () => `/location?pagination=none`,
+      transformResponse: (response) => response,
     }),
 
     postLocationApi: builder.mutation({

@@ -24,7 +24,7 @@ export const companyApi = createApi({
     }),
 
     getCompanyAllApi: builder.query({
-      query: () => `/company/`,
+      query: () => `/company?pagination=none`,
     }),
 
     postCompanyApi: builder.mutation({

@@ -23,7 +23,7 @@ export const serviceProviderApi = createApi({
     }),
 
     getServiceProviderAllApi: builder.query({
-      query: (id) => `/service-provider`,
+      query: (id) => `/service-provider?pagination=none`,
     }),
 
     getServiceProviderApi: builder.query({

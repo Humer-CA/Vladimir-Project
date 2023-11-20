@@ -25,7 +25,7 @@ export const assetStatusApi = createApi({
     }),
 
     getAssetStatusAllApi: builder.query({
-      query: () => `asset-status`,
+      query: () => `asset-status?pagination=none`,
       transformResponse: (response) => response,
       providesTags: ["AssetStatus"],
     }),

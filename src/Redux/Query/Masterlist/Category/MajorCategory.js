@@ -25,7 +25,7 @@ export const majorCategoryApi = createApi({
     }),
 
     getMajorCategoryAllApi: builder.query({
-      query: (id) => `/major-category/`,
+      query: (id) => `/major-category?pagination=none/`,
       transformResponse: (response) => response.data,
       providesTags: ["majorCategory"],
     }),

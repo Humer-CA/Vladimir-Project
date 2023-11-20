@@ -24,7 +24,7 @@ export const accountTitleApi = createApi({
     }),
 
     getAccountTitleAllApi: builder.query({
-      query: () => `/account-title/`,
+      query: () => `/account-title?pagination=none`,
     }),
 
     postAccountTitleApi: builder.mutation({

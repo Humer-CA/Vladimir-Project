@@ -26,7 +26,7 @@ export const typeOfRequestApi = createApi({
 
     getTypeOfRequestAllApi: builder.query({
       query: () => `type-of-request?pagination=none`,
-      transformResponse: (response) => response.data,
+      transformResponse: (response) => response,
       providesTags: ["TypeOfRequest"],
     }),
 

@@ -25,7 +25,7 @@ export const capexApi = createApi({
     }),
 
     getCapexAllApi: builder.query({
-      query: () => `capex`,
+      query: () => `capex?pagination=none`,
       transformResponse: (response) => response.data,
       providesTags: ["Capex"],
     }),

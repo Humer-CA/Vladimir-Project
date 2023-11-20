@@ -25,7 +25,7 @@ export const depreciationStatusApi = createApi({
     }),
 
     getDepreciationStatusAllApi: builder.query({
-      query: () => `depreciation-status`,
+      query: () => `depreciation-status?pagination=none`,
       transformResponse: (response) => response,
       providesTags: ["DepreciationStatus"],
     }),

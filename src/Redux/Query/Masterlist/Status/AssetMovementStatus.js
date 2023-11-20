@@ -25,7 +25,7 @@ export const assetMovementStatusApi = createApi({
     }),
 
     getAssetMovementStatusAllApi: builder.query({
-      query: () => `movement-status`,
+      query: () => `movement-status?pagination=none`,
       transformResponse: (response) => response,
       providesTags: ["AssetMovementStatus"],
     }),

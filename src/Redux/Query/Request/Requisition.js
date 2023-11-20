@@ -25,7 +25,7 @@ export const requisitionApi = createApi({
     }),
 
     getRequisitionAllApi: builder.query({
-      query: () => `asset-request`,
+      query: () => `asset-request?pagination=none`,
       transformResponse: (response) => response.data,
       providesTags: ["Requisition"],
     }),

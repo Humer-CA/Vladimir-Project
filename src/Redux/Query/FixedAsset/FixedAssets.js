@@ -26,7 +26,7 @@ export const fixedAssetApi = createApi({
     }),
 
     getFixedAssetAllApi: builder.query({
-      query: () => `fixed-asset`,
+      query: () => `fixed-asset?pagination=none`,
       transformResponse: (response) => response.data,
       providesTags: ["FixedAsset"],
     }),

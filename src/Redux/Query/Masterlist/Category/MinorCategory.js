@@ -25,7 +25,7 @@ export const minorCategoryApi = createApi({
     }),
 
     getMinorCategoryAllApi: builder.query({
-      query: (id) => `/minor-category/`,
+      query: (id) => `/minor-category?pagination=none/`,
       providesTags: ["minorCategory"],
     }),
 

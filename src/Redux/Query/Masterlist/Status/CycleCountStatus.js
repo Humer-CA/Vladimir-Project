@@ -25,7 +25,7 @@ export const cycleCountStatusApi = createApi({
     }),
 
     getCycleCountStatusAllApi: builder.query({
-      query: () => `cycle-count-status`,
+      query: () => `cycle-count-status?pagination=none`,
       transformResponse: (response) => response,
       providesTags: ["CycleCountStatus"],
     }),

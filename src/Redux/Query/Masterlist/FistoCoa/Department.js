@@ -24,7 +24,7 @@ export const departmentApi = createApi({
     }),
 
     getDepartmentAllApi: builder.query({
-      query: () => `/department`,
+      query: () => `/department?pagination=none`,
       transformResponse: (response) => response,
       providesTags: ["Department"],
     }),

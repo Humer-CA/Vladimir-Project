@@ -25,7 +25,7 @@ export const divisionApi = createApi({
     }),
 
     getDivisionAllApi: builder.query({
-      query: () => `division`,
+      query: () => `division?pagination=none`,
       transformResponse: (response) => response.data,
       providesTags: ["Division"],
     }),
