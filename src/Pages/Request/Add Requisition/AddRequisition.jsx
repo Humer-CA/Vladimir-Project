@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../../Style/Request/request.scss";
 import CustomTextField from "../../../Components/Reusable/CustomTextField";
+import CustomNumberField from "../../../Components/Reusable/CustomNumberField";
 import CustomAutoComplete from "../../../Components/Reusable/CustomAutoComplete";
-import CustomDatePicker from "../../../Components/Reusable/CustomDatePicker";
 import CustomAttachment from "../../../Components/Reusable/CustomAttachment";
 import { useGetSedarUsersApiQuery } from "../../../Redux/Query/SedarUserApi";
 
@@ -16,6 +16,7 @@ import {
   Box,
   Button,
   Divider,
+  IconButton,
   Stack,
   Table,
   TableBody,
@@ -25,15 +26,12 @@ import {
   TableRow,
   TableSortLabel,
   TextField,
+  Tooltip,
   Typography,
   createFilterOptions,
   useMediaQuery,
 } from "@mui/material";
-import {
-  AddToPhotos,
-  ArrowBackIosRounded,
-  ArrowForwardIosRounded,
-} from "@mui/icons-material";
+import { AddToPhotos, ArrowBackIosRounded, Remove } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
 // RTK
@@ -52,6 +50,7 @@ import { useGetTypeOfRequestAllApiQuery } from "../../../Redux/Query/Masterlist/
 import { useNavigate } from "react-router-dom";
 import NoRecordsFound from "../../../Layout/NoRecordsFound";
 import { useGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUnit";
+import CustomPatternfield from "../../../Components/Reusable/CustomNumberField";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -113,6 +112,12 @@ const schema = yup.object().shape({
           .required()
           .typeError("Accountable is a required field"),
     }),
+
+  letter_of_request: yup.mixed().label("Letter of Request"),
+  quotation: yup.string().label("Quotation"),
+  specification: yup.string().label("Specification"),
+  tool_of_trade: yup.string().label("Tool of Trade"),
+  other_attachment: yup.string().label("Other Attachment"),
 });
 
 const AddRequisition = (props) => {
@@ -123,6 +128,8 @@ const AddRequisition = (props) => {
   const isFullWidth = useMediaQuery("(max-width: 600px)");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const ref = useRef(null);
 
   const [
     postRequisition,
@@ -191,11 +198,8 @@ const AddRequisition = (props) => {
     defaultValues: {
       id: "",
       type_of_request_id: null,
-      sub_capex_id: null,
+      attachment_type: null,
 
-      // division_id: null,
-      // major_category_id: null,
-      // minor_category_id: null,
       // company_id: null,
       department_id: null,
       subunit_id: null,
@@ -209,6 +213,12 @@ const AddRequisition = (props) => {
       accountable: null,
       cellphone_number: null,
       quantity: 1,
+
+      letter_of_request: "",
+      quotation: "",
+      specification: "",
+      tool_of_trade: "",
+      other_attachment: "",
     },
   });
 
@@ -315,9 +325,57 @@ const AddRequisition = (props) => {
 
   const attachmentType = ["Budgeted", "Unbudgeted"];
 
-  // console.log(errors);
-  // console.log(watch("depreciation_method"));
-  // console.log(data);
+  const BoxStyle = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+    width: "100%",
+    pb: "10px",
+  };
+
+  // console.log(ref.current.currentTarget);
+
+  const RemoveFile = ({ title, value }) => {
+    return (
+      <Tooltip title={`Remove ${title}`} arrow>
+        <IconButton
+          onClick={() => {
+            setValue(value, "");
+            ref.current.files = [];
+          }}
+          size="small"
+          sx={{
+            backgroundColor: "error.main",
+            color: "white",
+            ":hover": { backgroundColor: "error.main" },
+            height: "25px",
+            width: "25px",
+          }}
+        >
+          <Remove />
+        </IconButton>
+      </Tooltip>
+    );
+  };
+
+  console.log(watch("letter_of_request"));
+
+  // Adding of Request
+  const addRequstHandler = (formData) => {
+    setValue("approver_id", [...watch("approver_id"), requestList]);
+    setSelectedApprovers(null);
+  };
+
+  const deleteRequestHandler = (id) => {
+    const filteredRequest = watch("approver_id").filter(
+      (item) => item?.id !== id
+    );
+    setValue("approver_id", filteredApprovers);
+  };
+
+  const setListRequest = (list) => {
+    setValue("approver_id", list);
+  };
 
   return (
     <>
@@ -352,17 +410,11 @@ const AddRequisition = (props) => {
               onSubmit={handleSubmit(onSubmitHandler)}
             >
               <Stack gap={2}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "15px",
-                    width: "100%",
-                  }}
-                >
+                <Box sx={BoxStyle}>
                   <Typography sx={sxSubtitle}>Request Information</Typography>
 
                   <CustomAutoComplete
+                    disablePortal
                     control={control}
                     name="type_of_request_id"
                     options={typeOfRequestData}
@@ -389,8 +441,9 @@ const AddRequisition = (props) => {
                   />
 
                   <CustomAutoComplete
+                    disablePortal
                     control={control}
-                    name="attachment-type"
+                    name="attachment_type"
                     options={attachmentType}
                     size="small"
                     renderInput={(params) => (
@@ -407,14 +460,7 @@ const AddRequisition = (props) => {
 
                 <Divider />
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "15px",
-                    width: "100%",
-                  }}
-                >
+                <Box sx={BoxStyle}>
                   <Typography sx={sxSubtitle}>Charging Information</Typography>
 
                   {/* OLD Departments */}
@@ -470,60 +516,6 @@ const AddRequisition = (props) => {
                       />
                     )}
                   />
-                </Box>
-
-                <Divider sx={{ py: 0.5 }} />
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "15px",
-                    width: "100%",
-                  }}
-                >
-                  <Typography sx={sxSubtitle}>Asset Information</Typography>
-
-                  <CustomTextField
-                    control={control}
-                    name="asset_description"
-                    label="Asset Description"
-                    type="text"
-                    color="secondary"
-                    size="small"
-                    disabled={data?.print_count >= 1}
-                    error={!!errors?.asset_description}
-                    helperText={errors?.asset_description?.message}
-                    fullWidth
-                    multiline
-                  />
-
-                  <CustomTextField
-                    control={control}
-                    name="asset_specification"
-                    label="Asset Specification"
-                    type="text"
-                    color="secondary"
-                    size="small"
-                    error={!!errors?.asset_specification}
-                    helperText={errors?.asset_specification?.message}
-                    fullWidth
-                    multiline
-                  />
-
-                  <CustomDatePicker
-                    control={control}
-                    name="acquisition_date"
-                    label="Acquisition Date"
-                    size="small"
-                    views={["year", "month", "day"]}
-                    openTo="year"
-                    error={!!errors?.acquisition_date}
-                    helperText={errors?.acquisition_date?.message}
-                    fullWidth={isFullWidth ? true : false}
-                    maxDate={new Date()}
-                    reduceAnimations
-                  />
 
                   <CustomAutoComplete
                     autoComplete
@@ -575,63 +567,169 @@ const AddRequisition = (props) => {
                   )}
                 </Box>
 
+                <Divider sx={{ py: 0.5 }} />
+
+                <Box sx={BoxStyle}>
+                  <Typography sx={sxSubtitle}>Asset Information</Typography>
+
+                  <CustomTextField
+                    control={control}
+                    name="asset_description"
+                    label="Asset Description"
+                    type="text"
+                    color="secondary"
+                    size="small"
+                    disabled={data?.print_count >= 1}
+                    error={!!errors?.asset_description}
+                    helperText={errors?.asset_description?.message}
+                    fullWidth
+                    multiline
+                  />
+
+                  <CustomTextField
+                    control={control}
+                    name="asset_specification"
+                    label="Asset Specification"
+                    type="text"
+                    color="secondary"
+                    size="small"
+                    error={!!errors?.asset_specification}
+                    helperText={errors?.asset_specification?.message}
+                    fullWidth
+                    multiline
+                  />
+
+                  <CustomNumberField
+                    control={control}
+                    name="quantity"
+                    label="Quantity"
+                    type="number"
+                    color="secondary"
+                    error={!!errors?.quantity}
+                    helperText={errors?.quantity?.message}
+                    fullWidth
+                    isAllowed={(values) => {
+                      const { floatValue } = values;
+                      return floatValue >= 1;
+                    }}
+                  />
+
+                  <CustomPatternfield
+                    control={control}
+                    color="secondary"
+                    name="cellphone_number"
+                    label="Cellphone # (optional)"
+                    type="text"
+                    size="small"
+                    error={!!errors?.cellphone_number}
+                    helperText={errors?.cellphone_number?.message}
+                    format="(09##) - ### - ####"
+                    valueIsNumericString
+                    fullWidth
+                  />
+
+                  <CustomTextField
+                    control={control}
+                    name="remarks"
+                    label="Remarks (Optional)"
+                    type="text"
+                    color="secondary"
+                    size="small"
+                    disabled={data?.print_count >= 1}
+                    error={!!errors?.asset_description}
+                    helperText={errors?.asset_description?.message}
+                    fullWidth
+                    multiline
+                  />
+                </Box>
+
                 <Divider />
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "15px",
-                    width: "100%",
-                    pb: "10px",
-                  }}
-                >
+                <Box sx={BoxStyle}>
                   <Typography sx={sxSubtitle}>Attachments</Typography>
 
-                  <CustomAttachment
-                    control={control}
-                    name="letter_of_request"
-                    label="Letter of Request"
-                    error={!!errors?.attachment}
-                    helperText={errors?.attachment?.message}
-                    multiline
-                  />
+                  <Stack flexDirection="row" gap={1} alignItems="center">
+                    <CustomAttachment
+                      control={control}
+                      name="letter_of_request"
+                      label="Letter of Request"
+                      inputRef={ref}
+                      // error={!!errors?.attachment}
+                      // helperText={errors?.attachment?.message}
+                    />
+                    {watch("letter_of_request") !== "" ? (
+                      <RemoveFile
+                        title="Letter of Request"
+                        value="letter_of_request"
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </Stack>
 
-                  <CustomAttachment
-                    control={control}
-                    name="quotation"
-                    label="Quotation"
-                    error={!!errors?.attachment}
-                    helperText={errors?.attachment?.message}
-                    multiline
-                  />
+                  <Stack flexDirection="row" gap={1} alignItems="center">
+                    <CustomAttachment
+                      control={control}
+                      name="quotation"
+                      label="Quotation"
+                      value={watch("quotation") === "" ? false : true}
+                      // error={!!errors?.attachment}
+                      // helperText={errors?.attachment?.message}
+                    />
+                    {watch("quotation") !== "" ? (
+                      <RemoveFile title="Quotation" value="quotation" />
+                    ) : (
+                      ""
+                    )}
+                  </Stack>
 
-                  <CustomAttachment
-                    control={control}
-                    name="specification"
-                    label="Specification (Form)"
-                    error={!!errors?.attachment}
-                    helperText={errors?.attachment?.message}
-                    multiline
-                  />
+                  <Stack flexDirection="row" gap={1} alignItems="center">
+                    <CustomAttachment
+                      control={control}
+                      name="specification"
+                      label="Specification (Form)"
+                      // error={!!errors?.attachment}
+                      // helperText={errors?.attachment?.message}
+                    />
+                    {watch("specification") !== "" ? (
+                      <RemoveFile title="Specification" value="specification" />
+                    ) : (
+                      ""
+                    )}
+                  </Stack>
 
-                  <CustomAttachment
-                    control={control}
-                    name="tool_of_trade"
-                    label="Tool of Trade"
-                    error={!!errors?.attachment}
-                    helperText={errors?.attachment?.message}
-                    multiline
-                  />
+                  <Stack flexDirection="row" gap={1} alignItems="center">
+                    <CustomAttachment
+                      control={control}
+                      name="tool_of_trade"
+                      label="Tool of Trade"
+                      // error={!!errors?.attachment}
+                      // helperText={errors?.attachment?.message}
+                    />
+                    {watch("tool_of_trade") !== "" ? (
+                      <RemoveFile title="Tool of Trade" value="tool_of_trade" />
+                    ) : (
+                      ""
+                    )}
+                  </Stack>
 
-                  <CustomAttachment
-                    control={control}
-                    name="other_attachment"
-                    label="Other Attachments"
-                    error={!!errors?.attachment}
-                    helperText={errors?.attachment?.message}
-                    multiline
-                  />
+                  <Stack flexDirection="row" gap={1} alignItems="center">
+                    <CustomAttachment
+                      control={control}
+                      name="other_attachment"
+                      label="Other Attachments"
+                      // error={!!errors?.attachment}
+                      // helperText={errors?.attachment?.message}
+                    />
+                    {watch("quotation") !== "" ? (
+                      <RemoveFile
+                        title="Other Attachments"
+                        value="other_attachment"
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </Stack>
                 </Box>
               </Stack>
             </Box>

@@ -23,6 +23,7 @@ const CustomPatternfield = ({
             autoComplete="off"
             customInput={TextField}
             value={value}
+            size="small"
             onValueChange={(data) => {
               if (!data.value) return onChange(null);
 

@@ -329,10 +329,11 @@ img {
   padding: 50px;
 }
 
+// Attachment File
 input::file-selector-button {
   display: none;
 }
 
-input::placeholder {
-  color: gray;
-}
+// input::placeholder {
+//   color: gray;
+// }
