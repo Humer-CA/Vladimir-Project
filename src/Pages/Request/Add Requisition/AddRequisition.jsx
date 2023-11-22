@@ -6,7 +6,7 @@ import CustomAutoComplete from "../../../Components/Reusable/CustomAutoComplete"
 import CustomAttachment from "../../../Components/Reusable/CustomAttachment";
 import { useGetSedarUsersApiQuery } from "../../../Redux/Query/SedarUserApi";
 
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -31,7 +31,12 @@ import {
   createFilterOptions,
   useMediaQuery,
 } from "@mui/material";
-import { AddToPhotos, ArrowBackIosRounded, Remove } from "@mui/icons-material";
+import {
+  AddToPhotos,
+  ArrowBackIosRounded,
+  Create,
+  Remove,
+} from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
 // RTK
@@ -51,49 +56,39 @@ import { useNavigate } from "react-router-dom";
 import NoRecordsFound from "../../../Layout/NoRecordsFound";
 import { useGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUnit";
 import CustomPatternfield from "../../../Components/Reusable/CustomNumberField";
+import ActionMenu from "../../../Components/Reusable/ActionMenu";
 
 const schema = yup.object().shape({
   id: yup.string(),
 
-  type_of_request_id: yup
-    .string()
-    .transform((value) => {
-      return value?.id.toString();
-    })
-    .required()
-    .label("Type of Request"),
+  type_of_request_id: yup.object().required().label("Type of Request"),
 
-  company_id: yup
+  attachment_type: yup
     .string()
-    .transform((value) => {
-      return value?.id.toString();
-    })
     .required()
-    .label("Company"),
+    .label("Attachment Type")
+    .typeError("Attachment Type is a required field"),
 
-  department_id: yup
-    .string()
-    .transform((value) => {
-      return value?.id.toString();
-    })
-    .required()
-    .label("Department"),
+  // company_id: yup
+  //   .string()
+  //   .transform((value) => {
+  //     return value?.id.toString();
+  //   })
+  //   .required()
+  //   .label("Company"),
 
-  subunit_id: yup
-    .string()
-    .transform((value) => {
-      return value?.id.toString();
-    })
-    .required()
-    .label("Department"),
+  subunit_id: yup.object().required().label("Subunit"),
+  department_id: yup.object().required().label("Department"),
+  location_id: yup.object().required().label("Location"),
+  account_title_id: yup.object().required().label("Account Title"),
 
-  account_title_id: yup
-    .string()
-    .transform((value) => {
-      return value?.id.toString();
-    })
-    .required()
-    .label("Account Title"),
+  // account_title_id: yup
+  //   .string()
+  //   .transform((value) => {
+  //     return value?.id.toString();
+  //   })
+  //   .required()
+  //   .label("Account Title"),
 
   accountability: yup
     .string()
@@ -113,10 +108,20 @@ const schema = yup.object().shape({
           .typeError("Accountable is a required field"),
     }),
 
+  asset_description: yup.string().required().label("Asset Description"),
+  asset_specification: yup.string().required().label("Asset Specification"),
+  quantity: yup.number().required().label("Quantity"),
+  cellphone_number: yup.string().nullable().label("Cellphone Number"),
+  remarks: yup.string().nullable().label("Remarks"),
+
   letter_of_request: yup.mixed().label("Letter of Request"),
   quotation: yup.string().label("Quotation"),
   specification: yup.string().label("Specification"),
   tool_of_trade: yup.string().label("Tool of Trade"),
+  other_attachment: yup.string().label("Other Attachment"),
+  other_attachment: yup.string().label("Other Attachment"),
+  other_attachment: yup.string().label("Other Attachment"),
+  other_attachment: yup.string().label("Other Attachment"),
   other_attachment: yup.string().label("Other Attachment"),
 });
 
@@ -124,12 +129,17 @@ const AddRequisition = (props) => {
   const { data, onUpdateResetHandler } = props;
 
   const [requestList, setRequestList] = useState([]);
+  // const [listOfRequest, setListOfRequest] = useState([]);
 
   const isFullWidth = useMediaQuery("(max-width: 600px)");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const ref = useRef(null);
+  const LetterOfRequestRef = useRef(null);
+  const QuotationRef = useRef(null);
+  const SpecificationRef = useRef(null);
+  const ToolOfTradeRef = useRef(null);
+  const OthersRef = useRef(null);
 
   const [
     postRequisition,
@@ -177,6 +187,22 @@ const AddRequisition = (props) => {
   } = useGetSubUnitAllApiQuery();
 
   const {
+    data: locationData = [],
+    isLoading: isLocationLoading,
+    isSuccess: isLocationSuccess,
+    isError: isLocationError,
+    refetch: isLocationRefetch,
+  } = useGetLocationAllApiQuery();
+
+  const {
+    data: accountTitleData = [],
+    isLoading: isAccountTitleLoading,
+    isSuccess: isAccountTitleSuccess,
+    isError: isAccountTitleError,
+    refetch: isAccountTitleRefetch,
+  } = useGetAccountTitleAllApiQuery();
+
+  const {
     data: sedarData = [],
     isLoading: isSedarLoading,
     isSuccess: isSedarSuccess,
@@ -203,8 +229,8 @@ const AddRequisition = (props) => {
       // company_id: null,
       department_id: null,
       subunit_id: null,
-      // location_id: null,
-      // account_title_id: null,
+      location_id: null,
+      account_title_id: null,
 
       asset_description: "",
       asset_specification: "",
@@ -213,6 +239,7 @@ const AddRequisition = (props) => {
       accountable: null,
       cellphone_number: null,
       quantity: 1,
+      remarks: "",
 
       letter_of_request: "",
       quotation: "",
@@ -222,6 +249,7 @@ const AddRequisition = (props) => {
     },
   });
 
+  console.log("Hook Form: ", getValues());
   // GPT error fetching ----------------------------------------------------------
 
   useEffect(() => {
@@ -295,12 +323,12 @@ const AddRequisition = (props) => {
   };
 
   // SUBMIT HANDLER
-  const onSubmitHandler = (formData) => {
-    if (data.status) {
-      updateRequisition(formData);
-      return;
-    }
-    postRequisition(formData);
+  const onSubmitHandler = () => {
+    // if (data.status) {
+    //   updateRequisition(requestList);
+    //   return;
+    // }
+    postRequisition(requestList);
   };
 
   const handleCloseDrawer = () => {
@@ -333,15 +361,13 @@ const AddRequisition = (props) => {
     pb: "10px",
   };
 
-  // console.log(ref.current.currentTarget);
-
   const RemoveFile = ({ title, value }) => {
     return (
       <Tooltip title={`Remove ${title}`} arrow>
         <IconButton
           onClick={() => {
             setValue(value, "");
-            ref.current.files = [];
+            // ref.current.files = [];
           }}
           size="small"
           sx={{
@@ -357,13 +383,15 @@ const AddRequisition = (props) => {
       </Tooltip>
     );
   };
-
-  console.log(watch("letter_of_request"));
+  console.log(errors);
+  console.log(requestList);
 
   // Adding of Request
   const addRequstHandler = (formData) => {
-    setValue("approver_id", [...watch("approver_id"), requestList]);
-    setSelectedApprovers(null);
+    setRequestList((currentValue) => {
+      return [...currentValue, formData];
+    });
+    reset();
   };
 
   const deleteRequestHandler = (id) => {
@@ -373,8 +401,8 @@ const AddRequisition = (props) => {
     setValue("approver_id", filteredApprovers);
   };
 
-  const setListRequest = (list) => {
-    setValue("approver_id", list);
+  const handleSubmitAsset = () => {
+    postData({ userRequest: requestList });
   };
 
   return (
@@ -405,9 +433,10 @@ const AddRequisition = (props) => {
             <Divider sx={{}} />
 
             <Box
+              id="requestForm"
               className="request__form"
               component="form"
-              onSubmit={handleSubmit(onSubmitHandler)}
+              onSubmit={handleSubmit(addRequstHandler)}
             >
               <Stack gap={2}>
                 <Box sx={BoxStyle}>
@@ -484,10 +513,6 @@ const AddRequisition = (props) => {
                         helperText={errors?.department_id?.message}
                       />
                     )}
-                    onChange={(_, value) => {
-                      setValue("subunit_id", null);
-                      return value;
-                    }}
                     disablePortal
                     fullWidth
                   />
@@ -513,6 +538,87 @@ const AddRequisition = (props) => {
                         label="Subunit"
                         error={!!errors?.subunit_id}
                         helperText={errors?.subunit_id?.message}
+                      />
+                    )}
+                  />
+
+                  {/* <CustomAutoComplete
+            autoComplete
+            name="company_id"
+            control={control}
+            options={companyData}
+            loading={isCompanyLoading}
+            size="small"
+            getOptionLabel={(option) =>
+              option.company_code + " - " + option.company_name
+            }
+            isOptionEqualToValue={(option, value) =>
+              option.company_id === value.company_id
+            }
+            renderInput={(params) => (
+              <TextField
+                color="secondary"
+                {...params}
+                label="Company"
+                error={!!errors?.company_id}
+                helperText={errors?.company_id?.message}
+              />
+            )}
+            disabled
+          /> */}
+
+                  <CustomAutoComplete
+                    autoComplete
+                    name="location_id"
+                    control={control}
+                    options={locationData?.filter((item) => {
+                      return item.departments.some((department) => {
+                        return (
+                          department?.sync_id ===
+                          watch("department_id")?.sync_id
+                        );
+                      });
+                    })}
+                    loading={isLocationLoading}
+                    size="small"
+                    getOptionLabel={(option) =>
+                      option.location_code + " - " + option.location_name
+                    }
+                    isOptionEqualToValue={(option, value) =>
+                      option.location_id === value.location_id
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        color="secondary"
+                        {...params}
+                        label="Location"
+                        error={!!errors?.location_id}
+                        helperText={errors?.location_id?.message}
+                      />
+                    )}
+                  />
+
+                  <CustomAutoComplete
+                    name="account_title_id"
+                    control={control}
+                    options={accountTitleData}
+                    loading={isAccountTitleLoading}
+                    size="small"
+                    getOptionLabel={(option) =>
+                      option.account_title_code +
+                      " - " +
+                      option.account_title_name
+                    }
+                    isOptionEqualToValue={(option, value) =>
+                      option.account_title_code === value.account_title_code
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        color="secondary"
+                        {...params}
+                        label="Account Title  "
+                        error={!!errors?.account_title_id}
+                        helperText={errors?.account_title_id?.message}
                       />
                     )}
                   />
@@ -567,7 +673,7 @@ const AddRequisition = (props) => {
                   )}
                 </Box>
 
-                <Divider sx={{ py: 0.5 }} />
+                <Divider />
 
                 <Box sx={BoxStyle}>
                   <Typography sx={sxSubtitle}>Asset Information</Typography>
@@ -636,8 +742,6 @@ const AddRequisition = (props) => {
                     color="secondary"
                     size="small"
                     disabled={data?.print_count >= 1}
-                    error={!!errors?.asset_description}
-                    helperText={errors?.asset_description?.message}
                     fullWidth
                     multiline
                   />
@@ -647,23 +751,19 @@ const AddRequisition = (props) => {
 
                 <Box sx={BoxStyle}>
                   <Typography sx={sxSubtitle}>Attachments</Typography>
-
                   <Stack flexDirection="row" gap={1} alignItems="center">
                     <CustomAttachment
                       control={control}
                       name="letter_of_request"
-                      label="Letter of Request"
-                      inputRef={ref}
-                      // error={!!errors?.attachment}
-                      // helperText={errors?.attachment?.message}
+                      label="Letter of Request - TEST"
+                      inputRef={LetterOfRequestRef}
                     />
-                    {watch("letter_of_request") !== "" ? (
+
+                    {watch("letter_of_request") !== "" && (
                       <RemoveFile
                         title="Letter of Request"
                         value="letter_of_request"
                       />
-                    ) : (
-                      ""
                     )}
                   </Stack>
 
@@ -672,9 +772,7 @@ const AddRequisition = (props) => {
                       control={control}
                       name="quotation"
                       label="Quotation"
-                      value={watch("quotation") === "" ? false : true}
-                      // error={!!errors?.attachment}
-                      // helperText={errors?.attachment?.message}
+                      inputRef={QuotationRef}
                     />
                     {watch("quotation") !== "" ? (
                       <RemoveFile title="Quotation" value="quotation" />
@@ -688,13 +786,10 @@ const AddRequisition = (props) => {
                       control={control}
                       name="specification"
                       label="Specification (Form)"
-                      // error={!!errors?.attachment}
-                      // helperText={errors?.attachment?.message}
+                      inputRef={SpecificationRef}
                     />
-                    {watch("specification") !== "" ? (
+                    {watch("specification") !== "" && (
                       <RemoveFile title="Specification" value="specification" />
-                    ) : (
-                      ""
                     )}
                   </Stack>
 
@@ -703,13 +798,10 @@ const AddRequisition = (props) => {
                       control={control}
                       name="tool_of_trade"
                       label="Tool of Trade"
-                      // error={!!errors?.attachment}
-                      // helperText={errors?.attachment?.message}
+                      inputRef={ToolOfTradeRef}
                     />
-                    {watch("tool_of_trade") !== "" ? (
+                    {watch("tool_of_trade") !== "" && (
                       <RemoveFile title="Tool of Trade" value="tool_of_trade" />
-                    ) : (
-                      ""
                     )}
                   </Stack>
 
@@ -718,16 +810,13 @@ const AddRequisition = (props) => {
                       control={control}
                       name="other_attachment"
                       label="Other Attachments"
-                      // error={!!errors?.attachment}
-                      // helperText={errors?.attachment?.message}
+                      inputRef={OthersRef}
                     />
-                    {watch("quotation") !== "" ? (
+                    {watch("other_attachment") !== "" && (
                       <RemoveFile
                         title="Other Attachments"
                         value="other_attachment"
                       />
-                    ) : (
-                      ""
                     )}
                   </Stack>
                 </Box>
@@ -736,9 +825,16 @@ const AddRequisition = (props) => {
 
             <Divider sx={{ pb: 1, mb: 1 }} />
 
-            <Button variant="contained" size="small" fullWidth sx={{ gap: 1 }}>
+            <LoadingButton
+              form="requestForm"
+              variant="contained"
+              type="submit"
+              size="small"
+              fullWidth
+              sx={{ gap: 1 }}
+            >
               <AddToPhotos /> <Typography variant="p">ADD</Typography>
-            </Button>
+            </LoadingButton>
           </Box>
 
           <Divider orientation="vertical" />
@@ -768,6 +864,10 @@ const AddRequisition = (props) => {
                     }}
                   >
                     <TableCell className="tbl-cell">
+                      <TableSortLabel>Count</TableSortLabel>
+                    </TableCell>
+
+                    <TableCell className="tbl-cell">
                       <TableSortLabel
                         active={orderBy === `type_of_request_name`}
                         direction={
@@ -780,7 +880,7 @@ const AddRequisition = (props) => {
                     </TableCell>
 
                     <TableCell className="tbl-cell">
-                      <TableSortLabel>Reference No.</TableSortLabel>
+                      <TableSortLabel>Attachment Type</TableSortLabel>
                     </TableCell>
 
                     <TableCell className="tbl-cell">
@@ -820,11 +920,11 @@ const AddRequisition = (props) => {
                     <NoRecordsFound />
                   ) : (
                     <>
-                      {[...requestList?.data]
-                        ?.sort(comparator(order, orderBy))
-                        ?.map((data) => (
+                      {requestList
+                        // ?.sort(comparator(order, orderBy))
+                        .map((data, index) => (
                           <TableRow
-                            key={data.id}
+                            key={index}
                             sx={{
                               "&:last-child td, &:last-child th": {
                                 borderBottom: 0,
@@ -832,53 +932,138 @@ const AddRequisition = (props) => {
                             }}
                           >
                             <TableCell className="tbl-cell tr-cen-pad45">
-                              {data.id}
-                            </TableCell>
-
-                            <TableCell className="tbl-cell text-weight">
-                              {/* {data.type_of_request_name} */}
-                            </TableCell>
-
-                            <TableCell className="tbl-cell text-center">
-                              {data.is_active ? (
-                                <Chip
-                                  size="small"
-                                  variant="contained"
-                                  sx={{
-                                    background: "#27ff811f",
-                                    color: "active.dark",
-                                    fontSize: "0.7rem",
-                                    px: 1,
-                                  }}
-                                  label="ACTIVE"
-                                />
-                              ) : (
-                                <Chip
-                                  size="small"
-                                  variant="contained"
-                                  sx={{
-                                    background: "#fc3e3e34",
-                                    color: "error.light",
-                                    fontSize: "0.7rem",
-                                    px: 1,
-                                  }}
-                                  label="INACTIVE"
-                                />
-                              )}
+                              {index + 1}
                             </TableCell>
 
                             <TableCell className="tbl-cell tr-cen-pad45">
-                              {Moment(data.created_at).format("MMM DD, YYYY")}
+                              {data.type_of_request_id?.type_of_request_name}
                             </TableCell>
 
-                            <TableCell className="tbl-cell ">
+                            <TableCell className="tbl-cell tr-cen-pad45">
+                              {data.attachment_type}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell">
+                              <Box>
+                                {`(${data.department_id?.company?.company_code}) -
+                              ${data.department_id?.company?.company_name}`}
+                              </Box>
+
+                              <Box>
+                                {`(${data.department_id?.department_code}) -
+                              ${data.department_id?.department_name}`}
+                              </Box>
+
+                              <Box>
+                                {`(${data.department_id?.locations?.location_code}) -
+                              ${data.department_id?.locations?.location_name}`}
+                              </Box>
+
+                              <Box>
+                                {`(${data.department_id?.account_title_id?.account_title_code}) -
+                              ${data.department_id?.account_title_id?.account_title_name}`}
+                              </Box>
+                            </TableCell>
+
+                            <TableCell className="tbl-cell">
+                              {data.accountability === "Personal Issued" ? (
+                                <>
+                                  <Box>
+                                    {
+                                      data?.accountable?.general_info
+                                        ?.full_id_number
+                                    }
+                                  </Box>
+                                  <Box>
+                                    {data?.accountable?.general_info?.full_name}
+                                  </Box>
+                                </>
+                              ) : (
+                                "Common"
+                              )}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell">
+                              <Typography
+                                fontWeight={600}
+                                fontSize="14px"
+                                color="secondary.main"
+                              >
+                                {data.asset_description}
+                              </Typography>
+                              <Typography fontSize="12px" color="text.light">
+                                {data.asset_specification}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell className="tbl-cell">
+                              {data.quantity}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell">
+                              {data.cellphone_number === null
+                                ? "-"
+                                : data.cellphone_number}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell">
+                              {data.remarks === ""
+                                ? "No Remarks"
+                                : data.remarks}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell">
+                              {data.letter_of_request && (
+                                <Box>
+                                  <Typography fontSize="12px" fontWeight={500}>
+                                    Letter of Request:
+                                  </Typography>
+                                  {data.letter_of_request?.name}
+                                </Box>
+                              )}
+
+                              {data.quotation && (
+                                <Box>
+                                  <Typography fontSize="12px" fontWeight={500}>
+                                    Quotation:
+                                  </Typography>
+                                  {data.quotation?.name}
+                                </Box>
+                              )}
+
+                              {data.specification && (
+                                <Box>
+                                  <Typography fontSize="12px" fontWeight={500}>
+                                    Specification:
+                                  </Typography>
+                                  {data.specification?.name}
+                                </Box>
+                              )}
+
+                              {data.tool_of_trade && (
+                                <Box>
+                                  <Typography fontSize="12px" fontWeight={500}>
+                                    Tool of Trade:
+                                  </Typography>
+                                  {data.tool_of_trade?.name}
+                                </Box>
+                              )}
+
+                              {data.other_attachment && (
+                                <Box>
+                                  <Typography fontSize="12px" fontWeight={500}>
+                                    Other Attachment:
+                                  </Typography>
+                                  {data.other_attachment?.name}
+                                </Box>
+                              )}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell">
                               <ActionMenu
                                 // status={data.status}
                                 data={data}
                                 // onUpdateHandler={onUpdateHandler}
-                                onArchiveRestoreHandler={
-                                  onArchiveRestoreHandler
-                                }
                               />
                             </TableCell>
                           </TableRow>
@@ -896,16 +1081,20 @@ const AddRequisition = (props) => {
               sx={{ pt: "10px" }}
             >
               <LoadingButton
-                type="submit"
+                onClick={onSubmitHandler}
                 variant="contained"
                 size="small"
+                color="secondary"
+                startIcon={<Create />}
+                // disable={requestList.length === 0 ? false : true}
                 loading={isUpdateLoading || isPostLoading}
               >
-                Create
+                <Typography fontSize="14px" color="primary">
+                  Create
+                </Typography>
               </LoadingButton>
 
               <Button
-                type="submit"
                 variant="outlined"
                 size="small"
                 color="secondary"

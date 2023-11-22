@@ -17,42 +17,10 @@ const Autocomplete = ({
         return (
           <MuiAutocomplete
             {...autocomplete}
-            disablePortal
-            // autoComplete
-            // autoHighlight
             value={value}
-            // onChange={(_, value) => onChange(value)}
             onChange={(e, value) => {
               if (onValueChange) return setValue(onValueChange(e, value));
               setValue(value);
-            }}
-            slotProps={{
-              popper: {
-                placement: "bottom",
-                disablePortal: true,
-                modifiers: [
-                  {
-                    name: "flip",
-                    enabled: true,
-                    options: {
-                      altBoundary: true,
-                      rootBoundary: "document",
-                      padding: 8,
-                    },
-                  },
-                  {
-                    name: "preventOverflow",
-                    enabled: true,
-                    options: {
-                      altAxis: true,
-                      altBoundary: true,
-                      tether: true,
-                      rootBoundary: "document",
-                      padding: 8,
-                    },
-                  },
-                ],
-              },
             }}
             sx={{
               ".MuiInputBase-root": {
