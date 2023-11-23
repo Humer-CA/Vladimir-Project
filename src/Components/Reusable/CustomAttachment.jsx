@@ -24,9 +24,11 @@ const CustomTextField = (props) => {
               inputRef={inputRef}
               onChange={(e) => {
                 setValue(e.target.files[0]);
+                e.target.value = null;
               }}
               sx={{ display: "none" }}
             />
+
             <MuiTextField
               readOnly
               type="text"

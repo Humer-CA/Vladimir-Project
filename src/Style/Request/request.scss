@@ -2,10 +2,9 @@
 
 .request {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: flex-start;
-  padding-left: 10px;
-  gap: 10px;
+  gap: 15px;
   width: 100%;
   position: relative;
   //   max-width: 270px;
@@ -15,17 +14,10 @@
     padding-right: 8px;
     margin-top: 10px;
     overflow: auto;
-    height: calc(100vh - 290px);
+    height: calc(100vh - 310px);
   }
 
   &__table {
-    width: 80%;
     overflow: auto;
-    height: 100%;
-    // max-width: 80%;
-  }
-
-  &__table-height {
-    height: calc(100vh - 380px);
   }
 }

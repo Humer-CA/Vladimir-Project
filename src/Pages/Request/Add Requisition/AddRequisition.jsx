@@ -61,7 +61,11 @@ import ActionMenu from "../../../Components/Reusable/ActionMenu";
 const schema = yup.object().shape({
   id: yup.string(),
 
-  type_of_request_id: yup.object().required().label("Type of Request"),
+  type_of_request_id: yup
+    .object()
+    .required()
+    .label("Type of Request")
+    .typeError("Type of Request is a required field"),
 
   attachment_type: yup
     .string()
@@ -77,10 +81,26 @@ const schema = yup.object().shape({
   //   .required()
   //   .label("Company"),
 
-  subunit_id: yup.object().required().label("Subunit"),
-  department_id: yup.object().required().label("Department"),
-  location_id: yup.object().required().label("Location"),
-  account_title_id: yup.object().required().label("Account Title"),
+  subunit_id: yup
+    .object()
+    .required()
+    .label("Subunit")
+    .typeError("Subunit is a required field"),
+  department_id: yup
+    .object()
+    .required()
+    .label("Department")
+    .typeError("Department is a required field"),
+  location_id: yup
+    .object()
+    .required()
+    .label("Location")
+    .typeError("Location is a required field"),
+  account_title_id: yup
+    .object()
+    .required()
+    .label("Account Title")
+    .typeError("Account Title is a required field"),
 
   // account_title_id: yup
   //   .string()
@@ -110,19 +130,16 @@ const schema = yup.object().shape({
 
   asset_description: yup.string().required().label("Asset Description"),
   asset_specification: yup.string().required().label("Asset Specification"),
+  brand: yup.string().required().label("Brand"),
   quantity: yup.number().required().label("Quantity"),
   cellphone_number: yup.string().nullable().label("Cellphone Number"),
   remarks: yup.string().nullable().label("Remarks"),
 
   letter_of_request: yup.mixed().label("Letter of Request"),
-  quotation: yup.string().label("Quotation"),
-  specification: yup.string().label("Specification"),
-  tool_of_trade: yup.string().label("Tool of Trade"),
-  other_attachment: yup.string().label("Other Attachment"),
-  other_attachment: yup.string().label("Other Attachment"),
-  other_attachment: yup.string().label("Other Attachment"),
-  other_attachment: yup.string().label("Other Attachment"),
-  other_attachment: yup.string().label("Other Attachment"),
+  quotation: yup.mixed().label("Quotation"),
+  specification: yup.mixed().label("Specification"),
+  tool_of_trade: yup.mixed().label("Tool of Trade"),
+  other_attachment: yup.mixed().label("Other Attachment"),
 });
 
 const AddRequisition = (props) => {
@@ -234,7 +251,7 @@ const AddRequisition = (props) => {
 
       asset_description: "",
       asset_specification: "",
-      acquisition_date: null,
+      brand: "",
       accountability: null,
       accountable: null,
       cellphone_number: null,
@@ -248,9 +265,6 @@ const AddRequisition = (props) => {
       other_attachment: "",
     },
   });
-
-  console.log("Hook Form: ", getValues());
-  // GPT error fetching ----------------------------------------------------------
 
   useEffect(() => {
     const errorData =
@@ -324,11 +338,18 @@ const AddRequisition = (props) => {
 
   // SUBMIT HANDLER
   const onSubmitHandler = () => {
-    // if (data.status) {
-    //   updateRequisition(requestList);
+    const formData = new FormData();
+    requestList.map((item) => {
+      formData.append("userRequest[]");
+    });
+
+    // formData.append("userRequest", requestList);
+
+    // if (data) {
+    //   updateRequisition(formData);
     //   return;
     // }
-    postRequisition(requestList);
+    // postRequisition(formData);
   };
 
   const handleCloseDrawer = () => {
@@ -401,25 +422,21 @@ const AddRequisition = (props) => {
     setValue("approver_id", filteredApprovers);
   };
 
-  const handleSubmitAsset = () => {
-    postData({ userRequest: requestList });
-  };
-
   return (
     <>
-      <Box className="mcontainer" sx={{ gap: 1 }}>
+      <Box className="mcontainer" sx={{ height: "calc(100vh - 380px)" }}>
         <Button
           variant="text"
           color="secondary"
           size="small"
           startIcon={<ArrowBackIosRounded color="secondary" />}
           onClick={() => navigate(-1)}
-          sx={{ width: "90px" }}
+          sx={{ width: "90px", marginLeft: "-15px" }}
         >
           <Typography color="secondary.main">Back</Typography>
         </Button>
 
-        <Box className="request">
+        <Box className="request mcontainer__wrapper" p={2}>
           {/* FORM */}
           <Box>
             <Typography
@@ -462,11 +479,11 @@ const AddRequisition = (props) => {
                         helperText={errors?.type_of_request_id?.message}
                       />
                     )}
-                    onChange={(_, value) => {
-                      setValue("sub_capex_id", null);
-                      // setValue("project_name", "");
-                      return value;
-                    }}
+                    // onChange={(_, value) => {
+                    //   setValue("sub_capex_id", null);
+                    //   // setValue("project_name", "");
+                    //   return value;
+                    // }}
                   />
 
                   <CustomAutoComplete
@@ -705,6 +722,18 @@ const AddRequisition = (props) => {
                     multiline
                   />
 
+                  <CustomTextField
+                    control={control}
+                    name="brand"
+                    label="Brand"
+                    type="text"
+                    color="secondary"
+                    size="small"
+                    error={!!errors?.brand}
+                    helperText={errors?.brand?.message}
+                    fullWidth
+                  />
+
                   <CustomNumberField
                     control={control}
                     name="quantity"
@@ -755,7 +784,7 @@ const AddRequisition = (props) => {
                     <CustomAttachment
                       control={control}
                       name="letter_of_request"
-                      label="Letter of Request - TEST"
+                      label="Letter of Request"
                       inputRef={LetterOfRequestRef}
                     />
 
@@ -850,10 +879,10 @@ const AddRequisition = (props) => {
             </Typography>
 
             <TableContainer
-              className="mcontainer__th-body"
-              sx={{ height: "85%" }}
+              className="mcontainer__th-body  mcontainer__wrapper"
+              sx={{ height: "calc(100vh - 290px)" }}
             >
-              <Table className="mcontainer__table" stickyHeader>
+              <Table className="mcontainer__table " stickyHeader>
                 <TableHead>
                   <TableRow
                     sx={{
@@ -864,7 +893,7 @@ const AddRequisition = (props) => {
                     }}
                   >
                     <TableCell className="tbl-cell">
-                      <TableSortLabel>Count</TableSortLabel>
+                      <TableSortLabel>Index</TableSortLabel>
                     </TableCell>
 
                     <TableCell className="tbl-cell">
@@ -915,7 +944,7 @@ const AddRequisition = (props) => {
                   </TableRow>
                 </TableHead>
 
-                <TableBody className="request__table-height">
+                <TableBody>
                   {requestList?.length === 0 ? (
                     <NoRecordsFound />
                   ) : (
@@ -931,7 +960,7 @@ const AddRequisition = (props) => {
                               },
                             }}
                           >
-                            <TableCell className="tbl-cell tr-cen-pad45">
+                            <TableCell className="tbl-cell tr-cen-pad45 text-weight">
                               {index + 1}
                             </TableCell>
 
@@ -944,25 +973,25 @@ const AddRequisition = (props) => {
                             </TableCell>
 
                             <TableCell className="tbl-cell">
-                              <Box>
+                              <Typography fontSize={10} color="gray">
                                 {`(${data.department_id?.company?.company_code}) -
                               ${data.department_id?.company?.company_name}`}
-                              </Box>
+                              </Typography>
 
-                              <Box>
+                              <Typography fontSize={10} color="gray">
                                 {`(${data.department_id?.department_code}) -
                               ${data.department_id?.department_name}`}
-                              </Box>
+                              </Typography>
 
-                              <Box>
+                              <Typography fontSize={10} color="gray">
                                 {`(${data.department_id?.locations?.location_code}) -
                               ${data.department_id?.locations?.location_name}`}
-                              </Box>
+                              </Typography>
 
-                              <Box>
+                              <Typography fontSize={10} color="gray">
                                 {`(${data.department_id?.account_title_id?.account_title_code}) -
                               ${data.department_id?.account_title_id?.account_title_name}`}
-                              </Box>
+                              </Typography>
                             </TableCell>
 
                             <TableCell className="tbl-cell">
@@ -1014,48 +1043,48 @@ const AddRequisition = (props) => {
 
                             <TableCell className="tbl-cell">
                               {data.letter_of_request && (
-                                <Box>
-                                  <Typography fontSize="12px" fontWeight={500}>
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize="12px" fontWeight={600}>
                                     Letter of Request:
                                   </Typography>
                                   {data.letter_of_request?.name}
-                                </Box>
+                                </Stack>
                               )}
 
                               {data.quotation && (
-                                <Box>
-                                  <Typography fontSize="12px" fontWeight={500}>
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize="12px" fontWeight={600}>
                                     Quotation:
                                   </Typography>
                                   {data.quotation?.name}
-                                </Box>
+                                </Stack>
                               )}
 
                               {data.specification && (
-                                <Box>
-                                  <Typography fontSize="12px" fontWeight={500}>
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize="12px" fontWeight={600}>
                                     Specification:
                                   </Typography>
                                   {data.specification?.name}
-                                </Box>
+                                </Stack>
                               )}
 
                               {data.tool_of_trade && (
-                                <Box>
-                                  <Typography fontSize="12px" fontWeight={500}>
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize="12px" fontWeight={600}>
                                     Tool of Trade:
                                   </Typography>
                                   {data.tool_of_trade?.name}
-                                </Box>
+                                </Stack>
                               )}
 
                               {data.other_attachment && (
-                                <Box>
-                                  <Typography fontSize="12px" fontWeight={500}>
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize="12px" fontWeight={600}>
                                     Other Attachment:
                                   </Typography>
                                   {data.other_attachment?.name}
-                                </Box>
+                                </Stack>
                               )}
                             </TableCell>
 
@@ -1085,13 +1114,15 @@ const AddRequisition = (props) => {
                 variant="contained"
                 size="small"
                 color="secondary"
-                startIcon={<Create />}
-                // disable={requestList.length === 0 ? false : true}
+                startIcon={
+                  <Create
+                    color={requestList.length === 0 ? "gray" : "primary"}
+                  />
+                }
+                disabled={requestList.length === 0 ? true : false}
                 loading={isUpdateLoading || isPostLoading}
               >
-                <Typography fontSize="14px" color="primary">
-                  Create
-                </Typography>
+                <Typography fontSize="14px">Create</Typography>
               </LoadingButton>
 
               <Button
