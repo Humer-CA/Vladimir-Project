@@ -412,7 +412,12 @@ const AddRequisition = (props) => {
     setRequestList((currentValue) => {
       return [...currentValue, formData];
     });
-    reset();
+    reset({
+      department_id: formData?.department_id,
+      subunit_id: formData?.subunit_id,
+      location_id: formData?.location_id,
+      account_title_id: formData?.account_title_id,
+    });
   };
 
   const deleteRequestHandler = (id) => {
@@ -517,6 +522,7 @@ const AddRequisition = (props) => {
                     options={departmentData}
                     loading={isDepartmentLoading}
                     size="small"
+                    disabled={requestList.length !== 0}
                     getOptionLabel={(option) => option.department_name}
                     isOptionEqualToValue={(option, value) =>
                       option.id === value.id
@@ -538,6 +544,7 @@ const AddRequisition = (props) => {
                     autoComplete
                     name="subunit_id"
                     control={control}
+                    disabled={requestList.length !== 0}
                     options={subUnitData?.filter(
                       (item) =>
                         item?.department?.id === watch("department_id")?.id
@@ -588,6 +595,7 @@ const AddRequisition = (props) => {
                     autoComplete
                     name="location_id"
                     control={control}
+                    disabled={requestList.length !== 0}
                     options={locationData?.filter((item) => {
                       return item.departments.some((department) => {
                         return (
@@ -618,6 +626,7 @@ const AddRequisition = (props) => {
                   <CustomAutoComplete
                     name="account_title_id"
                     control={control}
+                    disabled={requestList.length !== 0}
                     options={accountTitleData}
                     loading={isAccountTitleLoading}
                     size="small"

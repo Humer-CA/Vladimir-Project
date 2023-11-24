@@ -27,6 +27,8 @@ import {
   AddCircleOutline,
   RemoveCircleOutline,
   Delete,
+  DoneOutline,
+  DoNotDisturb,
 } from "@mui/icons-material";
 
 const ActionMenu = (props) => {
@@ -38,6 +40,7 @@ const ActionMenu = (props) => {
   const {
     data,
     onArchiveRestoreHandler,
+    onApprovalStatusHandler,
     onSubCapexArchiveRestoreHandler,
     onDisposedRestoreHandler,
     onResetHandler,
@@ -66,6 +69,12 @@ const ActionMenu = (props) => {
   const handleArchiveRestore = () => {
     // console.log(data?.id, status);
     onArchiveRestoreHandler(data?.id, status);
+    handleClose();
+  };
+
+  const handleApprovalStatus = () => {
+    // console.log(data?.id, status);
+    onApprovalStatusHandler(data?.id, status);
     handleClose();
   };
 
@@ -238,6 +247,42 @@ const ActionMenu = (props) => {
               </ListItemText>
             </MenuItem>
           )} */}
+        </Menu>
+      )}
+
+      {!handleApprovalStatus && (
+        <Menu
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          TransitionComponent={Fade}
+          disablePortal
+        >
+          <MenuItem onClick={onApprovalStatusHandler} dense>
+            <ListItemIcon>
+              <DoneOutline />
+            </ListItemIcon>
+            <ListItemText disableTypography align="left">
+              Approve
+            </ListItemText>
+          </MenuItem>
+
+          <MenuItem onClick={handleEdit} dense>
+            <ListItemIcon>
+              <DoNotDisturb />
+            </ListItemIcon>
+            <ListItemText disableTypography align="left">
+              Decline
+            </ListItemText>
+          </MenuItem>
         </Menu>
       )}
     </Box>

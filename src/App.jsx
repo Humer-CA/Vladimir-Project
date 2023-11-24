@@ -58,6 +58,7 @@ import Confirmation from "./Components/Reusable/Confirmation";
 import SubUnit from "./Pages/Masterlist/SubUnit";
 import AddRequisition from "./Pages/Request/Add Requisition/AddRequisition";
 import Request from "./Pages/Request";
+import Approving from "./Pages/Approving/Approving";
 
 const router = createBrowserRouter([
   {
@@ -245,6 +246,11 @@ const router = createBrowserRouter([
           {
             path: "request/requisition/add-requisition",
             element: <AddRequisition />,
+          },
+
+          {
+            path: "approving",
+            element: <Approving />,
           },
 
           {

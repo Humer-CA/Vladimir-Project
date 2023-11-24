@@ -301,6 +301,7 @@ const AddRole = (props) => {
 
     const secondGroup = [
       { label: "Request", value: "request" },
+      { label: "Approving", value: "approving" },
       { label: "Asset for Tagging", value: "asset-for-tagging" },
       { label: "Asset List", value: "asset-list" },
       { label: "On Hand", value: "on-hand" },
@@ -624,6 +625,80 @@ const AddRole = (props) => {
     );
   };
 
+  const Approving = () => {
+    return (
+      <Stack flexDirection="row" flexWrap="wrap">
+        <FormGroup
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            ml: 3,
+          }}
+        >
+          <FormControlLabel
+            disabled={data.action === "view"}
+            label="Pending Request"
+            value="pending-request"
+            control={
+              <Checkbox
+                {...register("access_permission")}
+                checked={watch("access_permission")?.includes(
+                  "pending-request"
+                )}
+              />
+            }
+          />
+
+          <FormControlLabel
+            disabled={data.action === "view"}
+            label="Approved Request"
+            value="approved=request"
+            control={
+              <Checkbox
+                {...register("access_permission")}
+                checked={watch("access_permission")?.includes(
+                  "approved=request"
+                )}
+              />
+            }
+          />
+        </FormGroup>
+
+        {/* <FormGroup
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            ml: 3,
+          }}
+        >
+          <FormControlLabel
+            disabled={data.action === "view"}
+            label="Pull Out"
+            value="pull-out"
+            control={
+              <Checkbox
+                {...register("access_permission")}
+                checked={watch("access_permission")?.includes("pull-out")}
+              />
+            }
+          />
+
+          <FormControlLabel
+            disabled={data.action === "view"}
+            label="Disposal"
+            value="disposal"
+            control={
+              <Checkbox
+                {...register("access_permission")}
+                checked={watch("access_permission")?.includes("disposal")}
+              />
+            }
+          />
+        </FormGroup> */}
+      </Stack>
+    );
+  };
+
   const permissions = [
     // List of permissions
     "dashboard",
@@ -633,6 +708,7 @@ const AddRole = (props) => {
     "print-fa",
     "settings",
     "request",
+    "approving",
     "asset-for-tagging",
     "asset-list",
     "on-hand",
@@ -666,6 +742,10 @@ const AddRole = (props) => {
     "transfer",
     "pull-out",
     "disposal",
+
+    // Approving
+    "pending-request",
+    "approved-request",
   ];
 
   const masterlistValue = [
@@ -686,6 +766,7 @@ const AddRole = (props) => {
 
   const request = ["requisition", "transfer", "pull-out", "disposal"];
 
+  const approving = ["pending-request", " approved-request"];
   // console.log(watch("access_permission"));
 
   return (
@@ -1043,6 +1124,73 @@ const AddRole = (props) => {
                                 setValue(
                                   "access_permission",
                                   requestEmptyValue
+                                );
+                              }
+                            }}
+                          />
+                        }
+                      />
+                    </FormLabel>
+                    <Request />
+                  </FormControl>
+                </Box>
+              )}
+              {watch("access_permission").includes("approving") && (
+                <Box>
+                  <Divider sx={{ mx: "30px" }} />
+                  <FormControl
+                    fullWidth
+                    component="fieldset"
+                    sx={{
+                      border: "1px solid #a6a6a6af ",
+                      borderRadius: "10px",
+                      px: "10px",
+                      mt: "10px",
+                      mb: "15px",
+                    }}
+                  >
+                    <FormLabel component="legend" sx={{ ml: "1px", pl: "5px" }}>
+                      <FormControlLabel
+                        label="Approving"
+                        value="approving"
+                        sx={{ color: "text.main", fontWeight: "bold" }}
+                        disabled={data.action === "view"}
+                        control={
+                          <Checkbox
+                            checked={watch("access_permission").includes(
+                              "approving"
+                            )}
+                            // checked={masterlistValue.every((perm) =>
+                            //   watch("access_permission").includes(perm)
+                            // )}
+                            indeterminate={
+                              approving.some((perm) =>
+                                watch("access_permission").includes(perm)
+                              ) &&
+                              !approving.every((perm) =>
+                                watch("access_permission").includes(perm)
+                              )
+                            }
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setValue("access_permission", [
+                                  ...new Set([
+                                    ...watch("access_permission"),
+                                    "pending=request",
+                                    "approved-request",
+                                  ]),
+                                ]);
+                              } else {
+                                const approvingEmptyValue = watch(
+                                  "access_permission"
+                                ).filter(
+                                  (perm) =>
+                                    ![...approving, "approving"].includes(perm)
+                                );
+
+                                setValue(
+                                  "access_permission",
+                                  approvingEmptyValue
                                 );
                               }
                             }}

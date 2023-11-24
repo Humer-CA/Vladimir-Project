@@ -65,6 +65,7 @@ import {
   ExpandLessRounded,
   ExpandMoreRounded,
   Segment,
+  DomainVerification,
 } from "@mui/icons-material";
 
 const Sidebar = () => {
@@ -343,6 +344,14 @@ const Sidebar = () => {
     },
 
     {
+      label: "Approving",
+      icon: DomainVerification,
+      path: "/approving",
+      permission: "approving",
+      setter: closeCollapse,
+    },
+
+    {
       label: "Asset for Tagging",
       icon: LocalOffer,
       path: "/asset-for-tagging",
@@ -350,13 +359,13 @@ const Sidebar = () => {
       setter: closeCollapse,
     },
 
-    {
-      label: "Asset List",
-      icon: FormatListBulletedRounded,
-      path: "/asset-list",
-      permission: "asset-list",
-      setter: closeCollapse,
-    },
+    // {
+    //   label: "Asset List",
+    //   icon: FormatListBulletedRounded,
+    //   path: "/asset-list",
+    //   permission: "asset-list",
+    //   setter: closeCollapse,
+    // },
 
     {
       label: "On Hand in Process",
@@ -366,13 +375,13 @@ const Sidebar = () => {
       setter: closeCollapse,
     },
 
-    {
-      label: "Disposal",
-      icon: PlaylistRemoveRounded,
-      path: "/disposal",
-      permission: "disposal",
-      setter: closeCollapse,
-    },
+    // {
+    //   label: "Disposal",
+    //   icon: PlaylistRemoveRounded,
+    //   path: "/disposal",
+    //   permission: "disposal",
+    //   setter: closeCollapse,
+    // },
 
     {
       label: "Reports",

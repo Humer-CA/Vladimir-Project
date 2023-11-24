@@ -40,6 +40,7 @@ import { fistoLocationApi } from "../Query/Masterlist/FistoCoa/FistoLocation";
 import { fistoAccountTitleApi } from "../Query/Masterlist/FistoCoa/FistoAccountTitle";
 import { companyApi } from "../Query/Masterlist/FistoCoa/Company";
 import { departmentApi } from "../Query/Masterlist/FistoCoa/Department";
+import { subUnitApi } from "../Query/Masterlist/SubUnit";
 import { locationApi } from "../Query/Masterlist/FistoCoa/Location";
 import { accountTitleApi } from "../Query/Masterlist/FistoCoa/AccountTitle";
 import { divisionApi } from "../Query/Masterlist/Division";
@@ -63,8 +64,10 @@ import { depreciationStatusApi } from "../Query/Masterlist/Status/DepreciationSt
 
 import { approverSettingsApi } from "../Query/Settings/ApproverSettings";
 import { unitApproversApi } from "../Query/Settings/UnitApprovers";
+
 import { requisitionApi } from "../Query/Request/Requisition";
-import { subUnitApi } from "../Query/Masterlist/SubUnit";
+
+import { approvalApi } from "../Query/Approving/Approval";
 
 export const store = configureStore({
   reducer: {
@@ -134,6 +137,9 @@ export const store = configureStore({
 
     // Request
     [requisitionApi.reducerPath]: requisitionApi.reducer,
+
+    // Approval
+    [approvalApi.reducerPath]: approvalApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -186,6 +192,9 @@ export const store = configureStore({
 
       // Request
       requisitionApi.middleware,
+
+      // Approval
+      approvalApi.middleware,
     ]),
 });
 
