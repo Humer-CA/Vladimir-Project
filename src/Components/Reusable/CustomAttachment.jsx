@@ -16,7 +16,7 @@ const CustomTextField = (props) => {
       control={control}
       render={({ field }) => {
         const { ref, value, onChange: setValue } = field;
-        console.log(ref.current);
+        // console.log(ref.current);
         return (
           <>
             <MuiTextField

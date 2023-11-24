@@ -15,10 +15,6 @@ import {
   openConfirm,
   onLoading,
 } from "../../Redux/StateManagement/confirmSlice";
-import {
-  useGetMajorCategoryApiQuery,
-  usePutMajorCategoryStatusApiMutation as usePatchApprovalStatusApiMutation,
-} from "../../Redux/Query/Masterlist/Category/MajorCategory";
 
 // MUI
 import {
@@ -40,7 +36,7 @@ import {
 import { Help, ReportProblem, Visibility } from "@mui/icons-material";
 import {
   useGetApprovalApiQuery,
-  usePatchAppvovalStatusApiMutation,
+  usePatchApprovalStatusApiMutation,
 } from "../../Redux/Query/Approving/Approval";
 
 const PendingRequest = () => {
@@ -115,6 +111,8 @@ const PendingRequest = () => {
     { refetchOnMountOrArgChange: true }
   );
 
+  console.log(approvalData);
+
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
       {approvalLoading && <MasterlistSkeleton category={true} onAdd={true} />}
@@ -134,7 +132,6 @@ const PendingRequest = () => {
             onStatusChange={setStatus}
             onSearchChange={setSearch}
             onSetPage={setPage}
-            // onAdd={() => {}}
             hideArchive
           />
 
@@ -268,24 +265,22 @@ const PendingRequest = () => {
 
                               <TableCell className="tbl-cell-category">
                                 <IconButton>
-                                  <Visibility color="primary" />
+                                  <Visibility color="secondary" />
                                 </IconButton>
                               </TableCell>
 
                               <TableCell className="tbl-cell-category text-center capitalized">
-                                {data.status === "For Approval" && (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#27ff811f",
-                                      color: "active.dark",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="APPROVED"
-                                  />
-                                )}
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#27ff811f",
+                                    color: "active.dark",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="APPROVED"
+                                />
                               </TableCell>
 
                               <TableCell className="tbl-cell-category tr-cen-pad45">

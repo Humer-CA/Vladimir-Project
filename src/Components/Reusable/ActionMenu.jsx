@@ -54,6 +54,7 @@ const ActionMenu = (props) => {
     hideEdit,
     hideArchive,
     showDelete,
+    showApprover,
   } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -193,17 +194,6 @@ const ActionMenu = (props) => {
               </ListItemText>
             </MenuItem>
           )}
-
-          {/* {status === "active" && onAddMinorCategoryHandler !== undefined && (
-            <MenuItem onClick={handleAddMinorCategory} dense>
-              <ListItemIcon>
-                <AddCircleOutline />
-              </ListItemIcon>
-              <ListItemText disableTypography align="left">
-                {`Add Minor`} <br /> {`Category`}
-              </ListItemText>
-            </MenuItem>
-          )} */}
         </Menu>
       ) : (
         // Fixed Asset
@@ -250,7 +240,7 @@ const ActionMenu = (props) => {
         </Menu>
       )}
 
-      {!handleApprovalStatus && (
+      {showApprover && (
         <Menu
           anchorOrigin={{
             vertical: "bottom",
@@ -275,12 +265,12 @@ const ActionMenu = (props) => {
             </ListItemText>
           </MenuItem>
 
-          <MenuItem onClick={handleEdit} dense>
+          <MenuItem onClick={onDeleteHandler} dense>
             <ListItemIcon>
               <DoNotDisturb />
             </ListItemIcon>
             <ListItemText disableTypography align="left">
-              Decline
+              Return
             </ListItemText>
           </MenuItem>
         </Menu>

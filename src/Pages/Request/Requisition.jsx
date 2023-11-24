@@ -20,7 +20,7 @@ import {
 } from "../../Redux/StateManagement/confirmSlice";
 import {
   useGetRequisitionApiQuery,
-  usePostRequisitionStatusApiMutation,
+  usePatchRequisitionStatusApiMutation,
 } from "../../Redux/Query/Request/Requisition";
 
 // MUI
@@ -42,11 +42,12 @@ import {
 } from "@mui/material";
 import { Help, LibraryAdd, ReportProblem } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
+import ProcessDetails from "../Approving/ProcessDetails";
 
 const Requisition = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [perPage, setperPage] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateRequisition, setUpdateRequisition] = useState({
     status: false,
@@ -57,6 +58,7 @@ const Requisition = () => {
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width: 500px)");
   const drawer = useSelector((state) => state.booleanState.drawer);
+  const dialog = useSelector((state) => state.booleanState.dialog);
 
   // Table Sorting --------------------------------
 
@@ -114,7 +116,7 @@ const Requisition = () => {
   );
 
   const [postRequisitionStatusApi, { isLoading }] =
-    usePostRequisitionStatusApiMutation();
+    usePatchRequisitionStatusApiMutation();
 
   const dispatch = useDispatch();
 
@@ -204,7 +206,11 @@ const Requisition = () => {
     navigate(`add-requisition`);
   };
 
-  console.log(requisitionData);
+  const handleViewProcessDetails = () => {
+    dispatch(openDrawer());
+  };
+
+  // console.log(requisitionData);
 
   return (
     <Box className="mcontainer">
@@ -226,6 +232,7 @@ const Requisition = () => {
               onSearchChange={setSearch}
               onSetPage={setPage}
               // onAdd={() => {}}
+              hideArchive
             />
 
             <Box className="masterlist-toolbar__addBtn" sx={{ mt: 0.25 }}>
@@ -414,6 +421,9 @@ const Requisition = () => {
           data={updateRequisition}
           onUpdateResetHandler={onUpdateResetHandler}
         />
+      </Dialog>
+      <Dialog open={dialog}>
+        <ProcessDetails />
       </Dialog>
     </Box>
   );

@@ -15,10 +15,6 @@ import {
   openConfirm,
   onLoading,
 } from "../../Redux/StateManagement/confirmSlice";
-import {
-  useGetMajorCategoryApiQuery,
-  usePutMajorCategoryStatusApiMutation as usePatchApprovalStatusApiMutation,
-} from "../../Redux/Query/Masterlist/Category/MajorCategory";
 
 // MUI
 import {
@@ -37,17 +33,20 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material";
-import { Help, ReportProblem, Visibility } from "@mui/icons-material";
+import { Help, Report, ReportProblem, Visibility } from "@mui/icons-material";
 import {
   useGetApprovalApiQuery,
-  usePatchAppvovalStatusApiMutation,
+  usePatchApprovalStatusApiMutation,
 } from "../../Redux/Query/Approving/Approval";
+import { openDrawer } from "../../Redux/StateManagement/booleanStateSlice";
 
 const PendingRequest = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("For Approval");
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
+
+  const drawer = useSelector((state) => state.booleanState.drawer);
 
   const dispatch = useDispatch();
 
@@ -79,8 +78,6 @@ const PendingRequest = () => {
   };
 
   // Table Properties --------------------------------
-
-  const drawer = useSelector((state) => state.booleanState.drawer);
 
   const limitHandler = (e) => {
     setPage(1);
@@ -115,14 +112,16 @@ const PendingRequest = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const [patchApprovalStatusApi, { isLoading }] =
-    usePatchAppvovalStatusApiMutation();
+  const [patchApprovalStatus, { isLoading }] =
+    usePatchApprovalStatusApiMutation();
 
+  // CONFIRMATION
   const onApprovalStatusHandler = (id) => {
+    return console.log(id);
     dispatch(
       openConfirm({
-        icon: status === "For Approval" ? ReportProblem : Help,
-        iconColor: status === "For Approval" ? "alert" : "info",
+        icon: Help,
+        iconColor: "info",
         message: (
           <Box>
             <Typography> Are you sure you want to</Typography>
@@ -134,21 +133,18 @@ const PendingRequest = () => {
                 fontFamily: "Raleway",
               }}
             >
-              {status === "For Approval" ? "APPROVE" : "DECLINE"}
+              APPROVE
             </Typography>{" "}
-            this data?
-            <Box>
-              <Typography>REMARKS</Typography>
-            </Box>
+            this request?
           </Box>
         ),
 
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            const result = await patchApprovalStatusApi({
-              id: id,
-              status: status === "For Approval" ? false : true,
+            const result = await patchApprovalStatus({
+              action: "Approve",
+              asset_approval_id: id,
             }).unwrap();
 
             dispatch(
@@ -157,12 +153,14 @@ const PendingRequest = () => {
                 duration: 5000,
               })
             );
+
             dispatch(closeConfirm());
           } catch (err) {
             if (err?.status === 422) {
               dispatch(
                 openToast({
-                  message: err.data.errors?.detail,
+                  message: err.data.message,
+                  // message: err.data.errors?.detail,
                   duration: 5000,
                   variant: "error",
                 })
@@ -181,6 +179,74 @@ const PendingRequest = () => {
       })
     );
   };
+
+  const onDeleteHandler = (id) => {
+    dispatch(
+      openConfirm({
+        icon: Report,
+        iconColor: "warning",
+        message: (
+          <Box>
+            <Typography> Are you sure you want to</Typography>
+            <Typography
+              sx={{
+                display: "inline-block",
+                color: "secondary.main",
+                fontWeight: "bold",
+                fontFamily: "Raleway",
+              }}
+            >
+              RETURN
+            </Typography>{" "}
+            this request?
+          </Box>
+        ),
+
+        onConfirm: async () => {
+          try {
+            dispatch(onLoading());
+            const result = await patchApprovalStatus({
+              action: "Return",
+              asset_approval_id: id,
+              remarks: remarks,
+            }).unwrap();
+
+            dispatch(
+              openToast({
+                message: result.message,
+                duration: 5000,
+              })
+            );
+
+            dispatch(closeConfirm());
+          } catch (err) {
+            if (err?.status === 422) {
+              dispatch(
+                openToast({
+                  message: err.data.message,
+                  // message: err.data.errors?.detail,
+                  duration: 5000,
+                  variant: "error",
+                })
+              );
+            } else if (err?.status !== 422) {
+              dispatch(
+                openToast({
+                  message: "Something went wrong. Please try again.",
+                  duration: 5000,
+                  variant: "error",
+                })
+              );
+            }
+          }
+        },
+      })
+    );
+  };
+
+  useEffect(() => {
+    handleViewProcessDetails();
+  }, []);
 
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
@@ -228,14 +294,6 @@ const PendingRequest = () => {
                     </TableCell>
 
                     <TableCell className="tbl-cell-category">
-                      {/* <TableSortLabel
-                        active={orderBy === `major_category_name`}
-                        direction={
-                          orderBy === `major_category_name` ? order : `asc`
-                        }
-                        onClick={() => onSort(`major_category_name`)}
-                      >
-                    </TableSortLabel> */}
                       Transaction No.
                     </TableCell>
 
@@ -329,7 +387,7 @@ const PendingRequest = () => {
 
                               <TableCell className="tbl-cell-category">
                                 <IconButton>
-                                  <Visibility color="primary" />
+                                  <Visibility color="secondary" />
                                 </IconButton>
                               </TableCell>
 
@@ -359,9 +417,12 @@ const PendingRequest = () => {
                                 <ActionMenu
                                   status={status}
                                   data={data}
+                                  showApprover
                                   onApprovalStatusHandler={
                                     onApprovalStatusHandler
                                   }
+                                  onDeleteHandler={onDeleteHandler}
+                                  hideArchive
                                 />
                               </TableCell>
                             </TableRow>
@@ -394,10 +455,7 @@ const PendingRequest = () => {
           </Box>
 
           <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-            {/* <AddMajorCategory
-              data={updateMajorCategory}
-              onUpdateResetHandler={onUpdateResetHandler}
-            /> */}
+            <ProcessDetails data={data} />
           </Dialog>
         </Box>
       )}

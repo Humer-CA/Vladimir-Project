@@ -360,27 +360,12 @@ const AddRequisition = (props) => {
     dispatch(closeDrawer());
   };
 
-  const sxSubtitle = {
-    fontWeight: "bold",
-    color: "secondary.main",
-    fontFamily: "Anton",
-    fontSize: "16px",
-  };
-
   const filterOptions = createFilterOptions({
     limit: 100,
     matchFrom: "any",
   });
 
   const attachmentType = ["Budgeted", "Unbudgeted"];
-
-  const BoxStyle = {
-    display: "flex",
-    flexDirection: "column",
-    gap: "15px",
-    width: "100%",
-    pb: "10px",
-  };
 
   const RemoveFile = ({ title, value }) => {
     return (
@@ -404,8 +389,9 @@ const AddRequisition = (props) => {
       </Tooltip>
     );
   };
-  console.log(errors);
-  console.log(requestList);
+
+  // console.log(errors);
+  // console.log(requestList);
 
   // Adding of Request
   const addRequstHandler = (formData) => {
@@ -425,6 +411,79 @@ const AddRequisition = (props) => {
       (item) => item?.id !== id
     );
     setValue("approver_id", filteredApprovers);
+  };
+
+  const sxSubtitle = {
+    fontWeight: "bold",
+    color: "secondary.main",
+    fontFamily: "Anton",
+    fontSize: "16px",
+  };
+
+  const BoxStyle = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+    width: "100%",
+    pb: "10px",
+  };
+
+  const onDeleteHandler = async (id) => {
+    dispatch(
+      openConfirm({
+        icon: Report,
+        iconColor: "warning",
+        message: (
+          <Box>
+            <Typography> Are you sure you want to</Typography>
+            <Typography
+              sx={{
+                display: "inline-block",
+                color: "secondary.main",
+                fontWeight: "bold",
+              }}
+            >
+              DELETE
+            </Typography>{" "}
+            this Data?
+          </Box>
+        ),
+
+        onConfirm: async () => {
+          try {
+            dispatch(onLoading());
+            let result = await deleteUnitApproversApi(id).unwrap();
+            console.log(result);
+            setPage(1);
+            dispatch(
+              openToast({
+                message: result.message,
+                duration: 5000,
+              })
+            );
+            dispatch(closeConfirm());
+          } catch (err) {
+            if (err?.status === 422) {
+              dispatch(
+                openToast({
+                  message: err.data.message,
+                  duration: 5000,
+                  variant: "error",
+                })
+              );
+            } else if (err?.status !== 422) {
+              dispatch(
+                openToast({
+                  message: "Something went wrong. Please try again.",
+                  duration: 5000,
+                  variant: "error",
+                })
+              );
+            }
+          }
+        },
+      })
+    );
   };
 
   return (
@@ -1101,6 +1160,8 @@ const AddRequisition = (props) => {
                               <ActionMenu
                                 // status={data.status}
                                 data={data}
+                                showDelete={true}
+                                onDeleteHandler={onDeleteHandler}
                                 // onUpdateHandler={onUpdateHandler}
                               />
                             </TableCell>

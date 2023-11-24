@@ -33,11 +33,11 @@ export const approvalApi = createApi({
       query: (id) => `asset-approval/${id}`,
     }),
 
-    patchAppvovalStatusApi: builder.mutation({
-      query: ({ id, ...data }) => ({
+    patchApprovalStatusApi: builder.mutation({
+      query: (body) => ({
         url: `/handle-request`,
         method: "PATCH",
-        body: data,
+        body,
       }),
       invalidatesTags: ["Approval"],
     }),
@@ -48,5 +48,5 @@ export const {
   useGetApprovalApiQuery,
   useGetApprovalAllApiQuery,
   useGetApprovalIdApiQuery,
-  usePatchAppvovalStatusApiMutation,
+  usePatchApprovalStatusApiMutation,
 } = approvalApi;

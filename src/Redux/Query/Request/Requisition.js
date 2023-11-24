@@ -34,7 +34,7 @@ export const requisitionApi = createApi({
       query: (id) => `asset-request/${id}`,
     }),
 
-    postRequisitionStatusApi: builder.mutation({
+    patchRequisitionStatusApi: builder.mutation({
       query: ({ id, status }) => ({
         url: `/asset-request/archived-tor/${id}`,
         method: "PATCH",
@@ -69,7 +69,7 @@ export const {
   useGetRequisitionApiQuery,
   useGetRequisitionAllApiQuery,
   useGetRequisitionIdApiQuery,
-  usePostRequisitionStatusApiMutation,
+  usePatchRequisitionStatusApiMutation,
   usePostRequisitionApiMutation,
   useUpdateRequisitionApiMutation,
 } = requisitionApi;
