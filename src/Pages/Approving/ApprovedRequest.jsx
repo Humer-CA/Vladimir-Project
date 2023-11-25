@@ -181,6 +181,16 @@ const PendingRequest = () => {
 
                     <TableCell className="tbl-cell-category">
                       <TableSortLabel
+                        active={orderBy === `requestor`}
+                        direction={orderBy === `requestor` ? order : `asc`}
+                        onClick={() => onSort(`requestor`)}
+                      >
+                        Approver
+                      </TableSortLabel>
+                    </TableCell>
+
+                    <TableCell className="tbl-cell-category">
+                      <TableSortLabel
                         active={orderBy === `division_id`}
                         direction={orderBy === `division_id` ? order : `asc`}
                         onClick={() => onSort(`division_id`)}
@@ -256,6 +266,20 @@ const PendingRequest = () => {
                                 </Typography>
                                 <Typography fontSize={12} color={"gray"}>
                                   {data.requester?.firstname}
+                                </Typography>
+                              </TableCell>
+
+                              <TableCell className="tbl-cell-category">
+                                <Typography
+                                  fontSize={14}
+                                  fontWeight={600}
+                                  color={"secondary"}
+                                  noWrap
+                                >
+                                  {data.approver?.employee_id}
+                                </Typography>
+                                <Typography fontSize={12} color={"gray"}>
+                                  {data.approver?.firstname}
                                 </Typography>
                               </TableCell>
 

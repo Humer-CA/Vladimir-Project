@@ -206,9 +206,9 @@ const Requisition = () => {
     navigate(`add-requisition`);
   };
 
-  const handleViewProcessDetails = () => {
-    dispatch(openDrawer());
-  };
+  // const handleViewProcessDetails = () => {
+  //   dispatch(openDrawer());
+  // };
 
   // console.log(requisitionData);
 
@@ -422,9 +422,9 @@ const Requisition = () => {
           onUpdateResetHandler={onUpdateResetHandler}
         />
       </Dialog>
-      <Dialog open={dialog}>
+      {/* <Dialog open={dialog}>
         <ProcessDetails />
-      </Dialog>
+      </Dialog> */}
     </Box>
   );
 };

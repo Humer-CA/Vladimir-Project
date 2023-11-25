@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Moment from "moment";
 import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
 import ActionMenu from "../../Components/Reusable/ActionMenu";
@@ -31,6 +31,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  TextField,
   Typography,
 } from "@mui/material";
 import { Help, Report, ReportProblem, Visibility } from "@mui/icons-material";
@@ -54,6 +55,8 @@ const PendingRequest = () => {
 
   const [order, setOrder] = useState("desc");
   const [orderBy, setOrderBy] = useState("id");
+
+  const [remarks, setRemarks] = useState("");
 
   const descendingComparator = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
@@ -116,8 +119,8 @@ const PendingRequest = () => {
     usePatchApprovalStatusApiMutation();
 
   // CONFIRMATION
-  const onApprovalStatusHandler = (id) => {
-    return console.log(id);
+  const onApprovalApproveHandler = (id) => {
+    // return console.log(id);
     dispatch(
       openConfirm({
         icon: Help,
@@ -159,8 +162,8 @@ const PendingRequest = () => {
             if (err?.status === 422) {
               dispatch(
                 openToast({
-                  message: err.data.message,
-                  // message: err.data.errors?.detail,
+                  // message: err.data.message,
+                  message: err.data.errors?.detail,
                   duration: 5000,
                   variant: "error",
                 })
@@ -180,27 +183,30 @@ const PendingRequest = () => {
     );
   };
 
-  const onDeleteHandler = (id) => {
+  const onApprovalReturnHandler = (id) => {
     dispatch(
       openConfirm({
         icon: Report,
         iconColor: "warning",
         message: (
-          <Box>
-            <Typography> Are you sure you want to</Typography>
-            <Typography
-              sx={{
-                display: "inline-block",
-                color: "secondary.main",
-                fontWeight: "bold",
-                fontFamily: "Raleway",
-              }}
-            >
-              RETURN
-            </Typography>{" "}
-            this request?
-          </Box>
+          <Stack gap={2}>
+            <Box>
+              <Typography> Are you sure you want to</Typography>
+              <Typography
+                sx={{
+                  display: "inline-block",
+                  color: "secondary.main",
+                  fontWeight: "bold",
+                  fontFamily: "Raleway",
+                }}
+              >
+                RETURN
+              </Typography>{" "}
+              this request?
+            </Box>
+          </Stack>
         ),
+        remarks: true,
 
         onConfirm: async () => {
           try {
@@ -223,8 +229,8 @@ const PendingRequest = () => {
             if (err?.status === 422) {
               dispatch(
                 openToast({
-                  message: err.data.message,
-                  // message: err.data.errors?.detail,
+                  // message: err.data.message,
+                  message: err?.data?.errors?.detail,
                   duration: 5000,
                   variant: "error",
                 })
@@ -243,10 +249,6 @@ const PendingRequest = () => {
       })
     );
   };
-
-  useEffect(() => {
-    handleViewProcessDetails();
-  }, []);
 
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
@@ -304,6 +306,16 @@ const PendingRequest = () => {
                         onClick={() => onSort(`requestor`)}
                       >
                         Requestor
+                      </TableSortLabel>
+                    </TableCell>
+
+                    <TableCell className="tbl-cell-category">
+                      <TableSortLabel
+                        active={orderBy === `requestor`}
+                        direction={orderBy === `requestor` ? order : `asc`}
+                        onClick={() => onSort(`requestor`)}
+                      >
+                        Approver
                       </TableSortLabel>
                     </TableCell>
 
@@ -381,11 +393,25 @@ const PendingRequest = () => {
                                 </Typography>
                               </TableCell>
 
+                              <TableCell className="tbl-cell-category">
+                                <Typography
+                                  fontSize={14}
+                                  fontWeight={600}
+                                  color={"secondary"}
+                                  noWrap
+                                >
+                                  {data.approver?.employee_id}
+                                </Typography>
+                                <Typography fontSize={12} color={"gray"}>
+                                  {data.approver?.firstname}
+                                </Typography>
+                              </TableCell>
+
                               <TableCell className="tbl-cell-category ">
                                 {data.number_of_item}
                               </TableCell>
 
-                              <TableCell className="tbl-cell-category">
+                              <TableCell className="tbl-cell-category text-center">
                                 <IconButton>
                                   <Visibility color="secondary" />
                                 </IconButton>
@@ -418,10 +444,12 @@ const PendingRequest = () => {
                                   status={status}
                                   data={data}
                                   showApprover
-                                  onApprovalStatusHandler={
-                                    onApprovalStatusHandler
+                                  onApprovalApproveHandler={
+                                    onApprovalApproveHandler
                                   }
-                                  onDeleteHandler={onDeleteHandler}
+                                  onApprovalReturnHandler={
+                                    onApprovalReturnHandler
+                                  }
                                   hideArchive
                                 />
                               </TableCell>
@@ -453,10 +481,6 @@ const PendingRequest = () => {
               onRowsPerPageChange={limitHandler}
             />
           </Box>
-
-          <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-            <ProcessDetails data={data} />
-          </Dialog>
         </Box>
       )}
     </Stack>

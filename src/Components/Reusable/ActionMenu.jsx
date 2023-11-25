@@ -40,8 +40,9 @@ const ActionMenu = (props) => {
   const {
     data,
     onArchiveRestoreHandler,
-    onApprovalStatusHandler,
+    onApprovalApproveHandler,
     onSubCapexArchiveRestoreHandler,
+    onApprovalReturnHandler,
     onDisposedRestoreHandler,
     onResetHandler,
     onUpdateHandler,
@@ -68,14 +69,17 @@ const ActionMenu = (props) => {
   };
 
   const handleArchiveRestore = () => {
-    // console.log(data?.id, status);
     onArchiveRestoreHandler(data?.id, status);
     handleClose();
   };
 
   const handleApprovalStatus = () => {
-    // console.log(data?.id, status);
-    onApprovalStatusHandler(data?.id, status);
+    onApprovalApproveHandler(data?.id, status);
+    handleClose();
+  };
+
+  const handleReturnStatus = () => {
+    onApprovalReturnHandler(data?.id, status);
     handleClose();
   };
 
@@ -256,7 +260,7 @@ const ActionMenu = (props) => {
           TransitionComponent={Fade}
           disablePortal
         >
-          <MenuItem onClick={onApprovalStatusHandler} dense>
+          <MenuItem onClick={handleApprovalStatus} dense>
             <ListItemIcon>
               <DoneOutline />
             </ListItemIcon>
@@ -265,7 +269,7 @@ const ActionMenu = (props) => {
             </ListItemText>
           </MenuItem>
 
-          <MenuItem onClick={onDeleteHandler} dense>
+          <MenuItem onClick={handleReturnStatus} dense>
             <ListItemIcon>
               <DoNotDisturb />
             </ListItemIcon>

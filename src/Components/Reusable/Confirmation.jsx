@@ -20,6 +20,7 @@ import {
   DialogTitle,
   Stack,
   SvgIcon,
+  Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 
@@ -114,23 +115,34 @@ const Confirmation = (props) => {
         Confirmation
       </DialogTitle>
 
-      <DialogContent sx={{ padding: 0, paddingBottom: 1 }}>
+      <DialogContent sx={{ padding: 0, paddingBottom: 2 }}>
         <DialogContentText component="div">{message}</DialogContentText>
       </DialogContent>
 
-      {/* {remarks && (
-        <CustomTextField
-          control={control}
-          name="remarks"
-          label="Remarks"
-          type="text"
-          color="secondary"
-          size="small"
-          fullWidth
-          error={!!errors?.remarks}
-          helperText={errors?.remarks?.message}
-        />
-      )} */}
+      {remarks && (
+        <Stack gap={1}>
+          <Typography
+            fontFamily="Anton"
+            fontWeight="bold"
+            fontSize={20}
+            color="secondary"
+          >
+            Remarks
+          </Typography>
+
+          <CustomTextField
+            control={control}
+            name="remarks"
+            label="Remarks"
+            type="text"
+            color="secondary"
+            size="small"
+            fullWidth
+            error={!!errors?.remarks}
+            helperText={errors?.remarks?.message}
+          />
+        </Stack>
+      )}
 
       {/* <DialogActions> */}
       <Stack
