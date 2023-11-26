@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { id } from "date-fns/esm/locale";
 
 export const requisitionApi = createApi({
   reducerPath: "requisitionApi",
@@ -65,6 +64,7 @@ export const requisitionApi = createApi({
 export const {
   useGetRequestContainerAllApiQuery,
   usePostRequestContainerApiMutation,
+  useUpdateRequestContainerApiMutation,
   useDeleteRequestContainerApiMutation,
   useDeleteRequestContainerAllApiMutation,
 } = requisitionApi;

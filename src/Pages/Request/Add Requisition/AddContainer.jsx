@@ -57,11 +57,7 @@ import NoRecordsFound from "../../../Layout/NoRecordsFound";
 import { useGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUnit";
 import CustomPatternfield from "../../../Components/Reusable/CustomNumberField";
 import ActionMenu from "../../../Components/Reusable/ActionMenu";
-import {
-  useGetRequestContainerAllApiQuery,
-  usePostRequestContainerApiMutation,
-  useUpdateRequestContainerApiMutation,
-} from "../../../Redux/Query/Request/RequestContainer";
+import { useGetRequestContainerAllApiQuery } from "../../../Redux/Query/Request/RequestContainer";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -156,27 +152,27 @@ const AddRequisition = (props) => {
   const ToolOfTradeRef = useRef(null);
   const OthersRef = useRef(null);
 
-  // const [
-  //   postRequisition,
-  //   {
-  //     data: postData,
-  //     isLoading: isPostLoading,
-  //     isSuccess: isPostSuccess,
-  //     isError: isPostError,
-  //     error: postError,
-  //   },
-  // ] = usePostRequisitionApiMutation();
+  const [
+    postRequisition,
+    {
+      data: postData,
+      isLoading: isPostLoading,
+      isSuccess: isPostSuccess,
+      isError: isPostError,
+      error: postError,
+    },
+  ] = usePostRequisitionApiMutation();
 
-  // const [
-  //   updateRequisition,
-  //   {
-  //     data: updateData,
-  //     isLoading: isUpdateLoading,
-  //     isSuccess: isUpdateSuccess,
-  //     isError: isUpdateError,
-  //     error: updateError,
-  //   },
-  // ] = useUpdateRequisitionApiMutation();
+  const [
+    updateRequisition,
+    {
+      data: updateData,
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
+    },
+  ] = useUpdateRequisitionApiMutation();
 
   const {
     data: typeOfRequestData = [],
@@ -223,35 +219,6 @@ const AddRequisition = (props) => {
     isSuccess: isSedarSuccess,
     isError: isSedarError,
   } = useGetSedarUsersApiQuery();
-
-  // CONTAINER
-  const {
-    data: addRequestAllApi = [],
-    isLoading: isRequestLoading,
-    refetch: isRequestRefetch,
-  } = useGetRequestContainerAllApiQuery();
-
-  const [
-    postRequest,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
-  ] = usePostRequestContainerApiMutation();
-
-  const [
-    upDateRequest,
-    {
-      data: updateData,
-      isLoading: isUpdateLoading,
-      isSuccess: isUpdateSuccess,
-      isError: isUpdateError,
-      error: updateError,
-    },
-  ] = useUpdateRequestContainerApiMutation();
 
   const {
     handleSubmit,
@@ -417,12 +384,14 @@ const AddRequisition = (props) => {
     );
   };
 
-  console.log(errors);
+  // console.log(errors);
   // console.log(requestList);
 
   // Adding of Request
   const addRequstHandler = (formData) => {
-    postRequest(formData);
+    setRequestList((currentValue) => {
+      return [...currentValue, formData];
+    });
     reset({
       department_id: formData?.department_id,
       subunit_id: formData?.subunit_id,
@@ -963,6 +932,7 @@ const AddRequisition = (props) => {
               sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}
             >
               CURRENT ASSET
+              {/* {data.status ? "Edit Requisition" : "Add Requisition"} */}
             </Typography>
 
             <TableContainer
@@ -1032,11 +1002,11 @@ const AddRequisition = (props) => {
                 </TableHead>
 
                 <TableBody>
-                  {addRequestAllApi?.length === 0 ? (
+                  {requestList?.length === 0 ? (
                     <NoRecordsFound />
                   ) : (
                     <>
-                      {addRequestAllApi
+                      {requestList
                         // ?.sort(comparator(order, orderBy))
                         .map((data, index) => (
                           <TableRow
