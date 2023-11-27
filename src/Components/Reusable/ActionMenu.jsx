@@ -29,6 +29,7 @@ import {
   Delete,
   DoneOutline,
   DoNotDisturb,
+  Cancel,
 } from "@mui/icons-material";
 
 const ActionMenu = (props) => {
@@ -54,7 +55,9 @@ const ActionMenu = (props) => {
     openCollapse,
     hideEdit,
     hideArchive,
+    showEditNav,
     showDelete,
+    showVoid,
     showApprover,
   } = props;
 
@@ -84,7 +87,12 @@ const ActionMenu = (props) => {
   };
 
   const handleDelete = () => {
-    onDeleteHandler(data?.id);
+    console.log("TRANSACTION NUMBER:", data?.transaction_number);
+    {
+      showVoid
+        ? onDeleteHandler(data?.id)
+        : onDeleteHandler(data?.transaction_number);
+    }
     handleClose();
   };
 
@@ -109,6 +117,11 @@ const ActionMenu = (props) => {
     dispatch(openDrawer());
     dispatch(openDialog());
     handleClose();
+  };
+
+  const handleEditNav = () => {
+    navigate(`add-requisition`);
+    onUpdateHandler(data);
   };
 
   const handleSubCapexEdit = () => {
@@ -145,7 +158,7 @@ const ActionMenu = (props) => {
           disablePortal
         >
           {status === "active" && !hideEdit && (
-            <MenuItem onClick={handleEdit} dense>
+            <MenuItem onClick={!showEditNav ? handleEdit : handleEditNav} dense>
               <ListItemIcon>
                 <BorderColor />
               </ListItemIcon>
@@ -177,13 +190,11 @@ const ActionMenu = (props) => {
             </MenuItem>
           )}
 
-          {showDelete && (
+          {(showDelete || showVoid) && (
             <MenuItem onClick={handleDelete} dense>
-              <ListItemIcon>
-                <Delete />
-              </ListItemIcon>
+              <ListItemIcon>{showVoid ? <Cancel /> : <Delete />}</ListItemIcon>
               <ListItemText disableTypography align="left">
-                Delete
+                {showVoid ? "Void" : "Delete"}
               </ListItemText>
             </MenuItem>
           )}

@@ -3,10 +3,8 @@ import Moment from "moment";
 import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
 import ActionMenu from "../../Components/Reusable/ActionMenu";
 import ErrorFetching from "../ErrorFetching";
-// import AddRequisition from "./AddEdit/AddRequisition";
 import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 import NoRecordsFound from "../../Layout/NoRecordsFound";
-// import AddRequisition from "../Masterlist/AddEdit/AddRequisition";
 import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
 import AddRequisition from "./Add Requisition/AddRequisition";
 
@@ -21,6 +19,7 @@ import {
 import {
   useGetRequisitionApiQuery,
   usePatchRequisitionStatusApiMutation,
+  useVoidRequisitionApiMutation,
 } from "../../Redux/Query/Request/Requisition";
 
 // MUI
@@ -29,6 +28,7 @@ import {
   Button,
   Chip,
   Dialog,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -40,7 +40,13 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { Help, LibraryAdd, ReportProblem } from "@mui/icons-material";
+import {
+  Help,
+  LibraryAdd,
+  Report,
+  ReportProblem,
+  Visibility,
+} from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import ProcessDetails from "../Approving/ProcessDetails";
 
@@ -118,13 +124,16 @@ const Requisition = () => {
   const [postRequisitionStatusApi, { isLoading }] =
     usePatchRequisitionStatusApiMutation();
 
+  const [voidRequisitionApi, { isVoidLoading }] =
+    useVoidRequisitionApiMutation();
+
   const dispatch = useDispatch();
 
-  const onArchiveRestoreHandler = async (id) => {
+  const onVoidHandler = async (id) => {
     dispatch(
       openConfirm({
-        icon: status === "active" ? ReportProblem : Help,
-        iconColor: status === "active" ? "alert" : "info",
+        icon: Report,
+        iconColor: "warning",
         message: (
           <Box>
             <Typography> Are you sure you want to</Typography>
@@ -133,23 +142,21 @@ const Requisition = () => {
                 display: "inline-block",
                 color: "secondary.main",
                 fontWeight: "bold",
-                fontFamily: "Raleway",
               }}
             >
-              {status === "active" ? "ARCHIVE" : "ACTIVATE"}
+              VOID
             </Typography>{" "}
-            this data?
+            this Data?
           </Box>
         ),
 
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            const result = await postRequisitionStatusApi({
+            let result = await voidRequisitionApi({
               id: id,
-              status: status === "active" ? false : true,
+              transaction_number: id,
             }).unwrap();
-
             dispatch(
               openToast({
                 message: result.message,
@@ -158,10 +165,11 @@ const Requisition = () => {
             );
             dispatch(closeConfirm());
           } catch (err) {
+            console.log(err);
             if (err?.status === 422) {
               dispatch(
                 openToast({
-                  message: err.data.errors?.detail,
+                  message: err.data.message,
                   duration: 5000,
                   variant: "error",
                 })
@@ -297,16 +305,8 @@ const Requisition = () => {
                         </TableSortLabel>
                       </TableCell>
 
-                      <TableCell className="tbl-cell">
-                        <TableSortLabel
-                        // active={orderBy === `type_of_request_name`}
-                        // direction={
-                        //   orderBy === `type_of_request_name` ? order : `asc`
-                        // }
-                        // onClick={() => onSort(`type_of_request_name`)}
-                        >
-                          View
-                        </TableSortLabel>
+                      <TableCell className="tbl-cell text-center">
+                        View
                       </TableCell>
 
                       <TableCell className="tbl-cell text-center">
@@ -349,33 +349,44 @@ const Requisition = () => {
                                 </TableCell>
 
                                 <TableCell className="tbl-cell text-weight">
-                                  {/* {data.type_of_request_name} */}
+                                  {data.transaction_number}
+                                </TableCell>
+
+                                <TableCell className="tbl-cell text-weight">
+                                  {data.item_count}
+                                </TableCell>
+
+                                <TableCell className="tbl-cell text-weight">
+                                  <IconButton>
+                                    <Visibility color="secondary" />
+                                  </IconButton>
                                 </TableCell>
 
                                 <TableCell className="tbl-cell text-center">
-                                  {data.is_active ? (
+                                  {data.status !== "Returned" ? (
                                     <Chip
                                       size="small"
-                                      variant="contained"
+                                      variant="outlined"
                                       sx={{
-                                        background: "#27ff811f",
+                                        borderColor: "active.dark",
                                         color: "active.dark",
                                         fontSize: "0.7rem",
                                         px: 1,
                                       }}
-                                      label="ACTIVE"
+                                      label={`${data.status}`}
                                     />
                                   ) : (
                                     <Chip
                                       size="small"
-                                      variant="contained"
+                                      variant="outlined"
                                       sx={{
-                                        background: "#fc3e3e34",
+                                        // background: "#fc3e3e34",
+                                        borderColor: "#fc3e3e34",
                                         color: "error.light",
                                         fontSize: "0.7rem",
                                         px: 1,
                                       }}
-                                      label="INACTIVE"
+                                      label={`${data.status}`}
                                     />
                                   )}
                                 </TableCell>
@@ -390,10 +401,11 @@ const Requisition = () => {
                                   <ActionMenu
                                     status={status}
                                     data={data}
+                                    hideArchive
+                                    showVoid
+                                    showEditNav
+                                    onDeleteHandler={onVoidHandler}
                                     onUpdateHandler={onUpdateHandler}
-                                    onArchiveRestoreHandler={
-                                      onArchiveRestoreHandler
-                                    }
                                   />
                                 </TableCell>
                               </TableRow>
@@ -416,7 +428,10 @@ const Requisition = () => {
           </Box>
         </>
       )}
-      <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
+      <Dialog
+        open={handleAddRequisition}
+        PaperProps={{ sx: { borderRadius: "10px" } }}
+      >
         <AddRequisition
           data={updateRequisition}
           onUpdateResetHandler={onUpdateResetHandler}

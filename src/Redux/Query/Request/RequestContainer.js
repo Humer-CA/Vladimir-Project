@@ -1,26 +1,35 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const requisitionApi = createApi({
-  reducerPath: "requisitionApi",
+export const requestContainerApi = createApi({
+  reducerPath: "requestContainerApi",
   tagTypes: ["RequestContainer"],
 
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.VLADIMIR_BASE_URL,
 
-    prepareHeaders: (headers) => {
+    prepareHeaders: (headers, { endpoint }) => {
       const token = localStorage.getItem("token");
+      // console.log(endpoint);
 
       headers.set("Authorization", `Bearer ${token}`);
       headers.set("Accept", `application/json`);
-      headers.set("Content-Type", "multipart/form-data");
+
+      if (endpoint === "postRequestContainerApi") {
+        headers.set("Accept", "application/vnd.api+json");
+        headers.set("Content-Type", "multipart/form-data; charset=utf-8;");
+      }
+
       return headers;
     },
   }),
 
   endpoints: (builder) => ({
     getRequestContainerAllApi: builder.query({
-      query: () => `request-container`,
-      transformResponse: (response) => response.data,
+      query: () => ({
+        url: `/request-container`,
+        method: "GET",
+      }),
+      // transformResponse: (response) => response.data,
       providesTags: ["RequestContainer"],
     }),
 
@@ -29,8 +38,10 @@ export const requisitionApi = createApi({
         url: `/request-container`,
         method: "POST",
         body: data,
+        formData: true,
       }),
-      invalidatesTags: ["RequestContainer"],
+
+      // invalidatesTags: ["RequestContainer"],
     }),
 
     updateRequestContainerApi: builder.mutation({
@@ -67,4 +78,4 @@ export const {
   useUpdateRequestContainerApiMutation,
   useDeleteRequestContainerApiMutation,
   useDeleteRequestContainerAllApiMutation,
-} = requisitionApi;
+} = requestContainerApi;

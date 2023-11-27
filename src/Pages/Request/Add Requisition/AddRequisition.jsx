@@ -5,6 +5,11 @@ import CustomNumberField from "../../../Components/Reusable/CustomNumberField";
 import CustomAutoComplete from "../../../Components/Reusable/CustomAutoComplete";
 import CustomAttachment from "../../../Components/Reusable/CustomAttachment";
 import { useGetSedarUsersApiQuery } from "../../../Redux/Query/SedarUserApi";
+import {
+  requestContainerApi,
+  useDeleteRequestContainerAllApiMutation,
+  useDeleteRequestContainerApiMutation,
+} from "../../../Redux/Query/Request/RequestContainer";
 
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -24,7 +29,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TableSortLabel,
   TextField,
   Tooltip,
   Typography,
@@ -36,6 +40,7 @@ import {
   ArrowBackIosRounded,
   Create,
   Remove,
+  Report,
 } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
@@ -62,6 +67,12 @@ import {
   usePostRequestContainerApiMutation,
   useUpdateRequestContainerApiMutation,
 } from "../../../Redux/Query/Request/RequestContainer";
+import axios from "axios";
+import {
+  closeConfirm,
+  onLoading,
+  openConfirm,
+} from "../../../Redux/StateManagement/confirmSlice";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -71,7 +82,6 @@ const schema = yup.object().shape({
     .required()
     .label("Type of Request")
     .typeError("Type of Request is a required field"),
-
   attachment_type: yup
     .string()
     .required()
@@ -139,12 +149,39 @@ const schema = yup.object().shape({
   quotation: yup.mixed().label("Quotation"),
   specification: yup.mixed().label("Specification"),
   tool_of_trade: yup.mixed().label("Tool of Trade"),
-  other_attachment: yup.mixed().label("Other Attachment"),
+  other_attachments: yup.mixed().label("Other Attachment"),
 });
 
 const AddRequisition = (props) => {
-  const { data, onUpdateResetHandler } = props;
-  const [requestList, setRequestList] = useState([]);
+  const { data } = props;
+  const [updateRequest, setUpdateRequest] = useState({
+    id: "",
+    type_of_request_id: null,
+    attachment_type: null,
+
+    company_id: null,
+    department_id: null,
+    subunit_id: null,
+    location_id: null,
+    account_title_id: null,
+
+    asset_description: "",
+    asset_specification: "",
+    brand: "",
+    accountability: null,
+    accountable: null,
+    cellphone_number: null,
+    quantity: 1,
+    remarks: "",
+
+    letter_of_request: "",
+    quotation: "",
+    specification: "",
+    tool_of_trade: "",
+    other_attachments: "",
+  });
+  // const [requestList, setRequestList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const isFullWidth = useMediaQuery("(max-width: 600px)");
   const dispatch = useDispatch();
@@ -156,27 +193,27 @@ const AddRequisition = (props) => {
   const ToolOfTradeRef = useRef(null);
   const OthersRef = useRef(null);
 
-  // const [
-  //   postRequisition,
-  //   {
-  //     data: postData,
-  //     isLoading: isPostLoading,
-  //     isSuccess: isPostSuccess,
-  //     isError: isPostError,
-  //     error: postError,
-  //   },
-  // ] = usePostRequisitionApiMutation();
+  const [
+    postRequisition,
+    {
+      data: postData,
+      isLoading: isPostLoading,
+      isSuccess: isPostSuccess,
+      isError: isPostError,
+      error: postError,
+    },
+  ] = usePostRequisitionApiMutation();
 
-  // const [
-  //   updateRequisition,
-  //   {
-  //     data: updateData,
-  //     isLoading: isUpdateLoading,
-  //     isSuccess: isUpdateSuccess,
-  //     isError: isUpdateError,
-  //     error: updateError,
-  //   },
-  // ] = useUpdateRequisitionApiMutation();
+  const [
+    updateRequisition,
+    {
+      data: updateData,
+      isLoading: isUpdateLoading,
+      isSuccess: isUpdateSuccess,
+      isError: isUpdateError,
+      error: updateError,
+    },
+  ] = useUpdateRequisitionApiMutation();
 
   const {
     data: typeOfRequestData = [],
@@ -229,29 +266,19 @@ const AddRequisition = (props) => {
     data: addRequestAllApi = [],
     isLoading: isRequestLoading,
     refetch: isRequestRefetch,
-  } = useGetRequestContainerAllApiQuery();
+  } = useGetRequestContainerAllApiQuery({ refetchOnMountOrArgChange: true });
 
-  const [
-    postRequest,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
-  ] = usePostRequestContainerApiMutation();
+  const [postRequest, { data: postRequestData }] =
+    usePostRequestContainerApiMutation();
 
-  const [
-    upDateRequest,
-    {
-      data: updateData,
-      isLoading: isUpdateLoading,
-      isSuccess: isUpdateSuccess,
-      isError: isUpdateError,
-      error: updateError,
-    },
-  ] = useUpdateRequestContainerApiMutation();
+  const [upDateRequest, { data: updateRequestData }] =
+    useUpdateRequestContainerApiMutation();
+
+  const [deleteRequest, { data: deleteRequestData }] =
+    useDeleteRequestContainerApiMutation();
+
+  const [deleteAllRequest, { data: deleteAllRequestData }] =
+    useDeleteRequestContainerAllApiMutation();
 
   const {
     handleSubmit,
@@ -270,7 +297,7 @@ const AddRequisition = (props) => {
       type_of_request_id: null,
       attachment_type: null,
 
-      // company_id: null,
+      company_id: null,
       department_id: null,
       subunit_id: null,
       location_id: null,
@@ -289,7 +316,7 @@ const AddRequisition = (props) => {
       quotation: "",
       specification: "",
       tool_of_trade: "",
-      other_attachment: "",
+      other_attachments: "",
     },
   });
 
@@ -330,9 +357,9 @@ const AddRequisition = (props) => {
         })
       );
 
-      setTimeout(() => {
-        onUpdateResetHandler();
-      }, 500);
+      // setTimeout(() => {
+      //   onUpdateResetHandler();
+      // }, 500);
     }
   }, [isPostSuccess, isUpdateSuccess]);
 
@@ -365,24 +392,17 @@ const AddRequisition = (props) => {
 
   // SUBMIT HANDLER
   const onSubmitHandler = () => {
-    const formData = new FormData();
-    requestList.map((item) => {
-      formData.append("userRequest[]");
-    });
-
-    // formData.append("userRequest", requestList);
-
-    // if (data) {
-    //   updateRequisition(formData);
-    //   return;
-    // }
-    // postRequisition(formData);
+    if (data.status) {
+      updateRequisition(addRequestAllApi);
+      return;
+    }
+    postRequisition(addRequestAllApi);
   };
 
   const handleCloseDrawer = () => {
-    setTimeout(() => {
-      onUpdateResetHandler();
-    }, 500);
+    // setTimeout(() => {
+    //   onUpdateResetHandler();
+    // }, 500);
 
     dispatch(closeDrawer());
   };
@@ -417,18 +437,98 @@ const AddRequisition = (props) => {
     );
   };
 
-  console.log(errors);
-  // console.log(requestList);
+  // console.log(errors);
+  console.log(addRequestAllApi);
 
   // Adding of Request
-  const addRequstHandler = (formData) => {
-    postRequest(formData);
-    reset({
-      department_id: formData?.department_id,
-      subunit_id: formData?.subunit_id,
-      location_id: formData?.location_id,
-      account_title_id: formData?.account_title_id,
+  const addRequestHandler = (formData) => {
+    // console.log(formData);
+
+    const data = {
+      type_of_request_id: formData?.type_of_request_id?.id?.toString(),
+      attachment_type: formData?.attachment_type?.toString(),
+
+      department_id: formData?.department_id.id?.toString(),
+      company_id: formData?.department_id?.company?.company_id?.toString(),
+      subunit_id: formData.subunit_id.id?.toString(),
+      location_id: formData?.location_id.id?.toString(),
+      account_title_id: formData?.account_title_id.id?.toString(),
+      accountability: formData?.accountability?.toString(),
+      accountable:
+        formData?.accountable?.general_info?.full_id_number_full_name?.toString(),
+
+      asset_description: formData?.asset_description?.toString(),
+      asset_specification: formData?.asset_specification?.toString(),
+      cellphone_number: formData?.cellphone_number?.toString(),
+      brand: formData?.brand?.toString(),
+      quantity: formData?.quantity?.toString(),
+      remarks: formData?.remarks?.toString(),
+
+      letter_of_request: formData?.letter_of_request,
+      quotation: formData?.quotation,
+      specification_form: formData?.specification,
+      tool_of_trade: formData?.tool_of_trade,
+      other_attachments: formData?.other_attachments,
+    };
+
+    const payload = new FormData();
+    Object.entries(data).forEach((item) => {
+      const [name, value] = item;
+
+      payload.append(name, value);
     });
+    const token = localStorage.getItem("token");
+    setIsLoading(true);
+    axios
+      .post("http://127.0.0.1:8000/api/request-container", payload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          // Authorization: `Bearer 583|KavZ7vEXyUY7FiHQGIMcTImftzyRnZorxbtn4S9a`,
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        console.log(result);
+        // const data = result.json();
+        // return data;
+        dispatch(
+          openToast({
+            message: result?.data?.message || result?.data?.message,
+            duration: 5000,
+          })
+        );
+      })
+      .then(() => {
+        dispatch(requestContainerApi.util.invalidateTags(["RequestContainer"]));
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+        dispatch(
+          openToast({
+            message: err?.data?.message || err?.data?.message,
+            duration: 5000,
+          })
+        );
+      })
+      .finally((item) => {
+        setIsLoading(false);
+        reset({
+          department_id: item?.department_id,
+          subunit_id: item?.subunit_id,
+          location_id: item?.location_id,
+          account_title_id: item?.account_title_id,
+        });
+      });
+
+    // postRequest(payload);
+    // reset({
+    //   department_id: formData?.department_id,
+    //   subunit_id: formData?.subunit_id,
+    //   location_id: formData?.location_id,
+    //   account_title_id: formData?.account_title_id,
+    // });
   };
 
   const sxSubtitle = {
@@ -446,7 +546,44 @@ const AddRequisition = (props) => {
     pb: "10px",
   };
 
-  const onAddHandler = () => {};
+  const onUpdateHandler = (props) => {
+    const { id, division_name, sync_id } = props;
+    setUpdateDivision({
+      status: true,
+      id: id,
+      sync_id: sync_id,
+      division_name: division_name,
+    });
+  };
+
+  const onUpdateResetHandler = () => {
+    setUpdateRequest({
+      id: "",
+      type_of_request_id: null,
+      attachment_type: null,
+
+      company_id: null,
+      department_id: null,
+      subunit_id: null,
+      location_id: null,
+      account_title_id: null,
+
+      asset_description: "",
+      asset_specification: "",
+      brand: "",
+      accountability: null,
+      accountable: null,
+      cellphone_number: null,
+      quantity: 1,
+      remarks: "",
+
+      letter_of_request: "",
+      quotation: "",
+      specification: "",
+      tool_of_trade: "",
+      other_attachments: "",
+    });
+  };
 
   const onDeleteHandler = async (id) => {
     dispatch(
@@ -472,9 +609,8 @@ const AddRequisition = (props) => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            let result = await deleteUnitApproversApi(id).unwrap();
-            console.log(result);
-            setPage(1);
+            let result = await deleteRequest(id).unwrap();
+
             dispatch(
               openToast({
                 message: result.message,
@@ -483,6 +619,7 @@ const AddRequisition = (props) => {
             );
             dispatch(closeConfirm());
           } catch (err) {
+            console.log(err);
             if (err?.status === 422) {
               dispatch(
                 openToast({
@@ -514,7 +651,10 @@ const AddRequisition = (props) => {
           color="secondary"
           size="small"
           startIcon={<ArrowBackIosRounded color="secondary" />}
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            navigate(-1);
+            deleteAllRequest();
+          }}
           sx={{ width: "90px", marginLeft: "-15px" }}
         >
           <Typography color="secondary.main">Back</Typography>
@@ -537,7 +677,7 @@ const AddRequisition = (props) => {
               id="requestForm"
               className="request__form"
               component="form"
-              onSubmit={handleSubmit(addRequstHandler)}
+              onSubmit={handleSubmit(addRequestHandler)}
             >
               <Stack gap={2}>
                 <Box sx={BoxStyle}>
@@ -601,7 +741,7 @@ const AddRequisition = (props) => {
                     options={departmentData}
                     loading={isDepartmentLoading}
                     size="small"
-                    disabled={requestList.length !== 0}
+                    disabled={addRequestAllApi.length !== 0}
                     getOptionLabel={(option) => option.department_name}
                     isOptionEqualToValue={(option, value) =>
                       option.id === value.id
@@ -623,7 +763,7 @@ const AddRequisition = (props) => {
                     autoComplete
                     name="subunit_id"
                     control={control}
-                    disabled={requestList.length !== 0}
+                    disabled={addRequestAllApi.length !== 0}
                     options={subUnitData?.filter(
                       (item) =>
                         item?.department?.id === watch("department_id")?.id
@@ -674,7 +814,7 @@ const AddRequisition = (props) => {
                     autoComplete
                     name="location_id"
                     control={control}
-                    disabled={requestList.length !== 0}
+                    disabled={addRequestAllApi.length !== 0}
                     options={locationData?.filter((item) => {
                       return item.departments.some((department) => {
                         return (
@@ -705,7 +845,7 @@ const AddRequisition = (props) => {
                   <CustomAutoComplete
                     name="account_title_id"
                     control={control}
-                    disabled={requestList.length !== 0}
+                    disabled={addRequestAllApi.length !== 0}
                     options={accountTitleData}
                     loading={isAccountTitleLoading}
                     size="small"
@@ -858,7 +998,6 @@ const AddRequisition = (props) => {
                     type="text"
                     color="secondary"
                     size="small"
-                    disabled={data?.print_count >= 1}
                     fullWidth
                     multiline
                   />
@@ -925,14 +1064,14 @@ const AddRequisition = (props) => {
                   <Stack flexDirection="row" gap={1} alignItems="center">
                     <CustomAttachment
                       control={control}
-                      name="other_attachment"
+                      name="other_attachments"
                       label="Other Attachments"
                       inputRef={OthersRef}
                     />
-                    {watch("other_attachment") !== "" && (
+                    {watch("other_attachments") !== "" && (
                       <RemoveFile
                         title="Other Attachments"
-                        value="other_attachment"
+                        value="other_attachments"
                       />
                     )}
                   </Stack>
@@ -943,6 +1082,7 @@ const AddRequisition = (props) => {
             <Divider sx={{ pb: 1, mb: 1 }} />
 
             <LoadingButton
+              loading={isLoading}
               form="requestForm"
               variant="contained"
               type="submit"
@@ -964,10 +1104,9 @@ const AddRequisition = (props) => {
             >
               CURRENT ASSET
             </Typography>
-
             <TableContainer
               className="mcontainer__th-body  mcontainer__wrapper"
-              sx={{ height: "calc(100vh - 290px)" }}
+              sx={{ height: "calc(100vh - 290px)", pt: 0 }}
             >
               <Table className="mcontainer__table " stickyHeader>
                 <TableHead>
@@ -979,53 +1118,31 @@ const AddRequisition = (props) => {
                       },
                     }}
                   >
-                    <TableCell className="tbl-cell">
-                      <TableSortLabel>Index</TableSortLabel>
-                    </TableCell>
+                    <TableCell className="tbl-cell">Index</TableCell>
+
+                    <TableCell className="tbl-cell">Type of Request</TableCell>
+
+                    <TableCell className="tbl-cell">Attachment Type</TableCell>
 
                     <TableCell className="tbl-cell">
-                      <TableSortLabel
-                        active={orderBy === `type_of_request_name`}
-                        direction={
-                          orderBy === `type_of_request_name` ? order : `asc`
-                        }
-                        onClick={() => onSort(`type_of_request_name`)}
-                      >
-                        Type of Request
-                      </TableSortLabel>
+                      Chart of Accounts
                     </TableCell>
 
-                    <TableCell className="tbl-cell">
-                      <TableSortLabel>Attachment Type</TableSortLabel>
-                    </TableCell>
+                    <TableCell className="tbl-cell">Accountability</TableCell>
 
                     <TableCell className="tbl-cell">
-                      <TableSortLabel>Chart of Accounts</TableSortLabel>
+                      Asset Information
                     </TableCell>
 
-                    <TableCell className="tbl-cell">
-                      <TableSortLabel>Accountability</TableSortLabel>
+                    <TableCell className="tbl-cell text-center">
+                      Quantity
                     </TableCell>
 
-                    <TableCell className="tbl-cell">
-                      <TableSortLabel>Asset Information</TableSortLabel>
-                    </TableCell>
+                    <TableCell className="tbl-cell">Cellphone #</TableCell>
 
-                    <TableCell className="tbl-cell">
-                      <TableSortLabel>Quantity</TableSortLabel>
-                    </TableCell>
+                    <TableCell className="tbl-cell">Remarks</TableCell>
 
-                    <TableCell className="tbl-cell">
-                      <TableSortLabel>Cellphone #</TableSortLabel>
-                    </TableCell>
-
-                    <TableCell className="tbl-cell">
-                      <TableSortLabel>Remarks</TableSortLabel>
-                    </TableCell>
-
-                    <TableCell className="tbl-cell">
-                      <TableSortLabel>Attachments</TableSortLabel>
-                    </TableCell>
+                    <TableCell className="tbl-cell">Attachments</TableCell>
 
                     <TableCell className="tbl-cell">Action</TableCell>
                   </TableRow>
@@ -1051,33 +1168,33 @@ const AddRequisition = (props) => {
                               {index + 1}
                             </TableCell>
 
-                            <TableCell className="tbl-cell tr-cen-pad45">
-                              {data.type_of_request_id?.type_of_request_name}
+                            <TableCell className="tbl-cell">
+                              {data.type_of_request?.type_of_request_name}
                             </TableCell>
 
-                            <TableCell className="tbl-cell tr-cen-pad45">
+                            <TableCell className="tbl-cell">
                               {data.attachment_type}
                             </TableCell>
 
                             <TableCell className="tbl-cell">
                               <Typography fontSize={10} color="gray">
-                                {`(${data.department_id?.company?.company_code}) -
-                              ${data.department_id?.company?.company_name}`}
+                                {`(${data.company?.company_code}) -
+                              ${data.company?.company_name}`}
                               </Typography>
 
                               <Typography fontSize={10} color="gray">
-                                {`(${data.department_id?.department_code}) -
-                              ${data.department_id?.department_name}`}
+                                {`(${data.department?.department_code}) -
+                              ${data.department?.department_name}`}
                               </Typography>
 
                               <Typography fontSize={10} color="gray">
-                                {`(${data.department_id?.locations?.location_code}) -
-                              ${data.department_id?.locations?.location_name}`}
+                                {`(${data.location?.location_code}) -
+                              ${data.location?.location_name}`}
                               </Typography>
 
                               <Typography fontSize={10} color="gray">
-                                {`(${data.department_id?.account_title_id?.account_title_code}) -
-                              ${data.department_id?.account_title_id?.account_title_name}`}
+                                {`(${data.account_title?.account_title_code}) -
+                              ${data.account_title?.account_title_name}`}
                               </Typography>
                             </TableCell>
 
@@ -1112,7 +1229,7 @@ const AddRequisition = (props) => {
                               </Typography>
                             </TableCell>
 
-                            <TableCell className="tbl-cell">
+                            <TableCell className="tbl-cell text-center">
                               {data.quantity}
                             </TableCell>
 
@@ -1123,65 +1240,76 @@ const AddRequisition = (props) => {
                             </TableCell>
 
                             <TableCell className="tbl-cell">
-                              {data.remarks === ""
+                              {data.remarks === null
                                 ? "No Remarks"
                                 : data.remarks}
                             </TableCell>
 
                             <TableCell className="tbl-cell">
-                              {data.letter_of_request && (
+                              {data?.attachments?.letter_of_request && (
                                 <Stack flexDirection="row" gap={1}>
                                   <Typography fontSize="12px" fontWeight={600}>
                                     Letter of Request:
                                   </Typography>
-                                  {data.letter_of_request?.name}
+                                  {
+                                    data?.attachments?.letter_of_request
+                                      ?.file_name
+                                  }
                                 </Stack>
                               )}
 
-                              {data.quotation && (
+                              {data?.attachments?.quotation && (
                                 <Stack flexDirection="row" gap={1}>
                                   <Typography fontSize="12px" fontWeight={600}>
                                     Quotation:
                                   </Typography>
-                                  {data.quotation?.name}
+                                  {data?.attachments?.quotation?.file_name}
                                 </Stack>
                               )}
 
-                              {data.specification && (
+                              {data?.attachments?.specification_form && (
                                 <Stack flexDirection="row" gap={1}>
                                   <Typography fontSize="12px" fontWeight={600}>
                                     Specification:
                                   </Typography>
-                                  {data.specification?.name}
+                                  {
+                                    data?.attachments?.specification_form
+                                      ?.file_name
+                                  }
                                 </Stack>
                               )}
 
-                              {data.tool_of_trade && (
+                              {data?.attachments?.tool_of_trade && (
                                 <Stack flexDirection="row" gap={1}>
                                   <Typography fontSize="12px" fontWeight={600}>
                                     Tool of Trade:
                                   </Typography>
-                                  {data.tool_of_trade?.name}
+                                  {data?.attachments?.tool_of_trade?.file_name}
                                 </Stack>
                               )}
 
-                              {data.other_attachment && (
+                              {data?.attachments?.other_attachments && (
                                 <Stack flexDirection="row" gap={1}>
                                   <Typography fontSize="12px" fontWeight={600}>
                                     Other Attachment:
                                   </Typography>
-                                  {data.other_attachment?.name}
+                                  {
+                                    data?.attachments?.other_attachments
+                                      ?.file_name
+                                  }
                                 </Stack>
                               )}
                             </TableCell>
 
                             <TableCell className="tbl-cell">
                               <ActionMenu
-                                // status={data.status}
+                                hideArchive
+                                status={data.status}
                                 data={data}
                                 showDelete={true}
                                 onDeleteHandler={onDeleteHandler}
-                                // onUpdateHandler={onUpdateHandler}
+                                onUpdateHandler={onUpdateHandler}
+                                onUpdateResetHandler={onUpdateResetHandler}
                               />
                             </TableCell>
                           </TableRow>
@@ -1192,36 +1320,55 @@ const AddRequisition = (props) => {
               </Table>
             </TableContainer>
 
+            {/* Buttons */}
             <Stack
               flexDirection="row"
-              justifyContent="flex-end"
-              gap={2}
-              sx={{ pt: "10px" }}
+              justifyContent="space-between"
+              alignItems={"center"}
             >
-              <LoadingButton
-                onClick={onSubmitHandler}
-                variant="contained"
-                size="small"
-                color="secondary"
-                startIcon={
-                  <Create
-                    color={requestList.length === 0 ? "gray" : "primary"}
-                  />
-                }
-                disabled={requestList.length === 0 ? true : false}
-                loading={isUpdateLoading || isPostLoading}
+              <Typography
+                fontFamily="Anton, Impact, Roboto"
+                fontSize="18px"
+                color="secondary.main"
+                sx={{ pt: "10px" }}
               >
-                <Typography fontSize="14px">Create</Typography>
-              </LoadingButton>
+                Added : {addRequestAllApi.length} request
+              </Typography>
 
-              <Button
-                variant="outlined"
-                size="small"
-                color="secondary"
-                onClick={() => navigate(-1)}
+              <Stack
+                flexDirection="row"
+                justifyContent="flex-end"
+                gap={2}
+                sx={{ pt: "10px" }}
               >
-                Cancel
-              </Button>
+                <LoadingButton
+                  onClick={onSubmitHandler}
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  startIcon={
+                    <Create
+                      color={addRequestAllApi.length === 0 ? "gray" : "primary"}
+                    />
+                  }
+                  disabled={addRequestAllApi.length === 0 ? true : false}
+                  loading={isPostLoading || isUpdateLoading}
+                >
+                  <Typography fontSize="14px">Create</Typography>
+                </LoadingButton>
+
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="secondary"
+                  onClick={() => {
+                    navigate(-1);
+                    deleteAllRequest();
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Stack>
             </Stack>
           </Box>
         </Box>

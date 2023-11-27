@@ -12,7 +12,14 @@ export const requisitionApi = createApi({
 
       headers.set("Authorization", `Bearer ${token}`);
       headers.set("Accept", `application/json`);
-      headers.set("Content-Type", "multipart/form-data");
+
+      // if (endpoint === "postRequisitionApi") {
+      //   headers.set(
+      //     "Content-Type",
+      //     "multipart/form-data; charset=utf-8; boundary=---------------------------" +
+      //       Math.random().toString().substr(2)
+      //   );
+      // }
       return headers;
     },
   }),
@@ -47,12 +54,21 @@ export const requisitionApi = createApi({
 
     postRequisitionApi: builder.mutation({
       query: (data) => ({
-        url: `/asset-request`,
+        url: `/move-to-asset-request`,
         method: "POST",
         body: data,
       }),
       invalidatesTags: ["Requisition"],
     }),
+
+    // postRequisitionApi: builder.mutation({
+    //   query: (data) => ({
+    //     url: `/asset-request`,
+    //     method: "POST",
+    //     body: data,
+    //   }),
+    //   invalidatesTags: ["Requisition"],
+    // }),
 
     updateRequisitionApi: builder.mutation({
       query: ({ id, ...data }) => ({
@@ -60,6 +76,16 @@ export const requisitionApi = createApi({
         method: "PUT",
         body: data,
       }),
+      invalidatesTags: ["Requisition"],
+    }),
+
+    voidRequisitionApi: builder.mutation({
+      query: (body) => ({
+        url: `/void-request/${body?.transaction_number}`,
+        method: "PATCH",
+        body,
+      }),
+
       invalidatesTags: ["Requisition"],
     }),
   }),
@@ -72,4 +98,5 @@ export const {
   usePatchRequisitionStatusApiMutation,
   usePostRequisitionApiMutation,
   useUpdateRequisitionApiMutation,
+  useVoidRequisitionApiMutation,
 } = requisitionApi;
