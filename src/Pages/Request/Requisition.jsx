@@ -17,6 +17,7 @@ import {
   onLoading,
 } from "../../Redux/StateManagement/confirmSlice";
 import {
+  useGetByTransactionApiQuery,
   useGetRequisitionApiQuery,
   usePatchRequisitionStatusApiMutation,
   useVoidRequisitionApiMutation,
@@ -157,12 +158,14 @@ const Requisition = () => {
               id: id,
               transaction_number: id,
             }).unwrap();
+
             dispatch(
               openToast({
                 message: result.message,
                 duration: 5000,
               })
             );
+
             dispatch(closeConfirm());
           } catch (err) {
             console.log(err);
@@ -212,6 +215,16 @@ const Requisition = () => {
 
   const handleAddRequisition = () => {
     navigate(`add-requisition`);
+  };
+
+  const handleEditRequisition = (data) => {
+    // console.log(data);
+    navigate(
+      `/request/requisition/add-requisition/${data.transaction_number}`,
+      {
+        state: { ...data },
+      }
+    );
   };
 
   // const handleViewProcessDetails = () => {
@@ -357,7 +370,9 @@ const Requisition = () => {
                                 </TableCell>
 
                                 <TableCell className="tbl-cell text-weight">
-                                  <IconButton>
+                                  <IconButton
+                                    onClick={() => handleEditRequisition(data)}
+                                  >
                                     <Visibility color="secondary" />
                                   </IconButton>
                                 </TableCell>
@@ -399,12 +414,11 @@ const Requisition = () => {
 
                                 <TableCell className="tbl-cell ">
                                   <ActionMenu
-                                    status={status}
+                                    status={data.status}
                                     data={data}
                                     hideArchive
                                     showVoid
-                                    showEditNav
-                                    onDeleteHandler={onVoidHandler}
+                                    onVoidHandler={onVoidHandler}
                                     onUpdateHandler={onUpdateHandler}
                                   />
                                 </TableCell>
@@ -428,18 +442,6 @@ const Requisition = () => {
           </Box>
         </>
       )}
-      <Dialog
-        open={handleAddRequisition}
-        PaperProps={{ sx: { borderRadius: "10px" } }}
-      >
-        <AddRequisition
-          data={updateRequisition}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
-      </Dialog>
-      {/* <Dialog open={dialog}>
-        <ProcessDetails />
-      </Dialog> */}
     </Box>
   );
 };

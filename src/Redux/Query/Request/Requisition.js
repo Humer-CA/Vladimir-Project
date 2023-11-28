@@ -39,6 +39,12 @@ export const requisitionApi = createApi({
 
     getRequisitionIdApi: builder.query({
       query: (id) => `asset-request/${id}`,
+      providesTags: ["Requisition"],
+    }),
+
+    getByTransactionApi: builder.query({
+      query: ({ transaction_number }) => `asset-request/${transaction_number}`,
+      providesTags: ["Requisition"],
     }),
 
     patchRequisitionStatusApi: builder.mutation({
@@ -57,6 +63,23 @@ export const requisitionApi = createApi({
         url: `/move-to-asset-request`,
         method: "POST",
         body: data,
+      }),
+      invalidatesTags: ["Requisition"],
+    }),
+
+    // postResubmitRequisitionApi: builder.mutation({
+    //   query: ({ transaction_number, ...body }) => ({
+    //     url: `/resubmit-request/${transaction_number}`,
+    //     method: "PATCH",
+    //     body,
+    //   }),
+    //   invalidatesTags: ["Requisition"],
+    // }),
+    postResubmitRequisitionApi: builder.mutation({
+      query: ({ transaction_number, body }) => ({
+        url: `/resubmit-request`,
+        method: "PATCH",
+        body: { transaction_number },
       }),
       invalidatesTags: ["Requisition"],
     }),
@@ -95,8 +118,10 @@ export const {
   useGetRequisitionApiQuery,
   useGetRequisitionAllApiQuery,
   useGetRequisitionIdApiQuery,
+  useGetByTransactionApiQuery,
   usePatchRequisitionStatusApiMutation,
   usePostRequisitionApiMutation,
+  usePostResubmitRequisitionApiMutation,
   useUpdateRequisitionApiMutation,
   useVoidRequisitionApiMutation,
 } = requisitionApi;

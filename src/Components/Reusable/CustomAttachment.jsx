@@ -23,6 +23,8 @@ const CustomTextField = (props) => {
               type="file"
               inputRef={inputRef}
               onChange={(e) => {
+                console.log(e.target.files[0]);
+
                 setValue(e.target.files[0]);
                 e.target.value = null;
               }}

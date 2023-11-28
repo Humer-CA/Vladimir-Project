@@ -48,6 +48,7 @@ const ActionMenu = (props) => {
     onResetHandler,
     onUpdateHandler,
     onDeleteHandler,
+    onVoidHandler,
     status,
     faStatus,
     setSubCapexDialog,
@@ -59,6 +60,7 @@ const ActionMenu = (props) => {
     showDelete,
     showVoid,
     showApprover,
+    editRequest,
   } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -87,12 +89,12 @@ const ActionMenu = (props) => {
   };
 
   const handleDelete = () => {
-    console.log("TRANSACTION NUMBER:", data?.transaction_number);
-    {
-      showVoid
-        ? onDeleteHandler(data?.id)
-        : onDeleteHandler(data?.transaction_number);
-    }
+    onDeleteHandler(data?.id);
+    handleClose();
+  };
+
+  const handleVoid = () => {
+    onVoidHandler(data?.transaction_number);
     handleClose();
   };
 
@@ -116,6 +118,12 @@ const ActionMenu = (props) => {
     onUpdateHandler(data);
     dispatch(openDrawer());
     dispatch(openDialog());
+    handleClose();
+  };
+
+  const handleEdiRequest = () => {
+    // console.log(data);
+    onUpdateHandler(data);
     handleClose();
   };
 
@@ -167,6 +175,16 @@ const ActionMenu = (props) => {
               </ListItemText>
             </MenuItem>
           )}
+          {editRequest && (
+            <MenuItem onClick={handleEdiRequest} dense>
+              <ListItemIcon>
+                <BorderColor />
+              </ListItemIcon>
+              <ListItemText disableTypography align="left">
+                Edit
+              </ListItemText>
+            </MenuItem>
+          )}
 
           {setSubCapexDialog && status === "active" && (
             <MenuItem onClick={handleSubCapexEdit} dense>
@@ -190,11 +208,24 @@ const ActionMenu = (props) => {
             </MenuItem>
           )}
 
-          {(showDelete || showVoid) && (
+          {showDelete && (
             <MenuItem onClick={handleDelete} dense>
-              <ListItemIcon>{showVoid ? <Cancel /> : <Delete />}</ListItemIcon>
+              <ListItemIcon>
+                <Delete />
+              </ListItemIcon>
               <ListItemText disableTypography align="left">
-                {showVoid ? "Void" : "Delete"}
+                Delete
+              </ListItemText>
+            </MenuItem>
+          )}
+
+          {showVoid && (
+            <MenuItem onClick={handleVoid} dense>
+              <ListItemIcon>
+                <Cancel />
+              </ListItemIcon>
+              <ListItemText disableTypography align="left">
+                Void
               </ListItemText>
             </MenuItem>
           )}

@@ -249,6 +249,11 @@ const router = createBrowserRouter([
           },
 
           {
+            path: "request/requisition/add-requisition/:transaction_number",
+            element: <AddRequisition />,
+          },
+
+          {
             path: "approving",
             element: <Approving />,
           },
