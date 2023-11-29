@@ -38,6 +38,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  Tooltip,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -218,7 +219,6 @@ const Requisition = () => {
   };
 
   const handleEditRequisition = (data) => {
-    // console.log(data);
     navigate(
       `/request/requisition/add-requisition/${data.transaction_number}`,
       {
@@ -360,15 +360,13 @@ const Requisition = () => {
                                 <TableCell className="tbl-cell tr-cen-pad45">
                                   {data.id}
                                 </TableCell>
-
+                                {console.log(data)}
                                 <TableCell className="tbl-cell text-weight">
                                   {data.transaction_number}
                                 </TableCell>
-
                                 <TableCell className="tbl-cell text-weight">
                                   {data.item_count}
                                 </TableCell>
-
                                 <TableCell className="tbl-cell text-weight">
                                   <IconButton
                                     onClick={() => handleEditRequisition(data)}
@@ -376,20 +374,21 @@ const Requisition = () => {
                                     <Visibility color="secondary" />
                                   </IconButton>
                                 </TableCell>
-
                                 <TableCell className="tbl-cell text-center">
                                   {data.status !== "Returned" ? (
-                                    <Chip
-                                      size="small"
-                                      variant="outlined"
-                                      sx={{
-                                        borderColor: "active.dark",
-                                        color: "active.dark",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label={`${data.status}`}
-                                    />
+                                    <Tooltip title={data?.histor}>
+                                      <Chip
+                                        size="small"
+                                        variant="outlined"
+                                        sx={{
+                                          borderColor: "active.dark",
+                                          color: "active.dark",
+                                          fontSize: "0.7rem",
+                                          px: 1,
+                                        }}
+                                        label={`${data.status}`}
+                                      />
+                                    </Tooltip>
                                   ) : (
                                     <Chip
                                       size="small"
@@ -405,13 +404,11 @@ const Requisition = () => {
                                     />
                                   )}
                                 </TableCell>
-
                                 <TableCell className="tbl-cell tr-cen-pad45">
                                   {Moment(data.created_at).format(
                                     "MMM DD, YYYY"
                                   )}
                                 </TableCell>
-
                                 <TableCell className="tbl-cell ">
                                   <ActionMenu
                                     status={data.status}
