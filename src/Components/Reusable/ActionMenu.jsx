@@ -2,22 +2,9 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 
 import { useDispatch } from "react-redux";
-import {
-  openDialog,
-  openDrawer,
-} from "../../Redux/StateManagement/booleanStateSlice";
+import { openDialog, openDrawer } from "../../Redux/StateManagement/booleanStateSlice";
 
-import {
-  Box,
-  IconButton,
-  MenuItem,
-  Menu,
-  Fade,
-  Divider,
-  ListItemIcon,
-  ListItemText,
-  Button,
-} from "@mui/material";
+import { Box, IconButton, MenuItem, Menu, Fade, Divider, ListItemIcon, ListItemText, Button } from "@mui/material";
 import {
   MoreVert,
   BorderColor,
@@ -199,9 +186,7 @@ const ActionMenu = (props) => {
 
           {!hideArchive && (
             <MenuItem onClick={handleArchiveRestore} dense>
-              <ListItemIcon>
-                {status === "active" ? <MoveToInbox /> : <Reply />}
-              </ListItemIcon>
+              <ListItemIcon>{status === "active" ? <MoveToInbox /> : <Reply />}</ListItemIcon>
               <ListItemText disableTypography align="left">
                 {status === "active" ? "Archive" : "Restore"}
               </ListItemText>

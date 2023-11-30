@@ -83,7 +83,7 @@ const schema = yup.object().shape({
 
 const PrintFixedAsset = () => {
   const [search, setSearch] = useState("");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [page, setPage] = useState(1);
@@ -138,7 +138,7 @@ const PrintFixedAsset = () => {
     setOrderBy(property);
   };
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
     setLimit(parseInt(e.target.value));
   };
@@ -192,7 +192,7 @@ const PrintFixedAsset = () => {
   // } = useGetFixedAssetApiQuery(
   //   {
   //     page: page,
-  //     limit: limit,
+  //     perPage: perPage,
   //     status: status,
   //     search: search,
   //   },
@@ -209,7 +209,7 @@ const PrintFixedAsset = () => {
   } = useGetPrintViewingApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
       startDate: startDate,
@@ -296,7 +296,7 @@ const PrintFixedAsset = () => {
 
   // useEffect(() => {
   //   tagNumberAllHandler(reset({ tagNumber: [] }));
-  // }, [page, limit]);
+  // }, [page, perPage]);
 
   // const onPrintHandler = (formData) => {
   //   // const newFormData = {
@@ -866,13 +866,16 @@ const PrintFixedAsset = () => {
               startIcon={
                 isLoading ? null : (
                   // <Print color={disabledItems() ? "lightgray" : "primary"} />
-                  <Print color="primary" />
+                  <Print
+                    color={watch("tagNumber").length === 0 ? "gray" : "primary"}
+                  />
                 )
               }
+              disabled={watch("tagNumber").length === 0}
               type="submit"
               color="secondary"
               onClick={onPrintHandler}
-              // disabled={disabledItems()}
+            // disabled={disabledItems()}
             >
               Print
             </LoadingButton>

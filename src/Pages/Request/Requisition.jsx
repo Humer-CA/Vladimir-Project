@@ -306,7 +306,7 @@ const Requisition = () => {
                         </TableSortLabel>
                       </TableCell>
 
-                      <TableCell className="tbl-cell">
+                      <TableCell className="tbl-cell text-center">
                         <TableSortLabel
                         // active={orderBy === `type_of_request_name`}
                         // direction={
@@ -360,23 +360,33 @@ const Requisition = () => {
                                 <TableCell className="tbl-cell tr-cen-pad45">
                                   {data.id}
                                 </TableCell>
-                                {console.log(data)}
                                 <TableCell className="tbl-cell text-weight">
                                   {data.transaction_number}
                                 </TableCell>
-                                <TableCell className="tbl-cell text-weight">
+                                <TableCell className="tbl-cell text-weight tr-cen-pad45">
                                   {data.item_count}
                                 </TableCell>
-                                <TableCell className="tbl-cell text-weight">
-                                  <IconButton
-                                    onClick={() => handleEditRequisition(data)}
+                                <TableCell className="tbl-cell text-weight text-center">
+                                  <Tooltip
+                                    title="View Request Information"
+                                    arrow
                                   >
-                                    <Visibility color="secondary" />
-                                  </IconButton>
+                                    <IconButton
+                                      onClick={() =>
+                                        handleEditRequisition(data)
+                                      }
+                                    >
+                                      <Visibility />
+                                    </IconButton>
+                                  </Tooltip>
                                 </TableCell>
                                 <TableCell className="tbl-cell text-center">
                                   {data.status !== "Returned" ? (
-                                    <Tooltip title={data?.histor}>
+                                    <Tooltip
+                                      title={`${data?.current_approver?.firstname} 
+                                        ${data?.current_approver?.lastname}`}
+                                      arrow
+                                    >
                                       <Chip
                                         size="small"
                                         variant="outlined"

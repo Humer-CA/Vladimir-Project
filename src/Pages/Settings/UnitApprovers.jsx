@@ -8,11 +8,7 @@ import AddUnitApprovers from "./AddEdit/AddUnitApprovers";
 // RTK
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
 import {
   useGetUnitApproversApiQuery,
   usePostUnitApproversStatusApiMutation,
@@ -40,10 +36,7 @@ import { Help, Report, ReportProblem, Warning } from "@mui/icons-material";
 import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 import NoRecordsFound from "../../Layout/NoRecordsFound";
 import ViewTagged from "../../Components/Reusable/ViewTagged";
-import {
-  closeDrawer,
-  openDrawer,
-} from "../../Redux/StateManagement/booleanStateSlice";
+import { closeDrawer, openDrawer } from "../../Redux/StateManagement/booleanStateSlice";
 import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
 // import AddUnitApprovers from "../Masterlist/AddEdit/Settings/AddUnitApprovers";
 
@@ -116,20 +109,9 @@ const UnitApprovers = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  // const {
-  //   data: unitApproversIdApi,
-  //   isLoading: unitApproversIdApiLoading,
-  //   isSuccess: unitApproversIdApiSuccess,
-  //   isFetching: unitApproversIdApiFetching,
-  //   isError: unitApproversIdApiError,
-  //   refetch: unitApproversIdApiRefetch,
-  // } = useGetUnitApproversIdApiQuery();
+  const [postUnitApproversStatusApi, { isLoading: isStatusLoading }] = usePostUnitApproversStatusApiMutation();
 
-  const [postUnitApproversStatusApi, { isLoading: isStatusLoading }] =
-    usePostUnitApproversStatusApiMutation();
-
-  const [deleteUnitApproversApi, { isLoading }] =
-    useDeleteUnitApproversApiMutation();
+  const [deleteUnitApproversApi, { isLoading }] = useDeleteUnitApproversApiMutation();
 
   const dispatch = useDispatch();
 
@@ -253,10 +235,11 @@ const UnitApprovers = () => {
   };
 
   const onUpdateHandler = (props) => {
-    const { id, subunit, approvers } = props;
+    const { id, department, subunit, approvers } = props;
     setUpdateUnitApprovers({
       status: true,
       action: "update",
+      department,
       subunit,
       approvers,
     });
@@ -265,16 +248,18 @@ const UnitApprovers = () => {
   const onUpdateResetHandler = () => {
     setUpdateUnitApprovers({
       status: false,
+      department_id: null,
       subunit_id: null,
       approvers: [],
     });
   };
 
   const onViewHandler = (props) => {
-    const { subunit, approvers } = props;
+    const { department, subunit, approvers } = props;
     setUpdateUnitApprovers({
       status: true,
       action: "view",
+      department,
       subunit,
       approvers,
     });
@@ -294,18 +279,8 @@ const UnitApprovers = () => {
 
   return (
     <>
-      {unitApproversLoading && (
-        <MasterlistSkeleton category={true} onAdd={true} />
-      )}
-
-      {unitApproversError && (
-        <ErrorFetching
-          refetch={refetch}
-          category={unitApproversData}
-          error={errorData}
-        />
-      )}
-
+      {unitApproversLoading && <MasterlistSkeleton category={true} onAdd={true} />}
+      {unitApproversError && <ErrorFetching refetch={refetch} category={unitApproversData} error={errorData} />}
       {unitApproversData && !unitApproversError && (
         <>
           <Box className="mcontainer__wrapper">
@@ -343,9 +318,7 @@ const UnitApprovers = () => {
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `department_name`}
-                          direction={
-                            orderBy === `department_name` ? order : `asc`
-                          }
+                          direction={orderBy === `department_name` ? order : `asc`}
                           onClick={() => onSort(`department_name`)}
                         >
                           Department
@@ -380,77 +353,53 @@ const UnitApprovers = () => {
                     ) : (
                       <>
                         {unitApproversSuccess &&
-                          [...unitApproversData?.data]
-                            ?.sort(comparator(order, orderBy))
-                            ?.map((data, index) => (
-                              <TableRow
-                                key={index}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    borderBottom: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell
-                                  className="tbl-cell"
+                          [...unitApproversData?.data]?.sort(comparator(order, orderBy))?.map((data, index) => (
+                            <TableRow
+                              key={index}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  borderBottom: 0,
+                                },
+                              }}
+                            >
+                              <TableCell className="tbl-cell capitalized">{data?.subunit?.subunit_name}</TableCell>
+
+                              <TableCell className="tbl-cell capitalized">
+                                {data?.department?.department_name}
+                              </TableCell>
+
+                              <TableCell align="center" className="tbl-cell text-weight capitalized">
+                                <Button
                                   sx={{
                                     textTransform: "capitalize",
+                                    textDecoration: "underline",
                                   }}
+                                  variant="text"
+                                  size="small"
+                                  color="link"
+                                  onClick={() => handleViewApprovers(data)}
                                 >
-                                  {data?.subunit?.subunit_name}
-                                </TableCell>
+                                  <Typography fontSize={13}>View</Typography>
+                                </Button>
+                              </TableCell>
 
-                                <TableCell
-                                  className="tbl-cell"
-                                  sx={{
-                                    textTransform: "capitalize",
-                                  }}
-                                >
-                                  {data?.department_name}
-                                </TableCell>
+                              <TableCell className="tbl-cell tr-cen-pad45">
+                                {Moment(data.created_at).format("MMM DD, YYYY")}
+                              </TableCell>
 
-                                <TableCell
-                                  align="center"
-                                  className="tbl-cell text-weight"
-                                  sx={{
-                                    textTransform: "capitalize",
-                                  }}
-                                >
-                                  <Button
-                                    sx={{
-                                      textTransform: "capitalize",
-                                      textDecoration: "underline",
-                                    }}
-                                    variant="text"
-                                    size="small"
-                                    color="link"
-                                    onClick={() => handleViewApprovers(data)}
-                                  >
-                                    <Typography fontSize={13}>View</Typography>
-                                  </Button>
-                                </TableCell>
-
-                                <TableCell className="tbl-cell tr-cen-pad45">
-                                  {Moment(data.created_at).format(
-                                    "MMM DD, YYYY"
-                                  )}
-                                </TableCell>
-
-                                <TableCell className="tbl-cell ">
-                                  <ActionMenu
-                                    status={status}
-                                    data={data}
-                                    hideArchive={true}
-                                    showDelete={true}
-                                    onUpdateHandler={onUpdateHandler}
-                                    onArchiveRestoreHandler={
-                                      onArchiveRestoreHandler
-                                    }
-                                    onDeleteHandler={onDeleteHandler}
-                                  />
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                              <TableCell className="tbl-cell ">
+                                <ActionMenu
+                                  status={status}
+                                  data={data}
+                                  hideArchive={true}
+                                  showDelete={true}
+                                  onUpdateHandler={onUpdateHandler}
+                                  onArchiveRestoreHandler={onArchiveRestoreHandler}
+                                  onDeleteHandler={onDeleteHandler}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
                       </>
                     )}
                   </TableBody>
@@ -476,10 +425,7 @@ const UnitApprovers = () => {
           sx: { borderRadius: "10px", maxWidth: "1200px" },
         }}
       >
-        <AddUnitApprovers
-          data={updateUnitApprovers}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddUnitApprovers data={updateUnitApprovers} onUpdateResetHandler={onUpdateResetHandler} />
       </Dialog>
     </>
   );

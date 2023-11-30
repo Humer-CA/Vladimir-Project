@@ -21,8 +21,7 @@ $pending: #c59e00;
 $pending: #f5cc2a2f;
 
 :root {
-  font-family: "Anton", Impact, "Josefin Sans", "Poppins", "Raleway", "Roboto",
-    sans-serif;
+  font-family: "Anton", Impact, "Josefin Sans", "Poppins", "Raleway", "Roboto", sans-serif;
 
   font-size: 16px;
   line-height: 24px;
@@ -329,6 +328,9 @@ img {
 
 .pad {
   padding: 50px;
+}
+.capitalized {
+  text-transform: capitalize;
 }
 
 // Attachment File

@@ -34,9 +34,16 @@ import {
 } from "../../../Redux/Query/Settings/UnitApprovers";
 // import { useGetUserAccountAllApiQuery } from "../../../Redux/Query/UserManagement/UserAccountsApi";
 import { useGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUnit";
+import { useGetDepartmentAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Department";
 
 const schema = yup.object().shape({
   id: yup.string(),
+
+  department_id: yup
+    .object()
+    .required()
+    .typeError("Sub Unit is required")
+    .label("Sub Unit"),
   subunit_id: yup
     .object()
     .required()
@@ -81,6 +88,14 @@ const AddUnitApprovers = (props) => {
   // } = useGetUserAccountAllApiQuery();
 
   const {
+    data: departmentData = [],
+    isLoading: isDepartmentLoading,
+    isSuccess: isDepartmentSuccess,
+    isError: isDepartmentError,
+    refetch: isDepartmentRefetch,
+  } = useGetDepartmentAllApiQuery();
+
+  const {
     data: subUnitData = [],
     isLoading: isSubUnitLoading,
     isSuccess: isSubUnitSuccess,
@@ -107,6 +122,7 @@ const AddUnitApprovers = (props) => {
     resolver: yupResolver(schema),
     defaultValues: {
       id: "",
+      department_id: null,
       subunit_id: null,
       approver_id: [],
     },
@@ -157,6 +173,7 @@ const AddUnitApprovers = (props) => {
 
   useEffect(() => {
     if (data.status) {
+      setValue("department_id", data.department);
       setValue("subunit_id", data.subunit);
       setValue(
         "approver_id",
@@ -243,7 +260,7 @@ const AddUnitApprovers = (props) => {
       >
         <Divider />
 
-        <CustomAutoComplete
+        {/* <CustomAutoComplete
           name="subunit_id"
           control={control}
           size="small"
@@ -272,6 +289,49 @@ const AddUnitApprovers = (props) => {
             setValue("approvers_id", []);
             return value;
           }}
+        /> */}
+
+        <CustomAutoComplete
+          autoComplete
+          name="department_id"
+          control={control}
+          options={departmentData}
+          loading={isDepartmentLoading}
+          size="small"
+          getOptionLabel={(option) => option.department_name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          renderInput={(params) => (
+            <TextField
+              color="secondary"
+              {...params}
+              label="Department"
+              error={!!errors?.department_id?.message}
+              helperText={errors?.department_id?.message}
+            />
+          )}
+          fullWidth
+        />
+
+        <CustomAutoComplete
+          autoComplete
+          name="subunit_id"
+          control={control}
+          options={subUnitData?.filter(
+            (item) => item?.department?.id === watch("department_id")?.id
+          )}
+          loading={isSubUnitLoading}
+          size="small"
+          getOptionLabel={(option) => option.subunit_name}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          renderInput={(params) => (
+            <TextField
+              color="secondary"
+              {...params}
+              label="Subunit"
+              error={!!errors?.subunit_id}
+              helperText={errors?.subunit_id?.message}
+            />
+          )}
         />
 
         <Stack
