@@ -69,6 +69,7 @@ import { requisitionApi } from "../Query/Request/Requisition";
 import { requestContainerApi } from "../Query/Request/RequestContainer";
 
 import { approvalApi } from "../Query/Approving/Approval";
+import { requisitionSmsApi } from "../Query/Request/RequisitionSms";
 
 export const store = configureStore({
   reducer: {
@@ -138,6 +139,7 @@ export const store = configureStore({
 
     // Request
     [requisitionApi.reducerPath]: requisitionApi.reducer,
+    [requisitionSmsApi.reducerPath]: requisitionSmsApi.reducer,
     [requestContainerApi.reducerPath]: requestContainerApi.reducer,
 
     // Approval
@@ -194,6 +196,7 @@ export const store = configureStore({
 
       // Request
       requisitionApi.middleware,
+      requisitionSmsApi.middleware,
       requestContainerApi.middleware,
 
       // Approval

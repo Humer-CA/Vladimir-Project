@@ -59,7 +59,6 @@ import { useGetTypeOfRequestAllApiQuery } from "../../../Redux/Query/Masterlist/
 import { useLocation, useNavigate } from "react-router-dom";
 import NoRecordsFound from "../../../Layout/NoRecordsFound";
 import { useGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUnit";
-import CustomPatternfield from "../../../Components/Reusable/CustomNumberField";
 import ActionMenu from "../../../Components/Reusable/ActionMenu";
 import {
   useGetRequestContainerAllApiQuery,
@@ -68,6 +67,8 @@ import {
 } from "../../../Redux/Query/Request/RequestContainer";
 import axios from "axios";
 import { closeConfirm, onLoading, openConfirm } from "../../../Redux/StateManagement/confirmSlice";
+import { usePostRequisitionSmsApiMutation } from "../../../Redux/Query/Request/RequisitionSms";
+import CustomPatternfield from "../../../Components/Reusable/CustomPatternfield";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -114,7 +115,7 @@ const AddRequisition = (props) => {
   const { data } = props;
   const attachmentType = ["Budgeted", "Unbudgeted"];
   const [updateRequest, setUpdateRequest] = useState({
-    id: "",
+    id: null,
     type_of_request_id: null,
     attachment_type: null,
 
@@ -179,6 +180,17 @@ const AddRequisition = (props) => {
       error: resubmitError,
     },
   ] = usePostResubmitRequisitionApiMutation();
+
+  const [
+    postRequestSms,
+    {
+      data: smsData,
+      isLoading: isSmsLoading,
+      isSuccess: isSmsSuccess,
+      isError: isSmsError,
+      error: smsError,
+    },
+  ] = usePostRequisitionSmsApiMutation();
 
   const {
     data: typeOfRequestData = [],
@@ -337,14 +349,17 @@ const AddRequisition = (props) => {
       setValue("account_title_id", updateRequest?.account_title);
       setValue("accountability", updateRequest?.accountability);
       setValue("accountable", updateRequest?.accountable);
-
+      // ASSET INFO
       setValue("asset_description", updateRequest?.asset_description);
       setValue("asset_specification", updateRequest?.asset_specification);
       setValue("quantity", updateRequest?.quantity);
       setValue("brand", updateRequest?.brand);
-      setValue("cellphone_number", updateRequest?.cellphone_number);
+      setValue(
+        "cellphone_number",
+        updateRequest?.cellphone_number === "-" ? null : updateRequest?.cellphone_number
+      );
       setValue("remarks", updateRequest?.remarks);
-
+      // ATTACHMENTS
       setValue("letter_of_request", updateRequest?.letter_of_request);
       setValue("quotation", updateRequest?.quotation);
       setValue("specification_form", updateRequest?.specification_form);
@@ -388,7 +403,15 @@ const AddRequisition = (props) => {
       });
       return;
     }
+
+    const smsData = {
+      system_name: "Vladimir", message: "Successfully Posted", mobile_number: "09913117181"
+    }
+
+
     postRequisition(addRequestAllApi);
+    postRequestSms(smsData)
+
   };
 
   const handleCloseDrawer = () => {
@@ -419,22 +442,44 @@ const AddRequisition = (props) => {
       location_id: formData?.location_id.id?.toString(),
       account_title_id: formData?.account_title_id.id?.toString(),
       accountability: formData?.accountability?.toString(),
-      accountable: formData?.accountable?.general_info?.full_id_number_full_name?.toString(),
+      accountable: formData?.accountable === null ? "" : formData?.accountable?.general_info?.full_id_number_full_name?.toString(),
 
       asset_description: formData?.asset_description?.toString(),
       asset_specification: formData?.asset_specification?.toString(),
-      cellphone_number: formData?.cellphone_number === null ? "" : formData?.cellphone_number?.toString(),
+      cellphone_number: formData?.cellphone_number === null ? "" : "09" + formData?.cellphone_number?.toString(),
+
       brand: formData?.brand?.toString(),
       quantity: formData?.quantity?.toString(),
       remarks: formData?.remarks?.toString(),
 
-      letter_of_request: formData?.letter_of_request === null ? "" : formData?.letter_of_request,
-      quotation: formData?.quotation === null ? "" : formData?.quotation,
-      specification_form: formData?.specification_form === null ? "" : formData?.specification_form,
-      tool_of_trade: formData?.tool_of_trade === null ? "" : formData?.tool_of_trade,
-      other_attachments: formData?.other_attachments === null ? "" : formData?.other_attachments,
-    };
+      // letter_of_request: formData?.letter_of_request === null ? "" : (transactionData?.letter_of_request === null ? "null" : (transactionData?.specification_form !== null ? "null" : formData?.letter_of_request)),
+      // quotation: formData?.quotation === null ? "" : (transactionData?.quotation === null ? "null" : formData?.quotation),
+      // specification_form: formData?.specification_form === null ? "" : (transactionData?.specification_form === null ? "null" : formData?.specification_form),
+      // tool_of_trade: formData?.tool_of_trade === null ? "" : (transactionData?.tool_of_trade === null ? "null" : formData?.tool_of_trade),
+      // other_attachments: formData?.other_attachments === null ? "" : (transactionData?.other_attachments === null ? "null" : formData?.other_attachments),
 
+      letter_of_request:
+        updateRequest && (watch("letter_of_request") === null
+          ? ""
+          : updateRequest.letter_of_request !== null
+            ? transactionDataApi[0]?.attachments?.letter_of_request?.file_name ===
+              updateRequest?.letter_of_request?.file_name
+              ? "x"
+              : formData.letter_of_request
+            : formData.letter_of_request),
+
+      quotation: updateRequest ? (watch("quotation") === null ? "" : (updateRequest?.quotation !== null ? (watch("quotation")?.quotation?.file_name === updateRequest?.quotation?.file_name ? "x" : formData?.quotation) : formData?.quotation)) : formData?.quotation,
+
+      specification_form: updateRequest ? (watch("specification_form") === null ? "" : (updateRequest?.specification_form !== null ? (watch("specification_form")?.specification_form?.file_name === updateRequest?.specification_form?.file_name ? "x" : formData?.specification_form) : formData?.specification_form)) : formData?.specification_form,
+
+      tool_of_trade: updateRequest ? (watch("tool_of_trade") === null ? "" : (updateRequest?.tool_of_trade !== null ? (watch("tool_of_trade")?.tool_of_trade?.file_name === updateRequest?.tool_of_trade?.file_name ? "x" : formData?.tool_of_trade) : formData?.tool_of_trade)) : formData?.tool_of_trade,
+
+      other_attachments: updateRequest ? (watch("other_attachments") === null ? "" : (updateRequest?.other_attachments !== null ? (watch("other_attachments")?.other_attachments?.file_name === updateRequest?.other_attachments?.file_name ? "x" : formData?.other_attachments) : formData?.other_attachments)) : formData?.other_attachments,
+
+
+
+    };
+    watch("letter_of_request")
     const payload = new FormData();
     Object.entries(data).forEach((item) => {
       const [name, value] = item;
@@ -494,12 +539,13 @@ const AddRequisition = (props) => {
       });
 
     // postRequest(payload);
-    // reset({
-    //   department_id: formData?.department_id,
-    //   subunit_id: formData?.subunit_id,
-    //   location_id: formData?.location_id,
-    //   account_title_id: formData?.account_title_id,
-    // });
+
+    reset({
+      department_id: formData?.department_id,
+      subunit_id: formData?.subunit_id,
+      location_id: formData?.location_id,
+      account_title_id: formData?.account_title_id,
+    });
   };
 
   const onDeleteHandler = async (id) => {
@@ -562,7 +608,8 @@ const AddRequisition = (props) => {
 
   const RemoveFile = ({ title, value }) => {
     return (
-      <Tooltip title={`Remove ${title}`} arrow>
+      <Tooltip Tooltip title={`Remove ${title}`
+      } arrow>
         <IconButton
           onClick={() => {
             setValue(value, null);
@@ -579,11 +626,11 @@ const AddRequisition = (props) => {
         >
           <Remove />
         </IconButton>
-      </Tooltip>
+      </Tooltip >
     );
   };
 
-  const UpdateField = ({ title, value, label }) => {
+  const UpdateField = ({ value, label }) => {
     return (
       <Stack flexDirection="row" gap={1} alignItems="center">
         <TextField
@@ -670,6 +717,7 @@ const AddRequisition = (props) => {
       type_of_request,
       attachment_type,
       department,
+      company,
       subunit,
       location,
       account_title,
@@ -721,6 +769,8 @@ const AddRequisition = (props) => {
   };
 
 
+  // console.log(watch("letter_of_request")?.name)
+  // console.log(transactionDataApi[0]?.attachments)
 
   return (
     <>
@@ -772,11 +822,6 @@ const AddRequisition = (props) => {
                         helperText={errors?.type_of_request_id?.message}
                       />
                     )}
-                  // onChange={(_, value) => {
-                  //   setValue("sub_capex_id", null);
-                  //   // setValue("project_name", "");
-                  //   return value;
-                  // }}
                   />
 
                   <CustomAutoComplete
@@ -822,7 +867,6 @@ const AddRequisition = (props) => {
                         helperText={errors?.department_id?.message}
                       />
                     )}
-                    disablePortal
                     fullWidth
                   />
 
@@ -1011,10 +1055,10 @@ const AddRequisition = (props) => {
                     error={!!errors?.quantity}
                     helperText={errors?.quantity?.message}
                     fullWidth
-                    isAllowed={(values) => {
-                      const { floatValue } = values;
-                      return floatValue >= 1;
-                    }}
+                  // isAllowed={(values) => {
+                  //   const { floatValue } = values;
+                  //   return floatValue >= 1;
+                  // }}
                   />
                   <CustomPatternfield
                     control={control}
@@ -1026,6 +1070,7 @@ const AddRequisition = (props) => {
                     error={!!errors?.cellphone_number}
                     helperText={errors?.cellphone_number?.message}
                     format="(09##) - ### - ####"
+                    // allowEmptyFormatting
                     valueIsNumericString
                     fullWidth
                   />
@@ -1046,7 +1091,7 @@ const AddRequisition = (props) => {
                 <Box sx={BoxStyle}>
                   <Typography sx={sxSubtitle}>Attachments</Typography>
                   <Stack flexDirection="row" gap={1} alignItems="center">
-                    {updateRequest?.letter_of_request !== null ? (
+                    {watch("letter_of_request") !== null ? (
                       <UpdateField label={"Letter of Request"} value={updateRequest?.letter_of_request?.file_name} />
                     ) : (
                       <CustomAttachment
@@ -1063,7 +1108,7 @@ const AddRequisition = (props) => {
                   </Stack>
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
-                    {updateRequest?.quotation !== null ? (
+                    {watch("quotation") !== null ? (
                       <UpdateField label={"Quotation"} value={updateRequest?.quotation?.file_name} />
                     ) : (
                       <CustomAttachment control={control} name="quotation" label="Quotation" inputRef={QuotationRef} />
@@ -1072,7 +1117,7 @@ const AddRequisition = (props) => {
                   </Stack>
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
-                    {updateRequest?.specification_form !== null ? (
+                    {watch("specification_form") !== null ? (
                       <UpdateField label={"Specification Form"} value={updateRequest?.specification_form?.file_name} />
                     ) : (
                       <CustomAttachment
@@ -1089,7 +1134,7 @@ const AddRequisition = (props) => {
                   </Stack>
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
-                    {updateRequest?.tool_of_trade !== null ? (
+                    {watch("tool_of_trade") !== null ? (
                       <UpdateField label={"Tool of Trade"} value={updateRequest?.tool_of_trade?.file_name} />
                     ) : (
                       <CustomAttachment
@@ -1103,7 +1148,7 @@ const AddRequisition = (props) => {
                   </Stack>
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
-                    {updateRequest?.other_attachments !== null ? (
+                    {watch("other_attachments") !== null ? (
                       <UpdateField label={"Other Attachments"} value={updateRequest?.other_attachments?.file_name} />
                     ) : (
                       <CustomAttachment
