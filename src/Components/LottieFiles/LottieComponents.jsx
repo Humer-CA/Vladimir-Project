@@ -1,8 +1,9 @@
 import React from "react";
 import Lottie from "lottie-react";
+import LoadingAnimation from "../../assets/Lottie/LoadingAnimation";
 import ImportLoading from "../../assets/Lottie/ImportLoading";
 import ImportLoadingCircle from "../../assets/Lottie/ImportLoadingCircle";
-import { Box, Typography } from "@mui/material";
+import { Box, TableCell, TableRow, Typography } from "@mui/material";
 
 export const ImportingData = ({ text }) => {
   return (
@@ -26,5 +27,25 @@ export const ImportingData = ({ text }) => {
         </Typography>
       )}
     </Box>
+  );
+};
+
+export const LoadingData = ({ category }) => {
+  return (
+    <>
+      <TableRow>
+        <TableCell colSpan={999} rowSpan={999} sx={{ borderBottom: "none" }}>
+
+          <Box
+            className="tblLoading"
+            sx={category ? { marginTop: "-20px!important" } : null}>
+            <Lottie
+              animationData={LoadingAnimation} style={category ? { marginTop: "-20px!important" } : null} />
+          </Box>
+
+
+        </TableCell>
+      </TableRow>
+    </>
   );
 };

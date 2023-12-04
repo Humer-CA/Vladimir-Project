@@ -288,6 +288,15 @@ img {
   background: url("Img/SVG/ImgNoRecordsFound.svg") center / contain no-repeat;
 }
 
+.tblLoading {
+  position: sticky;
+  margin-top: 20px;
+  top: calc(50% - (39vh / 2));
+  left: calc(50% - (250px / 2));
+  height: 39vh;
+  width: 250px;
+}
+
 .importFixedAsset {
   display: flex;
   flex-direction: column;

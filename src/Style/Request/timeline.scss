@@ -1,0 +1,17 @@
+@use "../../index.scss";
+
+.timelineSteps {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+
+  &__timelineSteps__container {
+  }
+
+  .circle {
+    color: red;
+  }
+}

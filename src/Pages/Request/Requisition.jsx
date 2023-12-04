@@ -51,6 +51,8 @@ import {
 } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import ProcessDetails from "../Approving/ProcessDetails";
+import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
+import RequestTimeline from "./RequestTimeline";
 
 const Requisition = () => {
   const [search, setSearch] = useState("");
@@ -213,6 +215,15 @@ const Requisition = () => {
   const onSetPage = () => {
     setPage(1);
   };
+
+  const handleViewTimeline = () => {
+    dispatch(openDialog());
+
+  };
+
+  const handleCloseTimelime = () => {
+    dispatch(closeDialog);
+  }
 
   const handleAddRequisition = () => {
     navigate(`add-requisition`);
@@ -380,7 +391,7 @@ const Requisition = () => {
                                     </IconButton>
                                   </Tooltip>
                                 </TableCell>
-                                <TableCell className="tbl-cell text-center">
+                                <TableCell className="tbl-cell text-center" onClick={handleViewTimeline}>
                                   {data.status !== "Returned" ? (
                                     <Tooltip
                                       title={`${data?.current_approver?.firstname} 
@@ -449,6 +460,15 @@ const Requisition = () => {
           </Box>
         </>
       )}
+      <Dialog
+        open={dialog}
+        onClose={() => dispatch(closeDialog())}
+        PaperProps={{ sx: { borderRadius: "10px" } }}
+      >
+        <RequestTimeline
+          data={requisitionData}
+        />
+      </Dialog>
     </Box>
   );
 };

@@ -4,6 +4,7 @@ import CustomTextField from "../../../Components/Reusable/CustomTextField";
 import CustomNumberField from "../../../Components/Reusable/CustomNumberField";
 import CustomAutoComplete from "../../../Components/Reusable/CustomAutoComplete";
 import CustomAttachment from "../../../Components/Reusable/CustomAttachment";
+import { LoadingData } from "../../../Components/LottieFiles/LottieComponents";
 import { useGetSedarUsersApiQuery } from "../../../Redux/Query/SedarUserApi";
 import {
   requestContainerApi,
@@ -337,7 +338,7 @@ const AddRequisition = (props) => {
       // }, 500);
     }
   }, [isPostSuccess, isUpdateSuccess]);
-  console.log(transactionDataApi)
+
   useEffect(() => {
     if (transactionDataApi)
       transactionDataApi?.map((transaction) => {
@@ -667,7 +668,7 @@ const AddRequisition = (props) => {
     );
   };
 
-  console.log(watch("letter_of_request")?.name)
+  // console.log(watch("letter_of_request")?.name)
   const UpdateField = ({ value, label }) => {
     return (
       <Stack flexDirection="row" gap={1} alignItems="center">
@@ -806,8 +807,6 @@ const AddRequisition = (props) => {
     });
   };
 
-
-
   return (
     <>
       <Box className="mcontainer" sx={{ height: "calc(100vh - 380px)" }}>
@@ -891,7 +890,7 @@ const AddRequisition = (props) => {
                     options={departmentData}
                     loading={isDepartmentLoading}
                     size="small"
-                    disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
+                    disabled={transactionData ? true : false}
                     getOptionLabel={(option) => option.department_name}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     renderInput={(params) => (
@@ -904,13 +903,19 @@ const AddRequisition = (props) => {
                       />
                     )}
                     fullWidth
+                    onChange={(_, value) => {
+                      setValue("subunit_id", null)
+                      setValue("location_id", null)
+                      return value
+                    }}
                   />
 
                   <CustomAutoComplete
                     autoComplete
                     name="subunit_id"
                     control={control}
-                    disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
+                    disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
+                    // disabled={!transactionData ? false : addRequestAllApi.length || transactionData?.length) !== 0}
                     options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
                     loading={isSubUnitLoading}
                     size="small"
@@ -949,14 +954,14 @@ const AddRequisition = (props) => {
                         helperText={errors?.company_id?.message}
                       />
                     )}
-                    disabled
+                    // disabled
                   /> */}
 
                   <CustomAutoComplete
                     autoComplete
                     name="location_id"
                     control={control}
-                    disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
+                    // disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
                     options={locationData?.filter((item) => {
                       return item.departments.some((department) => {
                         return department?.sync_id === watch("department_id")?.sync_id;
@@ -980,7 +985,7 @@ const AddRequisition = (props) => {
                   <CustomAutoComplete
                     name="account_title_id"
                     control={control}
-                    disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
+                    // disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
                     options={accountTitleData}
                     loading={isAccountTitleLoading}
                     size="small"
@@ -1210,6 +1215,7 @@ const AddRequisition = (props) => {
               variant="contained"
               type="submit"
               size="small"
+              disabled={watch("type_of_request_id") === null}
               fullWidth
               sx={{ gap: 1 }}
             >
@@ -1255,263 +1261,264 @@ const AddRequisition = (props) => {
                 </TableHead>
 
                 <TableBody>
-                  {(transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.length === 0) ? (
-                    <NoRecordsFound />
-                  ) : (
-                    <>
-                      {(transactionData
-                        ? transactionDataApi : addRequestAllApi).map((data, index) => (
-                          <TableRow
-                            key={index}
-                            sx={{
-                              "&:last-child td, &:last-child th": {
-                                borderBottom: 0,
-                              },
-                            }}
-                          >
-                            <TableCell className="tbl-cell tr-cen-pad45 text-weight">{index + 1}</TableCell>
-                            <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
-                            <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
-                            <TableCell className="tbl-cell">
-                              <Typography fontSize={10} color="gray">
-                                {`(${data.company?.company_code}) - ${data.company?.company_name}`}
-                              </Typography>
-                              <Typography fontSize={10} color="gray">
-                                {`(${data.department?.department_code}) -
+                  {isRequestLoading || isTransactionLoading ? <LoadingData /> :
+                    (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.length === 0) ? (
+                      <NoRecordsFound />
+                    ) : (
+                      <>
+                        {(transactionData
+                          ? transactionDataApi : addRequestAllApi).map((data, index) => (
+                            <TableRow
+                              key={index}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  borderBottom: 0,
+                                },
+                              }}
+                            >
+                              <TableCell className="tbl-cell tr-cen-pad45 text-weight">{index + 1}</TableCell>
+                              <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
+                              <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
+                              <TableCell className="tbl-cell">
+                                <Typography fontSize={10} color="gray">
+                                  {`(${data.company?.company_code}) - ${data.company?.company_name}`}
+                                </Typography>
+                                <Typography fontSize={10} color="gray">
+                                  {`(${data.department?.department_code}) -
                             ${data.department?.department_name}`}
-                              </Typography>
-                              <Typography fontSize={10} color="gray">
-                                {`(${data.location?.location_code}) -
+                                </Typography>
+                                <Typography fontSize={10} color="gray">
+                                  {`(${data.location?.location_code}) -
                             ${data.location?.location_name}`}
-                              </Typography>
-                              <Typography fontSize={10} color="gray">
-                                {`(${data.account_title?.account_title_code}) -
+                                </Typography>
+                                <Typography fontSize={10} color="gray">
+                                  {`(${data.account_title?.account_title_code}) -
                             ${data.account_title?.account_title_name}`}
-                              </Typography>
-                            </TableCell>
+                                </Typography>
+                              </TableCell>
 
-                            <TableCell className="tbl-cell">
-                              {data.accountability === "Personal Issued" ? (
-                                <>
-                                  <Box>{data?.accountable?.general_info?.full_id_number}</Box>
-                                  <Box>{data?.accountable?.general_info?.full_name}</Box>
-                                </>
-                              ) : (
-                                "Common"
-                              )}
-                            </TableCell>
+                              <TableCell className="tbl-cell">
+                                {data.accountability === "Personal Issued" ? (
+                                  <>
+                                    <Box>{data?.accountable?.general_info?.full_id_number}</Box>
+                                    <Box>{data?.accountable?.general_info?.full_name}</Box>
+                                  </>
+                                ) : (
+                                  "Common"
+                                )}
+                              </TableCell>
 
-                            <TableCell className="tbl-cell">
-                              <Typography fontWeight={600} fontSize="14px" color="secondary.main">
-                                {data.asset_description}
-                              </Typography>
-                              <Typography fontSize="12px" color="text.light">
-                                {data.asset_specification}
-                              </Typography>
-                            </TableCell>
+                              <TableCell className="tbl-cell">
+                                <Typography fontWeight={600} fontSize="14px" color="secondary.main">
+                                  {data.asset_description}
+                                </Typography>
+                                <Typography fontSize="12px" color="text.light">
+                                  {data.asset_specification}
+                                </Typography>
+                              </TableCell>
 
-                            <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
+                              <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
 
-                            <TableCell className="tbl-cell">
-                              {data.cellphone_number === null ? "-" : data.cellphone_number}
-                            </TableCell>
+                              <TableCell className="tbl-cell">
+                                {data.cellphone_number === null ? "-" : data.cellphone_number}
+                              </TableCell>
 
-                            <TableCell className="tbl-cell">
-                              {data.remarks === null ? "No Remarks" : data.remarks}
-                            </TableCell>
+                              <TableCell className="tbl-cell">
+                                {data.remarks === null ? "No Remarks" : data.remarks}
+                              </TableCell>
 
-                            <TableCell className="tbl-cell">
-                              {data?.attachments?.letter_of_request && (
-                                <Stack flexDirection="row" gap={1}>
-                                  <Typography fontSize={12} fontWeight={600}>
-                                    Letter of Request:
-                                  </Typography>
-                                  {data?.attachments?.letter_of_request?.file_name}
-                                </Stack>
-                              )}
+                              <TableCell className="tbl-cell">
+                                {data?.attachments?.letter_of_request && (
+                                  <Stack flexDirection="row" gap={1}>
+                                    <Typography fontSize={12} fontWeight={600}>
+                                      Letter of Request:
+                                    </Typography>
+                                    {data?.attachments?.letter_of_request?.file_name}
+                                  </Stack>
+                                )}
 
-                              {data?.attachments?.quotation && (
-                                <Stack flexDirection="row" gap={1}>
-                                  <Typography fontSize={12} fontWeight={600}>
-                                    Quotation:
-                                  </Typography>
-                                  {data?.attachments?.quotation?.file_name}
-                                </Stack>
-                              )}
+                                {data?.attachments?.quotation && (
+                                  <Stack flexDirection="row" gap={1}>
+                                    <Typography fontSize={12} fontWeight={600}>
+                                      Quotation:
+                                    </Typography>
+                                    {data?.attachments?.quotation?.file_name}
+                                  </Stack>
+                                )}
 
-                              {data?.attachments?.specification_form && (
-                                <Stack flexDirection="row" gap={1}>
-                                  <Typography fontSize={12} fontWeight={600}>
-                                    Specification:
-                                  </Typography>
-                                  {data?.attachments?.specification_form?.file_name}
-                                </Stack>
-                              )}
+                                {data?.attachments?.specification_form && (
+                                  <Stack flexDirection="row" gap={1}>
+                                    <Typography fontSize={12} fontWeight={600}>
+                                      Specification:
+                                    </Typography>
+                                    {data?.attachments?.specification_form?.file_name}
+                                  </Stack>
+                                )}
 
-                              {data?.attachments?.tool_of_trade && (
-                                <Stack flexDirection="row" gap={1}>
-                                  <Typography fontSize={12} fontWeight={600}>
-                                    Tool of Trade:
-                                  </Typography>
-                                  {data?.attachments?.tool_of_trade?.file_name}
-                                </Stack>
-                              )}
+                                {data?.attachments?.tool_of_trade && (
+                                  <Stack flexDirection="row" gap={1}>
+                                    <Typography fontSize={12} fontWeight={600}>
+                                      Tool of Trade:
+                                    </Typography>
+                                    {data?.attachments?.tool_of_trade?.file_name}
+                                  </Stack>
+                                )}
 
-                              {data?.attachments?.other_attachments && (
-                                <Stack flexDirection="row" gap={1}>
-                                  <Typography fontSize={12} fontWeight={600}>
-                                    Other Attachment:
-                                  </Typography>
-                                  {data?.attachments?.other_attachments?.file_name}
-                                </Stack>
-                              )}
-                            </TableCell>
+                                {data?.attachments?.other_attachments && (
+                                  <Stack flexDirection="row" gap={1}>
+                                    <Typography fontSize={12} fontWeight={600}>
+                                      Other Attachment:
+                                    </Typography>
+                                    {data?.attachments?.other_attachments?.file_name}
+                                  </Stack>
+                                )}
+                              </TableCell>
 
-                            <TableCell className="tbl-cell">
-                              <ActionMenu
-                                hideArchive
-                                status={data?.status}
-                                data={data}
-                                showDelete
-                                editRequest
-                                onDeleteHandler={onDeleteHandler}
-                                onUpdateHandler={onUpdateHandler}
-                                onUpdateResetHandler={onUpdateResetHandler}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ))
-                        // : addRequestAllApi
-                        //   // ?.sort(comparator(order, orderBy))
-                        //   .map((data, index) => (
-                        //     <TableRow
-                        //       key={index}
-                        //       sx={{
-                        //         "&:last-child td, &:last-child th": {
-                        //           borderBottom: 0,
-                        //         },
-                        //       }}
-                        //     >
-                        //       <TableCell className="tbl-cell tr-cen-pad45 text-weight">{index + 1}</TableCell>
+                              <TableCell className="tbl-cell">
+                                <ActionMenu
+                                  hideArchive
+                                  status={data?.status}
+                                  data={data}
+                                  showDelete
+                                  editRequest
+                                  onDeleteHandler={onDeleteHandler}
+                                  onUpdateHandler={onUpdateHandler}
+                                  onUpdateResetHandler={onUpdateResetHandler}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                          // : addRequestAllApi
+                          //   // ?.sort(comparator(order, orderBy))
+                          //   .map((data, index) => (
+                          //     <TableRow
+                          //       key={index}
+                          //       sx={{
+                          //         "&:last-child td, &:last-child th": {
+                          //           borderBottom: 0,
+                          //         },
+                          //       }}
+                          //     >
+                          //       <TableCell className="tbl-cell tr-cen-pad45 text-weight">{index + 1}</TableCell>
 
-                        //       <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
+                          //       <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
 
-                        //       <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
+                          //       <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
 
-                        //       <TableCell className="tbl-cell">
-                        //         <Typography fontSize={10} color="gray">
-                        //           {`(${data.company?.company_code}) -
-                        //       ${data.company?.company_name}`}
-                        //         </Typography>
+                          //       <TableCell className="tbl-cell">
+                          //         <Typography fontSize={10} color="gray">
+                          //           {`(${data.company?.company_code}) -
+                          //       ${data.company?.company_name}`}
+                          //         </Typography>
 
-                        //         <Typography fontSize={10} color="gray">
-                        //           {`(${data.department?.department_code}) -
-                        //       ${data.department?.department_name}`}
-                        //         </Typography>
+                          //         <Typography fontSize={10} color="gray">
+                          //           {`(${data.department?.department_code}) -
+                          //       ${data.department?.department_name}`}
+                          //         </Typography>
 
-                        //         <Typography fontSize={10} color="gray">
-                        //           {`(${data.location?.location_code}) -
-                        //       ${data.location?.location_name}`}
-                        //         </Typography>
+                          //         <Typography fontSize={10} color="gray">
+                          //           {`(${data.location?.location_code}) -
+                          //       ${data.location?.location_name}`}
+                          //         </Typography>
 
-                        //         <Typography fontSize={10} color="gray">
-                        //           {`(${data.account_title?.account_title_code}) -
-                        //       ${data.account_title?.account_title_name}`}
-                        //         </Typography>
-                        //       </TableCell>
+                          //         <Typography fontSize={10} color="gray">
+                          //           {`(${data.account_title?.account_title_code}) -
+                          //       ${data.account_title?.account_title_name}`}
+                          //         </Typography>
+                          //       </TableCell>
 
-                        //       <TableCell className="tbl-cell">
-                        //         {data.accountability === "Personal Issued" ? (
-                        //           <>
-                        //             <Box>{data?.accountable?.general_info?.full_id_number}</Box>
-                        //             <Box>{data?.accountable?.general_info?.full_name}</Box>
-                        //           </>
-                        //         ) : (
-                        //           "Common"
-                        //         )}
-                        //       </TableCell>
+                          //       <TableCell className="tbl-cell">
+                          //         {data.accountability === "Personal Issued" ? (
+                          //           <>
+                          //             <Box>{data?.accountable?.general_info?.full_id_number}</Box>
+                          //             <Box>{data?.accountable?.general_info?.full_name}</Box>
+                          //           </>
+                          //         ) : (
+                          //           "Common"
+                          //         )}
+                          //       </TableCell>
 
-                        //       <TableCell className="tbl-cell">
-                        //         <Typography fontWeight={600} fontSize="14px" color="secondary.main">
-                        //           {data.asset_description}
-                        //         </Typography>
-                        //         <Typography fontSize={10} color="text.light">
-                        //           {data.asset_specification}
-                        //         </Typography>
-                        //       </TableCell>
+                          //       <TableCell className="tbl-cell">
+                          //         <Typography fontWeight={600} fontSize="14px" color="secondary.main">
+                          //           {data.asset_description}
+                          //         </Typography>
+                          //         <Typography fontSize={10} color="text.light">
+                          //           {data.asset_specification}
+                          //         </Typography>
+                          //       </TableCell>
 
-                        //       <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
+                          //       <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
 
-                        //       <TableCell className="tbl-cell">
-                        //         {data.cellphone_number === null ? "-" : data.cellphone_number}
-                        //       </TableCell>
+                          //       <TableCell className="tbl-cell">
+                          //         {data.cellphone_number === null ? "-" : data.cellphone_number}
+                          //       </TableCell>
 
-                        //       <TableCell className="tbl-cell">
-                        //         {data.remarks === null ? "No Remarks" : data.remarks}
-                        //       </TableCell>
+                          //       <TableCell className="tbl-cell">
+                          //         {data.remarks === null ? "No Remarks" : data.remarks}
+                          //       </TableCell>
 
-                        //       <TableCell className="tbl-cell">
-                        //         {data?.attachments?.letter_of_request && (
-                        //           <Stack flexDirection="row" gap={1}>
-                        //             <Typography fontSize={10} fontWeight={600}>
-                        //               Letter of Request:
-                        //             </Typography>
-                        //             {data?.attachments?.letter_of_request?.file_name}
-                        //           </Stack>
-                        //         )}
+                          //       <TableCell className="tbl-cell">
+                          //         {data?.attachments?.letter_of_request && (
+                          //           <Stack flexDirection="row" gap={1}>
+                          //             <Typography fontSize={10} fontWeight={600}>
+                          //               Letter of Request:
+                          //             </Typography>
+                          //             {data?.attachments?.letter_of_request?.file_name}
+                          //           </Stack>
+                          //         )}
 
-                        //         {data?.attachments?.quotation && (
-                        //           <Stack flexDirection="row" gap={1}>
-                        //             <Typography fontSize={10} fontWeight={600}>
-                        //               Quotation:
-                        //             </Typography>
-                        //             {data?.attachments?.quotation?.file_name}
-                        //           </Stack>
-                        //         )}
+                          //         {data?.attachments?.quotation && (
+                          //           <Stack flexDirection="row" gap={1}>
+                          //             <Typography fontSize={10} fontWeight={600}>
+                          //               Quotation:
+                          //             </Typography>
+                          //             {data?.attachments?.quotation?.file_name}
+                          //           </Stack>
+                          //         )}
 
-                        //         {data?.attachments?.specification_form && (
-                        //           <Stack flexDirection="row" gap={1}>
-                        //             <Typography fontSize={10} fontWeight={600}>
-                        //               Specification:
-                        //             </Typography>
-                        //             {data?.attachments?.specification_form?.file_name}
-                        //           </Stack>
-                        //         )}
+                          //         {data?.attachments?.specification_form && (
+                          //           <Stack flexDirection="row" gap={1}>
+                          //             <Typography fontSize={10} fontWeight={600}>
+                          //               Specification:
+                          //             </Typography>
+                          //             {data?.attachments?.specification_form?.file_name}
+                          //           </Stack>
+                          //         )}
 
-                        //         {data?.attachments?.tool_of_trade && (
-                        //           <Stack flexDirection="row" gap={1}>
-                        //             <Typography fontSize={10} fontWeight={600}>
-                        //               Tool of Trade:
-                        //             </Typography>
-                        //             {data?.attachments?.tool_of_trade?.file_name}
-                        //           </Stack>
-                        //         )}
+                          //         {data?.attachments?.tool_of_trade && (
+                          //           <Stack flexDirection="row" gap={1}>
+                          //             <Typography fontSize={10} fontWeight={600}>
+                          //               Tool of Trade:
+                          //             </Typography>
+                          //             {data?.attachments?.tool_of_trade?.file_name}
+                          //           </Stack>
+                          //         )}
 
-                        //         {data?.attachments?.other_attachments && (
-                        //           <Stack flexDirection="row" gap={1}>
-                        //             <Typography fontSize={10} fontWeight={600}>
-                        //               Other Attachment:
-                        //             </Typography>
-                        //             {data?.attachments?.other_attachments?.file_name}
-                        //           </Stack>
-                        //         )}
-                        //       </TableCell>
+                          //         {data?.attachments?.other_attachments && (
+                          //           <Stack flexDirection="row" gap={1}>
+                          //             <Typography fontSize={10} fontWeight={600}>
+                          //               Other Attachment:
+                          //             </Typography>
+                          //             {data?.attachments?.other_attachments?.file_name}
+                          //           </Stack>
+                          //         )}
+                          //       </TableCell>
 
-                        //       <TableCell className="tbl-cell">
-                        //         <ActionMenu
-                        //           hideArchive
-                        //           status={data?.status}
-                        //           data={data}
-                        //           showDelete
-                        //           onDeleteHandler={onDeleteHandler}
-                        //           onUpdateHandler={onUpdateHandler}
-                        //           onUpdateResetHandler={onUpdateResetHandler}
-                        //         />
-                        //       </TableCell>
-                        //     </TableRow>
-                      }
-                    </>
-                  )}
+                          //       <TableCell className="tbl-cell">
+                          //         <ActionMenu
+                          //           hideArchive
+                          //           status={data?.status}
+                          //           data={data}
+                          //           showDelete
+                          //           onDeleteHandler={onDeleteHandler}
+                          //           onUpdateHandler={onUpdateHandler}
+                          //           onUpdateResetHandler={onUpdateResetHandler}
+                          //         />
+                          //       </TableCell>
+                          //     </TableRow>
+                        }
+                      </>
+                    )}
                 </TableBody>
               </Table>
             </TableContainer>
