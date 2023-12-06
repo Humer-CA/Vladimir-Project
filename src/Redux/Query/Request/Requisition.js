@@ -116,6 +116,16 @@ export const requisitionApi = createApi({
 
       invalidatesTags: ["Requisition"],
     }),
+
+    voidRequisitionReferenceApi: builder.mutation({
+      query: (body) => ({
+        url: `/void-request/${body?.transaction_number}/${body?.reference_number}`,
+        method: "PATCH",
+        // body,
+      }),
+
+      invalidatesTags: ["Requisition"],
+    }),
   }),
 });
 
@@ -129,4 +139,5 @@ export const {
   usePostResubmitRequisitionApiMutation,
   useUpdateRequisitionApiMutation,
   useVoidRequisitionApiMutation,
+  useVoidRequisitionReferenceApiMutation,
 } = requisitionApi;

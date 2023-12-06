@@ -48,6 +48,7 @@ const ActionMenu = (props) => {
     showVoid,
     showApprover,
     editRequest,
+    onVoidReferenceHandler
   } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -82,6 +83,11 @@ const ActionMenu = (props) => {
 
   const handleVoid = () => {
     onVoidHandler(data?.transaction_number);
+    handleClose();
+  };
+
+  const handleVoidReference = () => {
+    onVoidReferenceHandler({ transaction_number: data?.transaction_number, reference_number: data?.reference_number });
     handleClose();
   };
 
@@ -206,6 +212,17 @@ const ActionMenu = (props) => {
 
           {showVoid && (
             <MenuItem onClick={handleVoid} dense>
+              <ListItemIcon>
+                <Cancel />
+              </ListItemIcon>
+              <ListItemText disableTypography align="left">
+                Void
+              </ListItemText>
+            </MenuItem>
+          )}
+
+          {onVoidReferenceHandler && (
+            <MenuItem onClick={handleVoidReference} dense>
               <ListItemIcon>
                 <Cancel />
               </ListItemIcon>

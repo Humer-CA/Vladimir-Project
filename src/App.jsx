@@ -259,6 +259,11 @@ const router = createBrowserRouter([
           },
 
           {
+            path: "request-monitoring",
+            element: <Request />,
+          },
+
+          {
             path: "asset-for-tagging",
             // element: <AssetForTagging />,
           },

@@ -134,12 +134,6 @@ const Navbar = () => {
   };
 
   const onLogoutHandler = async () => {
-    // if (status === 401) {
-    //   localStorage.removeItem("token");
-    //   dispatch(removeUserDetails());
-    //   navigate("/login");
-    // }
-
     try {
       const res = await vladimirAPI.post("/auth/logout");
       localStorage.removeItem("token");

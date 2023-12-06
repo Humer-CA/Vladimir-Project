@@ -35,10 +35,10 @@ const RequestTimeline = (props) => {
                 <Typography fontFamily={"Anton"} color={"secondary.main"} fontSize={24}>PROCESS DETAILS</Typography>
             </Stack>
 
-            <Box className='timelineSteps__container'>
-                <Stack flexDirection="row" alignItems="center" justifyContent="center" gap={1} mb={2}>
+            <Box className='timelineSteps__container' alignItems="flex-start">
+                <Stack flexDirection="row" alignItems="center" gap={1} mb={2}>
                     <TimelineTwoTone color='secondary.main' />
-                    <Typography fontFamily={"Anton"} color={"primary"} fontSize={20} alignSelf="center" >TIMELINE</Typography>
+                    <Typography fontFamily={"Anton"} color={"primary"} fontSize={20} >TIMELINE</Typography>
                 </Stack>
                 <Stepper activeStep={transactionData?.process_count - 1} alternativeLabel>
                     {steps.map((label) => (

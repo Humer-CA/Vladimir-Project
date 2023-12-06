@@ -66,6 +66,7 @@ import {
   ExpandMoreRounded,
   Segment,
   DomainVerification,
+  PostAdd,
 } from "@mui/icons-material";
 
 const Sidebar = () => {
@@ -330,6 +331,13 @@ const Sidebar = () => {
           path: "/request/evaluation",
           permission: "evaluation",
         },
+        {
+          label: "Disposal",
+          icon: PlaylistRemoveRounded,
+          path: "/disposal",
+          permission: "disposal",
+          setter: closeCollapse,
+        },
       ],
       open: requestCollapse,
       setter: () => {
@@ -348,6 +356,14 @@ const Sidebar = () => {
       icon: DomainVerification,
       path: "/approving",
       permission: "approving",
+      setter: closeCollapse,
+    },
+
+    {
+      label: "Request Monitoring",
+      icon: PostAdd,
+      path: "/request-monitoring",
+      permission: "request-monitoring",
       setter: closeCollapse,
     },
 
@@ -375,13 +391,7 @@ const Sidebar = () => {
       setter: closeCollapse,
     },
 
-    // {
-    //   label: "Disposal",
-    //   icon: PlaylistRemoveRounded,
-    //   path: "/disposal",
-    //   permission: "disposal",
-    //   setter: closeCollapse,
-    // },
+
 
     {
       label: "Reports",

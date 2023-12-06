@@ -54,6 +54,7 @@ import {
   usePostRequisitionApiMutation,
   usePostResubmitRequisitionApiMutation,
   useUpdateRequisitionApiMutation,
+  useVoidRequisitionReferenceApiMutation,
 } from "../../../Redux/Query/Request/Requisition";
 
 import { useGetTypeOfRequestAllApiQuery } from "../../../Redux/Query/Masterlist/TypeOfRequest";
@@ -259,6 +260,7 @@ const AddRequisition = (props) => {
   const [upDateRequest, { data: updateRequestData }] = useUpdateRequestContainerApiMutation();
   const [deleteRequest, { data: deleteRequestData }] = useDeleteRequestContainerApiMutation();
   const [deleteAllRequest, { data: deleteAllRequestData }] = useDeleteRequestContainerAllApiMutation();
+  const [voidRequestContainer, { data: voidRequestContainerData }] = useVoidRequisitionReferenceApiMutation();
 
   const {
     handleSubmit,
@@ -300,12 +302,12 @@ const AddRequisition = (props) => {
     },
   });
 
+  console.log(postError?.data)
   useEffect(() => {
     const errorData = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
 
     if (errorData) {
       const errors = (postError?.data || updateError?.data)?.errors || {};
-
       Object.entries(errors).forEach(([name, [message]]) => setError(name, { type: "validate", message }));
     }
 
@@ -410,13 +412,26 @@ const AddRequisition = (props) => {
     setOrderBy(property);
   };
 
+
+  console.log(transactionDataApi[0]?.can_resubmit)
   // SUBMIT HANDLER
   const onSubmitHandler = () => {
-    if (transactionData) {
+    if (transactionDataApi[0]?.can_resubmit === 0) {
+      dispatch(
+        openToast({
+          message: "Successfully Submitted",
+          duration: 5000,
+        })
+      );
+      navigate(- 1);
+      deleteAllRequest();
+
+    } else {
       resubmitRequest({
         transaction_number: transactionData?.transaction_number,
         ...transactionDataApi,
       });
+      navigate(- 1);
       return;
     }
 
@@ -430,10 +445,6 @@ const AddRequisition = (props) => {
   };
 
   const handleCloseDrawer = () => {
-    // setTimeout(() => {
-    //   onUpdateResetHandler();
-    // }, 500);
-
     dispatch(closeDrawer());
   };
 
@@ -644,6 +655,64 @@ const AddRequisition = (props) => {
     );
   };
 
+  const onVoidReferenceHandler = async (id) => {
+    dispatch(
+      openConfirm({
+        icon: Report,
+        iconColor: "warning",
+        message: (
+          <Box>
+            <Typography> Are you sure you want to</Typography>
+            <Typography
+              sx={{
+                display: "inline-block",
+                color: "secondary.main",
+                fontWeight: "bold",
+              }}
+            >
+              VOID
+            </Typography>{" "}
+            this Data?
+          </Box>
+        ),
+
+        onConfirm: async (transaction_number, reference_number) => {
+          try {
+            dispatch(onLoading());
+            let result = await voidRequestContainer(id).unwrap();
+            // console.log(result);
+            dispatch(
+              openToast({
+                message: result.message,
+                duration: 5000,
+              })
+            );
+            dispatch(closeConfirm());
+          } catch (err) {
+            console.log(err);
+            if (err?.status === 422) {
+              dispatch(
+                openToast({
+                  message: err.data.message,
+                  duration: 5000,
+                  variant: "error",
+                })
+              );
+            } else if (err?.status !== 422) {
+              dispatch(
+                openToast({
+                  message: "Something went wrong. Please try again.",
+                  duration: 5000,
+                  variant: "error",
+                })
+              );
+            }
+          }
+        },
+      })
+    );
+  };
+
   const RemoveFile = ({ title, value }) => {
     return (
       <Tooltip title={`Remove ${title}`
@@ -668,7 +737,6 @@ const AddRequisition = (props) => {
     );
   };
 
-  // console.log(watch("letter_of_request")?.name)
   const UpdateField = ({ value, label }) => {
     return (
       <Stack flexDirection="row" gap={1} alignItems="center">
@@ -1379,9 +1447,10 @@ const AddRequisition = (props) => {
                                   hideArchive
                                   status={data?.status}
                                   data={data}
-                                  showDelete
-                                  editRequest
+                                  showDelete={transactionData ? false : true}
+                                  editRequest={transactionDataApi[0]?.can_resubmit === 0 ? true : false}
                                   onDeleteHandler={onDeleteHandler}
+                                  onVoidReferenceHandler={transactionData ? onVoidReferenceHandler : false}
                                   onUpdateHandler={onUpdateHandler}
                                   onUpdateResetHandler={onUpdateResetHandler}
                                 />

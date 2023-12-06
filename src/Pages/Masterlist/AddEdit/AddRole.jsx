@@ -80,8 +80,8 @@ const AddRole = (props) => {
       access_permission: [],
     },
   });
-  // console.log(watch("access_permission").length);
-  // console.log(watch("access_permission"));
+  console.log(watch("access_permission").length);
+  console.log(postError);
 
   useEffect(() => {
     if (
@@ -94,6 +94,13 @@ const AddRole = (props) => {
           postError?.data?.errors.role_name ||
           updateError?.data?.errors.role_name,
       });
+      dispatch(
+        openToast({
+          message: postError?.data?.errors?.access_permission[0] || updateError?.data?.errors?.access_permission[0],
+          duration: 5000,
+          variant: "error",
+        })
+      );
     } else if (
       (isPostError && postError?.status !== 422) ||
       (isUpdateError && updateError?.status !== 422)
@@ -297,6 +304,7 @@ const AddRole = (props) => {
       { label: "Fixed Assets", value: "fixed-assets" },
       { label: "Printing of Tag", value: "print-fa" },
       { label: "Settings", value: "settings" },
+      { label: "Request Monitoring", value: "request-monitoring" },
     ];
 
     const secondGroup = [
@@ -305,7 +313,6 @@ const AddRole = (props) => {
       { label: "Asset for Tagging", value: "asset-for-tagging" },
       { label: "Asset List", value: "asset-list" },
       { label: "On Hand", value: "on-hand" },
-      { label: "Disposal", value: "disposal" },
       { label: "Reports", value: "reports" },
     ];
 
@@ -382,7 +389,7 @@ const AddRole = (props) => {
             control={
               <Checkbox
                 {...register("access_permission")}
-                checked={watch("access_permission")?.includes("account-title")}
+                checked={watch("access_permission")?.includes("sub-unit")}
               />
             }
           />
@@ -620,6 +627,7 @@ const AddRole = (props) => {
               />
             }
           />
+
         </FormGroup>
       </Stack>
     );
@@ -663,38 +671,6 @@ const AddRole = (props) => {
             }
           />
         </FormGroup>
-
-        {/* <FormGroup
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            ml: 3,
-          }}
-        >
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Pull Out"
-            value="pull-out"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("pull-out")}
-              />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Disposal"
-            value="disposal"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("disposal")}
-              />
-            }
-          />
-        </FormGroup> */}
       </Stack>
     );
   };
@@ -709,6 +685,7 @@ const AddRole = (props) => {
     "settings",
     "request",
     "approving",
+    "monitoring",
     "asset-for-tagging",
     "asset-list",
     "on-hand",
@@ -778,8 +755,8 @@ const AddRole = (props) => {
         {!data.status
           ? "Add Role"
           : data.action === "view"
-          ? "Permissions"
-          : "Edit Role"}
+            ? "Permissions"
+            : "Edit Role"}
       </Typography>
 
       <Box
@@ -821,8 +798,8 @@ const AddRole = (props) => {
                     !data.status
                       ? "Select Role"
                       : data.action === "view"
-                      ? "Selected Role"
-                      : "Select Roles"
+                        ? "Selected Role"
+                        : "Select Roles"
                   }
                   value="parent"
                   disabled={data.action === "view"}
@@ -835,7 +812,7 @@ const AddRole = (props) => {
                         watch("access_permission")?.length === 16
                           ? false
                           : watch("access_permission")?.length >= 1 &&
-                            watch("access_permission")?.length < 15
+                          watch("access_permission")?.length < 15
                       }
                       onChange={(e) => {
                         if (e.target.checked) {
@@ -1135,6 +1112,7 @@ const AddRole = (props) => {
                   </FormControl>
                 </Box>
               )}
+
               {watch("access_permission").includes("approving") && (
                 <Box>
                   <Divider sx={{ mx: "30px" }} />
@@ -1176,7 +1154,7 @@ const AddRole = (props) => {
                                 setValue("access_permission", [
                                   ...new Set([
                                     ...watch("access_permission"),
-                                    "pending=request",
+                                    "pending-request",
                                     "approved-request",
                                   ]),
                                 ]);
@@ -1198,7 +1176,7 @@ const AddRole = (props) => {
                         }
                       />
                     </FormLabel>
-                    <Request />
+                    <Approving />
                   </FormControl>
                 </Box>
               )}
@@ -1241,8 +1219,8 @@ const AddRole = (props) => {
             {!data.status
               ? "Cancel"
               : data.action === "view"
-              ? "Close"
-              : "Cancel"}
+                ? "Close"
+                : "Cancel"}
           </Button>
         </Stack>
       </Box>
