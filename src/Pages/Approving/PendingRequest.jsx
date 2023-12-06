@@ -56,7 +56,7 @@ const PendingRequest = () => {
   const [order, setOrder] = useState("desc");
   const [orderBy, setOrderBy] = useState("id");
 
-  const [remarks, setRemarks] = useState("");
+  // const [remarks, setRemarks] = useState("");
 
   const descendingComparator = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
@@ -208,13 +208,13 @@ const PendingRequest = () => {
         ),
         remarks: true,
 
-        onConfirm: async () => {
+        onConfirm: async (data) => {
           try {
             dispatch(onLoading());
             const result = await patchApprovalStatus({
               action: "Return",
               asset_approval_id: id,
-              remarks: remarks,
+              remarks: data,
             }).unwrap();
 
             dispatch(

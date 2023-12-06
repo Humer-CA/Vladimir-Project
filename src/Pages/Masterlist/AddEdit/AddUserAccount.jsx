@@ -313,9 +313,9 @@ const AddUserAccount = (props) => {
                       .toString()
                       .replace(",", "")
                       .toLowerCase() +
-                      value?.general_info?.last_name
-                        .toLowerCase()
-                        .replace(/ /gm, "")
+                    value?.general_info?.last_name
+                      .toLowerCase()
+                      .replace(/ /gm, "")
                   );
                 } else {
                   setValue("employee_id", null);

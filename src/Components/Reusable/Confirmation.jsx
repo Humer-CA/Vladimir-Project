@@ -25,7 +25,7 @@ import {
 import { LoadingButton } from "@mui/lab";
 
 const schema = yup.object().shape({
-  remarks: yup.string().required("Remarks is required."),
+  remarks: yup.string().nullable(),
 });
 
 const Confirmation = (props) => {
@@ -76,9 +76,10 @@ const Confirmation = (props) => {
   // };
 
   // TESTING ---------------------------
-  const handleConfirm = async (formData) => {
+  const handleConfirm = async ({ remarks }) => {
+    // console.log(remarks)
     try {
-      await onConfirm(formData);
+      await onConfirm(remarks);
       if (!autoClose) {
         dispatch(closeConfirm());
       }
@@ -164,7 +165,7 @@ const Confirmation = (props) => {
 
         <LoadingButton
           color="primary"
-          onClick={handleConfirm}
+          // onClick={handleConfirm}
           loading={loading}
           type="submit"
           variant="contained"

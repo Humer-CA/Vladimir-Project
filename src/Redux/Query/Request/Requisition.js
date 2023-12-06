@@ -42,6 +42,11 @@ export const requisitionApi = createApi({
       providesTags: ["Requisition"],
     }),
 
+    getTimelineIdApi: builder.query({
+      query: (transaction_number) => `per-request/${transaction_number}`,
+      providesTags: ["Requisition"],
+    }),
+
     getByTransactionApi: builder.query({
       query: ({ transaction_number }) => `asset-request/${transaction_number}`,
       providesTags: ["Requisition"],

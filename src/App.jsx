@@ -352,7 +352,7 @@ const theme = createTheme({
       dark: "#1aab56",
     },
 
-    errorColor: {
+    error: {
       light: "#ee5c5c",
       main: "#EA3434",
       dark: "#a32424",

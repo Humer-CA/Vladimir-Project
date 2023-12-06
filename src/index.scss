@@ -290,11 +290,10 @@ img {
 
 .tblLoading {
   position: sticky;
-  margin-top: 20px;
-  top: calc(50% - (39vh / 2));
-  left: calc(50% - (250px / 2));
-  height: 39vh;
-  width: 250px;
+  left: calc(50% - (150px / 2));
+  // margin: auto;
+  // inset: 0;
+  width: 150px;
 }
 
 .importFixedAsset {

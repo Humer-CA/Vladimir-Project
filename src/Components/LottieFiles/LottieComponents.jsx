@@ -33,8 +33,8 @@ export const ImportingData = ({ text }) => {
 export const LoadingData = ({ category }) => {
   return (
     <>
-      <TableRow>
-        <TableCell colSpan={999} rowSpan={999} sx={{ borderBottom: "none" }}>
+      <TableRow >
+        <TableCell colSpan={999} rowSpan={999} sx={{ borderBottom: "none", height: "calc(70vh - 150px)" }}>
 
           <Box
             className="tblLoading"
@@ -45,7 +45,7 @@ export const LoadingData = ({ category }) => {
 
 
         </TableCell>
-      </TableRow>
+      </TableRow >
     </>
   );
 };

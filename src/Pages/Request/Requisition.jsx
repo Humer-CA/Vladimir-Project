@@ -59,11 +59,9 @@ const Requisition = () => {
   const [status, setStatus] = useState("active");
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
-  const [updateRequisition, setUpdateRequisition] = useState({
-    status: false,
-    id: null,
-    // type_of_request_name: "",
-  });
+
+  const [transactionIdData, setTransactionIdData] = useState();
+
 
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width: 500px)");
@@ -195,35 +193,18 @@ const Requisition = () => {
     );
   };
 
-  const onUpdateHandler = (props) => {
-    const { id } = props;
-    setUpdateRequisition({
-      status: true,
-      id: id,
-      // type_of_request_name: type_of_request_name,
-    });
-  };
-
-  const onUpdateResetHandler = () => {
-    setUpdateRequisition({
-      status: false,
-      id: null,
-      // type_of_request_name: "",
-    });
-  };
-
   const onSetPage = () => {
     setPage(1);
   };
 
-  const handleViewTimeline = () => {
+  const handleViewTimeline = (data) => {
     dispatch(openDialog());
-
+    setTransactionIdData(data)
   };
 
-  const handleCloseTimelime = () => {
-    dispatch(closeDialog);
-  }
+  // const handleCloseTimelime = () => {
+  //   dispatch(closeDialog);
+  // }
 
   const handleAddRequisition = () => {
     navigate(`add-requisition`);
@@ -237,12 +218,6 @@ const Requisition = () => {
       }
     );
   };
-
-  // const handleViewProcessDetails = () => {
-  //   dispatch(openDrawer());
-  // };
-
-  // console.log(requisitionData);
 
   return (
     <Box className="mcontainer">
@@ -330,11 +305,11 @@ const Requisition = () => {
                       </TableCell>
 
                       <TableCell className="tbl-cell text-center">
-                        View
+                        View Information
                       </TableCell>
 
                       <TableCell className="tbl-cell text-center">
-                        Status
+                        View Status
                       </TableCell>
 
                       <TableCell className="tbl-cell text-center">
@@ -379,6 +354,7 @@ const Requisition = () => {
                                 </TableCell>
                                 <TableCell className="tbl-cell text-weight text-center">
                                   <Tooltip
+                                    placement="top"
                                     title="View Request Information"
                                     arrow
                                   >
@@ -391,35 +367,43 @@ const Requisition = () => {
                                     </IconButton>
                                   </Tooltip>
                                 </TableCell>
-                                <TableCell className="tbl-cell text-center" onClick={handleViewTimeline}>
+                                <TableCell className="tbl-cell text-center">
                                   {data.status !== "Returned" ? (
                                     <Tooltip
+                                      placement="top"
                                       title={`${data?.current_approver?.firstname} 
                                         ${data?.current_approver?.lastname}`}
                                       arrow
                                     >
-                                      <Chip
+                                      <Chip onClick={() => handleViewTimeline(data)}
                                         size="small"
-                                        variant="outlined"
+                                        variant={data.status === "Approved" ? "filled" : "outlined"}
                                         sx={{
                                           borderColor: "active.dark",
-                                          color: "active.dark",
+                                          color: data?.status === "Approved" ? "white" : "active.dark",
                                           fontSize: "0.7rem",
                                           px: 1,
+                                          cursor: "pointer",
+                                          backgroundColor: data?.status === "Approved" && "success.main",
+                                          ":hover": { backgroundColor: data?.status === "Approved" ? "success.dark" : "red" }
                                         }}
                                         label={`${data.status}`}
                                       />
                                     </Tooltip>
                                   ) : (
                                     <Chip
+                                      placement="top"
+                                      onClick={() => handleViewTimeline(data)}
                                       size="small"
-                                      variant="outlined"
+                                      variant="filled"
                                       sx={{
-                                        // background: "#fc3e3e34",
-                                        borderColor: "#fc3e3e34",
-                                        color: "error.light",
+                                        backgroundColor: "error.light",
+                                        // borderColor: "#fc3e3e34",
+                                        // color: "error.light",
+                                        color: "white",
                                         fontSize: "0.7rem",
                                         px: 1,
+                                        ":hover": { backgroundColor: "error.dark" }
                                       }}
                                       label={`${data.status}`}
                                     />
@@ -437,7 +421,6 @@ const Requisition = () => {
                                     hideArchive
                                     showVoid
                                     onVoidHandler={onVoidHandler}
-                                    onUpdateHandler={onUpdateHandler}
                                   />
                                 </TableCell>
                               </TableRow>
@@ -466,7 +449,7 @@ const Requisition = () => {
         PaperProps={{ sx: { borderRadius: "10px" } }}
       >
         <RequestTimeline
-          data={requisitionData}
+          data={transactionIdData}
         />
       </Dialog>
     </Box>

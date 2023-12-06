@@ -421,7 +421,7 @@ const AddRequisition = (props) => {
     }
 
     const smsData = {
-      system_name: "Vladimir", message: "Successfully Posted", mobile_number: "09913117181"
+      system_name: "Vladimir", message: "You have a pending approval", mobile_number: "+639913117181"
     }
 
     postRequisition(addRequestAllApi);
@@ -1388,137 +1388,10 @@ const AddRequisition = (props) => {
                               </TableCell>
                             </TableRow>
                           ))
-                          // : addRequestAllApi
-                          //   // ?.sort(comparator(order, orderBy))
-                          //   .map((data, index) => (
-                          //     <TableRow
-                          //       key={index}
-                          //       sx={{
-                          //         "&:last-child td, &:last-child th": {
-                          //           borderBottom: 0,
-                          //         },
-                          //       }}
-                          //     >
-                          //       <TableCell className="tbl-cell tr-cen-pad45 text-weight">{index + 1}</TableCell>
-
-                          //       <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
-
-                          //       <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
-
-                          //       <TableCell className="tbl-cell">
-                          //         <Typography fontSize={10} color="gray">
-                          //           {`(${data.company?.company_code}) -
-                          //       ${data.company?.company_name}`}
-                          //         </Typography>
-
-                          //         <Typography fontSize={10} color="gray">
-                          //           {`(${data.department?.department_code}) -
-                          //       ${data.department?.department_name}`}
-                          //         </Typography>
-
-                          //         <Typography fontSize={10} color="gray">
-                          //           {`(${data.location?.location_code}) -
-                          //       ${data.location?.location_name}`}
-                          //         </Typography>
-
-                          //         <Typography fontSize={10} color="gray">
-                          //           {`(${data.account_title?.account_title_code}) -
-                          //       ${data.account_title?.account_title_name}`}
-                          //         </Typography>
-                          //       </TableCell>
-
-                          //       <TableCell className="tbl-cell">
-                          //         {data.accountability === "Personal Issued" ? (
-                          //           <>
-                          //             <Box>{data?.accountable?.general_info?.full_id_number}</Box>
-                          //             <Box>{data?.accountable?.general_info?.full_name}</Box>
-                          //           </>
-                          //         ) : (
-                          //           "Common"
-                          //         )}
-                          //       </TableCell>
-
-                          //       <TableCell className="tbl-cell">
-                          //         <Typography fontWeight={600} fontSize="14px" color="secondary.main">
-                          //           {data.asset_description}
-                          //         </Typography>
-                          //         <Typography fontSize={10} color="text.light">
-                          //           {data.asset_specification}
-                          //         </Typography>
-                          //       </TableCell>
-
-                          //       <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
-
-                          //       <TableCell className="tbl-cell">
-                          //         {data.cellphone_number === null ? "-" : data.cellphone_number}
-                          //       </TableCell>
-
-                          //       <TableCell className="tbl-cell">
-                          //         {data.remarks === null ? "No Remarks" : data.remarks}
-                          //       </TableCell>
-
-                          //       <TableCell className="tbl-cell">
-                          //         {data?.attachments?.letter_of_request && (
-                          //           <Stack flexDirection="row" gap={1}>
-                          //             <Typography fontSize={10} fontWeight={600}>
-                          //               Letter of Request:
-                          //             </Typography>
-                          //             {data?.attachments?.letter_of_request?.file_name}
-                          //           </Stack>
-                          //         )}
-
-                          //         {data?.attachments?.quotation && (
-                          //           <Stack flexDirection="row" gap={1}>
-                          //             <Typography fontSize={10} fontWeight={600}>
-                          //               Quotation:
-                          //             </Typography>
-                          //             {data?.attachments?.quotation?.file_name}
-                          //           </Stack>
-                          //         )}
-
-                          //         {data?.attachments?.specification_form && (
-                          //           <Stack flexDirection="row" gap={1}>
-                          //             <Typography fontSize={10} fontWeight={600}>
-                          //               Specification:
-                          //             </Typography>
-                          //             {data?.attachments?.specification_form?.file_name}
-                          //           </Stack>
-                          //         )}
-
-                          //         {data?.attachments?.tool_of_trade && (
-                          //           <Stack flexDirection="row" gap={1}>
-                          //             <Typography fontSize={10} fontWeight={600}>
-                          //               Tool of Trade:
-                          //             </Typography>
-                          //             {data?.attachments?.tool_of_trade?.file_name}
-                          //           </Stack>
-                          //         )}
-
-                          //         {data?.attachments?.other_attachments && (
-                          //           <Stack flexDirection="row" gap={1}>
-                          //             <Typography fontSize={10} fontWeight={600}>
-                          //               Other Attachment:
-                          //             </Typography>
-                          //             {data?.attachments?.other_attachments?.file_name}
-                          //           </Stack>
-                          //         )}
-                          //       </TableCell>
-
-                          //       <TableCell className="tbl-cell">
-                          //         <ActionMenu
-                          //           hideArchive
-                          //           status={data?.status}
-                          //           data={data}
-                          //           showDelete
-                          //           onDeleteHandler={onDeleteHandler}
-                          //           onUpdateHandler={onUpdateHandler}
-                          //           onUpdateResetHandler={onUpdateResetHandler}
-                          //         />
-                          //       </TableCell>
-                          //     </TableRow>
                         }
                       </>
-                    )}
+                    )
+                  }
                 </TableBody>
               </Table>
             </TableContainer>
