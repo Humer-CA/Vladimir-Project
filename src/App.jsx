@@ -59,6 +59,7 @@ import SubUnit from "./Pages/Masterlist/SubUnit";
 import AddRequisition from "./Pages/Request/Add Requisition/AddRequisition";
 import Request from "./Pages/Request";
 import Approving from "./Pages/Approving/Approving";
+import RequestMonitoring from "./Pages/Request/RequestMonitoring";
 
 const router = createBrowserRouter([
   {
@@ -260,7 +261,12 @@ const router = createBrowserRouter([
 
           {
             path: "request-monitoring",
-            element: <Request />,
+            element: <RequestMonitoring />,
+          },
+
+          {
+            path: "request-monitoring/:transaction_number",
+            element: <AddRequisition />,
           },
 
           {

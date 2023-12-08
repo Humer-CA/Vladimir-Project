@@ -723,6 +723,9 @@ const AddRole = (props) => {
     // Approving
     "pending-request",
     "approved-request",
+
+    // Monitoring
+    "request-monitoring"
   ];
 
   const masterlistValue = [

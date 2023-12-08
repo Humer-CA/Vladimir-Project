@@ -144,11 +144,12 @@ const AddRequisition = (props) => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const { state: transactionData } = useLocation();
+  const { urlPath, state: transactionData } = useLocation();
 
   const isFullWidth = useMediaQuery("(max-width: 600px)");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const LetterOfRequestRef = useRef(null);
   const QuotationRef = useRef(null);
@@ -413,7 +414,7 @@ const AddRequisition = (props) => {
   };
 
 
-  console.log(transactionDataApi[0]?.can_resubmit)
+  // console.log(transactionDataApi[0]?.can_resubmit)
   // SUBMIT HANDLER
   const onSubmitHandler = () => {
     if (transactionDataApi[0]?.can_resubmit === 0) {
@@ -893,114 +894,116 @@ const AddRequisition = (props) => {
         </Button>
 
         <Box className="request mcontainer__wrapper" p={2}>
+          {console.log(urlPath)}
           {/* FORM */}
-          <Box>
-            <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
-              ASSET
-              {/* {data.status ? "Edit Requisition" : "Add Requisition"} */}
-            </Typography>
+          {!urlPath &&
+            <Box>
+              <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
+                ASSET
+                {/* {data.status ? "Edit Requisition" : "Add Requisition"} */}
+              </Typography>
 
-            <Divider sx={{}} />
+              <Divider sx={{}} />
 
-            <Box id="requestForm" className="request__form" component="form" onSubmit={handleSubmit(addRequestHandler)}>
-              <Stack gap={2}>
-                <Box sx={BoxStyle}>
-                  <Typography sx={sxSubtitle}>Request Information</Typography>
+              <Box id="requestForm" className="request__form" component="form" onSubmit={handleSubmit(addRequestHandler)}>
+                <Stack gap={2}>
+                  <Box sx={BoxStyle}>
+                    <Typography sx={sxSubtitle}>Request Information</Typography>
 
-                  <CustomAutoComplete
-                    disablePortal
-                    control={control}
-                    name="type_of_request_id"
-                    options={typeOfRequestData}
-                    loading={isTypeOfRequestLoading}
-                    size="small"
-                    getOptionLabel={(option) => option.type_of_request_name}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                    renderInput={(params) => (
-                      <TextField
-                        color="secondary"
-                        {...params}
-                        label="Type of Request"
-                        error={!!errors?.type_of_request_id}
-                        helperText={errors?.type_of_request_id?.message}
-                      />
-                    )}
-                  />
+                    <CustomAutoComplete
+                      disablePortal
+                      control={control}
+                      name="type_of_request_id"
+                      options={typeOfRequestData}
+                      loading={isTypeOfRequestLoading}
+                      size="small"
+                      getOptionLabel={(option) => option.type_of_request_name}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      renderInput={(params) => (
+                        <TextField
+                          color="secondary"
+                          {...params}
+                          label="Type of Request"
+                          error={!!errors?.type_of_request_id}
+                          helperText={errors?.type_of_request_id?.message}
+                        />
+                      )}
+                    />
 
-                  <CustomAutoComplete
-                    disablePortal
-                    control={control}
-                    name="attachment_type"
-                    options={attachmentType}
-                    size="small"
-                    renderInput={(params) => (
-                      <TextField
-                        color="secondary"
-                        {...params}
-                        label="Attachment Type"
-                        error={!!errors?.attachment_type}
-                        helperText={errors?.attachment_type?.message}
-                      />
-                    )}
-                  />
-                </Box>
+                    <CustomAutoComplete
+                      disablePortal
+                      control={control}
+                      name="attachment_type"
+                      options={attachmentType}
+                      size="small"
+                      renderInput={(params) => (
+                        <TextField
+                          color="secondary"
+                          {...params}
+                          label="Attachment Type"
+                          error={!!errors?.attachment_type}
+                          helperText={errors?.attachment_type?.message}
+                        />
+                      )}
+                    />
+                  </Box>
 
-                <Divider />
+                  <Divider />
 
-                <Box sx={BoxStyle}>
-                  <Typography sx={sxSubtitle}>Charging Information</Typography>
+                  <Box sx={BoxStyle}>
+                    <Typography sx={sxSubtitle}>Charging Information</Typography>
 
-                  {/* OLD Departments */}
-                  <CustomAutoComplete
-                    autoComplete
-                    name="department_id"
-                    control={control}
-                    options={departmentData}
-                    loading={isDepartmentLoading}
-                    size="small"
-                    disabled={transactionData ? true : false}
-                    getOptionLabel={(option) => option.department_name}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                    renderInput={(params) => (
-                      <TextField
-                        color="secondary"
-                        {...params}
-                        label="Department"
-                        error={!!errors?.department_id?.message}
-                        helperText={errors?.department_id?.message}
-                      />
-                    )}
-                    fullWidth
-                    onChange={(_, value) => {
-                      setValue("subunit_id", null)
-                      setValue("location_id", null)
-                      return value
-                    }}
-                  />
+                    {/* OLD Departments */}
+                    <CustomAutoComplete
+                      autoComplete
+                      name="department_id"
+                      control={control}
+                      options={departmentData}
+                      loading={isDepartmentLoading}
+                      size="small"
+                      disabled={transactionData ? true : false}
+                      getOptionLabel={(option) => option.department_name}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      renderInput={(params) => (
+                        <TextField
+                          color="secondary"
+                          {...params}
+                          label="Department"
+                          error={!!errors?.department_id?.message}
+                          helperText={errors?.department_id?.message}
+                        />
+                      )}
+                      fullWidth
+                      onChange={(_, value) => {
+                        setValue("subunit_id", null)
+                        setValue("location_id", null)
+                        return value
+                      }}
+                    />
 
-                  <CustomAutoComplete
-                    autoComplete
-                    name="subunit_id"
-                    control={control}
-                    disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
-                    // disabled={!transactionData ? false : addRequestAllApi.length || transactionData?.length) !== 0}
-                    options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
-                    loading={isSubUnitLoading}
-                    size="small"
-                    getOptionLabel={(option) => option.subunit_name}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                    renderInput={(params) => (
-                      <TextField
-                        color="secondary"
-                        {...params}
-                        label="Subunit"
-                        error={!!errors?.subunit_id}
-                        helperText={errors?.subunit_id?.message}
-                      />
-                    )}
-                  />
+                    <CustomAutoComplete
+                      autoComplete
+                      name="subunit_id"
+                      control={control}
+                      disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
+                      // disabled={!transactionData ? false : addRequestAllApi.length || transactionData?.length) !== 0}
+                      options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
+                      loading={isSubUnitLoading}
+                      size="small"
+                      getOptionLabel={(option) => option.subunit_name}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      renderInput={(params) => (
+                        <TextField
+                          color="secondary"
+                          {...params}
+                          label="Subunit"
+                          error={!!errors?.subunit_id}
+                          helperText={errors?.subunit_id?.message}
+                        />
+                      )}
+                    />
 
-                  {/* <CustomAutoComplete
+                    {/* <CustomAutoComplete
                     autoComplete
                     name="company_id"
                     control={control}
@@ -1025,273 +1028,273 @@ const AddRequisition = (props) => {
                     // disabled
                   /> */}
 
-                  <CustomAutoComplete
-                    autoComplete
-                    name="location_id"
-                    control={control}
-                    // disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
-                    options={locationData?.filter((item) => {
-                      return item.departments.some((department) => {
-                        return department?.sync_id === watch("department_id")?.sync_id;
-                      });
-                    })}
-                    loading={isLocationLoading}
-                    size="small"
-                    getOptionLabel={(option) => option.location_code + " - " + option.location_name}
-                    isOptionEqualToValue={(option, value) => option.location_id === value.location_id}
-                    renderInput={(params) => (
-                      <TextField
-                        color="secondary"
-                        {...params}
-                        label="Location"
-                        error={!!errors?.location_id}
-                        helperText={errors?.location_id?.message}
-                      />
-                    )}
-                  />
-
-                  <CustomAutoComplete
-                    name="account_title_id"
-                    control={control}
-                    // disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
-                    options={accountTitleData}
-                    loading={isAccountTitleLoading}
-                    size="small"
-                    getOptionLabel={(option) => option.account_title_code + " - " + option.account_title_name}
-                    isOptionEqualToValue={(option, value) => option.account_title_code === value.account_title_code}
-                    renderInput={(params) => (
-                      <TextField
-                        color="secondary"
-                        {...params}
-                        label="Account Title  "
-                        error={!!errors?.account_title_id}
-                        helperText={errors?.account_title_id?.message}
-                      />
-                    )}
-                  />
-
-                  <CustomAutoComplete
-                    autoComplete
-                    name="accountability"
-                    control={control}
-                    options={["Personal Issued", "Common"]}
-                    size="small"
-                    isOptionEqualToValue={(option, value) => option === value}
-                    renderInput={(params) => (
-                      <TextField
-                        color="secondary"
-                        {...params}
-                        label="Accountability  "
-                        error={!!errors?.accountability}
-                        helperText={errors?.accountability?.message}
-                      />
-                    )}
-                  />
-
-                  {watch("accountability") === "Personal Issued" && (
                     <CustomAutoComplete
-                      name="accountable"
+                      autoComplete
+                      name="location_id"
                       control={control}
+                      // disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
+                      options={locationData?.filter((item) => {
+                        return item.departments.some((department) => {
+                          return department?.sync_id === watch("department_id")?.sync_id;
+                        });
+                      })}
+                      loading={isLocationLoading}
                       size="small"
-                      includeInputInList
-                      disablePortal
-                      filterOptions={filterOptions}
-                      options={sedarData}
-                      loading={isSedarLoading}
-                      getOptionLabel={(option) => option.general_info?.full_id_number_full_name}
-                      isOptionEqualToValue={(option, value) =>
-                        option.general_info?.full_id_number === value.general_info?.full_id_number
-                      }
+                      getOptionLabel={(option) => option.location_code + " - " + option.location_name}
+                      isOptionEqualToValue={(option, value) => option.location_id === value.location_id}
                       renderInput={(params) => (
                         <TextField
-                          {...params}
-                          label="Accountable"
                           color="secondary"
-                          error={!!errors?.accountable?.message}
-                          helperText={errors?.accountable?.message}
+                          {...params}
+                          label="Location"
+                          error={!!errors?.location_id}
+                          helperText={errors?.location_id?.message}
                         />
                       )}
                     />
-                  )}
-                </Box>
 
-                <Divider />
+                    <CustomAutoComplete
+                      name="account_title_id"
+                      control={control}
+                      // disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
+                      options={accountTitleData}
+                      loading={isAccountTitleLoading}
+                      size="small"
+                      getOptionLabel={(option) => option.account_title_code + " - " + option.account_title_name}
+                      isOptionEqualToValue={(option, value) => option.account_title_code === value.account_title_code}
+                      renderInput={(params) => (
+                        <TextField
+                          color="secondary"
+                          {...params}
+                          label="Account Title  "
+                          error={!!errors?.account_title_id}
+                          helperText={errors?.account_title_id?.message}
+                        />
+                      )}
+                    />
 
-                <Box sx={BoxStyle}>
-                  <Typography sx={sxSubtitle}>Asset Information</Typography>
-                  <CustomTextField
-                    control={control}
-                    name="asset_description"
-                    label="Asset Description"
-                    type="text"
-                    color="secondary"
-                    size="small"
-                    disabled={data?.print_count >= 1}
-                    error={!!errors?.asset_description}
-                    helperText={errors?.asset_description?.message}
-                    fullWidth
-                    multiline
-                  />
-                  <CustomTextField
-                    control={control}
-                    name="asset_specification"
-                    label="Asset Specification"
-                    type="text"
-                    color="secondary"
-                    size="small"
-                    error={!!errors?.asset_specification}
-                    helperText={errors?.asset_specification?.message}
-                    fullWidth
-                    multiline
-                  />
-                  <CustomTextField
-                    control={control}
-                    name="brand"
-                    label="Brand"
-                    type="text"
-                    color="secondary"
-                    size="small"
-                    error={!!errors?.brand}
-                    helperText={errors?.brand?.message}
-                    fullWidth
-                  />
-                  <CustomNumberField
-                    control={control}
-                    name="quantity"
-                    label="Quantity"
-                    type="number"
-                    color="secondary"
-                    error={!!errors?.quantity}
-                    helperText={errors?.quantity?.message}
-                    fullWidth
-                  // isAllowed={(values) => {
-                  //   const { floatValue } = values;
-                  //   return floatValue >= 1;
-                  // }}
-                  />
-                  <CustomPatternfield
-                    control={control}
-                    color="secondary"
-                    name="cellphone_number"
-                    label="Cellphone # (optional)"
-                    type="text"
-                    size="small"
-                    error={!!errors?.cellphone_number}
-                    helperText={errors?.cellphone_number?.message}
-                    format="(09##) - ### - ####"
-                    // allowEmptyFormatting
-                    valueIsNumericString
-                    fullWidth
-                  />
-                  <CustomTextField
-                    control={control}
-                    name="remarks"
-                    label="Remarks (Optional)"
-                    type="text"
-                    color="secondary"
-                    size="small"
-                    fullWidth
-                    multiline
-                  />
-                </Box>
+                    <CustomAutoComplete
+                      autoComplete
+                      name="accountability"
+                      control={control}
+                      options={["Personal Issued", "Common"]}
+                      size="small"
+                      isOptionEqualToValue={(option, value) => option === value}
+                      renderInput={(params) => (
+                        <TextField
+                          color="secondary"
+                          {...params}
+                          label="Accountability  "
+                          error={!!errors?.accountability}
+                          helperText={errors?.accountability?.message}
+                        />
+                      )}
+                    />
 
-                <Divider />
-
-                <Box sx={BoxStyle}>
-                  <Typography sx={sxSubtitle}>Attachments</Typography>
-                  <Stack flexDirection="row" gap={1} alignItems="center">
-                    {watch("letter_of_request") !== null ? (
-                      <UpdateField label={"Letter of Request"} value={transactionDataApi ? updateRequest?.letter_of_request?.file_name : watch("letter_of_request")?.name} />
-                    ) : (
-                      <CustomAttachment
+                    {watch("accountability") === "Personal Issued" && (
+                      <CustomAutoComplete
+                        name="accountable"
                         control={control}
-                        name="letter_of_request"
-                        label="Letter of Request"
-                        inputRef={LetterOfRequestRef}
+                        size="small"
+                        includeInputInList
+                        disablePortal
+                        filterOptions={filterOptions}
+                        options={sedarData}
+                        loading={isSedarLoading}
+                        getOptionLabel={(option) => option.general_info?.full_id_number_full_name}
+                        isOptionEqualToValue={(option, value) =>
+                          option.general_info?.full_id_number === value.general_info?.full_id_number
+                        }
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Accountable"
+                            color="secondary"
+                            error={!!errors?.accountable?.message}
+                            helperText={errors?.accountable?.message}
+                          />
+                        )}
                       />
                     )}
+                  </Box>
 
-                    {watch("letter_of_request") !== null && (
-                      <RemoveFile title="Letter of Request" value="letter_of_request" />
-                    )}
-                  </Stack>
+                  <Divider />
 
-                  <Stack flexDirection="row" gap={1} alignItems="center">
-                    {watch("quotation") !== null ? (
-                      <UpdateField label={"Quotation"} value={updateRequest?.quotation?.file_name} />
-                    ) : (
-                      <CustomAttachment control={control} name="quotation" label="Quotation" inputRef={QuotationRef} />
-                    )}
-                    {watch("quotation") !== null && <RemoveFile title="Quotation" value="quotation" />}
-                  </Stack>
+                  <Box sx={BoxStyle}>
+                    <Typography sx={sxSubtitle}>Asset Information</Typography>
+                    <CustomTextField
+                      control={control}
+                      name="asset_description"
+                      label="Asset Description"
+                      type="text"
+                      color="secondary"
+                      size="small"
+                      disabled={data?.print_count >= 1}
+                      error={!!errors?.asset_description}
+                      helperText={errors?.asset_description?.message}
+                      fullWidth
+                      multiline
+                    />
+                    <CustomTextField
+                      control={control}
+                      name="asset_specification"
+                      label="Asset Specification"
+                      type="text"
+                      color="secondary"
+                      size="small"
+                      error={!!errors?.asset_specification}
+                      helperText={errors?.asset_specification?.message}
+                      fullWidth
+                      multiline
+                    />
+                    <CustomTextField
+                      control={control}
+                      name="brand"
+                      label="Brand"
+                      type="text"
+                      color="secondary"
+                      size="small"
+                      error={!!errors?.brand}
+                      helperText={errors?.brand?.message}
+                      fullWidth
+                    />
+                    <CustomNumberField
+                      control={control}
+                      name="quantity"
+                      label="Quantity"
+                      type="number"
+                      color="secondary"
+                      error={!!errors?.quantity}
+                      helperText={errors?.quantity?.message}
+                      fullWidth
+                    // isAllowed={(values) => {
+                    //   const { floatValue } = values;
+                    //   return floatValue >= 1;
+                    // }}
+                    />
+                    <CustomPatternfield
+                      control={control}
+                      color="secondary"
+                      name="cellphone_number"
+                      label="Cellphone # (optional)"
+                      type="text"
+                      size="small"
+                      error={!!errors?.cellphone_number}
+                      helperText={errors?.cellphone_number?.message}
+                      format="(09##) - ### - ####"
+                      // allowEmptyFormatting
+                      valueIsNumericString
+                      fullWidth
+                    />
+                    <CustomTextField
+                      control={control}
+                      name="remarks"
+                      label="Remarks (Optional)"
+                      type="text"
+                      color="secondary"
+                      size="small"
+                      fullWidth
+                      multiline
+                    />
+                  </Box>
 
-                  <Stack flexDirection="row" gap={1} alignItems="center">
-                    {watch("specification_form") !== null ? (
-                      <UpdateField label={"Specification Form"} value={updateRequest?.specification_form?.file_name} />
-                    ) : (
-                      <CustomAttachment
-                        control={control}
-                        name="specification_form"
-                        label="Specification (Form)"
-                        inputRef={SpecificationRef}
-                        updateData={updateRequest}
-                      />
-                    )}
-                    {watch("specification_form") !== null && (
-                      <RemoveFile title="Specification" value="specification_form" />
-                    )}
-                  </Stack>
+                  <Divider />
 
-                  <Stack flexDirection="row" gap={1} alignItems="center">
-                    {watch("tool_of_trade") !== null ? (
-                      <UpdateField label={"Tool of Trade"} value={updateRequest?.tool_of_trade?.file_name} />
-                    ) : (
-                      <CustomAttachment
-                        control={control}
-                        name="tool_of_trade"
-                        label="Tool of Trade"
-                        inputRef={ToolOfTradeRef}
-                      />
-                    )}
-                    {watch("tool_of_trade") !== null && <RemoveFile title="Tool of Trade" value="tool_of_trade" />}
-                  </Stack>
+                  <Box sx={BoxStyle}>
+                    <Typography sx={sxSubtitle}>Attachments</Typography>
+                    <Stack flexDirection="row" gap={1} alignItems="center">
+                      {watch("letter_of_request") !== null ? (
+                        <UpdateField label={"Letter of Request"} value={transactionDataApi ? updateRequest?.letter_of_request?.file_name : watch("letter_of_request")?.name} />
+                      ) : (
+                        <CustomAttachment
+                          control={control}
+                          name="letter_of_request"
+                          label="Letter of Request"
+                          inputRef={LetterOfRequestRef}
+                        />
+                      )}
 
-                  <Stack flexDirection="row" gap={1} alignItems="center">
-                    {watch("other_attachments") !== null ? (
-                      <UpdateField label={"Other Attachments"} value={updateRequest?.other_attachments?.file_name} />
-                    ) : (
-                      <CustomAttachment
-                        control={control}
-                        name="other_attachments"
-                        label="Other Attachments"
-                        inputRef={OthersRef}
-                      />
-                    )}
-                    {watch("other_attachments") !== null && (
-                      <RemoveFile title="Other Attachments" value="other_attachments" />
-                    )}
-                  </Stack>
-                </Box>
-              </Stack>
+                      {watch("letter_of_request") !== null && (
+                        <RemoveFile title="Letter of Request" value="letter_of_request" />
+                      )}
+                    </Stack>
+
+                    <Stack flexDirection="row" gap={1} alignItems="center">
+                      {watch("quotation") !== null ? (
+                        <UpdateField label={"Quotation"} value={updateRequest?.quotation?.file_name} />
+                      ) : (
+                        <CustomAttachment control={control} name="quotation" label="Quotation" inputRef={QuotationRef} />
+                      )}
+                      {watch("quotation") !== null && <RemoveFile title="Quotation" value="quotation" />}
+                    </Stack>
+
+                    <Stack flexDirection="row" gap={1} alignItems="center">
+                      {watch("specification_form") !== null ? (
+                        <UpdateField label={"Specification Form"} value={updateRequest?.specification_form?.file_name} />
+                      ) : (
+                        <CustomAttachment
+                          control={control}
+                          name="specification_form"
+                          label="Specification (Form)"
+                          inputRef={SpecificationRef}
+                          updateData={updateRequest}
+                        />
+                      )}
+                      {watch("specification_form") !== null && (
+                        <RemoveFile title="Specification" value="specification_form" />
+                      )}
+                    </Stack>
+
+                    <Stack flexDirection="row" gap={1} alignItems="center">
+                      {watch("tool_of_trade") !== null ? (
+                        <UpdateField label={"Tool of Trade"} value={updateRequest?.tool_of_trade?.file_name} />
+                      ) : (
+                        <CustomAttachment
+                          control={control}
+                          name="tool_of_trade"
+                          label="Tool of Trade"
+                          inputRef={ToolOfTradeRef}
+                        />
+                      )}
+                      {watch("tool_of_trade") !== null && <RemoveFile title="Tool of Trade" value="tool_of_trade" />}
+                    </Stack>
+
+                    <Stack flexDirection="row" gap={1} alignItems="center">
+                      {watch("other_attachments") !== null ? (
+                        <UpdateField label={"Other Attachments"} value={updateRequest?.other_attachments?.file_name} />
+                      ) : (
+                        <CustomAttachment
+                          control={control}
+                          name="other_attachments"
+                          label="Other Attachments"
+                          inputRef={OthersRef}
+                        />
+                      )}
+                      {watch("other_attachments") !== null && (
+                        <RemoveFile title="Other Attachments" value="other_attachments" />
+                      )}
+                    </Stack>
+                  </Box>
+                </Stack>
+              </Box>
+
+              <Divider sx={{ pb: 1, mb: 1 }} />
+
+              <LoadingButton
+                loading={isLoading}
+                form="requestForm"
+                variant="contained"
+                type="submit"
+                size="small"
+                disabled={watch("type_of_request_id") === null}
+                fullWidth
+                sx={{ gap: 1 }}
+              >
+                {transactionData ? <Update /> : <AddToPhotos />}{" "}
+                <Typography variant="p">{transactionData ? "UPDATE" : "ADD"}</Typography>
+              </LoadingButton>
             </Box>
-
-            <Divider sx={{ pb: 1, mb: 1 }} />
-
-            <LoadingButton
-              loading={isLoading}
-              form="requestForm"
-              variant="contained"
-              type="submit"
-              size="small"
-              disabled={watch("type_of_request_id") === null}
-              fullWidth
-              sx={{ gap: 1 }}
-            >
-              {transactionData ? <Update /> : <AddToPhotos />}{" "}
-              <Typography variant="p">{transactionData ? "UPDATE" : "ADD"}</Typography>
-            </LoadingButton>
-          </Box>
-
+          }
           <Divider orientation="vertical" />
 
           {/* TABLE */}
