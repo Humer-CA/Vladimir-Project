@@ -20,7 +20,7 @@ const RequestTimeline = (props) => {
         'Ready to Pickup',
     ]
 
-    // console.log(transactionData?.history)
+    console.log(transactionData)
 
     const reversedSteps = transactionData?.history.toReversed().map((item) => item);
 
@@ -32,18 +32,20 @@ const RequestTimeline = (props) => {
 
             <Stack flexDirection="row" alignItems="center" justifyContent="center" gap={1}>
                 <ManageHistoryTwoTone color='secondary' fontSize='large' />
-                <Typography fontFamily={"Anton"} color={"secondary.main"} fontSize={24}>PROCESS DETAILS</Typography>
+                <Typography fontFamily={"Anton, Impact"} color={"secondary.main"} fontSize={24}>PROCESS DETAILS </Typography>
             </Stack>
 
             <Box className='timelineSteps__container' alignItems="flex-start">
-                <Stack flexDirection="row" alignItems="center" gap={1} mb={2}>
-                    <TimelineTwoTone color='secondary.main' />
-                    <Typography fontFamily={"Anton"} color={"primary"} fontSize={20} >TIMELINE</Typography>
+                <Typography color="secondary" fontWeight={600} fontSize={20} alignSelf="center" >TRANSACTION : {transactionData?.transaction_number}</Typography>
+
+                <Stack flexDirection="row" alignItems="center" gap={1} mb={2} >
+                    <TimelineTwoTone color='primary' />
+                    <Typography fontFamily={"Anton, Impact"} color={"secondary"} fontSize={20} >TIMELINE</Typography>
                 </Stack>
                 <Stepper activeStep={transactionData?.process_count - 1} alternativeLabel>
                     {steps.map((label) => (
                         <Step key={label}>
-                            <StepLabel sx={{ ".MuiStepIcon-root.Mui-completed": { color: "success.light" } }}>
+                            <StepLabel>
                                 <Typography fontSize={10} marginTop="-10px" fontWeight={600} textTransform="uppercase">
                                     {label}
                                 </Typography>
@@ -56,12 +58,12 @@ const RequestTimeline = (props) => {
             </Box>
 
             <Stack sx={{ mt: -1.5, }} width="100%">
-                <Stack flexDirection="row" alignItems="center" justifyContent="center" gap={1} mb={2}>
-                    <History color='secondary.main' />
-                    <Typography fontFamily={"Anton"} color={"secondary"} fontSize={20} alignSelf="center" >HISTORY</Typography>
+                <Stack flexDirection="row" alignItems="center" justifyContent="center" gap={1} mb={2} mt={1} >
+                    {/* <History color='secondary.main' /> */}
+                    <Typography fontFamily={"Anton, Impact"} color={"secondary"} fontSize={20} >HISTORY</Typography>
                 </Stack>
 
-                {transactionData?.history.length === 0 && <Divider width="80%" sx={{ mb: 2, alignSelf: "center", boxShadow: "1px solid black" }} />}
+                {transactionData?.history.length === 0 && <Divider width="50%" sx={{ mb: 2, alignSelf: "center", boxShadow: "1px solid black" }} />}
 
                 <Stack alignItems={'flex-start'} justifyContent={'flex-start'} maxHeight="250px" overflow="auto" mb={3}>
                     <Stepper activeStep={transactionData?.history.length} orientation='vertical' direction="up" sx={transactionData?.history.length === 0 ? { paddingLeft: 0, margin: "auto" } : { paddingLeft: "120px", width: "100%" }}>
@@ -78,7 +80,7 @@ const RequestTimeline = (props) => {
                                     <Typography
                                         variant="p"
                                         sx={{
-                                            fontFamily: "Anton, Roboto, Helvetica",
+                                            fontFamily: "Anton, Impact, Roboto, Helvetica",
                                             color: "secondary.main",
                                             fontSize: "1.2rem",
                                         }}
@@ -103,8 +105,8 @@ const RequestTimeline = (props) => {
 
                                         <Box >
                                             <StepLabel>
-                                                <Box className="timelineSteps__box" ml={1}>
-                                                    <Divider orientation="vertical" sx={{ backgroundColor: "secondary.light", width: "3px", height: "30px", ml: "5px", borderRadius: "20px" }} />
+                                                <Box className="timelineSteps__box" sx={{ backgroundColor: item?.action === "Declined" || item?.action === "Returned" ? "#ff000017" : (item?.action === "Approved" ? "#00800016" : "#0088880f") }} ml={1}>
+                                                    <Divider orientation="vertical" sx={{ backgroundColor: item?.action === "Declined" || item?.action === "Returned" ? "error.light" : (item?.action === "Approved" ? "success.light" : "secondary.light"), width: "3px", height: "30px", ml: "5px", borderRadius: "20px" }} />
                                                     <Box>
                                                         <Typography fontSize={13} fontWeight={600} textTransform="uppercase">
                                                             {item?.action}
@@ -125,7 +127,6 @@ const RequestTimeline = (props) => {
                     </Stepper>
                 </Stack>
             </Stack >
-
         </Box >
     )
 }
