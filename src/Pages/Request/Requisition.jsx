@@ -159,7 +159,7 @@ const Requisition = () => {
               id: id,
               transaction_number: id,
             }).unwrap();
-
+            console.log(result)
             dispatch(
               openToast({
                 message: result.message,
@@ -202,9 +202,9 @@ const Requisition = () => {
     setTransactionIdData(data)
   };
 
-  // const handleCloseTimelime = () => {
-  //   dispatch(closeDialog);
-  // }
+  const handleCloseTimelime = () => {
+    dispatch(closeDialog);
+  }
 
   const handleAddRequisition = () => {
     navigate(`add-requisition`);
@@ -452,7 +452,7 @@ const Requisition = () => {
           data={transactionIdData}
         />
       </Dialog>
-    </Box>
+    </Box >
   );
 };
 

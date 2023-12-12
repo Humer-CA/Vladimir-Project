@@ -40,6 +40,7 @@ import {
   usePatchApprovalStatusApiMutation,
 } from "../../Redux/Query/Approving/Approval";
 import { openDrawer } from "../../Redux/StateManagement/booleanStateSlice";
+import { useNavigate } from "react-router-dom";
 
 const PendingRequest = () => {
   const [search, setSearch] = useState("");
@@ -50,6 +51,7 @@ const PendingRequest = () => {
   const drawer = useSelector((state) => state.booleanState.drawer);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Table Sorting --------------------------------
 
@@ -250,6 +252,15 @@ const PendingRequest = () => {
     );
   };
 
+  const handleViewRequisition = (data) => {
+    navigate(
+      `/request-monitoring/${data.transaction_number}`,
+      {
+        state: { ...data },
+      },
+    );
+  };
+
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
       {approvalLoading && <MasterlistSkeleton category={true} onAdd={true} />}
@@ -412,7 +423,9 @@ const PendingRequest = () => {
                               </TableCell>
 
                               <TableCell className="tbl-cell-category text-center">
-                                <IconButton>
+                                <IconButton
+                                  onClick={() => handleViewRequisition(data)
+                                  }>
                                   <Visibility color="secondary" />
                                 </IconButton>
                               </TableCell>

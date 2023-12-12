@@ -48,7 +48,8 @@ const ActionMenu = (props) => {
     showVoid,
     showApprover,
     editRequest,
-    onVoidReferenceHandler
+    onVoidReferenceHandler,
+    setShowEdit
   } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -77,7 +78,8 @@ const ActionMenu = (props) => {
   };
 
   const handleDelete = () => {
-    onDeleteHandler(data?.id);
+    // console.log(data)
+    onDeleteHandler(data?.id || data?.subunit?.id)
     handleClose();
   };
 
@@ -109,8 +111,7 @@ const ActionMenu = (props) => {
   const handleEdit = () => {
     // console.log(data);
     onUpdateHandler(data);
-    dispatch(openDrawer());
-    dispatch(openDialog());
+    dispatch(openDrawer() || openDialog())
     handleClose();
   };
 
@@ -118,6 +119,7 @@ const ActionMenu = (props) => {
     // console.log(data);
     onUpdateHandler(data);
     handleClose();
+    setShowEdit(true);
   };
 
   const handleEditNav = () => {

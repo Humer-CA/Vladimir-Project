@@ -695,6 +695,7 @@ const AddRole = (props) => {
     // COA
     "company",
     "department",
+    "subunit",
     "location",
     "account-title",
 
@@ -746,7 +747,7 @@ const AddRole = (props) => {
 
   const request = ["requisition", "transfer", "pull-out", "disposal"];
 
-  const approving = ["pending-request", " approved-request"];
+  const approving = ["pending-request", "approved-request"];
   // console.log(watch("access_permission"));
 
   return (
@@ -875,6 +876,7 @@ const AddRole = (props) => {
                                     "masterlist",
                                     "company",
                                     "department",
+                                    "subunit",
                                     "location",
                                     "account-title",
                                     "division",
@@ -889,8 +891,7 @@ const AddRole = (props) => {
                                   "access_permission"
                                 ).filter(
                                   (perm) =>
-                                    ![
-                                      ...masterlistValue,
+                                    ![...masterlistValue,
                                       "masterlist",
                                     ].includes(perm)
                                 );

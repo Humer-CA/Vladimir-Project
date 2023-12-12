@@ -1,7 +1,7 @@
 import React from 'react'
 import "../../Style/Request/timeline.scss"
 import { Box, Divider, IconButton, Stack, Step, StepIcon, StepLabel, Stepper, TableCell, TableRow, Typography } from '@mui/material'
-import { Close, History, ManageHistoryTwoTone, Timeline, TimelineTwoTone } from '@mui/icons-material';
+import { CheckBox, CheckCircleOutlineTwoTone, Close, Error, FactCheck, History, ManageHistoryTwoTone, Timeline, TimelineTwoTone } from '@mui/icons-material';
 import { closeDialog } from '../../Redux/StateManagement/booleanStateSlice';
 import { useDispatch } from 'react-redux';
 import NoDataFile from "../../Img/PNG/no-data.png";
@@ -20,12 +20,10 @@ const RequestTimeline = (props) => {
         'Ready to Pickup',
     ]
 
-    console.log(transactionData)
-
-    const reversedSteps = transactionData?.history.toReversed().map((item) => item);
-
     return (
         <Box className='timelineSteps'>
+
+
             <IconButton onClick={() => dispatch(closeDialog())} sx={{ position: "absolute", top: 10, right: 10 }}>
                 <Close />
             </IconButton>
@@ -42,10 +40,11 @@ const RequestTimeline = (props) => {
                     <TimelineTwoTone color='primary' />
                     <Typography fontFamily={"Anton, Impact"} color={"secondary"} fontSize={20} >TIMELINE</Typography>
                 </Stack>
-                <Stepper activeStep={transactionData?.process_count - 1} alternativeLabel>
+
+                <Stepper activeStep={transactionData ? transactionData?.process_count - 1 : 0} alternativeLabel last={transactionData?.process_count === 6 ? "true" : "false"}>
                     {steps.map((label) => (
                         <Step key={label}>
-                            <StepLabel>
+                            <StepLabel sx={{ ".MuiStepIcon-root.Mui-completed": { color: "success.main" } }}>
                                 <Typography fontSize={10} marginTop="-10px" fontWeight={600} textTransform="uppercase">
                                     {label}
                                 </Typography>
@@ -66,7 +65,7 @@ const RequestTimeline = (props) => {
                 {transactionData?.history.length === 0 && <Divider width="50%" sx={{ mb: 2, alignSelf: "center", boxShadow: "1px solid black" }} />}
 
                 <Stack alignItems={'flex-start'} justifyContent={'flex-start'} maxHeight="250px" overflow="auto" mb={3}>
-                    <Stepper activeStep={transactionData?.history.length} orientation='vertical' direction="up" sx={transactionData?.history.length === 0 ? { paddingLeft: 0, margin: "auto" } : { paddingLeft: "120px", width: "100%" }}>
+                    <Stepper activeStep={transactionData?.history.length === 0 ? 0 : transactionData?.history.length} last={undefined} orientation='vertical' direction="up" sx={transactionData?.history.length === 0 ? { paddingLeft: 0, margin: "auto" } : { paddingLeft: "120px", width: "100%" }}>
                         {transactionData?.history.length === 0 ?
                             (
                                 <Stack
@@ -104,7 +103,11 @@ const RequestTimeline = (props) => {
                                         </Stack>
 
                                         <Box >
-                                            <StepLabel>
+                                            <StepLabel icon={item?.action === "Declined" || item?.action === "Returned"
+                                                ? <Error sx={{ color: "error.light" }} />
+                                                : (item?.action === "Approved"
+                                                    ? <FactCheck sx={{ color: "success.main" }} />
+                                                    : <CheckCircleOutlineTwoTone sx={{ color: "secondary.main" }} />)}>
                                                 <Box className="timelineSteps__box" sx={{ backgroundColor: item?.action === "Declined" || item?.action === "Returned" ? "#ff000017" : (item?.action === "Approved" ? "#00800016" : "#0088880f") }} ml={1}>
                                                     <Divider orientation="vertical" sx={{ backgroundColor: item?.action === "Declined" || item?.action === "Returned" ? "error.light" : (item?.action === "Approved" ? "success.light" : "secondary.light"), width: "3px", height: "30px", ml: "5px", borderRadius: "20px" }} />
                                                     <Box>

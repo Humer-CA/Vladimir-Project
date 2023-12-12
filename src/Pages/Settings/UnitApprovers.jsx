@@ -200,7 +200,7 @@ const UnitApprovers = () => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            let result = await deleteUnitApproversApi(id).unwrap();
+            let result = await deleteUnitApproversApi({ id: id, subunit_id: id }).unwrap();
             console.log(result);
             setPage(1);
             dispatch(
@@ -275,7 +275,6 @@ const UnitApprovers = () => {
     setPage(1);
   };
 
-  console.log(unitApproversData?.data);
 
   return (
     <>
@@ -289,7 +288,7 @@ const UnitApprovers = () => {
               onStatusChange={setStatus}
               onSearchChange={setSearch}
               onSetPage={setPage}
-              onAdd={() => {}}
+              onAdd={() => { }}
               hideArchive={true}
             />
 

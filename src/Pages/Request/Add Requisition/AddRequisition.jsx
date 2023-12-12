@@ -143,6 +143,7 @@ const AddRequisition = (props) => {
     other_attachments: null,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [showEdit, setShowEdit] = useState(false)
 
   const { state: transactionData } = useLocation();
 
@@ -303,7 +304,7 @@ const AddRequisition = (props) => {
     },
   });
 
-  console.log(postError?.data)
+
   useEffect(() => {
     const errorData = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
 
@@ -351,8 +352,7 @@ const AddRequisition = (props) => {
         setValue("location_id", transaction?.location);
         setValue("account_title_id", transaction?.account_title);
       })
-
-
+    setShowEdit(true)
   }, [transactionDataApi])
 
 
@@ -427,7 +427,7 @@ const AddRequisition = (props) => {
       navigate(- 1);
       deleteAllRequest();
 
-    } else {
+    } else if ((transactionDataApi[0]?.can_resubmit === 0)) {
       resubmitRequest({
         transaction_number: transactionData?.transaction_number,
         ...transactionDataApi,
@@ -442,7 +442,7 @@ const AddRequisition = (props) => {
 
     postRequisition(addRequestAllApi);
     postRequestSms(smsData)
-
+    deleteAllRequest();
   };
 
   const handleCloseDrawer = () => {
@@ -566,20 +566,6 @@ const AddRequisition = (props) => {
       })
       .then(() => {
         dispatch(requestContainerApi.util.invalidateTags(["RequestContainer"]));
-      })
-      .catch((err) => {
-        console.log(err);
-        setIsLoading(false);
-        dispatch(
-          openToast({
-            message: err?.data?.message || err?.data?.message,
-            duration: 5000,
-            variant: "error",
-          })
-        );
-      })
-      .finally(() => {
-        setIsLoading(false);
         reset({
           department_id: formData?.department_id,
           subunit_id: formData?.subunit_id,
@@ -591,6 +577,32 @@ const AddRequisition = (props) => {
           tool_of_trade: null,
           other_attachments: null,
         });
+        setShowEdit(false)
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+        dispatch(
+          openToast({
+            message: err?.response?.data?.errors?.detail || err?.response?.data?.errors[0]?.detail,
+            duration: 5000,
+            variant: "error",
+          })
+        );
+      })
+      .finally(() => {
+        setIsLoading(false);
+        // reset({
+        //   department_id: formData?.department_id,
+        //   subunit_id: formData?.subunit_id,
+        //   location_id: formData?.location_id,
+        //   account_title_id: formData?.account_title_id,
+        //   letter_of_request: null,
+        //   quotation: null,
+        //   specification_form: null,
+        //   tool_of_trade: null,
+        //   other_attachments: null,
+        // });
       });
 
     // postRequest(payload);
@@ -876,6 +888,8 @@ const AddRequisition = (props) => {
     });
   };
 
+  console.log(transactionData)
+
   return (
     <>
       <Box className="mcontainer" sx={{ height: "calc(100vh - 380px)" }}>
@@ -893,15 +907,16 @@ const AddRequisition = (props) => {
           <Typography color="secondary.main">Back</Typography>
         </Button>
 
-        <Box className="request mcontainer__wrapper" p={2}>
+        <Box className="request mcontainer__wrapper" p={2} >
           {/* FORM */}
-          <Box>
+          <Box
+          // sx={{ display: showEdit === false ? "block" : "none" }}
+          >
             <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
               ASSET
-              {/* {data.status ? "Edit Requisition" : "Add Requisition"} */}
             </Typography>
 
-            <Divider sx={{}} />
+            <Divider />
 
             <Box id="requestForm" className="request__form" component="form" onSubmit={handleSubmit(addRequestHandler)}>
               <Stack gap={2}>
@@ -909,7 +924,6 @@ const AddRequisition = (props) => {
                   <Typography sx={sxSubtitle}>Request Information</Typography>
 
                   <CustomAutoComplete
-                    disablePortal
                     control={control}
                     name="type_of_request_id"
                     options={typeOfRequestData}
@@ -929,7 +943,6 @@ const AddRequisition = (props) => {
                   />
 
                   <CustomAutoComplete
-                    disablePortal
                     control={control}
                     name="attachment_type"
                     options={attachmentType}
@@ -1031,6 +1044,7 @@ const AddRequisition = (props) => {
                     name="location_id"
                     control={control}
                     // disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
+                    disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
                     options={locationData?.filter((item) => {
                       return item.departments.some((department) => {
                         return department?.sync_id === watch("department_id")?.sync_id;
@@ -1055,6 +1069,7 @@ const AddRequisition = (props) => {
                     name="account_title_id"
                     control={control}
                     // disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
+                    disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
                     options={accountTitleData}
                     loading={isAccountTitleLoading}
                     size="small"
@@ -1202,7 +1217,7 @@ const AddRequisition = (props) => {
                   <Typography sx={sxSubtitle}>Attachments</Typography>
                   <Stack flexDirection="row" gap={1} alignItems="center">
                     {watch("letter_of_request") !== null ? (
-                      <UpdateField label={"Letter of Request"} value={transactionDataApi ? updateRequest?.letter_of_request?.file_name : watch("letter_of_request")?.name} />
+                      <UpdateField label={"Letter of Request"} value={transactionDataApi.length ? watch("letter_of_request")?.name || updateRequest?.letter_of_request?.file_name : watch("letter_of_request")?.name} />
                     ) : (
                       <CustomAttachment
                         control={control}
@@ -1219,7 +1234,7 @@ const AddRequisition = (props) => {
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
                     {watch("quotation") !== null ? (
-                      <UpdateField label={"Quotation"} value={updateRequest?.quotation?.file_name} />
+                      <UpdateField label={"Quotation"} value={watch("quotation")?.name || updateRequest?.quotation?.file_name} />
                     ) : (
                       <CustomAttachment control={control} name="quotation" label="Quotation" inputRef={QuotationRef} />
                     )}
@@ -1228,7 +1243,7 @@ const AddRequisition = (props) => {
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
                     {watch("specification_form") !== null ? (
-                      <UpdateField label={"Specification Form"} value={updateRequest?.specification_form?.file_name} />
+                      <UpdateField label={"Specification Form"} value={watch("specification_form")?.name || updateRequest?.specification_form?.file_name} />
                     ) : (
                       <CustomAttachment
                         control={control}
@@ -1245,7 +1260,7 @@ const AddRequisition = (props) => {
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
                     {watch("tool_of_trade") !== null ? (
-                      <UpdateField label={"Tool of Trade"} value={updateRequest?.tool_of_trade?.file_name} />
+                      <UpdateField label={"Tool of Trade"} value={watch("tool_of_trade")?.name || updateRequest?.tool_of_trade?.file_name} />
                     ) : (
                       <CustomAttachment
                         control={control}
@@ -1259,7 +1274,7 @@ const AddRequisition = (props) => {
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
                     {watch("other_attachments") !== null ? (
-                      <UpdateField label={"Other Attachments"} value={updateRequest?.other_attachments?.file_name} />
+                      <UpdateField label={"Other Attachments"} value={watch("other_attachments")?.name || updateRequest?.other_attachments?.file_name} />
                     ) : (
                       <CustomAttachment
                         control={control}
@@ -1291,8 +1306,8 @@ const AddRequisition = (props) => {
               {transactionData ? <Update /> : <AddToPhotos />}{" "}
               <Typography variant="p">{transactionData ? "UPDATE" : "ADD"}</Typography>
             </LoadingButton>
+            <Divider orientation="vertical" />
           </Box>
-          <Divider orientation="vertical" />
 
           {/* TABLE */}
           <Box className="request__table">
@@ -1453,6 +1468,7 @@ const AddRequisition = (props) => {
                                   onVoidReferenceHandler={transactionData ? onVoidReferenceHandler : false}
                                   onUpdateHandler={onUpdateHandler}
                                   onUpdateResetHandler={onUpdateResetHandler}
+                                  setShowEdit={setShowEdit}
                                 />
                               </TableCell>
                             </TableRow>

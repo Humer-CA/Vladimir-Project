@@ -248,8 +248,8 @@ const AddUnitApprovers = (props) => {
         {data.action === "view"
           ? "View Approvers"
           : data.action === "update"
-          ? "Update Approvers"
-          : "Assign Approvers"}
+            ? "Update Approvers"
+            : "Assign Approvers"}
       </Typography>
 
       <Box
@@ -298,6 +298,7 @@ const AddUnitApprovers = (props) => {
           options={departmentData}
           loading={isDepartmentLoading}
           size="small"
+          disabled={data.status}
           getOptionLabel={(option) => option.department_name}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           renderInput={(params) => (
@@ -321,6 +322,7 @@ const AddUnitApprovers = (props) => {
           )}
           loading={isSubUnitLoading}
           size="small"
+          disabled={data.status}
           getOptionLabel={(option) => option.subunit_name}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           renderInput={(params) => (
@@ -357,7 +359,7 @@ const AddUnitApprovers = (props) => {
               getOptionDisabled={(option) => {
                 return (
                   option?.approver?.employee_id ===
-                    watch("subunit_id")?.employee_id ||
+                  watch("subunit_id")?.employee_id ||
                   watch("approver_id").some((data) => data?.id === option.id)
                 );
               }}

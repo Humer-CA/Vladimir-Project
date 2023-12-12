@@ -203,12 +203,11 @@ const RequestMonitoring = () => {
   };
 
 
-  const handleEditRequisition = ({ urlPath, ...data }) => {
+  const handleEditRequisition = (data) => {
     navigate(
       `/request-monitoring/${data.transaction_number}`,
       {
         state: { ...data },
-        urlPath: urlPath
       },
     );
   };
@@ -354,7 +353,7 @@ const RequestMonitoring = () => {
                                   >
                                     <IconButton
                                       onClick={() =>
-                                        handleEditRequisition({ urlPath, ...data })
+                                        handleEditRequisition(data)
                                       }
                                     >
                                       <Visibility />
