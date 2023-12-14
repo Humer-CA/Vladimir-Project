@@ -38,6 +38,7 @@ import {
   useGetApprovalApiQuery,
   usePatchApprovalStatusApiMutation,
 } from "../../Redux/Query/Approving/Approval";
+import { useNavigate } from "react-router-dom";
 
 const PendingRequest = () => {
   const [search, setSearch] = useState("");
@@ -46,6 +47,7 @@ const PendingRequest = () => {
   const [page, setPage] = useState(1);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   // Table Sorting --------------------------------
 
@@ -111,7 +113,15 @@ const PendingRequest = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  console.log(approvalData);
+  // console.log(approvalData);
+  const handleViewRequisition = (data) => {
+    navigate(
+      `/request-monitoring/${data.transaction_number}`,
+      {
+        state: { ...data },
+      },
+    );
+  };
 
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
@@ -287,8 +297,9 @@ const PendingRequest = () => {
                                 {data.number_of_item}
                               </TableCell>
 
-                              <TableCell className="tbl-cell-category">
-                                <IconButton>
+                              <TableCell className="tbl-cell-category" align="center">
+                                <IconButton onClick={() => handleViewRequisition(data)
+                                }>
                                   <Visibility color="secondary" />
                                 </IconButton>
                               </TableCell>
@@ -343,12 +354,6 @@ const PendingRequest = () => {
             />
           </Box>
 
-          <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-            {/* <AddMajorCategory
-              data={updateMajorCategory}
-              onUpdateResetHandler={onUpdateResetHandler}
-            /> */}
-          </Dialog>
         </Box>
       )}
     </Stack>

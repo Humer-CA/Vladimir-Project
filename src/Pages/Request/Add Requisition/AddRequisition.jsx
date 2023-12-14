@@ -427,12 +427,18 @@ const AddRequisition = (props) => {
       navigate(- 1);
       deleteAllRequest();
 
-    } else if ((transactionDataApi[0]?.can_resubmit === 0)) {
+    } else if ((transactionDataApi[0]?.can_resubmit === 1)) {
       resubmitRequest({
         transaction_number: transactionData?.transaction_number,
         ...transactionDataApi,
       });
       navigate(- 1);
+      dispatch(
+        openToast({
+          message: "Successfully Resubmitted",
+          duration: 5000,
+        })
+      );
       return;
     }
 
@@ -888,7 +894,7 @@ const AddRequisition = (props) => {
     });
   };
 
-  console.log(transactionData)
+  console.log(transactionDataApi)
 
   return (
     <>
@@ -1463,7 +1469,7 @@ const AddRequisition = (props) => {
                                   status={data?.status}
                                   data={data}
                                   showDelete={transactionData ? false : true}
-                                  editRequest={transactionDataApi[0]?.can_resubmit === 0 ? true : false}
+                                  editRequest={transactionDataApi[0]?.can_edit === 1 || (transactionData?.status === "Return") ? true : false}
                                   onDeleteHandler={onDeleteHandler}
                                   onVoidReferenceHandler={transactionData ? onVoidReferenceHandler : false}
                                   onUpdateHandler={onUpdateHandler}
