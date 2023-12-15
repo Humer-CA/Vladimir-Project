@@ -61,6 +61,7 @@ import Request from "./Pages/Request";
 import Approving from "./Pages/Approving/Approving";
 import RequestMonitoring from "./Pages/Request/RequestMonitoring";
 import ViewRequestMonitoring from "./Pages/Request/ViewRequestMonitoring";
+import PurchaseRequest from "./Pages/Request/PurchaseRequest";
 
 const router = createBrowserRouter([
   {
@@ -242,6 +243,14 @@ const router = createBrowserRouter([
                 path: "evaluation",
                 // element: <Category />,
               },
+              {
+                path: "disposal",
+                // element: <Category />,
+              },
+              {
+                path: "purchase-request",
+                element: <PurchaseRequest />,
+              },
             ],
           },
 
@@ -283,11 +292,6 @@ const router = createBrowserRouter([
           {
             path: "on-hand-in-process",
             // element: <OnHandInProcess />,
-          },
-
-          {
-            path: "disposal",
-            // element: <Disposal />,
           },
 
           {

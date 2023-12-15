@@ -595,15 +595,7 @@ const AddRole = (props) => {
               />
             }
           />
-        </FormGroup>
 
-        <FormGroup
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            ml: 3,
-          }}
-        >
           <FormControlLabel
             disabled={data.action === "view"}
             label="Pull Out"
@@ -615,6 +607,16 @@ const AddRole = (props) => {
               />
             }
           />
+        </FormGroup>
+
+        <FormGroup
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            ml: 3,
+          }}
+        >
+
 
           <FormControlLabel
             disabled={data.action === "view"}
@@ -628,6 +630,17 @@ const AddRole = (props) => {
             }
           />
 
+          <FormControlLabel
+            disabled={data.action === "view"}
+            label="Purchase Request"
+            value="purchase-request"
+            control={
+              <Checkbox
+                {...register("access_permission")}
+                checked={watch("access_permission")?.includes("pull-outpurchase-request")}
+              />
+            }
+          />
         </FormGroup>
       </Stack>
     );
@@ -720,6 +733,7 @@ const AddRole = (props) => {
     "transfer",
     "pull-out",
     "disposal",
+    "purchase-request",
 
     // Approving
     "pending-request",
@@ -745,7 +759,7 @@ const AddRole = (props) => {
 
   const settings = ["approver-settings", "form-settings"];
 
-  const request = ["requisition", "transfer", "pull-out", "disposal"];
+  const request = ["requisition", "transfer", "pull-out", "disposal", "purchase-request"];
 
   const approving = ["pending-request", "approved-request"];
   // console.log(watch("access_permission"));
@@ -1092,6 +1106,7 @@ const AddRole = (props) => {
                                     "transfer",
                                     "pull-out",
                                     "disposal",
+                                    "purchase-request"
                                   ]),
                                 ]);
                               } else {

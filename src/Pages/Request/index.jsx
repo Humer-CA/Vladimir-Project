@@ -11,7 +11,9 @@ import {
   ManageAccountsSharp,
   RemoveFromQueue,
   RequestQuote,
+  RuleFolder,
   SettingsApplications,
+  ShoppingBag,
   TransferWithinAStation,
 } from "@mui/icons-material";
 import Cards from "../../Components/Reusable/Cards";
@@ -36,6 +38,20 @@ const RequestList = [
     label: "Pull-Out",
     description: "Requesting for Asset Pull-Out",
     path: "/request/pull-out",
+  },
+
+  {
+    icon: <RuleFolder />,
+    label: "Evaluation",
+    description: "Requesting for Asset Evaluation",
+    path: "/request/evaluation",
+  },
+
+  {
+    icon: <ShoppingBag />,
+    label: "Purchase Request",
+    description: "Matching of Purchase Request",
+    path: "/request/purchase-request",
   },
 ];
 

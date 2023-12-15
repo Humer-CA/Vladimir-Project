@@ -67,6 +67,7 @@ import {
   Segment,
   DomainVerification,
   PostAdd,
+  ShoppingBasket,
 } from "@mui/icons-material";
 
 const Sidebar = () => {
@@ -334,8 +335,15 @@ const Sidebar = () => {
         {
           label: "Disposal",
           icon: PlaylistRemoveRounded,
-          path: "/disposal",
+          path: "/request/disposal",
           permission: "disposal",
+          setter: closeCollapse,
+        },
+        {
+          label: "Purchase Request",
+          icon: ShoppingBasket,
+          path: "/request/purchase-request",
+          permission: "purchase-request",
           setter: closeCollapse,
         },
       ],
