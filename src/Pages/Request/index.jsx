@@ -49,6 +49,13 @@ const RequestList = [
 
   {
     icon: <ShoppingBag />,
+    label: "Disposal",
+    description: "List of For Disposal Items",
+    path: "/request/disposal",
+  },
+
+  {
+    icon: <ShoppingBag />,
     label: "Purchase Request",
     description: "Matching of Purchase Request",
     path: "/request/purchase-request",

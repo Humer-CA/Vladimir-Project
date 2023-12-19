@@ -27,7 +27,13 @@ export const requisitionApi = createApi({
   endpoints: (builder) => ({
     getRequisitionApi: builder.query({
       query: (params) =>
-        `asset-request?=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
+        `asset-request?&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
+      providesTags: ["Requisition"],
+    }),
+
+    getRequisitionMonitoringApi: builder.query({
+      query: (params) =>
+        `asset-request?&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}&for_monitoring=1`,
       providesTags: ["Requisition"],
     }),
 
@@ -131,6 +137,7 @@ export const requisitionApi = createApi({
 
 export const {
   useGetRequisitionApiQuery,
+  useGetRequisitionMonitoringApiQuery,
   useGetRequisitionAllApiQuery,
   useGetRequisitionIdApiQuery,
   useGetByTransactionApiQuery,

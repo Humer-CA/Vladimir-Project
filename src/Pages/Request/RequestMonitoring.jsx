@@ -18,6 +18,7 @@ import {
 import {
   useGetByTransactionApiQuery,
   useGetRequisitionApiQuery,
+  useGetRequisitionMonitoringApiQuery,
   usePatchRequisitionStatusApiMutation,
   useVoidRequisitionApiMutation,
 } from "../../Redux/Query/Request/Requisition";
@@ -113,7 +114,7 @@ const RequestMonitoring = () => {
     isError: requisitionError,
     error: errorData,
     refetch,
-  } = useGetRequisitionApiQuery(
+  } = useGetRequisitionMonitoringApiQuery(
     {
       page: page,
       per_page: perPage,

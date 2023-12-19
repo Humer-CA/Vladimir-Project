@@ -28,14 +28,12 @@ const RequestTimeline = (props) => {
         return suffixes[number] || suffixes[0];
     };
 
-    const approvers = generateSteps(transactionData?.approver_count, 'Approver');
-    const stepsAfterApprovers = ['Inputing of PR No.', 'Matching of PR No. to Receiving', 'Asset Tagging', 'Ready to Pickup'];
+    // const approvers = generateSteps(transactionData?.approver_count, 'Approver');
+    // const stepsAfterApprovers = ['Inputing of PR No.', 'Matching of PR No. to Receiving', 'Asset Tagging', 'Ready to Pickup'];
 
 
     return (
         <Box className='timelineSteps'>
-
-
             <IconButton onClick={() => dispatch(closeDialog())} sx={{ position: "absolute", top: 10, right: 10 }}>
                 <Close />
             </IconButton>
@@ -45,18 +43,19 @@ const RequestTimeline = (props) => {
                 <Typography fontFamily={"Anton, Impact"} color={"secondary.main"} fontSize={24}>PROCESS DETAILS </Typography>
             </Stack>
 
-            <Box className='timelineSteps__container' alignItems="flex-start">
-                <Typography color="secondary" fontWeight={600} fontSize={20} alignSelf="center" >TRANSACTION : {transactionData?.transaction_number}</Typography>
+            <Typography color="secondary" fontWeight={600} fontSize={20} alignSelf="center" >TRANSACTION : {transactionData?.transaction_number}</Typography>
 
+            <Box className='timelineSteps__container' alignItems="flex-start">
                 <Stack flexDirection="row" alignItems="center" gap={1} mb={2} >
                     <TimelineTwoTone color='primary' />
                     <Typography fontFamily={"Anton, Impact"} color={"secondary"} fontSize={20} >TIMELINE</Typography>
                 </Stack>
 
                 <Stepper key={1} activeStep={transactionData ? transactionData?.process_count - 1 : 0} alternativeLabel>
-                    {[...approvers, ...stepsAfterApprovers].map((label) => (
+                    {(transactionData?.status === "Returned" ? ["Returned", ...transactionData?.steps] : transactionData?.steps).map((label) => (
                         <Step key={label} last>
-                            <StepLabel sx={{ ".MuiStepIcon-root.Mui-completed": { color: "success.main" } }}>
+                            <StepLabel color={transactionData?.action === "Returned" ? "error.main" : null}
+                                sx={{ ".MuiStepIcon-root.Mui-completed": { color: "success.main" } }}>
                                 <Typography fontSize={10} marginTop="-10px" fontWeight={600} textTransform="uppercase">
                                     {label}
                                 </Typography>
@@ -141,8 +140,8 @@ const RequestTimeline = (props) => {
                                                         <Typography fontSize={12} color="text.light">
                                                             {`(${item?.causer?.employee_id}) - ${item?.causer?.firstname}  ${item?.causer?.lastname}`}
                                                         </Typography>
-                                                        <Typography fontSize={13} fontWeight={600} textTransform="uppercase">
-                                                            {item?.remarks}
+                                                        <Typography fontSize={12} >
+                                                            {item?.remarks ? `Remarks: ${item?.remarks}` : null}
                                                         </Typography>
                                                     </Box>
                                                 </Box>

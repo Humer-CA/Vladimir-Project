@@ -1131,7 +1131,7 @@ const AddRole = (props) => {
                   </FormControl>
                 </Box>
               )}
-
+              {/* 
               {watch("access_permission").includes("approving") && (
                 <Box>
                   <Divider sx={{ mx: "30px" }} />
@@ -1198,7 +1198,7 @@ const AddRole = (props) => {
                     <Approving />
                   </FormControl>
                 </Box>
-              )}
+              )} */}
             </FormControl>
           </Stack>
         </Box>

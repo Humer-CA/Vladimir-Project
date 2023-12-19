@@ -351,6 +351,7 @@ const AddRequisition = (props) => {
         setValue("subunit_id", transaction?.subunit);
         setValue("location_id", transaction?.location);
         setValue("account_title_id", transaction?.account_title);
+        setValue("acquisition_details", transaction?.acquisition_details);
       })
     setShowEdit(true)
   }, [transactionDataApi])
@@ -1135,6 +1136,19 @@ const AddRequisition = (props) => {
                       )}
                     />
                   )}
+                  <CustomTextField
+                    control={control}
+                    name="acquisition_details"
+                    label="Acquisition Details"
+                    type="text"
+                    color="secondary"
+                    size="small"
+                    disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
+                    error={!!errors?.acquisition_details}
+                    helperText={errors?.acquisition_details?.message}
+                    fullWidth
+                    multiline
+                  />
                 </Box>
 
                 <Divider />
@@ -1207,8 +1221,8 @@ const AddRequisition = (props) => {
                   />
                   <CustomTextField
                     control={control}
-                    name="remarks"
-                    label="Remarks (Optional)"
+                    name="additional_info"
+                    label="Additional Info. (Optional)"
                     type="text"
                     color="secondary"
                     size="small"
@@ -1335,7 +1349,7 @@ const AddRequisition = (props) => {
                       },
                     }}
                   >
-                    <TableCell className="tbl-cell">Index</TableCell>
+                    <TableCell className="tbl-cell">{transactionData ? "Ref No." : "Index"}</TableCell>
                     <TableCell className="tbl-cell">Type of Request</TableCell>
                     <TableCell className="tbl-cell">Attachment Type</TableCell>
                     <TableCell className="tbl-cell">Chart of Accounts</TableCell>
@@ -1365,7 +1379,7 @@ const AddRequisition = (props) => {
                                 },
                               }}
                             >
-                              <TableCell className="tbl-cell tr-cen-pad45 text-weight">{index + 1}</TableCell>
+                              <TableCell className="tbl-cell tr-cen-pad45 text-weight">{transactionData ? data?.reference_number : index + 1}</TableCell>
                               <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
                               <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
                               <TableCell className="tbl-cell">
@@ -1373,16 +1387,13 @@ const AddRequisition = (props) => {
                                   {`(${data.company?.company_code}) - ${data.company?.company_name}`}
                                 </Typography>
                                 <Typography fontSize={10} color="gray">
-                                  {`(${data.department?.department_code}) -
-                            ${data.department?.department_name}`}
+                                  {`(${data.department?.department_code}) - ${data.department?.department_name}`}
                                 </Typography>
                                 <Typography fontSize={10} color="gray">
-                                  {`(${data.location?.location_code}) -
-                            ${data.location?.location_name}`}
+                                  {`(${data.location?.location_code}) - ${data.location?.location_name}`}
                                 </Typography>
                                 <Typography fontSize={10} color="gray">
-                                  {`(${data.account_title?.account_title_code}) -
-                            ${data.account_title?.account_title_name}`}
+                                  {`(${data.account_title?.account_title_code}) - ${data.account_title?.account_title_name}`}
                                 </Typography>
                               </TableCell>
 

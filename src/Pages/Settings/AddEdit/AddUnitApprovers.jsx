@@ -311,6 +311,10 @@ const AddUnitApprovers = (props) => {
             />
           )}
           fullWidth
+          onChange={(_, value) => {
+            setValue("subunit_id", null)
+            return value;
+          }}
         />
 
         <CustomAutoComplete

@@ -282,25 +282,37 @@ const Requisition = () => {
 
                       <TableCell className="tbl-cell">
                         <TableSortLabel
-                        // active={orderBy === `type_of_request_name`}
-                        // direction={
-                        //   orderBy === `type_of_request_name` ? order : `asc`
-                        // }
-                        // onClick={() => onSort(`type_of_request_name`)}
+                          active={orderBy === `transaction_number`}
+                          direction={
+                            orderBy === `transaction_number` ? order : `asc`
+                          }
+                          onClick={() => onSort(`transaction_number`)}
                         >
                           Transaction No.
                         </TableSortLabel>
                       </TableCell>
 
+                      <TableCell className="tbl-cell">
+                        <TableSortLabel
+                          active={orderBy === `acquisition_details`}
+                          direction={
+                            orderBy === `acquisition_details` ? order : `asc`
+                          }
+                          onClick={() => onSort(`acquisition_details`)}
+                        >
+                          Acquisition Details
+                        </TableSortLabel>
+                      </TableCell>
+
                       <TableCell className="tbl-cell text-center">
                         <TableSortLabel
-                        // active={orderBy === `type_of_request_name`}
-                        // direction={
-                        //   orderBy === `type_of_request_name` ? order : `asc`
-                        // }
-                        // onClick={() => onSort(`type_of_request_name`)}
+                          active={orderBy === `item_count`}
+                          direction={
+                            orderBy === `item_count` ? order : `asc`
+                          }
+                          onClick={() => onSort(`item_count`)}
                         >
-                          Quantity of PO
+                          Quantity of PR
                         </TableSortLabel>
                       </TableCell>
 
@@ -309,7 +321,15 @@ const Requisition = () => {
                       </TableCell>
 
                       <TableCell className="tbl-cell text-center">
-                        View Status
+                        <TableSortLabel
+                          active={orderBy === `status`}
+                          direction={
+                            orderBy === `status` ? order : `asc`
+                          }
+                          onClick={() => onSort(`status`)}
+                        >
+                          View Status
+                        </TableSortLabel>
                       </TableCell>
 
                       <TableCell className="tbl-cell text-center">
@@ -346,8 +366,11 @@ const Requisition = () => {
                                 <TableCell className="tbl-cell tr-cen-pad45">
                                   {data.id}
                                 </TableCell>
-                                <TableCell className="tbl-cell text-weight">
+                                <TableCell className="tbl-cell">
                                   {data.transaction_number}
+                                </TableCell>
+                                <TableCell className="tbl-cell text-weight">
+                                  {data.acquisition_details}
                                 </TableCell>
                                 <TableCell className="tbl-cell text-weight tr-cen-pad45">
                                   {data.item_count}
