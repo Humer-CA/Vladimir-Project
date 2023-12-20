@@ -256,9 +256,9 @@ const PendingRequest = () => {
     navigate(
       `/approving/${data.transaction_number}`,
       {
-        state: { ...data },
+        state: { ...data, }
       },
-    );
+    )
   };
 
   return (

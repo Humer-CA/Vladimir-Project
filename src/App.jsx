@@ -60,7 +60,7 @@ import AddRequisition from "./Pages/Request/Add Requisition/AddRequisition";
 import Request from "./Pages/Request";
 import Approving from "./Pages/Approving/Approving";
 import RequestMonitoring from "./Pages/Request/RequestMonitoring";
-import ViewRequestMonitoring from "./Pages/Request/ViewRequestMonitoring";
+import ViewRequest from "./Pages/Request/ViewRequest";
 import PurchaseRequest from "./Pages/Request/PurchaseRequest";
 
 const router = createBrowserRouter([
@@ -271,7 +271,7 @@ const router = createBrowserRouter([
 
           {
             path: "approving/:transaction_number",
-            element: <ViewRequestMonitoring />,
+            element: <ViewRequest />,
           },
           {
             path: "request-monitoring",
@@ -280,7 +280,7 @@ const router = createBrowserRouter([
 
           {
             path: "request-monitoring/:transaction_number",
-            element: <ViewRequestMonitoring />,
+            element: <ViewRequest />,
           },
 
           {

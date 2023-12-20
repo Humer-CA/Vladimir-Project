@@ -913,7 +913,8 @@ const AddRequisition = (props) => {
             navigate(-1);
             deleteAllRequest();
           }}
-          sx={{ width: "90px", marginLeft: "-15px" }}
+          disableRipple
+          sx={{ width: "90px", ml: "-15px", mt: "-5px", pb: "10px", "&:hover": { backgroundColor: "transparent" } }}
         >
           <Typography color="secondary.main">Back</Typography>
         </Button>
@@ -1540,7 +1541,7 @@ const AddRequisition = (props) => {
                   {transactionDataApi.length === 0 ? "Create" : (transactionDataApi[0]?.can_resubmit === 0 ? "Submit" : "Resubmit")}
                 </LoadingButton>
 
-                <Button
+                {/* <Button
                   variant="outlined"
                   size="small"
                   color="secondary"
@@ -1550,7 +1551,7 @@ const AddRequisition = (props) => {
                   }}
                 >
                   Cancel
-                </Button>
+                </Button> */}
               </Stack>
             </Stack>
           </Box>

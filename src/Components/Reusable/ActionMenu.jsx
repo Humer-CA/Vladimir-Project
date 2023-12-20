@@ -115,7 +115,7 @@ const ActionMenu = (props) => {
     handleClose();
   };
 
-  const handleEdiRequest = () => {
+  const handleEditRequest = () => {
     // console.log(data);
     onUpdateHandler(data);
     handleClose();
@@ -171,7 +171,7 @@ const ActionMenu = (props) => {
             </MenuItem>
           )}
           {editRequest && (
-            <MenuItem onClick={handleEdiRequest} dense>
+            <MenuItem onClick={handleEditRequest} dense>
               <ListItemIcon>
                 <BorderColor />
               </ListItemIcon>

@@ -10,9 +10,6 @@ import { useGetSedarUsersApiQuery } from "../../Redux/Query/SedarUserApi";
 import {
     Box,
     Button,
-    Divider,
-    IconButton,
-    InputAdornment,
     Stack,
     Table,
     TableBody,
@@ -20,41 +17,28 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    TextField,
-    Tooltip,
     Typography,
-    createFilterOptions,
     useMediaQuery,
 } from "@mui/material";
-import { AddToPhotos, ArrowBackIosRounded, Cancel, Check, Close, Create, Help, Remove, Report, Save, SaveAlt, Update } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
+import { ArrowBackIosRounded, Cancel, Check, Help, Report, } from "@mui/icons-material";
 
 // RTK
 import { useDispatch } from "react-redux";
-import { closeDrawer } from "../../Redux/StateManagement/booleanStateSlice";
-import { useGetCompanyAllApiQuery } from "../../Redux/Query/Masterlist/FistoCoa/Company";
-import { useGetDepartmentAllApiQuery } from "../../Redux/Query/Masterlist/FistoCoa/Department";
-import { useGetLocationAllApiQuery } from "../../Redux/Query/Masterlist/FistoCoa/Location";
-import { useGetAccountTitleAllApiQuery } from "../../Redux/Query/Masterlist/FistoCoa/AccountTitle";
 import {
     useGetByTransactionApiQuery,
 } from "../../Redux/Query/Request/Requisition";
 
-import { useGetTypeOfRequestAllApiQuery } from "../../Redux/Query/Masterlist/TypeOfRequest";
 import { useLocation, useNavigate } from "react-router-dom";
 import NoRecordsFound from "../../Layout/NoRecordsFound";
-import { useGetSubUnitAllApiQuery } from "../../Redux/Query/Masterlist/SubUnit";
-import ActionMenu from "../../Components/Reusable/ActionMenu";
 import {
     useGetRequestContainerAllApiQuery,
 } from "../../Redux/Query/Request/RequestContainer";
-import CustomPatternfield from "../../Components/Reusable/CustomPatternfield";
 import { closeConfirm, onLoading, openConfirm } from "../../Redux/StateManagement/confirmSlice";
 import { usePatchApprovalStatusApiMutation } from "../../Redux/Query/Approving/Approval";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
 
 
-const ViewRequestMonitoring = (props) => {
+const ViewRequest = (props) => {
 
     const { approving } = props
     const { state: transactionData } = useLocation();
@@ -62,6 +46,8 @@ const ViewRequestMonitoring = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const [patchApprovalStatus, { isLoading }] =
+        usePatchApprovalStatusApiMutation();
 
     // CONTAINER
     const {
@@ -105,6 +91,8 @@ const ViewRequestMonitoring = (props) => {
         setOrder(isAsc ? "desc" : "asc");
         setOrderBy(property);
     };
+
+    console.log(transactionData)
 
     const onApprovalApproveHandler = (id) => {
         dispatch(
@@ -162,6 +150,7 @@ const ViewRequestMonitoring = (props) => {
                                     variant: "error",
                                 })
                             );
+                            console.log(err)
                         }
                     }
                 },
@@ -197,7 +186,7 @@ const ViewRequestMonitoring = (props) => {
                 onConfirm: async (data) => {
                     try {
                         dispatch(onLoading());
-                        const result = await usePatchApprovalStatusApiMutation({
+                        const result = await patchApprovalStatus({
                             action: "Return",
                             asset_approval_id: id,
                             remarks: data,
@@ -236,8 +225,6 @@ const ViewRequestMonitoring = (props) => {
         );
     };
 
-    console.log(transactionDataApi)
-
     return (
         <>
             <Box className="mcontainer" sx={{ height: "calc(100vh - 380px)" }}>
@@ -249,7 +236,8 @@ const ViewRequestMonitoring = (props) => {
                     onClick={() => {
                         navigate(-1);
                     }}
-                    sx={{ width: "90px", marginLeft: "-15px" }}
+                    disableRipple
+                    sx={{ width: "90px", marginLeft: "-15px", "&:hover": { backgroundColor: "transparent" } }}
                 >
                     <Typography color="secondary.main">Back</Typography>
                 </Button>
@@ -417,40 +405,28 @@ const ViewRequestMonitoring = (props) => {
                                 {transactionData ? transactionDataApi.length : addRequestAllApi.length} request
                             </Typography>
 
-                            <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
-                                <Button
-                                    variant="contained"
-                                    size="small"
-                                    color="secondary"
-                                    onClick={onApprovalApproveHandler}
-                                    startIcon={<Check color="primary" />}
-                                >
-                                    Approve
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    size="small"
-                                    onClick={onApprovalReturnHandler}
-                                    startIcon={<Cancel sx={{ color: "#5f3030" }} />}
-                                    sx={{ color: "white", backgroundColor: "error.main", ":hover": { backgroundColor: "error.dark" } }}
-                                >
-                                    Reject
-                                </Button>
-                            </Stack>
+                            {location.pathname === `/approving/${transactionData?.transaction_number}` &&
+                                <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        color="secondary"
+                                        onClick={() => onApprovalApproveHandler(transactionData?.id)}
 
-
-                            {/* <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
-                                <Button
-                                    variant="outlined"
-                                    size="small"
-                                    color="secondary"
-                                    onClick={() => {
-                                        navigate(-1);
-                                    }}
-                                >
-                                    Close
-                                </Button>
-                            </Stack> */}
+                                        startIcon={< Check color="primary" />}
+                                    >
+                                        Approve
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        onClick={() => onApprovalReturnHandler(transactionData?.id)}
+                                        startIcon={<Cancel sx={{ color: "#5f3030" }} />}
+                                        sx={{ color: "white", backgroundColor: "error.main", ":hover": { backgroundColor: "error.dark" } }}
+                                    >
+                                        Reject
+                                    </Button>
+                                </Stack>}
                         </Stack>
                     </Box>
                 </Box>
@@ -459,4 +435,4 @@ const ViewRequestMonitoring = (props) => {
     );
 };
 
-export default ViewRequestMonitoring;
+export default ViewRequest;
