@@ -11,27 +11,6 @@ const RequestTimeline = (props) => {
     const { data: transactionData } = props
     const dispatch = useDispatch();
 
-    const steps = [
-        '1st Approval',
-        '2nd Approval',
-        'Inputing of PR No.',
-        'Matching of PR No. to Receiving',
-        'Asset Tagging',
-        'Ready to Pickup',
-    ]
-
-    const generateSteps = (count, labelPrefix) =>
-        Array.from({ length: count }, (_, index) => `${index + 1}${ordinalSuffix(index + 1)} ${labelPrefix}`);
-
-    const ordinalSuffix = (number) => {
-        const suffixes = ['th', 'st', 'nd', 'rd'];
-        return suffixes[number] || suffixes[0];
-    };
-
-    // const approvers = generateSteps(transactionData?.approver_count, 'Approver');
-    // const stepsAfterApprovers = ['Inputing of PR No.', 'Matching of PR No. to Receiving', 'Asset Tagging', 'Ready to Pickup'];
-
-
     return (
         <Box className='timelineSteps'>
             <IconButton onClick={() => dispatch(closeDialog())} sx={{ position: "absolute", top: 10, right: 10 }}>
@@ -106,7 +85,7 @@ const RequestTimeline = (props) => {
                         ) :
                         (transactionData?.history.toReversed().map((item, index) => (
                             <Stepper
-                                key={2}
+                                key={index}
                                 activeStep={transactionData?.history.length === 0 ? 0 : transactionData?.history.length}
                                 orientation='vertical'
                                 direction="up"

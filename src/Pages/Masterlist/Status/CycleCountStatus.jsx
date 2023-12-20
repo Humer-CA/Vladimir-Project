@@ -220,7 +220,7 @@ const CycleCountStatus = () => {
             onStatusChange={setStatus}
             onSearchChange={setSearch}
             onSetPage={setPage}
-            onAdd={() => {}}
+            onAdd={() => { }}
           />
 
           <Box>
@@ -277,7 +277,7 @@ const CycleCountStatus = () => {
 
                 <TableBody>
                   {cycleCountStatusData.data.length === 0 ? (
-                    <NoRecordsFound />
+                    <NoRecordsFound category />
                   ) : (
                     <>
                       {cycleCountStatusSuccess &&

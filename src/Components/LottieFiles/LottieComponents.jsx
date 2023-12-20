@@ -34,7 +34,10 @@ export const LoadingData = ({ category }) => {
   return (
     <>
       <TableRow >
-        <TableCell colSpan={999} rowSpan={999} sx={{ borderBottom: "none", height: "calc(70vh - 150px)" }}>
+        <TableCell colSpan={999} rowSpan={999} sx={{
+          borderBottom: "none",
+          height: "calc(100vh - 360px)"
+        }}>
 
           <Box
             className="tblLoading"

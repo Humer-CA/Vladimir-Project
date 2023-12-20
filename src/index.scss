@@ -139,6 +139,7 @@ img {
   &__th-body {
     overscroll-behavior: none;
     height: calc(100vh - 330px);
+    // overflow: auto;
     // max-height: 400px;
     // padding-bottom: 30px;
     // @media (max-height: 500px) {
@@ -278,13 +279,10 @@ img {
 }
 
 .noRecordsFoundImg {
-  // margin-top: 10%;
   position: sticky;
-  top: calc(50% - (39vh / 2));
   left: calc(50% - (250px / 2));
-  height: 39vh;
+  min-height: 150px;
   width: 250px;
-  // object-fit: cover;
   background: url("Img/SVG/ImgNoRecordsFound.svg") center / contain no-repeat;
 }
 
@@ -349,3 +347,13 @@ input::file-selector-button {
 // input::placeholder {
 //   color: gray;
 // }
+
+.centeredTableCell {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  // position: absolute;
+  inset: 0;
+  margin: 0 auto;
+}

@@ -219,7 +219,7 @@ const AssetStatus = () => {
             onStatusChange={setStatus}
             onSearchChange={setSearch}
             onSetPage={setPage}
-            onAdd={() => {}}
+            onAdd={() => { }}
           />
 
           <Box>
@@ -276,7 +276,7 @@ const AssetStatus = () => {
 
                 <TableBody>
                   {assetStatusData.data.length === 0 ? (
-                    <NoRecordsFound />
+                    <NoRecordsFound category />
                   ) : (
                     <>
                       {assetStatusSuccess &&

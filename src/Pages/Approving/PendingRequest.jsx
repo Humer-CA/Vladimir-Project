@@ -254,7 +254,7 @@ const PendingRequest = () => {
 
   const handleViewRequisition = (data) => {
     navigate(
-      `/request-monitoring/${data.transaction_number}`,
+      `/approving/${data.transaction_number}`,
       {
         state: { ...data },
       },
@@ -366,7 +366,7 @@ const PendingRequest = () => {
 
                 <TableBody>
                   {approvalData?.data.length === 0 ? (
-                    <NoRecordsFound approvalData={approvalData} />
+                    <NoRecordsFound approvalData={approvalData} category />
                   ) : (
                     <>
                       {approvalSuccess &&

@@ -223,7 +223,7 @@ const MajorCategory = () => {
             onStatusChange={setStatus}
             onSearchChange={setSearch}
             onSetPage={setPage}
-            onAdd={() => {}}
+            onAdd={() => { }}
           />
 
           <Box>
@@ -304,7 +304,7 @@ const MajorCategory = () => {
 
                 <TableBody>
                   {majorCategoryData.data.length === 0 ? (
-                    <NoRecordsFound majorCategoryData={majorCategoryData} />
+                    <NoRecordsFound category />
                   ) : (
                     <>
                       {majorCategorySuccess &&

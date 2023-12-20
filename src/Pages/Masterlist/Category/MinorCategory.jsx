@@ -39,7 +39,6 @@ import ErrorFetching from "../../ErrorFetching";
 import NoRecordsFound from "../../../Layout/NoRecordsFound";
 
 const MinorCategory = () => {
-  const category = true;
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
   const [limit, setLimit] = useState(5);
@@ -226,7 +225,7 @@ const MinorCategory = () => {
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
       {minorCategoryLoading && (
-        <MasterlistSkeleton category={category} onAdd={true} />
+        <MasterlistSkeleton category onAdd={true} />
       )}
 
       {minorCategoryError && (
@@ -244,7 +243,7 @@ const MinorCategory = () => {
             onStatusChange={setStatus}
             onSearchChange={setSearch}
             onSetPage={setPage}
-            onAdd={() => {}}
+            onAdd={() => { }}
           />
 
           <Box>
@@ -348,7 +347,7 @@ const MinorCategory = () => {
 
                 <TableBody>
                   {minorCategoryData.data.length === 0 ? (
-                    <NoRecordsFound minorCategoryData={minorCategoryData} />
+                    <NoRecordsFound category />
                   ) : (
                     <>
                       {minorCategorySuccess &&

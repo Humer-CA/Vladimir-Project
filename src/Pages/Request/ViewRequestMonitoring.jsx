@@ -26,7 +26,7 @@ import {
     createFilterOptions,
     useMediaQuery,
 } from "@mui/material";
-import { AddToPhotos, ArrowBackIosRounded, Create, Remove, Report, Save, SaveAlt, Update } from "@mui/icons-material";
+import { AddToPhotos, ArrowBackIosRounded, Cancel, Check, Close, Create, Help, Remove, Report, Save, SaveAlt, Update } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
 // RTK
@@ -49,10 +49,14 @@ import {
     useGetRequestContainerAllApiQuery,
 } from "../../Redux/Query/Request/RequestContainer";
 import CustomPatternfield from "../../Components/Reusable/CustomPatternfield";
+import { closeConfirm, onLoading, openConfirm } from "../../Redux/StateManagement/confirmSlice";
+import { usePatchApprovalStatusApiMutation } from "../../Redux/Query/Approving/Approval";
+import { openToast } from "../../Redux/StateManagement/toastSlice";
 
 
 const ViewRequestMonitoring = (props) => {
 
+    const { approving } = props
     const { state: transactionData } = useLocation();
 
     const dispatch = useDispatch();
@@ -102,16 +106,137 @@ const ViewRequestMonitoring = (props) => {
         setOrderBy(property);
     };
 
+    const onApprovalApproveHandler = (id) => {
+        dispatch(
+            openConfirm({
+                icon: Help,
+                iconColor: "info",
+                message: (
+                    <Box>
+                        <Typography> Are you sure you want to</Typography>
+                        <Typography
+                            sx={{
+                                display: "inline-block",
+                                color: "secondary.main",
+                                fontWeight: "bold",
+                                fontFamily: "Raleway",
+                            }}
+                        >
+                            APPROVE
+                        </Typography>{" "}
+                        this request?
+                    </Box>
+                ),
 
-    const handleCloseDrawer = () => {
-        dispatch(closeDrawer());
+                onConfirm: async () => {
+                    try {
+                        dispatch(onLoading());
+                        const result = await patchApprovalStatus({
+                            action: "Approve",
+                            asset_approval_id: id,
+                        }).unwrap();
+
+                        dispatch(
+                            openToast({
+                                message: result.message,
+                                duration: 5000,
+                            })
+                        );
+
+                        dispatch(closeConfirm());
+                    } catch (err) {
+                        if (err?.status === 422) {
+                            dispatch(
+                                openToast({
+                                    // message: err.data.message,
+                                    message: err.data.errors?.detail,
+                                    duration: 5000,
+                                    variant: "error",
+                                })
+                            );
+                        } else if (err?.status !== 422) {
+                            dispatch(
+                                openToast({
+                                    message: "Something went wrong. Please try again.",
+                                    duration: 5000,
+                                    variant: "error",
+                                })
+                            );
+                        }
+                    }
+                },
+            })
+        );
     };
 
-    const filterOptions = createFilterOptions({
-        limit: 100,
-        matchFrom: "any",
-    });
+    const onApprovalReturnHandler = (id) => {
+        dispatch(
+            openConfirm({
+                icon: Report,
+                iconColor: "warning",
+                message: (
+                    <Stack gap={2}>
+                        <Box>
+                            <Typography> Are you sure you want to</Typography>
+                            <Typography
+                                sx={{
+                                    display: "inline-block",
+                                    color: "secondary.main",
+                                    fontWeight: "bold",
+                                    fontFamily: "Raleway",
+                                }}
+                            >
+                                RETURN
+                            </Typography>{" "}
+                            this request?
+                        </Box>
+                    </Stack>
+                ),
+                remarks: true,
 
+                onConfirm: async (data) => {
+                    try {
+                        dispatch(onLoading());
+                        const result = await usePatchApprovalStatusApiMutation({
+                            action: "Return",
+                            asset_approval_id: id,
+                            remarks: data,
+                        }).unwrap();
+
+                        dispatch(
+                            openToast({
+                                message: result.message,
+                                duration: 5000,
+                            })
+                        );
+
+                        dispatch(closeConfirm());
+                    } catch (err) {
+                        if (err?.status === 422) {
+                            dispatch(
+                                openToast({
+                                    // message: err.data.message,
+                                    message: err?.data?.errors?.detail,
+                                    duration: 5000,
+                                    variant: "error",
+                                })
+                            );
+                        } else if (err?.status !== 422) {
+                            dispatch(
+                                openToast({
+                                    message: "Something went wrong. Please try again.",
+                                    duration: 5000,
+                                    variant: "error",
+                                })
+                            );
+                        }
+                    }
+                },
+            })
+        );
+    };
+
+    console.log(transactionDataApi)
 
     return (
         <>
@@ -294,6 +419,28 @@ const ViewRequestMonitoring = (props) => {
 
                             <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
                                 <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="secondary"
+                                    onClick={onApprovalApproveHandler}
+                                    startIcon={<Check color="primary" />}
+                                >
+                                    Approve
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    onClick={onApprovalReturnHandler}
+                                    startIcon={<Cancel sx={{ color: "#5f3030" }} />}
+                                    sx={{ color: "white", backgroundColor: "error.main", ":hover": { backgroundColor: "error.dark" } }}
+                                >
+                                    Reject
+                                </Button>
+                            </Stack>
+
+
+                            {/* <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
+                                <Button
                                     variant="outlined"
                                     size="small"
                                     color="secondary"
@@ -301,9 +448,9 @@ const ViewRequestMonitoring = (props) => {
                                         navigate(-1);
                                     }}
                                 >
-                                    Cancel
+                                    Close
                                 </Button>
-                            </Stack>
+                            </Stack> */}
                         </Stack>
                     </Box>
                 </Box>

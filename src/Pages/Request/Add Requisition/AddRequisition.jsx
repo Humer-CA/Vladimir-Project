@@ -286,6 +286,7 @@ const AddRequisition = (props) => {
       subunit_id: null,
       location_id: null,
       account_title_id: null,
+      acquisition_details: "",
 
       asset_description: "",
       asset_specification: "",
@@ -294,7 +295,7 @@ const AddRequisition = (props) => {
       accountable: null,
       cellphone_number: "",
       quantity: 1,
-      remarks: "",
+      additional_info: "",
 
       letter_of_request: null,
       quotation: null,
@@ -475,6 +476,7 @@ const AddRequisition = (props) => {
       account_title_id: formData?.account_title_id.id?.toString(),
       accountability: formData?.accountability?.toString(),
       accountable: formData?.accountable === null ? "" : formData?.accountable?.general_info?.full_id_number_full_name?.toString(),
+      acquisition_details: formData?.acquisition_details?.toString(),
 
       asset_description: formData?.asset_description?.toString(),
       asset_specification: formData?.asset_specification?.toString(),
@@ -482,9 +484,7 @@ const AddRequisition = (props) => {
 
       brand: formData?.brand?.toString(),
       quantity: formData?.quantity?.toString(),
-      remarks: formData?.remarks?.toString(),
-
-      // letter_of_request: formData?.letter_of_request === null ? "" : (transactionData?.letter_of_request === null ? "null" : (transactionData?.specification_form !== null ? "null" : formData?.letter_of_request)),
+      additional_info: formData?.additional_info?.toString(),
 
       letter_of_request:
         updateRequest && (watch("letter_of_request") === null
@@ -578,6 +578,7 @@ const AddRequisition = (props) => {
           subunit_id: formData?.subunit_id,
           location_id: formData?.location_id,
           account_title_id: formData?.account_title_id,
+          acquisition_details: formData?.acquisition_details,
           letter_of_request: null,
           quotation: null,
           specification_form: null,
@@ -829,12 +830,13 @@ const AddRequisition = (props) => {
       account_title,
       accountability,
       accountable,
+      acquisition_details,
       asset_description,
       asset_specification,
       quantity,
       brand,
       cellphone_number,
-      remarks,
+      additional_info,
       attachments,
     } = props;
     setUpdateRequest({
@@ -850,13 +852,14 @@ const AddRequisition = (props) => {
       account_title,
       accountability,
       accountable,
+      acquisition_details,
 
       asset_description,
       asset_specification,
       quantity,
       brand,
       cellphone_number,
-      remarks,
+      additional_info,
 
       letter_of_request: attachments?.letter_of_request,
       quotation: attachments?.quotation,
@@ -877,6 +880,7 @@ const AddRequisition = (props) => {
       subunit_id: null,
       location_id: null,
       account_title_id: null,
+      acquisition_details: "",
 
       asset_description: "",
       asset_specification: "",
@@ -885,7 +889,7 @@ const AddRequisition = (props) => {
       accountable: null,
       cellphone_number: "",
       quantity: 1,
-      remarks: "",
+      additional_info: "",
 
       letter_of_request: null,
       quotation: null,
@@ -895,7 +899,7 @@ const AddRequisition = (props) => {
     });
   };
 
-  console.log(transactionDataApi)
+  console.log(errors)
 
   return (
     <>
@@ -1363,10 +1367,10 @@ const AddRequisition = (props) => {
                   </TableRow>
                 </TableHead>
 
-                <TableBody>
+                <TableBody sx={{ height: "calc" }}>
                   {isRequestLoading || isTransactionLoading ? <LoadingData /> :
                     (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.length === 0) ? (
-                      <NoRecordsFound />
+                      <NoRecordsFound request />
                     ) : (
                       <>
                         {(transactionData

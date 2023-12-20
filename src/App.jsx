@@ -270,6 +270,10 @@ const router = createBrowserRouter([
           },
 
           {
+            path: "approving/:transaction_number",
+            element: <ViewRequestMonitoring />,
+          },
+          {
             path: "request-monitoring",
             element: <RequestMonitoring />,
           },

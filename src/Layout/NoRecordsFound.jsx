@@ -1,19 +1,18 @@
 import React from "react";
 import { Box, TableCell, TableRow, Typography } from "@mui/material";
-import ImgNoRecordsFound from "../Img/SVG/No Records Found.svg";
+import ImgNoRecordsFound from "../Img/SVG/ImgNoRecordsFound.svg";
 
 const NoRecordsFound = (props) => {
-  const { category } = props;
+  const { category, request } = props;
   return (
     <>
       <TableRow>
-        <TableCell colSpan={999} rowSpan={999} sx={{ borderBottom: "none" }}>
+        <TableCell className="centeredTableCell" colSpan={999} rowSpan={999} sx={{ borderBottom: "none", height: category ? "calc(100vh - 435px)" : request ? "calc(100vh - 360px)" : "calc(100vh - 390px)", }}>
           <Box
             className="noRecordsFoundImg"
-            sx={category ? { marginTop: "-20px!important" } : null}
           />
         </TableCell>
-      </TableRow>
+      </TableRow >
     </>
   );
 };

@@ -241,7 +241,7 @@ const PendingRequest = () => {
 
                 <TableBody>
                   {approvalData.data.length === 0 ? (
-                    <NoRecordsFound approvalData={approvalData} />
+                    <NoRecordsFound approvalData={approvalData} category />
                   ) : (
                     <>
                       {approvalSuccess &&
