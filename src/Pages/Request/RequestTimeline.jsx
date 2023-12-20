@@ -24,12 +24,12 @@ const RequestTimeline = (props) => {
 
             <Typography color="secondary" fontWeight={600} fontSize={20} alignSelf="center" >TRANSACTION : {transactionData?.transaction_number}</Typography>
 
-            <Box className='timelineSteps__container' alignItems="flex-start">
-                <Stack flexDirection="row" alignItems="center" gap={1} mb={2} >
-                    <TimelineTwoTone color='primary' />
-                    <Typography fontFamily={"Anton, Impact"} color={"secondary"} fontSize={20} >TIMELINE</Typography>
-                </Stack>
+            <Stack flexDirection="row" alignItems="center" gap={1}>
+                <TimelineTwoTone color='primary' />
+                <Typography fontFamily={"Anton, Impact"} color={"secondary"} fontSize={20} >TIMELINE</Typography>
+            </Stack>
 
+            <Box className='timelineSteps__timeline' alignItems="flex-start">
                 <Stepper key={1} activeStep={transactionData ? transactionData?.process_count - 1 : 0} alternativeLabel>
                     {(transactionData?.status === "Returned" ? ["Returned", ...transactionData?.steps] : transactionData?.steps).map((label) => (
                         <Step key={label} last>

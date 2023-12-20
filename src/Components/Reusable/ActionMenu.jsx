@@ -17,6 +17,7 @@ import {
   DoneOutline,
   DoNotDisturb,
   Cancel,
+  Undo,
 } from "@mui/icons-material";
 
 const ActionMenu = (props) => {
@@ -317,7 +318,7 @@ const ActionMenu = (props) => {
 
           <MenuItem onClick={handleReturnStatus} dense>
             <ListItemIcon>
-              <DoNotDisturb />
+              <Undo />
             </ListItemIcon>
             <ListItemText disableTypography align="left">
               Return

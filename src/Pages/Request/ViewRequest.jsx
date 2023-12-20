@@ -20,7 +20,7 @@ import {
     Typography,
     useMediaQuery,
 } from "@mui/material";
-import { ArrowBackIosRounded, Cancel, Check, Help, Report, } from "@mui/icons-material";
+import { ArrowBackIosRounded, Cancel, Check, Help, Report, Undo, } from "@mui/icons-material";
 
 // RTK
 import { useDispatch } from "react-redux";
@@ -421,10 +421,10 @@ const ViewRequest = (props) => {
                                         variant="contained"
                                         size="small"
                                         onClick={() => onApprovalReturnHandler(transactionData?.id)}
-                                        startIcon={<Cancel sx={{ color: "#5f3030" }} />}
+                                        startIcon={<Undo sx={{ color: "#5f3030" }} />}
                                         sx={{ color: "white", backgroundColor: "error.main", ":hover": { backgroundColor: "error.dark" } }}
                                     >
-                                        Reject
+                                        Return
                                     </Button>
                                 </Stack>}
                         </Stack>
