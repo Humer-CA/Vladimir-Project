@@ -39,7 +39,7 @@ import {
   createFilterOptions,
   useMediaQuery,
 } from "@mui/material";
-import { AddToPhotos, ArrowBackIosRounded, Create, Remove, Report, Save, SaveAlt, Update } from "@mui/icons-material";
+import { AddToPhotos, ArrowBackIosRounded, Create, Info, Remove, Report, Save, SaveAlt, Update } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
 // RTK
@@ -104,7 +104,7 @@ const schema = yup.object().shape({
   brand: yup.string().required().label("Brand"),
   quantity: yup.number().required().label("Quantity"),
   cellphone_number: yup.string().nullable().label("Cellphone Number"),
-  remarks: yup.string().nullable().label("Remarks"),
+  additional_info: yup.string().nullable().label("Additional Info"),
 
   letter_of_request: yup.mixed().label("Letter of Request"),
   quotation: yup.mixed().label("Quotation"),
@@ -134,7 +134,7 @@ const AddRequisition = (props) => {
     accountable: null,
     cellphone_number: "",
     quantity: 1,
-    remarks: "",
+    additional_info: "",
 
     letter_of_request: null,
     quotation: null,
@@ -160,7 +160,13 @@ const AddRequisition = (props) => {
 
   const [
     postRequisition,
-    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
+    {
+      data: postData,
+      isLoading: isPostLoading,
+      isSuccess: isPostSuccess,
+      isError: isPostError,
+      error: postError
+    },
   ] = usePostRequisitionApiMutation();
 
   const [
@@ -378,7 +384,7 @@ const AddRequisition = (props) => {
         "cellphone_number",
         updateRequest?.cellphone_number === "-" ? "" : updateRequest?.cellphone_number
       );
-      setValue("remarks", updateRequest?.remarks);
+      setValue("additional_info", updateRequest?.additional_info);
       // ATTACHMENTS
       setValue("letter_of_request", updateRequest?.letter_of_request === "-" ? "" : updateRequest?.letter_of_request);
       setValue("quotation", updateRequest?.quotation === "-" ? "" : updateRequest?.quotation);
@@ -416,41 +422,95 @@ const AddRequisition = (props) => {
   };
 
 
-  // console.log(transactionDataApi[0]?.can_resubmit)
   // SUBMIT HANDLER
   const onSubmitHandler = () => {
-    if (transactionDataApi[0]?.can_resubmit === 0) {
-      dispatch(
-        openToast({
-          message: "Successfully Submitted",
-          duration: 5000,
-        })
-      );
-      navigate(- 1);
-      deleteAllRequest();
+    dispatch(
+      openConfirm({
+        icon: Info,
+        iconColor: "info",
+        message: (
+          <Box>
+            <Typography> Are you sure you want to</Typography>
+            <Typography
+              sx={{
+                display: "inline-block",
+                color: "secondary.main",
+                fontWeight: "bold",
+              }}
+            >
+              {transactionDataApi[0]?.can_resubmit === 0 ? "SUBMIT" : "RESUBMIT"}
+            </Typography>{" "}
+            this Data?
+          </Box>
+        ),
 
-    } else if ((transactionDataApi[0]?.can_resubmit === 1)) {
-      resubmitRequest({
-        transaction_number: transactionData?.transaction_number,
-        ...transactionDataApi,
-      });
-      navigate(- 1);
-      dispatch(
-        openToast({
-          message: "Successfully Resubmitted",
-          duration: 5000,
-        })
-      );
-      return;
-    }
+        onConfirm: async () => {
+          try {
+            dispatch(onLoading());
+            if (transactionDataApi[0]?.can_resubmit === 0) {
+              dispatch(
+                openToast({
+                  message: "Successfully Submitted",
+                  duration: 5000,
+                })
+              );
+              navigate(- 1);
+              deleteAllRequest();
 
-    const smsData = {
-      system_name: "Vladimir", message: "You have a pending approval", mobile_number: "+639913117181"
-    }
+            } else if ((transactionDataApi[0]?.can_resubmit === 1)) {
+              resubmitRequest({
+                transaction_number: transactionData?.transaction_number,
+                ...transactionDataApi,
+              });
+              navigate(- 1);
+              dispatch(
+                openToast({
+                  message: "Successfully Resubmitted",
+                  duration: 5000,
+                })
+              );
+              return;
+            }
 
-    postRequisition(addRequestAllApi);
-    postRequestSms(smsData)
-    deleteAllRequest();
+            const smsData = {
+              system_name: "Vladimir", message: "You have a pending approval", mobile_number: "+639913117181"
+            }
+
+            postRequisition(addRequestAllApi);
+            postRequestSms(smsData)
+            deleteAllRequest();
+
+            dispatch(
+              openToast({
+                message: result.message,
+                duration: 5000,
+              })
+            );
+
+            dispatch(closeConfirm());
+          } catch (err) {
+            console.log(err);
+            if (err?.status === 422) {
+              dispatch(
+                openToast({
+                  message: err.data.message,
+                  duration: 5000,
+                  variant: "error",
+                })
+              );
+            } else if (err?.status !== 422) {
+              dispatch(
+                openToast({
+                  message: "Something went wrong. Please try again.",
+                  duration: 5000,
+                  variant: "error",
+                })
+              );
+            }
+          }
+        },
+      })
+    );
   };
 
   const handleCloseDrawer = () => {
@@ -984,7 +1044,8 @@ const AddRequisition = (props) => {
                     options={departmentData}
                     loading={isDepartmentLoading}
                     size="small"
-                    disabled={transactionData ? true : false}
+                    // disabled={transactionData ? true : false}
+                    disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi.length !== 0}
                     getOptionLabel={(option) => option.department_name}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     renderInput={(params) => (
@@ -1008,8 +1069,8 @@ const AddRequisition = (props) => {
                     autoComplete
                     name="subunit_id"
                     control={control}
-                    disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
-                    // disabled={!transactionData ? false : addRequestAllApi.length || transactionData?.length) !== 0}
+                    // disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
+                    disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi.length !== 0}
                     options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
                     loading={isSubUnitLoading}
                     size="small"
@@ -1055,8 +1116,8 @@ const AddRequisition = (props) => {
                     autoComplete
                     name="location_id"
                     control={control}
-                    // disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
-                    disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
+                    // disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
+                    disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi.length !== 0}
                     options={locationData?.filter((item) => {
                       return item.departments.some((department) => {
                         return department?.sync_id === watch("department_id")?.sync_id;
@@ -1080,8 +1141,8 @@ const AddRequisition = (props) => {
                   <CustomAutoComplete
                     name="account_title_id"
                     control={control}
-                    // disabled={(addRequestAllApi.length || transactionData?.length) !== 0}
-                    disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
+                    // disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
+                    disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi.length !== 0}
                     options={accountTitleData}
                     loading={isAccountTitleLoading}
                     size="small"
@@ -1148,7 +1209,8 @@ const AddRequisition = (props) => {
                     type="text"
                     color="secondary"
                     size="small"
-                    disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
+                    disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi.length !== 0}
+                    // disabled={transactionData ? ((addRequestAllApi.length || transactionData?.length) !== 0) && true : false}
                     error={!!errors?.acquisition_details}
                     helperText={errors?.acquisition_details?.message}
                     fullWidth
@@ -1362,7 +1424,7 @@ const AddRequisition = (props) => {
                     <TableCell className="tbl-cell">Asset Information</TableCell>
                     <TableCell className="tbl-cell text-center">Quantity</TableCell>
                     <TableCell className="tbl-cell">Cellphone #</TableCell>
-                    <TableCell className="tbl-cell">Remarks</TableCell>
+                    <TableCell className="tbl-cell">Additional Info.</TableCell>
                     <TableCell className="tbl-cell">Attachments</TableCell>
                     <TableCell className="tbl-cell">Action</TableCell>
                   </TableRow>
@@ -1429,7 +1491,7 @@ const AddRequisition = (props) => {
                               </TableCell>
 
                               <TableCell className="tbl-cell">
-                                {data.remarks === null ? "No Remarks" : data.remarks}
+                                {data.additional_info}
                               </TableCell>
 
                               <TableCell className="tbl-cell">
