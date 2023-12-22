@@ -363,7 +363,6 @@ const AddRequisition = (props) => {
     setShowEdit(true)
   }, [transactionDataApi])
 
-
   useEffect(() => {
     if (updateRequest.id) {
       setValue("type_of_request_id", updateRequest?.type_of_request);
@@ -422,7 +421,6 @@ const AddRequisition = (props) => {
   };
 
 
-  // SUBMIT HANDLER
   const onSubmitHandler = () => {
     dispatch(
       openConfirm({
@@ -438,76 +436,53 @@ const AddRequisition = (props) => {
                 fontWeight: "bold",
               }}
             >
-              {transactionDataApi[0]?.can_resubmit === 0 ? "SUBMIT" : "RESUBMIT"}
+              {transactionDataApi.length === 0 ? "CREATE" : (transactionDataApi[0]?.can_resubmit === 0 ? "SUBMIT" : "RESUBMIT")}
             </Typography>{" "}
             this Data?
           </Box>
         ),
 
-        onConfirm: async () => {
-          try {
-            dispatch(onLoading());
-            if (transactionDataApi[0]?.can_resubmit === 0) {
-              dispatch(
-                openToast({
-                  message: "Successfully Submitted",
-                  duration: 5000,
-                })
-              );
-              navigate(- 1);
-              deleteAllRequest();
-
-            } else if ((transactionDataApi[0]?.can_resubmit === 1)) {
-              resubmitRequest({
-                transaction_number: transactionData?.transaction_number,
-                ...transactionDataApi,
-              });
-              navigate(- 1);
-              dispatch(
-                openToast({
-                  message: "Successfully Resubmitted",
-                  duration: 5000,
-                })
-              );
-              return;
-            }
-
-            const smsData = {
-              system_name: "Vladimir", message: "You have a pending approval", mobile_number: "+639913117181"
-            }
-
-            postRequisition(addRequestAllApi);
-            postRequestSms(smsData)
-            deleteAllRequest();
-
+        onConfirm: () => {
+          dispatch(onLoading());
+          if (transactionDataApi[0]?.can_resubmit === 0) {
             dispatch(
               openToast({
-                message: result.message,
+                message: "Successfully Submitted",
                 duration: 5000,
               })
             );
+            navigate(- 1);
+            deleteAllRequest();
 
-            dispatch(closeConfirm());
-          } catch (err) {
-            console.log(err);
-            if (err?.status === 422) {
-              dispatch(
-                openToast({
-                  message: err.data.message,
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            } else if (err?.status !== 422) {
-              dispatch(
-                openToast({
-                  message: "Something went wrong. Please try again.",
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            }
+          } else if ((transactionDataApi[0]?.can_resubmit === 1)) {
+            resubmitRequest({
+              transaction_number: transactionData?.transaction_number,
+              ...transactionDataApi,
+            });
+            navigate(- 1);
+            dispatch(
+              openToast({
+                message: "Successfully Resubmitted",
+                duration: 5000,
+              })
+            );
+            return;
           }
+
+          const smsData = {
+            system_name: "Vladimir", message: "You have a pending approval", mobile_number: "+639913117181"
+          }
+
+          postRequisition(addRequestAllApi);
+          postRequestSms(smsData)
+          deleteAllRequest();
+          reset({
+            letter_of_request: null,
+            quotation: null,
+            specification_form: null,
+            tool_of_trade: null,
+            other_attachments: null,
+          });
         },
       })
     );

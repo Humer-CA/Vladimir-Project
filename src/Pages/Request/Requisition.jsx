@@ -44,6 +44,7 @@ import {
 } from "@mui/material";
 import {
   Help,
+  IosShareRounded,
   LibraryAdd,
   Report,
   ReportProblem,
@@ -205,6 +206,47 @@ const Requisition = () => {
   const handleCloseTimelime = () => {
     dispatch(closeDialog);
   }
+
+  const handleExport = async () => {
+    try {
+      const res = await userDataTrigger().unwrap();
+      const newObj = res.map((item) => {
+        return {
+          ID: item?.id,
+          Firstname: item?.firstname,
+          Lastname: item?.lastname,
+          Department: item?.department,
+          "Sub Unit": item?.subunit,
+          Username: item?.username,
+          Role: item?.role?.role_name,
+          Status: item?.is_active === true ? "Active" : "Inactive",
+          "Created At": moment(item?.created_at).format("MMM DD, YYYY"),
+          "Updated At": moment(item?.updated_at).format("MMM DD, YYYY"),
+        };
+      });
+
+      await excelExport(newObj, "Vladimir-Request.xlsx");
+    } catch (err) {
+      if (err?.status === 422) {
+        dispatch(
+          openToast({
+            message: err.data.errors?.detail,
+            duration: 5000,
+            variant: "error",
+          })
+        );
+      } else if (err?.status !== 422) {
+        dispatch(
+          openToast({
+            message: "Something went wrong. Please try again.",
+            duration: 5000,
+            variant: "error",
+          })
+        );
+      }
+    }
+  };
+
 
   const handleAddRequisition = () => {
     navigate(`add-requisition`);
@@ -455,14 +497,32 @@ const Requisition = () => {
               </TableContainer>
             </Box>
 
-            <CustomTablePagination
-              total={requisitionData?.total}
-              success={requisitionSuccess}
-              current_page={requisitionData?.current_page}
-              per_page={requisitionData?.per_page}
-              onPageChange={pageHandler}
-              onRowsPerPageChange={perPageHandler}
-            />
+            <Box className="mcontainer__pagination-export">
+              <Button
+                className="mcontainer__export"
+                variant="outlined"
+                size="small"
+                color="text"
+                startIcon={<IosShareRounded color="primary" />}
+                onClick={handleExport}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "10px 20px",
+                }}
+              >
+                EXPORT
+              </Button>
+              <CustomTablePagination
+                total={requisitionData?.total}
+                success={requisitionSuccess}
+                current_page={requisitionData?.current_page}
+                per_page={requisitionData?.per_page}
+                onPageChange={pageHandler}
+                onRowsPerPageChange={perPageHandler}
+              />
+            </Box>
           </Box>
         </>
       )}
