@@ -298,6 +298,7 @@ const UserAccounts = () => {
   const handleExport = async () => {
     try {
       const res = await userDataTrigger().unwrap();
+      console.log(res)
       const newObj = res.map((item) => {
         return {
           ID: item?.id,
@@ -361,7 +362,7 @@ const UserAccounts = () => {
             onSearchChange={setSearch}
             onSetPage={setPage}
             // onImport={() => {}}
-            onAdd={() => {}}
+            onAdd={() => { }}
           />
 
           <Box>
@@ -601,7 +602,7 @@ const UserAccounts = () => {
             />
           </Box>
 
-          <Drawer anchor="right" open={drawer} onClose={() => {}}>
+          <Drawer anchor="right" open={drawer} onClose={() => { }}>
             <AddUserAccounts
               data={updateUser}
               onUpdateResetHandler={onUpdateResetHandler}

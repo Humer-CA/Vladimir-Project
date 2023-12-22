@@ -39,7 +39,7 @@ export const requisitionApi = createApi({
 
     getRequisitionAllApi: builder.query({
       query: () => `asset-request?pagination=none`,
-      transformResponse: (response) => response.data,
+      // transformResponse: (response) => response.data,
       providesTags: ["Requisition"],
     }),
 
@@ -139,6 +139,7 @@ export const {
   useGetRequisitionApiQuery,
   useGetRequisitionMonitoringApiQuery,
   useGetRequisitionAllApiQuery,
+  useLazyGetRequisitionAllApiQuery,
   useGetRequisitionIdApiQuery,
   useGetByTransactionApiQuery,
   usePatchRequisitionStatusApiMutation,

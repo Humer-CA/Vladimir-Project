@@ -59,11 +59,11 @@ import {
 const MasterlistToolbar = (props) => {
   const {
     path = "",
-    onStatusChange = () => {},
-    onFaStatusChange = () => {},
-    onSearchChange = () => {},
-    onSetPage = () => {},
-    onSyncHandler = () => {},
+    onStatusChange = () => { },
+    onFaStatusChange = () => { },
+    onSearchChange = () => { },
+    onSetPage = () => { },
+    onSyncHandler = () => { },
     scanAsset,
     onAdd,
     onPrint,
@@ -72,6 +72,7 @@ const MasterlistToolbar = (props) => {
     hideArchive,
     faStatus,
     handleAddRequest,
+    request
   } = props;
 
   const dispatch = useDispatch();
@@ -82,8 +83,11 @@ const MasterlistToolbar = (props) => {
   const [anchorElImport, setAnchorElImport] = useState(null);
   const openImportFa = Boolean(anchorElImport);
 
+  const [anchorElRequestFilter, setAnchorElRequestFilter] = useState(null);
+  const openRequestFilter = Boolean(anchorEl);
+
   const handleClose = () => {
-    setAnchorEl(null) || setAnchorElImport(null);
+    setAnchorEl(null) || setAnchorElImport(null) || setAnchorElRequestFilter(null);
   };
 
   // const scanFile = useSelector((state) => state.scanFile);
@@ -146,6 +150,13 @@ const MasterlistToolbar = (props) => {
     dispatch(openDrawer());
     setAnchorEl(!e.currentTarget);
   };
+
+
+  const handleOpenRequestFilter = (e) => {
+    dispatch(openDrawer());
+    setAnchorElRequestFilter(!e.currentTarget);
+  };
+
   const handleOpenAddCost = (e) => {
     dispatch(openAdd());
     setAnchorEl(!e.currentTarget);
@@ -440,6 +451,48 @@ const MasterlistToolbar = (props) => {
             }}
             onKeyDown={searchHandler}
           />
+
+          {request && (
+            <>
+              <Tooltip
+                title="Filter"
+                TransitionComponent={Zoom}
+                placement="top"
+                arrow
+              >
+                <IconButton>
+                  <FilterList />
+                </IconButton>
+              </Tooltip>
+
+              <Menu
+                anchorEl={anchorEl}
+                open={openRequestFilter}
+                onClose={handleClose}
+                TransitionComponent={Fade}
+                disablePortal
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+              >
+                <MenuItem onClick={handleOpenAddFA} dense>
+                  <ListItemIcon>
+                    <PostAdd />
+                  </ListItemIcon>
+                  <ListItemText>Add Fixed Asset</ListItemText>
+                </MenuItem>
+
+                <Divider sx={{ mx: 2 }} />
+
+                <MenuItem onClick={handleOpenAddCost} dense>
+                  <ListItemIcon>
+                    <AddCard />
+                  </ListItemIcon>
+                  <ListItemText>Add Additional Cost</ListItemText>
+                </MenuItem>
+              </Menu>
+            </>
+
+          )}
         </Box>
       </Box>
     </Box>

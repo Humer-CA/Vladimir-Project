@@ -934,8 +934,6 @@ const AddRequisition = (props) => {
     });
   };
 
-  console.log(errors)
-
   return (
     <>
       <Box className="mcontainer" sx={{ height: "calc(100vh - 380px)" }}>

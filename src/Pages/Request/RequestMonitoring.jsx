@@ -19,6 +19,7 @@ import {
   useGetByTransactionApiQuery,
   useGetRequisitionApiQuery,
   useGetRequisitionMonitoringApiQuery,
+  useLazyGetRequisitionAllApiQuery,
   usePatchRequisitionStatusApiMutation,
   useVoidRequisitionApiMutation,
 } from "../../Redux/Query/Request/Requisition";
@@ -44,6 +45,7 @@ import {
 } from "@mui/material";
 import {
   Help,
+  IosShareRounded,
   LibraryAdd,
   Report,
   ReportProblem,
@@ -53,6 +55,8 @@ import { Link, useNavigate } from "react-router-dom";
 import ProcessDetails from "../Approving/ProcessDetails";
 import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
 import RequestTimeline from "./RequestTimeline";
+import useExcel from "../../Hooks/Xlsx";
+import moment from "moment";
 
 const RequestMonitoring = () => {
   const [search, setSearch] = useState("");
@@ -60,14 +64,14 @@ const RequestMonitoring = () => {
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [urlPath, setUrlPath] = useState(true);
-
   const [transactionIdData, setTransactionIdData] = useState();
-
 
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width: 500px)");
   const drawer = useSelector((state) => state.booleanState.drawer);
   const dialog = useSelector((state) => state.booleanState.dialog);
+
+  const { excelExport } = useExcel();
 
   // Table Sorting --------------------------------
 
@@ -106,6 +110,8 @@ const RequestMonitoring = () => {
     // console.log(page + 1);
     setPage(page + 1);
   };
+
+  const [requestDataTrigger] = useLazyGetRequisitionAllApiQuery();
 
   const {
     data: requisitionData,
@@ -203,6 +209,45 @@ const RequestMonitoring = () => {
     setTransactionIdData(data)
   };
 
+  const handleExport = async () => {
+    try {
+      const res = await requestDataTrigger().unwrap();
+      const newObj = res.map((item) => {
+        return {
+          // ID: item?.id,
+          "Transaction No.": item?.transaction_number,
+          "Acuisition Details": item?.acquisition_details,
+          "Quantity of PR": item?.item_count,
+          Status: item?.status,
+          "Current Approver": `${item?.current_approver?.firstname} ${item?.current_approver?.lastname}`,
+          "Created At": moment(item?.created_at).format("MMM DD, YYYY"),
+        };
+      });
+
+      await excelExport(newObj, "Vladimir-Request.xlsx");
+    } catch (err) {
+      if (err?.status === 422) {
+        dispatch(
+          openToast({
+            message: err.data.errors?.detail,
+            duration: 5000,
+            variant: "error",
+          })
+        );
+      } else if (err?.status !== 422) {
+        dispatch(
+          openToast({
+            message: "Something went wrong. Please try again.",
+            duration: 5000,
+            variant: "error",
+          })
+        );
+      }
+    }
+  };
+
+
+
 
   const handleEditRequisition = (data) => {
     navigate(
@@ -232,7 +277,7 @@ const RequestMonitoring = () => {
               onStatusChange={setStatus}
               onSearchChange={setSearch}
               onSetPage={setPage}
-              // onAdd={() => {}}
+              request
               hideArchive
             />
             {/* 
@@ -264,7 +309,7 @@ const RequestMonitoring = () => {
                         },
                       }}
                     >
-                      <TableCell className="tbl-cell text-center">
+                      {/* <TableCell className="tbl-cell text-center">
                         <TableSortLabel
                           active={orderBy === `id`}
                           direction={orderBy === `id` ? order : `asc`}
@@ -272,29 +317,41 @@ const RequestMonitoring = () => {
                         >
                           ID No.
                         </TableSortLabel>
-                      </TableCell>
+                      </TableCell> */}
 
                       <TableCell className="tbl-cell">
                         <TableSortLabel
-                        // active={orderBy === `type_of_request_name`}
-                        // direction={
-                        //   orderBy === `type_of_request_name` ? order : `asc`
-                        // }
-                        // onClick={() => onSort(`type_of_request_name`)}
+                          active={orderBy === `transaction_number`}
+                          direction={
+                            orderBy === `transaction_number` ? order : `asc`
+                          }
+                          onClick={() => onSort(`transaction_number`)}
                         >
                           Transaction No.
                         </TableSortLabel>
                       </TableCell>
 
+                      <TableCell className="tbl-cell">
+                        <TableSortLabel
+                          active={orderBy === `acquisition_details`}
+                          direction={
+                            orderBy === `acquisition_details` ? order : `asc`
+                          }
+                          onClick={() => onSort(`acquisition_details`)}
+                        >
+                          Acquisition Details
+                        </TableSortLabel>
+                      </TableCell>
+
                       <TableCell className="tbl-cell text-center">
                         <TableSortLabel
-                        // active={orderBy === `type_of_request_name`}
-                        // direction={
-                        //   orderBy === `type_of_request_name` ? order : `asc`
-                        // }
-                        // onClick={() => onSort(`type_of_request_name`)}
+                          active={orderBy === `item_count`}
+                          direction={
+                            orderBy === `item_count` ? order : `asc`
+                          }
+                          onClick={() => onSort(`item_count`)}
                         >
-                          Quantity of PO
+                          Quantity of PR
                         </TableSortLabel>
                       </TableCell>
 
@@ -302,8 +359,16 @@ const RequestMonitoring = () => {
                         View Information
                       </TableCell>
 
-                      <TableCell className="tbl-cell text-center">
-                        View Status
+                      <TableCell className="tbl-cell" align="center">
+                        <TableSortLabel
+                          active={orderBy === `status`}
+                          direction={
+                            orderBy === `status` ? order : `asc`
+                          }
+                          onClick={() => onSort(`status`)}
+                        >
+                          View Status
+                        </TableSortLabel>
                       </TableCell>
 
                       <TableCell className="tbl-cell text-center">
@@ -337,11 +402,14 @@ const RequestMonitoring = () => {
                                   },
                                 }}
                               >
-                                <TableCell className="tbl-cell tr-cen-pad45">
+                                {/* <TableCell className="tbl-cell tr-cen-pad45">
                                   {data.id}
-                                </TableCell>
+                                </TableCell> */}
                                 <TableCell className="tbl-cell text-weight">
                                   {data.transaction_number}
+                                </TableCell>
+                                <TableCell className="tbl-cell">
+                                  {data.acquisition_details}
                                 </TableCell>
                                 <TableCell className="tbl-cell text-weight tr-cen-pad45">
                                   {data.item_count}
@@ -361,7 +429,7 @@ const RequestMonitoring = () => {
                                     </IconButton>
                                   </Tooltip>
                                 </TableCell>
-                                <TableCell className="tbl-cell text-center">
+                                <TableCell className="tbl-cell tr-cen-pad45">
                                   {data.status !== "Returned" ? (
                                     <Tooltip
                                       placement="top"
@@ -425,15 +493,32 @@ const RequestMonitoring = () => {
                 </Table>
               </TableContainer>
             </Box>
-
-            <CustomTablePagination
-              total={requisitionData?.total}
-              success={requisitionSuccess}
-              current_page={requisitionData?.current_page}
-              per_page={requisitionData?.per_page}
-              onPageChange={pageHandler}
-              onRowsPerPageChange={perPageHandler}
-            />
+            <Box className="mcontainer__pagination-export">
+              <Button
+                className="mcontainer__export"
+                variant="outlined"
+                size="small"
+                color="text"
+                startIcon={<IosShareRounded color="primary" />}
+                onClick={handleExport}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: "10px 20px",
+                }}
+              >
+                EXPORT
+              </Button>
+              <CustomTablePagination
+                total={requisitionData?.total}
+                success={requisitionSuccess}
+                current_page={requisitionData?.current_page}
+                per_page={requisitionData?.per_page}
+                onPageChange={pageHandler}
+                onRowsPerPageChange={perPageHandler}
+              />
+            </Box>
           </Box>
         </>
       )}
