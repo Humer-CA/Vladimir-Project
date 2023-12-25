@@ -239,6 +239,7 @@ const Requisition = () => {
               onStatusChange={setStatus}
               onSearchChange={setSearch}
               onSetPage={setPage}
+              requestFilter
               // onAdd={() => {}}
               hideArchive
             />

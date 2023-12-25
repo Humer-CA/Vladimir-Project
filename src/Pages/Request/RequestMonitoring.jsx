@@ -277,7 +277,7 @@ const RequestMonitoring = () => {
               onStatusChange={setStatus}
               onSearchChange={setSearch}
               onSetPage={setPage}
-              request
+              requestFilter
               hideArchive
             />
             {/* 

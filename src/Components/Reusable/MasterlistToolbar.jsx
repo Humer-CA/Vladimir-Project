@@ -30,6 +30,7 @@ import {
   Divider,
   Fade,
   FormControlLabel,
+  FormGroup,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -45,7 +46,10 @@ import {
 import {
   AddCard,
   Archive,
+  CheckBox,
   Filter,
+  Filter1,
+  FilterAlt,
   FilterList,
   LibraryAdd,
   PostAdd,
@@ -72,7 +76,7 @@ const MasterlistToolbar = (props) => {
     hideArchive,
     faStatus,
     handleAddRequest,
-    request
+    requestFilter
   } = props;
 
   const dispatch = useDispatch();
@@ -84,7 +88,7 @@ const MasterlistToolbar = (props) => {
   const openImportFa = Boolean(anchorElImport);
 
   const [anchorElRequestFilter, setAnchorElRequestFilter] = useState(null);
-  const openRequestFilter = Boolean(anchorEl);
+  const openRequestFilter = Boolean(anchorElRequestFilter);
 
   const handleClose = () => {
     setAnchorEl(null) || setAnchorElImport(null) || setAnchorElRequestFilter(null);
@@ -151,10 +155,8 @@ const MasterlistToolbar = (props) => {
     setAnchorEl(!e.currentTarget);
   };
 
-
   const handleOpenRequestFilter = (e) => {
-    dispatch(openDrawer());
-    setAnchorElRequestFilter(!e.currentTarget);
+    setAnchorElRequestFilter(e.currentTarget);
   };
 
   const handleOpenAddCost = (e) => {
@@ -173,6 +175,7 @@ const MasterlistToolbar = (props) => {
     dispatch(openImport());
     setAnchorElImport(!e.currentTarget);
   };
+
   const handleOpenImportCost = (e) => {
     dispatch(openDrawer1());
     setAnchorElImport(!e.currentTarget);
@@ -452,47 +455,56 @@ const MasterlistToolbar = (props) => {
             onKeyDown={searchHandler}
           />
 
-          {request && (
-            <>
-              <Tooltip
-                title="Filter"
-                TransitionComponent={Zoom}
-                placement="top"
-                arrow
-              >
-                <IconButton>
-                  <FilterList />
-                </IconButton>
-              </Tooltip>
+          {requestFilter && <Tooltip
+            title="Filter"
+            TransitionComponent={Zoom}
+            placement="top"
+            arrow
+          >
+            <IconButton onClick={handleOpenRequestFilter}>
+              <FilterList />
+            </IconButton>
+          </Tooltip>}
 
-              <Menu
-                anchorEl={anchorEl}
-                open={openRequestFilter}
-                onClose={handleClose}
-                TransitionComponent={Fade}
-                disablePortal
-                transformOrigin={{ horizontal: "right", vertical: "top" }}
-                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-              >
-                <MenuItem onClick={handleOpenAddFA} dense>
-                  <ListItemIcon>
-                    <PostAdd />
-                  </ListItemIcon>
-                  <ListItemText>Add Fixed Asset</ListItemText>
+          {Boolean(requestFilter) &&
+            <Menu
+              anchorEl={anchorElRequestFilter}
+              open={openRequestFilter}
+              onClose={handleClose}
+              TransitionComponent={Fade}
+              disablePortal
+              transformOrigin={{ horizontal: "left", vertical: "top" }}
+              anchorOrigin={{ horizontal: "right", vertical: "top" }}
+            >
+              <FormGroup>
+                <Stack flexDirection="row" alignItems="center" p="10px" gap="10px">
+                  <FilterAlt color="primary" />
+                  <Typography fontFamily="Anton, Impact" fontSize="20px" color="secondary" >FILTER</Typography>
+                </Stack>
+                <Divider />
+                <MenuItem dense>
+                  <FormControlLabel control={<Checkbox size="small" />} label="For Approval" />
+                </MenuItem>
+                <MenuItem dense>
+                  <FormControlLabel control={<Checkbox size="small" />} label="Inputing of PR No." />
+                </MenuItem>
+                <MenuItem dense>
+                  <FormControlLabel control={<Checkbox size="small" />} label="Asset Tagging" />
+                </MenuItem>
+                <MenuItem dense>
+                  <FormControlLabel control={<Checkbox size="small" />} label="Ready to Pickup" />
+                </MenuItem>
+                <MenuItem dense>
+                  <FormControlLabel control={<Checkbox size="small" />} label="Released" />
+                </MenuItem>
+                <MenuItem dense>
+                  <FormControlLabel control={<Checkbox size="small" />} label="Returned" />
                 </MenuItem>
 
-                <Divider sx={{ mx: 2 }} />
+              </FormGroup>
+            </Menu>
+          }
 
-                <MenuItem onClick={handleOpenAddCost} dense>
-                  <ListItemIcon>
-                    <AddCard />
-                  </ListItemIcon>
-                  <ListItemText>Add Additional Cost</ListItemText>
-                </MenuItem>
-              </Menu>
-            </>
-
-          )}
         </Box>
       </Box>
     </Box>
