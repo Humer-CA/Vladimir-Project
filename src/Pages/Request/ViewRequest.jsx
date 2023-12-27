@@ -34,7 +34,7 @@ import {
     useGetRequestContainerAllApiQuery,
 } from "../../Redux/Query/Request/RequestContainer";
 import { closeConfirm, onLoading, openConfirm } from "../../Redux/StateManagement/confirmSlice";
-import { usePatchApprovalStatusApiMutation } from "../../Redux/Query/Approving/Approval";
+import { useLazyGetNextRequestQuery, usePatchApprovalStatusApiMutation } from "../../Redux/Query/Approving/Approval";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
 
 
@@ -42,6 +42,8 @@ const ViewRequest = (props) => {
 
     const { approving } = props
     const { state: transactionData } = useLocation();
+
+    console.log(transactionData)
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -65,6 +67,8 @@ const ViewRequest = (props) => {
         { refetchOnMountOrArgChange: true }
     );
 
+    const [getNextRequest, { isLoading: isNextRequestLoading }] =
+        useLazyGetNextRequestQuery();
 
     // Table Sorting --------------------------------
     const [order, setOrder] = useState("desc");
@@ -92,9 +96,8 @@ const ViewRequest = (props) => {
         setOrderBy(property);
     };
 
-    console.log(transactionData)
-
     const onApprovalApproveHandler = (id) => {
+        console.log(id)
         dispatch(
             openConfirm({
                 icon: Help,
@@ -130,8 +133,12 @@ const ViewRequest = (props) => {
                                 duration: 5000,
                             })
                         );
+                        console.log(result);
+                        const next = await getNextRequest().unwrap();
 
-                        dispatch(closeConfirm());
+                        // console.log(next)
+                        navigate(`/approving/${next?.[0].transaction_number}`, { state: next?.[0], replace: true })
+                        // dispatch(closeConfirm());
                     } catch (err) {
                         if (err?.status === 422) {
                             dispatch(
@@ -198,8 +205,9 @@ const ViewRequest = (props) => {
                                 duration: 5000,
                             })
                         );
+                        const next = await getNextRequest().unwrap();
+                        navigate(`/approving/${next?.[0].transaction_number}`, { state: next?.[0], replace: true })
 
-                        dispatch(closeConfirm());
                     } catch (err) {
                         if (err?.status === 422) {
                             dispatch(
@@ -411,7 +419,7 @@ const ViewRequest = (props) => {
                                         variant="contained"
                                         size="small"
                                         color="secondary"
-                                        onClick={() => onApprovalApproveHandler(transactionData?.id)}
+                                        onClick={() => onApprovalApproveHandler(transactionData?.asset_approval_id)}
 
                                         startIcon={< Check color="primary" />}
                                     >
@@ -420,7 +428,7 @@ const ViewRequest = (props) => {
                                     <Button
                                         variant="contained"
                                         size="small"
-                                        onClick={() => onApprovalReturnHandler(transactionData?.id)}
+                                        onClick={() => onApprovalReturnHandler(transactionData?.asset_approval_id)}
                                         startIcon={<Undo sx={{ color: "#5f3030" }} />}
                                         sx={{ color: "white", backgroundColor: "error.main", ":hover": { backgroundColor: "error.dark" } }}
                                     >

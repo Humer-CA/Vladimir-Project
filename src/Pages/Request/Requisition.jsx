@@ -60,6 +60,7 @@ const Requisition = () => {
   const [status, setStatus] = useState("active");
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState([])
 
   const [transactionIdData, setTransactionIdData] = useState();
 
@@ -120,6 +121,7 @@ const Requisition = () => {
       per_page: perPage,
       status: status,
       search: search,
+      filter: filter,
     },
     { refetchOnMountOrArgChange: true }
   );
@@ -240,7 +242,8 @@ const Requisition = () => {
               onSearchChange={setSearch}
               onSetPage={setPage}
               requestFilter
-              // onAdd={() => {}}
+              setFilter={setFilter}
+              filter={filter}
               hideArchive
             />
 

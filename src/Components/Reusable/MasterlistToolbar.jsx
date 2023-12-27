@@ -76,7 +76,9 @@ const MasterlistToolbar = (props) => {
     hideArchive,
     faStatus,
     handleAddRequest,
-    requestFilter
+    requestFilter,
+    setFilter,
+    filter
   } = props;
 
   const dispatch = useDispatch();
@@ -183,6 +185,15 @@ const MasterlistToolbar = (props) => {
 
   const handleScan = () => {
     dispatch(openScan());
+  };
+
+  const handleFilterChange = (value) => {
+    // console.log(value)
+    if (filter.includes(value)) {
+      setFilter(filter.filter((filter) => filter !== value));
+    } else {
+      setFilter([...filter, value]);
+    }
   };
 
   return (
@@ -483,22 +494,80 @@ const MasterlistToolbar = (props) => {
                 </Stack>
                 <Divider />
                 <MenuItem dense>
-                  <FormControlLabel control={<Checkbox size="small" />} label="For Approval" />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        onChange={() => handleFilterChange("For Approval")}
+                        checked={filter.includes("For Approval")} />
+                    }
+                    label="For Approval" />
                 </MenuItem>
+
                 <MenuItem dense>
-                  <FormControlLabel control={<Checkbox size="small" />} label="Inputing of PR No." />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        onChange={() => handleFilterChange("For PR")}
+                        checked={filter.includes("For PR")} />
+                    }
+                    label="For PR" />
                 </MenuItem>
+
                 <MenuItem dense>
-                  <FormControlLabel control={<Checkbox size="small" />} label="Asset Tagging" />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        onChange={() => handleFilterChange("For PO")}
+                        checked={filter.includes("For PO")} />
+                    }
+                    label="For PO" />
                 </MenuItem>
+
                 <MenuItem dense>
-                  <FormControlLabel control={<Checkbox size="small" />} label="Ready to Pickup" />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        onChange={() => handleFilterChange("For Tagging")}
+                        checked={filter.includes("For Tagging")} />
+                    }
+                    label="For Tagging" />
                 </MenuItem>
+
                 <MenuItem dense>
-                  <FormControlLabel control={<Checkbox size="small" />} label="Released" />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        onChange={() => handleFilterChange("For Pickup")}
+                        checked={filter.includes("For Pickup")} />
+                    }
+                    label="For Pickup" />
                 </MenuItem>
+
                 <MenuItem dense>
-                  <FormControlLabel control={<Checkbox size="small" />} label="Returned" />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        onChange={() => handleFilterChange("Released")}
+                        checked={filter.includes("Released")} />
+                    }
+                    label="Released" />
+                </MenuItem>
+
+                <MenuItem dense>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        onChange={() => handleFilterChange("Returned")}
+                        checked={filter.includes("Returned")} />
+                    }
+                    label="Returned" />
                 </MenuItem>
 
               </FormGroup>

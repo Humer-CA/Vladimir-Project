@@ -27,13 +27,13 @@ export const requisitionApi = createApi({
   endpoints: (builder) => ({
     getRequisitionApi: builder.query({
       query: (params) =>
-        `asset-request?&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
+        `asset-request?&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}&filter=${params.filter}`,
       providesTags: ["Requisition"],
     }),
 
     getRequisitionMonitoringApi: builder.query({
       query: (params) =>
-        `asset-request?&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}&for_monitoring=1`,
+        `asset-request?&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}&for_monitoring=1&filter=${params.filter}`,
       providesTags: ["Requisition"],
     }),
 

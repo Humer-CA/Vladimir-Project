@@ -63,6 +63,7 @@ const RequestMonitoring = () => {
   const [status, setStatus] = useState("active");
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState([]);
   const [urlPath, setUrlPath] = useState(true);
   const [transactionIdData, setTransactionIdData] = useState();
 
@@ -126,6 +127,7 @@ const RequestMonitoring = () => {
       per_page: perPage,
       status: status,
       search: search,
+      filter: filter,
     },
     { refetchOnMountOrArgChange: true }
   );
@@ -278,6 +280,8 @@ const RequestMonitoring = () => {
               onSearchChange={setSearch}
               onSetPage={setPage}
               requestFilter
+              setFilter={setFilter}
+              filter={filter}
               hideArchive
             />
             {/* 

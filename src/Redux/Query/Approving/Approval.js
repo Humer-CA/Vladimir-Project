@@ -41,6 +41,10 @@ export const approvalApi = createApi({
       }),
       invalidatesTags: ["Approval"],
     }),
+
+    getNextRequest: builder.query({
+      query: () => `/next-request`,
+    }),
   }),
 });
 
@@ -49,4 +53,5 @@ export const {
   useGetApprovalAllApiQuery,
   useGetApprovalIdApiQuery,
   usePatchApprovalStatusApiMutation,
+  useLazyGetNextRequestQuery,
 } = approvalApi;

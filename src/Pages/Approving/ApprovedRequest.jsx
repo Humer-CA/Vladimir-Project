@@ -189,7 +189,7 @@ const PendingRequest = () => {
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell-category">
+                    {/* <TableCell className="tbl-cell-category">
                       <TableSortLabel
                         active={orderBy === `requestor`}
                         direction={orderBy === `requestor` ? order : `asc`}
@@ -197,7 +197,7 @@ const PendingRequest = () => {
                       >
                         Approver
                       </TableSortLabel>
-                    </TableCell>
+                    </TableCell> */}
 
                     <TableCell className="tbl-cell-category">
                       <TableSortLabel
@@ -279,7 +279,7 @@ const PendingRequest = () => {
                                 </Typography>
                               </TableCell>
 
-                              <TableCell className="tbl-cell-category">
+                              {/* <TableCell className="tbl-cell-category">
                                 <Typography
                                   fontSize={14}
                                   fontWeight={600}
@@ -291,7 +291,7 @@ const PendingRequest = () => {
                                 <Typography fontSize={12} color={"gray"}>
                                   {data.approver?.firstname}
                                 </Typography>
-                              </TableCell>
+                              </TableCell> */}
 
                               <TableCell className="tbl-cell-category ">
                                 {data.number_of_item}

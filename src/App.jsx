@@ -273,6 +273,7 @@ const router = createBrowserRouter([
             path: "approving/:transaction_number",
             element: <ViewRequest />,
           },
+
           {
             path: "request-monitoring",
             element: <RequestMonitoring />,

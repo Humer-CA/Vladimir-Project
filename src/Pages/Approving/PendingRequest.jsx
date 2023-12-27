@@ -37,6 +37,7 @@ import {
 import { Help, Report, ReportProblem, Visibility } from "@mui/icons-material";
 import {
   useGetApprovalApiQuery,
+  useLazyGetNextRequestQuery,
   usePatchApprovalStatusApiMutation,
 } from "../../Redux/Query/Approving/Approval";
 import { openDrawer } from "../../Redux/StateManagement/booleanStateSlice";
@@ -117,8 +118,12 @@ const PendingRequest = () => {
     { refetchOnMountOrArgChange: true }
   );
 
+  console.log(approvalData)
+
   const [patchApprovalStatus, { isLoading }] =
     usePatchApprovalStatusApiMutation();
+
+
 
   // CONFIRMATION
   const onApprovalApproveHandler = (id) => {
@@ -160,6 +165,8 @@ const PendingRequest = () => {
             );
 
             dispatch(closeConfirm());
+
+
           } catch (err) {
             if (err?.status === 422) {
               dispatch(
@@ -319,7 +326,7 @@ const PendingRequest = () => {
                         Requestor
                       </TableSortLabel>
                     </TableCell>
-
+                    {/* 
                     <TableCell className="tbl-cell-category">
                       <TableSortLabel
                         active={orderBy === `requestor`}
@@ -328,7 +335,7 @@ const PendingRequest = () => {
                       >
                         Approver
                       </TableSortLabel>
-                    </TableCell>
+                    </TableCell> */}
 
                     <TableCell className="tbl-cell-category">
                       <TableSortLabel
@@ -404,7 +411,7 @@ const PendingRequest = () => {
                                 </Typography>
                               </TableCell>
 
-                              <TableCell className="tbl-cell-category">
+                              {/* <TableCell className="tbl-cell-category">
                                 <Typography
                                   fontSize={14}
                                   fontWeight={600}
@@ -416,7 +423,7 @@ const PendingRequest = () => {
                                 <Typography fontSize={12} color={"gray"}>
                                   {data.approver?.firstname}
                                 </Typography>
-                              </TableCell>
+                              </TableCell> */}
 
                               <TableCell className="tbl-cell-category ">
                                 {data.number_of_item}
