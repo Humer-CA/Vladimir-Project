@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Moment from "moment";
 import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
-import ActionMenu from "../../Components/Reusable/ActionMenu";
 import ErrorFetching from "../ErrorFetching";
 import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 import NoRecordsFound from "../../Layout/NoRecordsFound";
@@ -11,17 +10,8 @@ import CustomTablePagination from "../../Components/Reusable/CustomTablePaginati
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
 import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
-import {
-  useGetByTransactionApiQuery,
-  useGetRequisitionApiQuery,
   useGetRequisitionMonitoringApiQuery,
-  useLazyGetRequisitionAllApiQuery,
   useLazyGetRequisitionMonitoringApiQuery,
-  usePatchRequisitionStatusApiMutation,
   useVoidRequisitionApiMutation,
 } from "../../Redux/Query/Request/Requisition";
 
@@ -37,7 +27,6 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
   TableSortLabel,
   Tooltip,
@@ -45,15 +34,10 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import {
-  Help,
   IosShareRounded,
-  LibraryAdd,
-  Report,
-  ReportProblem,
   Visibility,
 } from "@mui/icons-material";
-import { Link, useNavigate } from "react-router-dom";
-import ProcessDetails from "../Approving/ProcessDetails";
+import { useNavigate } from "react-router-dom";
 import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
 import RequestTimeline from "./RequestTimeline";
 import useExcel from "../../Hooks/Xlsx";
@@ -69,7 +53,6 @@ const RequestMonitoring = () => {
 
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width: 500px)");
-  const drawer = useSelector((state) => state.booleanState.drawer);
   const dialog = useSelector((state) => state.booleanState.dialog);
 
   const { excelExport } = useExcel();
@@ -133,75 +116,7 @@ const RequestMonitoring = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const [postRequisitionStatusApi, { isLoading }] =
-    usePatchRequisitionStatusApiMutation();
-
-  const [voidRequisitionApi, { isVoidLoading }] =
-    useVoidRequisitionApiMutation();
-
   const dispatch = useDispatch();
-
-  const onVoidHandler = async (id) => {
-    dispatch(
-      openConfirm({
-        icon: Report,
-        iconColor: "warning",
-        message: (
-          <Box>
-            <Typography> Are you sure you want to</Typography>
-            <Typography
-              sx={{
-                display: "inline-block",
-                color: "secondary.main",
-                fontWeight: "bold",
-              }}
-            >
-              VOID
-            </Typography>{" "}
-            this Data?
-          </Box>
-        ),
-
-        onConfirm: async () => {
-          try {
-            dispatch(onLoading());
-            let result = await voidRequisitionApi({
-              id: id,
-              transaction_number: id,
-            }).unwrap();
-
-            dispatch(
-              openToast({
-                message: result.message,
-                duration: 5000,
-              })
-            );
-
-            dispatch(closeConfirm());
-          } catch (err) {
-            console.log(err);
-            if (err?.status === 422) {
-              dispatch(
-                openToast({
-                  message: err.data.message,
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            } else if (err?.status !== 422) {
-              dispatch(
-                openToast({
-                  message: "Something went wrong. Please try again.",
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            }
-          }
-        },
-      })
-    );
-  };
 
   const onSetPage = () => {
     setPage(1);
@@ -232,11 +147,11 @@ const RequestMonitoring = () => {
           "Quantity of PR": item?.item_count,
           Status: item?.status,
           "Current Approver": `${item?.current_approver?.firstname} ${item?.current_approver?.lastname}`,
-          "Created At": moment(item?.created_at).format("MMM DD, YYYY"),
+          "Date Requested": moment(item?.created_at).format("MMM DD, YYYY"),
         };
       });
 
-      const exportTitle = `Vladimir-Request_${moment().format("MMM-DD-YYYY")}`;
+      const exportTitle = `Vladimir-Request`;
 
       await excelExport(newObj, exportTitle);
     } catch (err) {
@@ -260,9 +175,6 @@ const RequestMonitoring = () => {
       }
     }
   };
-
-
-
 
   const handleEditRequisition = (data) => {
     navigate(
@@ -297,22 +209,6 @@ const RequestMonitoring = () => {
               filter={filter}
               hideArchive
             />
-            {/* 
-            <Box className="masterlist-toolbar__addBtn" sx={{ mt: 0.25 }}>
-              <Button
-                onClick={handleAddRequisition}
-                variant="contained"
-                startIcon={isSmallScreen ? null : <LibraryAdd />}
-                size="small"
-                sx={isSmallScreen ? { minWidth: "50px", px: 0 } : null}
-              >
-                {isSmallScreen ? (
-                  <LibraryAdd color="black" sx={{ fontSize: "20px" }} />
-                ) : (
-                  "Add"
-                )}
-              </Button>
-            </Box> */}
 
             <Box>
               <TableContainer className="mcontainer__th-body">
@@ -326,15 +222,6 @@ const RequestMonitoring = () => {
                         },
                       }}
                     >
-                      {/* <TableCell className="tbl-cell text-center">
-                        <TableSortLabel
-                          active={orderBy === `id`}
-                          direction={orderBy === `id` ? order : `asc`}
-                          onClick={() => onSort(`id`)}
-                        >
-                          ID No.
-                        </TableSortLabel>
-                      </TableCell> */}
 
                       <TableCell className="tbl-cell">
                         <TableSortLabel
@@ -398,7 +285,6 @@ const RequestMonitoring = () => {
                         </TableSortLabel>
                       </TableCell>
 
-                      {/* <TableCell className="tbl-cell">Action</TableCell> */}
                     </TableRow>
                   </TableHead>
 
@@ -419,9 +305,6 @@ const RequestMonitoring = () => {
                                   },
                                 }}
                               >
-                                {/* <TableCell className="tbl-cell tr-cen-pad45">
-                                  {data.id}
-                                </TableCell> */}
                                 <TableCell className="tbl-cell text-weight">
                                   {data.transaction_number}
                                 </TableCell>
@@ -477,8 +360,6 @@ const RequestMonitoring = () => {
                                       variant="filled"
                                       sx={{
                                         backgroundColor: "error.light",
-                                        // borderColor: "#fc3e3e34",
-                                        // color: "error.light",
                                         color: "white",
                                         fontSize: "0.7rem",
                                         px: 1,
@@ -493,15 +374,6 @@ const RequestMonitoring = () => {
                                     "MMM DD, YYYY"
                                   )}
                                 </TableCell>
-                                {/* <TableCell className="tbl-cell ">
-                                  <ActionMenu
-                                    status={data.status}
-                                    data={data}
-                                    hideArchive
-                                    showVoid
-                                    onVoidHandler={onVoidHandler}
-                                  />
-                                </TableCell> */}
                               </TableRow>
                             ))}
                       </>
