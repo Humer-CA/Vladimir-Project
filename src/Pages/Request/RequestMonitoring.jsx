@@ -65,7 +65,6 @@ const RequestMonitoring = () => {
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState([]);
-  const [urlPath, setUrlPath] = useState(true);
   const [transactionIdData, setTransactionIdData] = useState();
 
   const navigate = useNavigate();
