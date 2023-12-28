@@ -822,10 +822,10 @@ const AddFixedAsset = (props) => {
                     helperText={errors?.sub_capex_id?.message}
                   />
                 )}
-                // onChange={(_, value) => {
-                //   setValue("project_name", value.project_name);
-                //   return value;
-                // }}
+              // onChange={(_, value) => {
+              //   setValue("project_name", value.project_name);
+              //   return value;
+              // }}
               />
             )}
 
@@ -1604,12 +1604,12 @@ const AddFixedAsset = (props) => {
                   const today = new Date();
                   const monthsDepreciated =
                     selectedDate.getFullYear() === today.getFullYear() &&
-                    selectedDate.getMonth() === today.getMonth()
+                      selectedDate.getMonth() === today.getMonth()
                       ? 0
                       : moment().diff(
-                          moment(selectedDate).add(1, "months"),
-                          "months"
-                        ) + 1;
+                        moment(selectedDate).add(1, "months"),
+                        "months"
+                      ) + 1;
                   setValue("months_depreciated", monthsDepreciated);
                   return e;
                 }}
@@ -1703,11 +1703,11 @@ const AddFixedAsset = (props) => {
                   }}
                   thousandSeparator
                   fullWidth
-                  // onChange={(_, value) => {
-                  //   setValue("scrap_value", 0);
-                  //   setValue("depreciable_basis", watch("acquisition_cost"));
-                  //   return value;
-                  // }}
+                // onChange={(_, value) => {
+                //   setValue("scrap_value", 0);
+                //   setValue("depreciable_basis", watch("acquisition_cost"));
+                //   return value;
+                // }}
                 />
 
                 <CustomNumberField
@@ -1744,10 +1744,10 @@ const AddFixedAsset = (props) => {
                 fullWidth
                 error={!!errors?.depreciable_basis}
                 helperText={errors?.depreciable_basis?.message}
-                // isAllowed={(values) => {
-                //   const { floatValue } = values;
-                //   return floatValue >= 1;
-                // }}
+              // isAllowed={(values) => {
+              //   const { floatValue } = values;
+              //   return floatValue >= 1;
+              // }}
               />
             )}
 
@@ -1855,7 +1855,7 @@ const AddFixedAsset = (props) => {
           variant="contained"
           size="small"
           loading={isUpdateLoading || isPostLoading}
-          // disabled={watch("release_date") === null}
+        // disabled={watch("release_date") === null}
         >
           {data.status ? "Update" : "Create"}
         </LoadingButton>

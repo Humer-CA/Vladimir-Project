@@ -215,8 +215,17 @@ const RequestMonitoring = () => {
 
   const handleExport = async () => {
     try {
-      const res = await requestDataTrigger().unwrap();
-      const newObj = res.map((item) => {
+      const apiParams = {
+        page: page,
+        per_page: perPage,
+        status: status,
+        search: search,
+        filter: filter,
+      };
+
+      const res = await requestDataTrigger(apiParams).unwrap();
+      console.log(res)
+      const newObj = res?.data?.map((item) => {
         return {
           // ID: item?.id,
           "Transaction No.": item?.transaction_number,
@@ -228,7 +237,9 @@ const RequestMonitoring = () => {
         };
       });
 
-      await excelExport(newObj, "Vladimir-Request.xlsx");
+      const exportTitle = `Vladimir-Request_${moment().format("MMM-DD-YYYY")}`;
+
+      await excelExport(newObj, exportTitle);
     } catch (err) {
       if (err?.status === 422) {
         dispatch(
@@ -246,6 +257,7 @@ const RequestMonitoring = () => {
             variant: "error",
           })
         );
+        console.log(err)
       }
     }
   };

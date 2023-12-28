@@ -53,5 +53,6 @@ export const {
   useGetApprovalAllApiQuery,
   useGetApprovalIdApiQuery,
   usePatchApprovalStatusApiMutation,
+  useGetNextRequestQuery,
   useLazyGetNextRequestQuery,
 } = approvalApi;

@@ -21,10 +21,11 @@ const CustomTablePagination = (props) => {
         5,
         10,
         15,
-        {
-          label: "All",
-          value: parseInt(total),
-        },
+        100,
+        // {
+        //   label: "All",
+        //   value: parseInt(total),
+        // },
       ]}
       count={success ? total : 0}
       page={success ? current_page - 1 : 0}

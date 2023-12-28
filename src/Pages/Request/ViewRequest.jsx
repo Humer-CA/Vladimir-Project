@@ -34,7 +34,7 @@ import {
     useGetRequestContainerAllApiQuery,
 } from "../../Redux/Query/Request/RequestContainer";
 import { closeConfirm, onLoading, openConfirm } from "../../Redux/StateManagement/confirmSlice";
-import { useLazyGetNextRequestQuery, usePatchApprovalStatusApiMutation } from "../../Redux/Query/Approving/Approval";
+import { useGetNextRequestQuery, useLazyGetNextRequestQuery, usePatchApprovalStatusApiMutation } from "../../Redux/Query/Approving/Approval";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
 
 
@@ -60,11 +60,18 @@ const ViewRequest = (props) => {
     const {
         data: transactionDataApi = [],
         isLoading: isTransactionLoading,
+        isSuccess: isTransactionSuccess,
         refetch: isTransactionRefetch,
     } = useGetByTransactionApiQuery(
         { transaction_number: transactionData?.transaction_number },
         { refetchOnMountOrArgChange: true }
     );
+
+    const {
+        data: nextDataApi,
+        isLoading: isNextDataLoading,
+        refetch: isNextDataRefetch,
+    } = useGetNextRequestQuery({ refetchOnMountOrArgChange: true });
 
     const [getNextRequest, { data: nextData, isLoading: isNextRequestLoading }] =
         useLazyGetNextRequestQuery();
@@ -133,14 +140,12 @@ const ViewRequest = (props) => {
                         );
                         // console.log(result);
                         const next = await getNextRequest().unwrap();
-                        const defaultTable = `/approving`
-                        if (next.length === 0) {
-                            navigate(defaultTable)
-                        }
                         navigate(`/approving/${next?.[0].transaction_number}`, { state: next?.[0], replace: true })
 
                     } catch (err) {
-                        if (err?.status === 422) {
+                        if (err?.status === 404) {
+                            navigate(`/approving`)
+                        } else if (err?.status === 422) {
                             dispatch(
                                 openToast({
                                     // message: err.data.message,
@@ -205,13 +210,12 @@ const ViewRequest = (props) => {
                             })
                         );
                         const next = await getNextRequest().unwrap();
-                        if (nextData.length === 0) {
-                            navigate(`/approving`);
-                        } else {
-                            navigate(`/approving/${next?.[0].transaction_number}`, { state: next?.[0], replace: true })
-                        }
+                        navigate(`/approving/${next?.[0].transaction_number}`, { state: next?.[0], replace: true })
+
                     } catch (err) {
-                        if (err?.status === 422) {
+                        if (err?.status === 404) {
+                            navigate(`/approving`)
+                        } else if (err?.status === 422) {
                             dispatch(
                                 openToast({
                                     // message: err.data.message,

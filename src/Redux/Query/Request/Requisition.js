@@ -12,14 +12,6 @@ export const requisitionApi = createApi({
 
       headers.set("Authorization", `Bearer ${token}`);
       headers.set("Accept", `application/json`);
-
-      // if (endpoint === "postRequisitionApi") {
-      //   headers.set(
-      //     "Content-Type",
-      //     "multipart/form-data; charset=utf-8; boundary=---------------------------" +
-      //       Math.random().toString().substr(2)
-      //   );
-      // }
       return headers;
     },
   }),
