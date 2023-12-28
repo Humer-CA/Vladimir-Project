@@ -133,6 +133,7 @@ const Confirmation = (props) => {
 
           <CustomTextField
             control={control}
+            required
             name="remarks"
             label="Remarks"
             type="text"

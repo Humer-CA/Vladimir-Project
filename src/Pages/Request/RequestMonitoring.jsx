@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Moment from "moment";
 import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
 import ActionMenu from "../../Components/Reusable/ActionMenu";
@@ -20,6 +20,7 @@ import {
   useGetRequisitionApiQuery,
   useGetRequisitionMonitoringApiQuery,
   useLazyGetRequisitionAllApiQuery,
+  useLazyGetRequisitionMonitoringApiQuery,
   usePatchRequisitionStatusApiMutation,
   useVoidRequisitionApiMutation,
 } from "../../Redux/Query/Request/Requisition";
@@ -112,7 +113,8 @@ const RequestMonitoring = () => {
     setPage(page + 1);
   };
 
-  const [requestDataTrigger] = useLazyGetRequisitionAllApiQuery();
+  const [requestDataTrigger] = useLazyGetRequisitionMonitoringApiQuery();
+  // const [requestDataTrigger] = useLazyGetRequisitionAllApiQuery();
 
   const {
     data: requisitionData,

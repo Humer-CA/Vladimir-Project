@@ -118,7 +118,7 @@ const PendingRequest = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  console.log(approvalData)
+  // console.log(approvalData)
 
   const [patchApprovalStatus, { isLoading }] =
     usePatchApprovalStatusApiMutation();
@@ -244,7 +244,9 @@ const PendingRequest = () => {
                   variant: "error",
                 })
               );
+
             } else if (err?.status !== 422) {
+              console.log(err)
               dispatch(
                 openToast({
                   message: "Something went wrong. Please try again.",

@@ -246,7 +246,7 @@ const Capex = () => {
             Status: item.is_active === 1 ? "Active" : "Deactivated",
           };
         }
-      });
+      }).flat();
 
       excelExport(exportData, `Vladimir-Capex.xlsx`);
     } catch (err) {
@@ -283,8 +283,8 @@ const Capex = () => {
               onStatusChange={setStatus}
               onSearchChange={setSearch}
               onSetPage={setPage}
-              onAdd={() => {}}
-              onImport={() => {}}
+              onAdd={() => { }}
+              onImport={() => { }}
             />
 
             <Box>

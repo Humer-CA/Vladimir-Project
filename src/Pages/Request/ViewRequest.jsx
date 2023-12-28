@@ -40,10 +40,9 @@ import { openToast } from "../../Redux/StateManagement/toastSlice";
 
 const ViewRequest = (props) => {
 
-    const { approving } = props
+    const { approving } = props;
     const { state: transactionData } = useLocation();
 
-    console.log(transactionData)
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -67,8 +66,9 @@ const ViewRequest = (props) => {
         { refetchOnMountOrArgChange: true }
     );
 
-    const [getNextRequest, { isLoading: isNextRequestLoading }] =
+    const [getNextRequest, { data: nextData, isLoading: isNextRequestLoading }] =
         useLazyGetNextRequestQuery();
+
 
     // Table Sorting --------------------------------
     const [order, setOrder] = useState("desc");
@@ -97,7 +97,6 @@ const ViewRequest = (props) => {
     };
 
     const onApprovalApproveHandler = (id) => {
-        console.log(id)
         dispatch(
             openConfirm({
                 icon: Help,
@@ -126,19 +125,20 @@ const ViewRequest = (props) => {
                             action: "Approve",
                             asset_approval_id: id,
                         }).unwrap();
-
                         dispatch(
                             openToast({
                                 message: result.message,
                                 duration: 5000,
                             })
                         );
-                        console.log(result);
+                        // console.log(result);
                         const next = await getNextRequest().unwrap();
-
-                        // console.log(next)
+                        const defaultTable = `/approving`
+                        if (next.length === 0) {
+                            navigate(defaultTable)
+                        }
                         navigate(`/approving/${next?.[0].transaction_number}`, { state: next?.[0], replace: true })
-                        // dispatch(closeConfirm());
+
                     } catch (err) {
                         if (err?.status === 422) {
                             dispatch(
@@ -157,7 +157,6 @@ const ViewRequest = (props) => {
                                     variant: "error",
                                 })
                             );
-                            console.log(err)
                         }
                     }
                 },
@@ -206,8 +205,11 @@ const ViewRequest = (props) => {
                             })
                         );
                         const next = await getNextRequest().unwrap();
-                        navigate(`/approving/${next?.[0].transaction_number}`, { state: next?.[0], replace: true })
-
+                        if (nextData.length === 0) {
+                            navigate(`/approving`);
+                        } else {
+                            navigate(`/approving/${next?.[0].transaction_number}`, { state: next?.[0], replace: true })
+                        }
                     } catch (err) {
                         if (err?.status === 422) {
                             dispatch(
@@ -243,6 +245,7 @@ const ViewRequest = (props) => {
                     startIcon={<ArrowBackIosRounded color="secondary" />}
                     onClick={() => {
                         navigate(-1);
+                        // setApprovingValue("2");
                     }}
                     disableRipple
                     sx={{ width: "90px", marginLeft: "-15px", "&:hover": { backgroundColor: "transparent" } }}

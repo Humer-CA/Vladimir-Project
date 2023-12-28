@@ -40,7 +40,7 @@ import {
 } from "../../Redux/Query/Approving/Approval";
 import { useNavigate } from "react-router-dom";
 
-const PendingRequest = () => {
+const PendingRequest = (props) => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("Approved");
   const [perPage, setPerPage] = useState(5);

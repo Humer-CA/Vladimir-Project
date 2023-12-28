@@ -353,6 +353,8 @@ const AddRequisition = (props) => {
   useEffect(() => {
     if (transactionDataApi)
       transactionDataApi?.map((transaction) => {
+        setValue("type_of_request_id", transaction?.type_of_request);
+        setValue("attachment_type", transaction?.attachment_type);
         setValue("department_id", transaction?.department);
         setValue("company_id", transaction?.company);
         setValue("subunit_id", transaction?.subunit);
@@ -609,6 +611,8 @@ const AddRequisition = (props) => {
       .then(() => {
         dispatch(requestContainerApi.util.invalidateTags(["RequestContainer"]));
         reset({
+          type_of_request_id: formData?.type_of_request_id,
+          attachment_type: formData?.attachment_type,
           department_id: formData?.department_id,
           subunit_id: formData?.subunit_id,
           location_id: formData?.location_id,
@@ -732,7 +736,7 @@ const AddRequisition = (props) => {
           </Box>
         ),
 
-        onConfirm: async (transaction_number, reference_number) => {
+        onConfirm: async () => {
           try {
             dispatch(onLoading());
             let result = await voidRequestContainer(id).unwrap();
@@ -973,6 +977,7 @@ const AddRequisition = (props) => {
                     name="type_of_request_id"
                     options={typeOfRequestData}
                     loading={isTypeOfRequestLoading}
+                    disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi.length !== 0}
                     size="small"
                     getOptionLabel={(option) => option.type_of_request_name}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -991,6 +996,7 @@ const AddRequisition = (props) => {
                     control={control}
                     name="attachment_type"
                     options={attachmentType}
+                    disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi.length !== 0}
                     size="small"
                     renderInput={(params) => (
                       <TextField
@@ -1522,7 +1528,7 @@ const AddRequisition = (props) => {
                                   showDelete={transactionData ? false : true}
                                   editRequest={transactionDataApi[0]?.can_edit === 1 || (transactionData?.status === "Return") ? true : false}
                                   onDeleteHandler={onDeleteHandler}
-                                  onVoidReferenceHandler={transactionData ? onVoidReferenceHandler : false}
+                                  onVoidReferenceHandler={transactionData === 1 ? onVoidReferenceHandler : false}
                                   onUpdateHandler={onUpdateHandler}
                                   onUpdateResetHandler={onUpdateResetHandler}
                                   setShowEdit={setShowEdit}

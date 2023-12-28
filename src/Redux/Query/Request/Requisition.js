@@ -138,6 +138,7 @@ export const requisitionApi = createApi({
 export const {
   useGetRequisitionApiQuery,
   useGetRequisitionMonitoringApiQuery,
+  useLazyGetRequisitionMonitoringApiQuery,
   useGetRequisitionAllApiQuery,
   useLazyGetRequisitionAllApiQuery,
   useGetRequisitionIdApiQuery,
