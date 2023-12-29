@@ -121,7 +121,7 @@ const Confirmation = (props) => {
       </DialogContent>
 
       {remarks && (
-        <Stack gap={1}>
+        <Stack gap={1} width="90%">
           <Typography
             fontFamily="Anton"
             fontWeight="bold"
@@ -140,6 +140,7 @@ const Confirmation = (props) => {
             color="secondary"
             size="small"
             fullWidth
+            multiline
             error={!!errors?.remarks}
             helperText={errors?.remarks?.message}
           />
@@ -152,17 +153,8 @@ const Confirmation = (props) => {
         justifyContent="center"
         flexDirection="row"
         gap={2}
-        marginTop={1.5}
+        marginTop={3}
       >
-        <Button
-          autoFocus
-          variant="outlined"
-          color="secondary"
-          onClick={handleClose}
-          disabled={loading === true}
-        >
-          No
-        </Button>
 
         <LoadingButton
           color="primary"
@@ -173,6 +165,16 @@ const Confirmation = (props) => {
         >
           Yes
         </LoadingButton>
+
+        <Button
+          autoFocus
+          variant="outlined"
+          color="secondary"
+          onClick={handleClose}
+          disabled={loading === true}
+        >
+          No
+        </Button>
       </Stack>
       {/* </DialogActions> */}
     </Box>
