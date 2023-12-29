@@ -49,12 +49,13 @@ const ActionMenu = (props) => {
     showVoid,
     showApprover,
     editRequest,
-    onVoidReferenceHandler,
-    setShowEdit
+    onDeleteReferenceHandler,
+    // setShowEdit
   } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -90,7 +91,7 @@ const ActionMenu = (props) => {
   };
 
   const handleVoidReference = () => {
-    onVoidReferenceHandler({ transaction_number: data?.transaction_number, reference_number: data?.reference_number });
+    onDeleteReferenceHandler({ transaction_number: data?.transaction_number, reference_number: data?.reference_number });
     handleClose();
   };
 
@@ -120,7 +121,7 @@ const ActionMenu = (props) => {
     // console.log(data);
     onUpdateHandler(data);
     handleClose();
-    setShowEdit(true);
+    // setShowEdit(true);
   };
 
   const handleEditNav = () => {
@@ -139,6 +140,15 @@ const ActionMenu = (props) => {
   //   dispatch(openDrawer());
   //   handleClose();
   // };
+
+  const renderMenuItem = (text, icon, onClick) => (
+    <MenuItem onClick={onClick} dense>
+      <ListItemIcon>{icon}</ListItemIcon>
+      <ListItemText disableTypography align="left">
+        {text}
+      </ListItemText>
+    </MenuItem>
+  );
 
   return (
     <Box>
@@ -161,7 +171,9 @@ const ActionMenu = (props) => {
           TransitionComponent={Fade}
           disablePortal
         >
+
           {status === "active" && !hideEdit && (
+
             <MenuItem onClick={!showEditNav ? handleEdit : handleEditNav} dense>
               <ListItemIcon>
                 <BorderColor />
@@ -171,6 +183,7 @@ const ActionMenu = (props) => {
               </ListItemText>
             </MenuItem>
           )}
+
           {editRequest && (
             <MenuItem onClick={handleEditRequest} dense>
               <ListItemIcon>
@@ -224,13 +237,13 @@ const ActionMenu = (props) => {
             </MenuItem>
           )}
 
-          {onVoidReferenceHandler && (
+          {onDeleteReferenceHandler && (
             <MenuItem onClick={handleVoidReference} dense>
               <ListItemIcon>
-                <Cancel />
+                <Delete />
               </ListItemIcon>
               <ListItemText disableTypography align="left">
-                Void
+                Delete
               </ListItemText>
             </MenuItem>
           )}

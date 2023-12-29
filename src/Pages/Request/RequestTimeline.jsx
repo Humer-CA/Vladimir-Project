@@ -11,6 +11,8 @@ const RequestTimeline = (props) => {
     const { data: transactionData } = props
     const dispatch = useDispatch();
 
+    console.log(transactionData?.history.length)
+
     return (
         <Box className='timelineSteps'>
             <IconButton onClick={() => dispatch(closeDialog())} sx={{ position: "absolute", top: 10, right: 10 }}>
@@ -35,16 +37,16 @@ const RequestTimeline = (props) => {
                         <Step key={label} last>
                             <StepLabel color={transactionData?.action === "Returned" ? "error.main" : null}
                                 sx={{ ".MuiStepIcon-root.Mui-completed": { color: "success.main" } }}>
-                                <Typography fontSize={10} marginTop="-10px" fontWeight={600} textTransform="uppercase">
+                                <Typography fontSize={10} marginTop="-10px" fontWeight={600} textTransform="uppercase" minWidth={80}>
                                     {label}
                                 </Typography>
                             </StepLabel>
                         </Step>
                     ))}
                 </Stepper>
-
-                <Divider width="100%" sx={{ pt: 0.5, }} />
             </Box>
+
+            <Divider width="100%" sx={{ mb: 1.5, width: "90%", alignSelf: "center" }} />
 
             <Stack sx={{ mt: -1.5, }} width="100%">
                 <Stack flexDirection="row" alignItems="center" justifyContent="center" gap={1} mb={2} mt={1} >
@@ -86,17 +88,17 @@ const RequestTimeline = (props) => {
                         (transactionData?.history.toReversed().map((item, index) => (
                             <Stepper
                                 key={index}
-                                activeStep={transactionData?.history.length === 0 ? 0 : transactionData?.history.length}
+                                // activeStep={transactionData?.history.length === 0 ? 0 : transactionData?.history.length}
+                                activeStep={transactionData?.history.length}
                                 orientation='vertical'
                                 direction="up"
                                 sx={{ width: "100%" }}
                             >
                                 <Step key={index} last>
-                                    <Box position="relative">
-
+                                    <Stack position="relative" justifyContent="center" flexDirection="column">
                                         {/* Date and Time */}
-                                        <Stack className="timelineSteps__dateAndTime" >
-                                            <Typography fontSize="12px" color="secondary" fontWeight={500} >
+                                        <Stack className="timelineSteps__dateAndTime">
+                                            <Typography fontSize="12px" color="secondary" fontWeight={600} >
                                                 {Moment(transactionData.created_at).format("ll")}
                                             </Typography>
                                             <Typography fontSize="12px" color="gray" marginTop="-2px">
@@ -104,32 +106,34 @@ const RequestTimeline = (props) => {
                                             </Typography>
                                         </Stack>
 
-                                        <Box>
-                                            <StepLabel icon={item?.action === "Declined" || item?.action === "Returned"
-                                                ? <Error sx={{ color: "error.light" }} />
-                                                : (item?.action === "Approved"
-                                                    ? <FactCheck sx={{ color: "success.main" }} />
-                                                    : <CheckCircleOutlineTwoTone sx={{ color: "secondary.main" }} />)}>
-                                                <Box className="timelineSteps__box" sx={{ backgroundColor: (item?.action === "Declined" || item?.action === "Returned") ? "#ff000017" : (item?.action === "Approved" ? "#00800016" : "#0088880f") }} ml={1}>
-                                                    <Divider orientation="vertical" sx={{ backgroundColor: (item?.action === "Declined" || item?.action === "Returned") ? "error.light" : (item?.action === "Approved" ? "success.light" : "secondary.light"), width: "3px", height: "30px", ml: "5px", borderRadius: "20px" }} />
-                                                    <Box>
-                                                        <Typography fontSize={13} fontWeight={600} textTransform="uppercase">
-                                                            {item?.action}
-                                                        </Typography>
-                                                        <Typography fontSize={12} color="text.light">
-                                                            {`(${item?.causer?.employee_id}) - ${item?.causer?.firstname}  ${item?.causer?.lastname}`}
-                                                        </Typography>
-                                                        <Typography fontSize={12} >
-                                                            {item?.remarks ? `Remarks: ${item?.remarks}` : null}
-                                                        </Typography>
-                                                    </Box>
+                                        {/* <Box> */}
+                                        <StepLabel icon={item?.action === "Declined" || item?.action === "Returned"
+                                            ? <Error sx={{ color: "error.light" }} />
+                                            : (item?.action === "Approved"
+                                                ? <FactCheck sx={{ color: "success.main" }} />
+                                                : <CheckCircleOutlineTwoTone sx={{ color: "secondary.main" }} />)}>
+                                            <Box className="timelineSteps__box" sx={{ backgroundColor: (item?.action === "Declined" || item?.action === "Returned") ? "#ff000017" : (item?.action === "Approved" ? "#00800016" : "#0088880f") }} ml={1}>
+                                                <Divider orientation="vertical" sx={{ backgroundColor: (item?.action === "Declined" || item?.action === "Returned") ? "error.light" : (item?.action === "Approved" ? "success.light" : "secondary.light"), width: "3px", height: "30px", ml: "5px", borderRadius: "20px", border: "none" }} />
+                                                <Box>
+                                                    <Typography fontSize={13} fontWeight={600} textTransform="uppercase">
+                                                        {item?.action}
+                                                    </Typography>
+                                                    <Typography fontSize={12} color="text.light">
+                                                        {`(${item?.causer?.employee_id}) - ${item?.causer?.firstname}  ${item?.causer?.lastname}`}
+                                                    </Typography>
+                                                    <Typography fontSize={12} >
+                                                        {item?.remarks ? `Remarks: ${item?.remarks}` : null}
+                                                    </Typography>
                                                 </Box>
-                                            </StepLabel>
-                                        </Box>
-                                    </Box>
+                                            </Box>
+                                        </StepLabel>
+                                        {/* </Box> */}
+                                        <Divider sx={{ position: "absolute", inset: 0, margin: "auto", ml: "-100%", borderColor: "background.light" }} />
+                                    </Stack>
                                 </Step>
                             </Stepper>
                         )))}
+
                 </Stack>
             </Stack >
         </Box >

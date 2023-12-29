@@ -107,18 +107,18 @@ export const requisitionApi = createApi({
 
     voidRequisitionApi: builder.mutation({
       query: (body) => ({
-        url: `/void-request/${body?.transaction_number}`,
-        method: "PATCH",
+        url: `/delete-request/${body?.transaction_number}`,
+        method: "DELETE",
         body,
       }),
 
       invalidatesTags: ["Requisition"],
     }),
 
-    voidRequisitionReferenceApi: builder.mutation({
+    deleteRequisitionReferenceApi: builder.mutation({
       query: (body) => ({
-        url: `/void-request/${body?.transaction_number}/${body?.reference_number}`,
-        method: "PATCH",
+        url: `/delete-request/${body?.transaction_number}/${body?.reference_number}`,
+        method: "DELETE",
         // body,
       }),
 
@@ -140,5 +140,5 @@ export const {
   usePostResubmitRequisitionApiMutation,
   useUpdateRequisitionApiMutation,
   useVoidRequisitionApiMutation,
-  useVoidRequisitionReferenceApiMutation,
+  useDeleteRequisitionReferenceApiMutation,
 } = requisitionApi;

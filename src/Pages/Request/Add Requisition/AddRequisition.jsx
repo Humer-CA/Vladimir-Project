@@ -54,7 +54,7 @@ import {
   usePostRequisitionApiMutation,
   usePostResubmitRequisitionApiMutation,
   useUpdateRequisitionApiMutation,
-  useVoidRequisitionReferenceApiMutation,
+  useDeleteRequisitionReferenceApiMutation,
 } from "../../../Redux/Query/Request/Requisition";
 
 import { useGetTypeOfRequestAllApiQuery } from "../../../Redux/Query/Masterlist/TypeOfRequest";
@@ -143,7 +143,7 @@ const AddRequisition = (props) => {
     other_attachments: null,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [showEdit, setShowEdit] = useState(false)
+  // const [showEdit, setShowEdit] = useState(false)
 
   const { state: transactionData } = useLocation();
 
@@ -268,7 +268,7 @@ const AddRequisition = (props) => {
   const [upDateRequest, { data: updateRequestData }] = useUpdateRequestContainerApiMutation();
   const [deleteRequest, { data: deleteRequestData }] = useDeleteRequestContainerApiMutation();
   const [deleteAllRequest, { data: deleteAllRequestData }] = useDeleteRequestContainerAllApiMutation();
-  const [voidRequestContainer, { data: voidRequestContainerData }] = useVoidRequisitionReferenceApiMutation();
+  const [deleteRequestContainer, { data: deleteRequestContainerData }] = useDeleteRequisitionReferenceApiMutation();
 
   const {
     handleSubmit,
@@ -362,7 +362,7 @@ const AddRequisition = (props) => {
         setValue("account_title_id", transaction?.account_title);
         setValue("acquisition_details", transaction?.acquisition_details);
       })
-    setShowEdit(true)
+    // setShowEdit(true)
   }, [transactionDataApi])
 
   useEffect(() => {
@@ -624,7 +624,7 @@ const AddRequisition = (props) => {
           tool_of_trade: null,
           other_attachments: null,
         });
-        setShowEdit(false)
+        // setShowEdit(false)
       })
       .catch((err) => {
         console.log(err);
@@ -730,7 +730,7 @@ const AddRequisition = (props) => {
                 fontWeight: "bold",
               }}
             >
-              VOID
+              DELETE
             </Typography>{" "}
             this Data?
           </Box>
@@ -739,7 +739,7 @@ const AddRequisition = (props) => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            let result = await voidRequestContainer(id).unwrap();
+            let result = await deleteRequestContainer(id).unwrap();
             // console.log(result);
             dispatch(
               openToast({
@@ -937,6 +937,10 @@ const AddRequisition = (props) => {
       other_attachments: null,
     });
   };
+
+
+  console.log("TransactionData", transactionData)
+  console.log("DataAPI", transactionDataApi)
 
   return (
     <>
@@ -1528,10 +1532,10 @@ const AddRequisition = (props) => {
                                   showDelete={transactionData ? false : true}
                                   editRequest={transactionDataApi[0]?.can_edit === 1 || (transactionData?.status === "Return") ? true : false}
                                   onDeleteHandler={onDeleteHandler}
-                                  onVoidReferenceHandler={transactionData === 1 ? onVoidReferenceHandler : false}
+                                  onDeleteReferenceHandler={(transactionData?.item_count !== 1) ? (transactionDataApi?.length === 1 ? onVoidReferenceHandler : false) : false}
                                   onUpdateHandler={onUpdateHandler}
                                   onUpdateResetHandler={onUpdateResetHandler}
-                                  setShowEdit={setShowEdit}
+                                // setShowEdit={setShowEdit}
                                 />
                               </TableCell>
                             </TableRow>

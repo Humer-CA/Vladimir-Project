@@ -17,7 +17,6 @@ import {
   onLoading,
 } from "../../Redux/StateManagement/confirmSlice";
 import {
-  useGetByTransactionApiQuery,
   useGetRequisitionApiQuery,
   usePatchRequisitionStatusApiMutation,
   useVoidRequisitionApiMutation,
@@ -474,7 +473,7 @@ const Requisition = () => {
       <Dialog
         open={dialog}
         onClose={() => dispatch(closeDialog())}
-        PaperProps={{ sx: { borderRadius: "10px" } }}
+        PaperProps={{ sx: { borderRadius: "10px", maxWidth: "700px", } }}
       >
         <RequestTimeline
           data={transactionIdData}
