@@ -143,7 +143,7 @@ const AddRequisition = (props) => {
     other_attachments: null,
   });
   const [isLoading, setIsLoading] = useState(false);
-  // const [showEdit, setShowEdit] = useState(false)
+  const [updateToggle, setUpdateToggle] = useState(true)
 
   const { state: transactionData } = useLocation();
 
@@ -962,9 +962,7 @@ const AddRequisition = (props) => {
 
         <Box className="request mcontainer__wrapper" p={2} >
           {/* FORM */}
-          <Box
-          // sx={{ display: showEdit === false ? "block" : "none" }}
-          >
+          <Box>
             <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
               ASSET
             </Typography>
@@ -1369,12 +1367,12 @@ const AddRequisition = (props) => {
               variant="contained"
               type="submit"
               size="small"
-              disabled={watch("type_of_request_id") === null}
+              disabled={updateToggle}
               fullWidth
               sx={{ gap: 1 }}
             >
-              {transactionData ? <Update /> : <AddToPhotos />}{" "}
-              <Typography variant="p">{transactionData ? "UPDATE" : "ADD"}</Typography>
+              {transactionDataApi ? <Update /> : <AddToPhotos />}{" "}
+              <Typography variant="p">{transactionDataApi ? "UPDATE" : "ADD"}</Typography>
             </LoadingButton>
             <Divider orientation="vertical" />
           </Box>
@@ -1532,9 +1530,11 @@ const AddRequisition = (props) => {
                                   showDelete={transactionData ? false : true}
                                   editRequest={transactionDataApi[0]?.can_edit === 1 || (transactionData?.status === "Return") ? true : false}
                                   onDeleteHandler={onDeleteHandler}
-                                  onDeleteReferenceHandler={(transactionData?.item_count !== 1) ? (transactionDataApi?.length === 1 ? onVoidReferenceHandler : false) : false}
+                                  // onDeleteReferenceHandler={(transactionData?.item_count !== 1) ? (transactionDataApi?.length === 1 ? onVoidReferenceHandler : false) : false}
+                                  onDeleteReferenceHandler={(transactionData?.item_count !== 1) ? (transactionDataApi.length !== 1 ? onVoidReferenceHandler : false) : false}
                                   onUpdateHandler={onUpdateHandler}
                                   onUpdateResetHandler={onUpdateResetHandler}
+                                  setUpdateToggle={setUpdateToggle}
                                 // setShowEdit={setShowEdit}
                                 />
                               </TableCell>
