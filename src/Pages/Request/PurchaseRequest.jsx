@@ -51,6 +51,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
 import RequestTimeline from "./RequestTimeline";
+import { useGetPurchaseRequestApiQuery } from "../../Redux/Query/Request/PurchaseRequest";
 
 const PurchaseRequest = () => {
     const [search, setSearch] = useState("");
@@ -106,13 +107,13 @@ const PurchaseRequest = () => {
     };
 
     const {
-        data: requisitionData,
-        isLoading: requisitionLoading,
-        isSuccess: requisitionSuccess,
-        isError: requisitionError,
+        data: purchaseRequestData,
+        isLoading: purchaseRequestLoading,
+        isSuccess: purchaseRequestSuccess,
+        isError: purchaseRequestError,
         error: errorData,
         refetch,
-    } = useGetRequisitionApiQuery(
+    } = useGetPurchaseRequestApiQuery(
         {
             page: page,
             per_page: perPage,
@@ -122,93 +123,10 @@ const PurchaseRequest = () => {
         { refetchOnMountOrArgChange: true }
     );
 
-    const [postRequisitionStatusApi, { isLoading }] =
-        usePatchRequisitionStatusApiMutation();
-
-    const [voidRequisitionApi, { isVoidLoading }] =
-        useVoidRequisitionApiMutation();
-
     const dispatch = useDispatch();
-
-    const onVoidHandler = async (id) => {
-        dispatch(
-            openConfirm({
-                icon: Report,
-                iconColor: "warning",
-                message: (
-                    <Box>
-                        <Typography> Are you sure you want to</Typography>
-                        <Typography
-                            sx={{
-                                display: "inline-block",
-                                color: "secondary.main",
-                                fontWeight: "bold",
-                            }}
-                        >
-                            VOID
-                        </Typography>{" "}
-                        this Data?
-                    </Box>
-                ),
-
-                onConfirm: async () => {
-                    try {
-                        dispatch(onLoading());
-                        let result = await voidRequisitionApi({
-                            id: id,
-                            transaction_number: id,
-                        }).unwrap();
-
-                        dispatch(
-                            openToast({
-                                message: result.message,
-                                duration: 5000,
-                            })
-                        );
-
-                        dispatch(closeConfirm());
-                    } catch (err) {
-                        console.log(err);
-                        if (err?.status === 422) {
-                            dispatch(
-                                openToast({
-                                    message: err.data.message,
-                                    duration: 5000,
-                                    variant: "error",
-                                })
-                            );
-                        } else if (err?.status !== 422) {
-                            dispatch(
-                                openToast({
-                                    message: "Something went wrong. Please try again.",
-                                    duration: 5000,
-                                    variant: "error",
-                                })
-                            );
-                        }
-                    }
-                },
-            })
-        );
-    };
 
     const onSetPage = () => {
         setPage(1);
-    };
-
-    const handleViewTimeline = (data) => {
-        dispatch(openDialog());
-        setTransactionIdData(data)
-    };
-
-
-    const handleEditRequisition = (data) => {
-        navigate(
-            `/request-monitoring/${data.transaction_number}`,
-            {
-                state: { ...data },
-            },
-        );
     };
 
     return (
@@ -217,13 +135,13 @@ const PurchaseRequest = () => {
                 className="mcontainer__title"
                 sx={{ fontFamily: "Anton", fontSize: "2rem" }}
             >
-                Request Monitoring
+                Purchase Request
             </Typography>
-            {requisitionLoading && <MasterlistSkeleton onAdd={true} />}
-            {requisitionError && (
+            {purchaseRequestLoading && <MasterlistSkeleton onAdd={true} />}
+            {purchaseRequestError && (
                 <ErrorFetching refetch={refetch} error={errorData} />
             )}
-            {requisitionData && !requisitionError && (
+            {purchaseRequestData && !purchaseRequestError && (
                 <>
                     <Box className="mcontainer__wrapper">
                         <MasterlistToolbar
@@ -319,12 +237,12 @@ const PurchaseRequest = () => {
                                     </TableHead>
 
                                     <TableBody>
-                                        {requisitionData?.data?.length === 0 ? (
+                                        {purchaseRequestData?.data?.length === 0 ? (
                                             <NoRecordsFound />
                                         ) : (
                                             <>
-                                                {requisitionSuccess &&
-                                                    [...requisitionData?.data]
+                                                {purchaseRequestSuccess &&
+                                                    [...purchaseRequestData?.data]
                                                         ?.sort(comparator(order, orderBy))
                                                         ?.map((data) => (
                                                             <TableRow
@@ -425,10 +343,10 @@ const PurchaseRequest = () => {
                         </Box>
 
                         <CustomTablePagination
-                            total={requisitionData?.total}
-                            success={requisitionSuccess}
-                            current_page={requisitionData?.current_page}
-                            per_page={requisitionData?.per_page}
+                            total={purchaseRequestData?.total}
+                            success={purchaseRequestSuccess}
+                            current_page={purchaseRequestData?.current_page}
+                            per_page={purchaseRequestData?.per_page}
                             onPageChange={pageHandler}
                             onRowsPerPageChange={perPageHandler}
                         />
