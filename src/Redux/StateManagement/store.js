@@ -67,6 +67,7 @@ import { unitApproversApi } from "../Query/Settings/UnitApprovers";
 
 import { requisitionApi } from "../Query/Request/Requisition";
 import { requestContainerApi } from "../Query/Request/RequestContainer";
+import { purchaseRequestApi } from "../Query/Request/PurchaseRequest";
 
 import { approvalApi } from "../Query/Approving/Approval";
 import { requisitionSmsApi } from "../Query/Request/RequisitionSms";
@@ -141,6 +142,7 @@ export const store = configureStore({
     [requisitionApi.reducerPath]: requisitionApi.reducer,
     [requisitionSmsApi.reducerPath]: requisitionSmsApi.reducer,
     [requestContainerApi.reducerPath]: requestContainerApi.reducer,
+    [purchaseRequestApi.reducerPath]: purchaseRequestApi.reducer,
 
     // Approval
     [approvalApi.reducerPath]: approvalApi.reducer,
@@ -198,6 +200,7 @@ export const store = configureStore({
       requisitionApi.middleware,
       requisitionSmsApi.middleware,
       requestContainerApi.middleware,
+      purchaseRequestApi.middleware,
 
       // Approval
       approvalApi.middleware,
