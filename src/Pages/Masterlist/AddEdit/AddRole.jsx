@@ -385,11 +385,11 @@ const AddRole = (props) => {
           <FormControlLabel
             disabled={data.action === "view"}
             label="Sub Unit"
-            value="sub-unit"
+            value="subunit"
             control={
               <Checkbox
                 {...register("access_permission")}
-                checked={watch("access_permission")?.includes("sub-unit")}
+                checked={watch("access_permission")?.includes("subunit")}
               />
             }
           />
@@ -637,7 +637,7 @@ const AddRole = (props) => {
             control={
               <Checkbox
                 {...register("access_permission")}
-                checked={watch("access_permission")?.includes("pull-outpurchase-request")}
+                checked={watch("access_permission")?.includes("purchase-request")}
               />
             }
           />
@@ -1217,7 +1217,7 @@ const AddRole = (props) => {
             size="small"
             loading={isUpdateLoading || isPostLoading}
             disabled={
-              (errors?.role_name ? true : false) ||
+              // (errors?.role_name ? true : false) ||
               watch("role_name") === undefined ||
               watch("role_name") === "" ||
               watch("access_permission")?.length === 0 ||

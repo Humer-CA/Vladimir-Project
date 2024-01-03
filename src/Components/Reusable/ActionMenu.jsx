@@ -4,18 +4,15 @@ import { useNavigate, useLocation } from "react-router";
 import { useDispatch } from "react-redux";
 import { openDialog, openDrawer } from "../../Redux/StateManagement/booleanStateSlice";
 
-import { Box, IconButton, MenuItem, Menu, Fade, Divider, ListItemIcon, ListItemText, Button } from "@mui/material";
+import { Box, IconButton, MenuItem, Menu, Fade, ListItemIcon, ListItemText, } from "@mui/material";
 import {
   MoreVert,
   BorderColor,
   MoveToInbox,
   RestartAlt,
   Reply,
-  AddCircleOutline,
-  RemoveCircleOutline,
   Delete,
   DoneOutline,
-  DoNotDisturb,
   Cancel,
   Undo,
 } from "@mui/icons-material";
@@ -40,7 +37,6 @@ const ActionMenu = (props) => {
     status,
     faStatus,
     setSubCapexDialog,
-    // onAddMinorCategoryHandler,
     openCollapse,
     hideEdit,
     hideArchive,
@@ -51,6 +47,7 @@ const ActionMenu = (props) => {
     editRequest,
     onDeleteReferenceHandler,
     // setShowEdit
+    setUpdateToggle
   } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -120,6 +117,7 @@ const ActionMenu = (props) => {
   const handleEditRequest = () => {
     // console.log(data);
     onUpdateHandler(data);
+    setUpdateToggle(false)
     handleClose();
     // setShowEdit(true);
   };
@@ -134,12 +132,6 @@ const ActionMenu = (props) => {
     setSubCapexDialog(true);
     handleClose();
   };
-
-  // const handleAddMinorCategory = () => {
-  //   onAddMinorCategoryHandler(data);
-  //   dispatch(openDrawer());
-  //   handleClose();
-  // };
 
   const renderMenuItem = (text, icon, onClick) => (
     <MenuItem onClick={onClick} dense>

@@ -11,8 +11,6 @@ const RequestTimeline = (props) => {
     const { data: transactionData } = props
     const dispatch = useDispatch();
 
-    console.log(transactionData?.history.length)
-
     return (
         <Box className='timelineSteps'>
             <IconButton onClick={() => dispatch(closeDialog())} sx={{ position: "absolute", top: 10, right: 10 }}>
@@ -33,11 +31,11 @@ const RequestTimeline = (props) => {
 
             <Box className='timelineSteps__timeline' alignItems="flex-start">
                 <Stepper key={1} activeStep={transactionData ? transactionData?.process_count - 1 : 0} alternativeLabel>
-                    {(transactionData?.status === "Returned" ? ["Returned", ...transactionData?.steps] : transactionData?.steps).map((label) => (
+                    {(transactionData?.status === "Returned" ? ["Returned", ...transactionData?.steps] : transactionData?.steps).map((label, index) => (
                         <Step key={label} last>
-                            <StepLabel color={transactionData?.action === "Returned" ? "error.main" : null}
-                                sx={{ ".MuiStepIcon-root.Mui-completed": { color: "success.main" } }}>
-                                <Typography fontSize={10} marginTop="-10px" fontWeight={600} textTransform="uppercase" minWidth={80}>
+                            <StepLabel icon={transactionData?.status === "Returned" && index === 0 ? <Error /> : null}
+                                sx={{ ".MuiStepIconRoot.MuiCompleted": "success.main", ".Mui-active": { color: transactionData?.status === "Returned" && index === 0 ? "error.main" : null } }}>
+                                <Typography fontSize={10} marginTop="-10px" fontWeight={600} textTransform="uppercase" minWidth={80} >
                                     {label}
                                 </Typography>
                             </StepLabel>
