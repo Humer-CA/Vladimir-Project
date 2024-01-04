@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router";
 import { useDispatch } from "react-redux";
 import { openDialog, openDrawer } from "../../Redux/StateManagement/booleanStateSlice";
 
-import { Box, IconButton, MenuItem, Menu, Fade, ListItemIcon, ListItemText, } from "@mui/material";
+import { Box, IconButton, MenuItem, Menu, Fade, ListItemIcon, ListItemText } from "@mui/material";
 import {
   MoreVert,
   BorderColor,
@@ -47,7 +47,7 @@ const ActionMenu = (props) => {
     editRequest,
     onDeleteReferenceHandler,
     // setShowEdit
-    setUpdateToggle
+    setUpdateToggle,
   } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -78,7 +78,7 @@ const ActionMenu = (props) => {
 
   const handleDelete = () => {
     // console.log(data)
-    onDeleteHandler(data?.id || data?.subunit?.id)
+    onDeleteHandler(data?.id || data?.subunit?.id);
     handleClose();
   };
 
@@ -88,7 +88,10 @@ const ActionMenu = (props) => {
   };
 
   const handleVoidReference = () => {
-    onDeleteReferenceHandler({ transaction_number: data?.transaction_number, reference_number: data?.reference_number });
+    onDeleteReferenceHandler({
+      transaction_number: data?.transaction_number,
+      reference_number: data?.reference_number,
+    });
     handleClose();
   };
 
@@ -110,14 +113,14 @@ const ActionMenu = (props) => {
   const handleEdit = () => {
     // console.log(data);
     onUpdateHandler(data);
-    dispatch(openDrawer() || openDialog())
+    dispatch(openDrawer() || openDialog());
     handleClose();
   };
 
   const handleEditRequest = () => {
     // console.log(data);
     onUpdateHandler(data);
-    setUpdateToggle(false)
+    setUpdateToggle(false);
     handleClose();
     // setShowEdit(true);
   };
@@ -163,9 +166,7 @@ const ActionMenu = (props) => {
           TransitionComponent={Fade}
           disablePortal
         >
-
           {status === "active" && !hideEdit && (
-
             <MenuItem onClick={!showEditNav ? handleEdit : handleEditNav} dense>
               <ListItemIcon>
                 <BorderColor />
