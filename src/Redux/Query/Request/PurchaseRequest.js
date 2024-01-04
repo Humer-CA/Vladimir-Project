@@ -29,7 +29,7 @@ export const purchaseRequestApi = createApi({
       providesTags: ["PurchaseRequest"],
     }),
 
-    putPurchaseRequestApi: builder.mutation({
+    addPurchaseRequestApi: builder.mutation({
       query: (data) => ({
         url: `/adding-pr`,
         method: "PUT",
@@ -38,7 +38,7 @@ export const purchaseRequestApi = createApi({
       invalidatesTags: ["PurchaseRequest"],
     }),
 
-    putPurchaseRequestApi: builder.mutation({
+    removePurchaseRequestApi: builder.mutation({
       query: (body) => ({
         url: `/remove-pr/${body?.reference_number}`,
         method: "PUT",
@@ -53,4 +53,6 @@ export const {
   useGetPurchaseRequestAllApiQuery,
   useLazyGetPurchaseRequestAllApiQuery,
   useLazyGetPurchaseRequestApiQuery,
+  useAddPurchaseRequestApiMutation,
+  useRemovePurchaseRequestApiMutation,
 } = purchaseRequestApi;
