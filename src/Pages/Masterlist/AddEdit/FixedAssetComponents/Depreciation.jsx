@@ -7,14 +7,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import {
-  Box,
-  Button,
-  Card,
-  IconButton,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import { Box, Button, Card, IconButton, Typography, useMediaQuery } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Close, CurrencyExchangeRounded, Watch } from "@mui/icons-material";
 
@@ -25,10 +18,7 @@ import CustomDatePicker from "../../../../Components/Reusable/CustomDatePicker";
 
 const schema = yup.object().shape({
   id: yup.string(),
-  endDate: yup
-    .string()
-    .typeError("Please enter a validate date")
-    .label("End Date"),
+  endDate: yup.string().typeError("Please enter a validate date").label("End Date"),
 });
 
 const Depreciation = (props) => {
@@ -159,12 +149,7 @@ const Depreciation = (props) => {
             </Typography>
           </Box>
 
-          <IconButton
-            color="secondary"
-            variant="outlined"
-            onClick={handleClose}
-            sx={{ mr: "-15px", mt: "-25px" }}
-          >
+          <IconButton color="secondary" variant="outlined" onClick={handleClose} sx={{ mr: "-15px", mt: "-25px" }}>
             <Close size="small" />
           </IconButton>
         </Box>
@@ -235,7 +220,7 @@ const Depreciation = (props) => {
                 <Box className="tableCard__propertiesCapex">
                   Aquisition Cost:
                   <Typography className="tableCard__infoCapex" fontSize="14px">
-                    ₱{data.acquisition_cost.toLocaleString()}
+                    ₱{data.acquisition_cost?.toLocaleString()}
                   </Typography>
                 </Box>
 
@@ -249,14 +234,14 @@ const Depreciation = (props) => {
                 <Box className="tableCard__propertiesCapex">
                   Scrap Value:
                   <Typography className="tableCard__infoCapex" fontSize="14px">
-                    ₱{data.scrap_value.toLocaleString()}
+                    ₱{data.scrap_value?.toLocaleString()}
                   </Typography>
                 </Box>
 
                 <Box className="tableCard__propertiesCapex">
                   Depreciable Basis:
                   <Typography className="tableCard__infoCapex" fontSize="14px">
-                    ₱{data.depreciable_basis.toLocaleString()}
+                    ₱{data.depreciable_basis?.toLocaleString()}
                   </Typography>
                 </Box>
               </Box>
@@ -272,10 +257,7 @@ const Depreciation = (props) => {
                 mb: "10px",
               }}
             >
-              <Typography
-                color="secondary.main"
-                sx={{ fontFamily: "Anton", fontSize: "rem" }}
-              >
+              <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "rem" }}>
                 Formula
               </Typography>
 
@@ -285,8 +267,8 @@ const Depreciation = (props) => {
                   <Typography className="tableCard__info" fontSize="14px">
                     ₱
                     {postData
-                      ? postData?.data?.accumulated_cost.toLocaleString()
-                      : calcDepreApi?.data?.accumulated_cost.toLocaleString()}
+                      ? postData?.data?.accumulated_cost?.toLocaleString()
+                      : calcDepreApi?.data?.accumulated_cost?.toLocaleString()}
                   </Typography>
                 </Box>
 
@@ -295,8 +277,8 @@ const Depreciation = (props) => {
                   <Typography className="tableCard__info" fontSize="14px">
                     ₱
                     {postData
-                      ? postData?.data?.depreciation_per_year.toLocaleString()
-                      : calcDepreApi?.data?.depreciation_per_year.toLocaleString()}
+                      ? postData?.data?.depreciation_per_year?.toLocaleString()
+                      : calcDepreApi?.data?.depreciation_per_year?.toLocaleString()}
                   </Typography>
                 </Box>
 
@@ -305,8 +287,8 @@ const Depreciation = (props) => {
                   <Typography className="tableCard__info" fontSize="14px">
                     ₱
                     {postData
-                      ? postData?.data?.depreciation_per_month.toLocaleString()
-                      : calcDepreApi?.data?.depreciation_per_month.toLocaleString()}
+                      ? postData?.data?.depreciation_per_month?.toLocaleString()
+                      : calcDepreApi?.data?.depreciation_per_month?.toLocaleString()}
                   </Typography>
                 </Box>
 
@@ -315,18 +297,15 @@ const Depreciation = (props) => {
                   <Typography className="tableCard__info" fontSize="14px">
                     ₱
                     {postData
-                      ? postData?.data?.remaining_book_value.toLocaleString()
-                      : calcDepreApi?.data?.remaining_book_value.toLocaleString()}
+                      ? postData?.data?.remaining_book_value?.toLocaleString()
+                      : calcDepreApi?.data?.remaining_book_value?.toLocaleString()}
                   </Typography>
                 </Box>
               </Box>
             </Card>
 
             <Card className="tableCard__card">
-              <Typography
-                color="secondary.main"
-                sx={{ fontFamily: "Anton", fontSize: "rem" }}
-              >
+              <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "rem" }}>
                 Date Setup
               </Typography>
 
@@ -344,10 +323,7 @@ const Depreciation = (props) => {
                 </Typography>
               </Box>
 
-              <Box
-                className="tableCard__properties"
-                sx={{ flexDirection: "column" }}
-              >
+              <Box className="tableCard__properties" sx={{ flexDirection: "column" }}>
                 <Typography fontSize="14px" sx={{ mb: "10px" }}>
                   End Date Value:
                 </Typography>

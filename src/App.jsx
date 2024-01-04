@@ -4,11 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 // ROUTER
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { LoginRoutes, PrivateRoutes } from "./Routes/PrivateRoutes";
 
 // MUI
@@ -254,6 +250,7 @@ const router = createBrowserRouter([
             ],
           },
 
+          // Requisition {
           {
             path: "request/requisition/add-requisition",
             element: <AddRequisition />,
@@ -283,6 +280,12 @@ const router = createBrowserRouter([
             path: "request-monitoring/:transaction_number",
             element: <ViewRequest />,
           },
+
+          {
+            path: "purchase-request/:transaction_number",
+            element: <ViewRequest />,
+          },
+          // }
 
           {
             path: "asset-for-tagging",
@@ -451,11 +454,7 @@ function App() {
           }}
         >
           <Alert onClose={handleClose} severity={toastVariant}>
-            <AlertTitle
-              sx={{ textTransform: "capitalize", fontWeight: "bold" }}
-            >
-              {toastVariant}!
-            </AlertTitle>
+            <AlertTitle sx={{ textTransform: "capitalize", fontWeight: "bold" }}>{toastVariant}!</AlertTitle>
 
             {toastMessage}
           </Alert>

@@ -10,13 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { openChangePassword } from "../Redux/StateManagement/changePasswordSlice";
 
-import {
-  Box,
-  Dialog,
-  IconButton,
-  InputAdornment,
-  Typography,
-} from "@mui/material";
+import { Box, Dialog, IconButton, InputAdornment, Typography } from "@mui/material";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -66,6 +60,7 @@ const LoginPage = () => {
       setloading(true);
 
       const res = await vladimirAPI.post("/auth/login", data);
+      console.log(res);
 
       localStorage.setItem("token", res.data.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.data.user));
@@ -112,10 +107,7 @@ const LoginPage = () => {
       // console.log(route);
       // return;
 
-      const route =
-        access_permission.split(", ")[0] === "dashboard"
-          ? ""
-          : access_permission.split(", ")[0];
+      const route = access_permission.split(", ")[0] === "dashboard" ? "" : access_permission.split(", ")[0];
 
       dispatch(addUserDetails(res.data.data));
       if (res.data.data.user.username === watch("password")) {
@@ -194,11 +186,7 @@ const LoginPage = () => {
           </Box>
         </Box>
 
-        <Box
-          component="form"
-          onSubmit={handleSubmit(onSubmitHandler)}
-          className="login__form"
-        >
+        <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} className="login__form">
           {loginErr && <p className="login__error-message">{loginErr}</p>}
           <Box className="login__form-logo">
             <Box>
@@ -292,10 +280,7 @@ const LoginPage = () => {
         </Box>
       </Box>
 
-      <Dialog
-        open={changePassword}
-        PaperProps={{ sx: { borderRadius: "10px" } }}
-      >
+      <Dialog open={changePassword} PaperProps={{ sx: { borderRadius: "10px" } }}>
         <ChangePassword resetLogin={reset} />
       </Dialog>
     </Box>

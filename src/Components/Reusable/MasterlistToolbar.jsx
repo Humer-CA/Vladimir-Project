@@ -63,11 +63,11 @@ import {
 const MasterlistToolbar = (props) => {
   const {
     path = "",
-    onStatusChange = () => { },
-    onFaStatusChange = () => { },
-    onSearchChange = () => { },
-    onSetPage = () => { },
-    onSyncHandler = () => { },
+    onStatusChange = () => {},
+    onFaStatusChange = () => {},
+    onSearchChange = () => {},
+    onSetPage = () => {},
+    onSyncHandler = () => {},
     scanAsset,
     onAdd,
     onPrint,
@@ -78,7 +78,9 @@ const MasterlistToolbar = (props) => {
     handleAddRequest,
     requestFilter,
     setFilter,
-    filter
+    filter,
+    showPr,
+    hideSearch,
   } = props;
 
   const dispatch = useDispatch();
@@ -98,9 +100,7 @@ const MasterlistToolbar = (props) => {
 
   // const scanFile = useSelector((state) => state.scanFile);
 
-  const permissions = useSelector(
-    (state) => state.userLogin?.user.role.access_permission
-  );
+  const permissions = useSelector((state) => state.userLogin?.user.role.access_permission);
 
   const isSmallScreen = useMediaQuery("(max-width: 500px)");
 
@@ -203,9 +203,7 @@ const MasterlistToolbar = (props) => {
           <Box>
             <FormControlLabel
               control={<Checkbox size="small" onClick={statusHandler} />}
-              label={
-                isSmallScreen ? <Archive sx={{ mt: "5px" }} /> : "ARCHIVED"
-              }
+              label={isSmallScreen ? <Archive sx={{ mt: "5px" }} /> : "ARCHIVED"}
             />
           </Box>
         )}
@@ -235,9 +233,7 @@ const MasterlistToolbar = (props) => {
 
           <Button
             onClick={handleScan}
-            startIcon={
-              isSmallScreen ? null : <QrCodeScannerRounded color="primary" />
-            }
+            startIcon={isSmallScreen ? null : <QrCodeScannerRounded color="primary" />}
             color="secondary"
             variant="contained"
             size="small"
@@ -252,25 +248,20 @@ const MasterlistToolbar = (props) => {
         )}
 
         <Box className="masterlist-toolbar__addBtn">
-          {Boolean(onPrint) &&
-            permissions?.split(", ").includes("print-fa") && (
-              <Button
-                component={Link}
-                variant="outlined"
-                to={path}
-                onClick={handleOpenDatePicker}
-                startIcon={isSmallScreen ? null : <Print color="secondary" />}
-                size="small"
-                color="secondary"
-                sx={isSmallScreen ? { minWidth: "50px", px: 0 } : null}
-              >
-                {isSmallScreen ? (
-                  <Print color="secondary" sx={{ fontSize: "20px" }} />
-                ) : (
-                  "Print"
-                )}
-              </Button>
-            )}
+          {Boolean(onPrint) && permissions?.split(", ").includes("print-fa") && (
+            <Button
+              component={Link}
+              variant="outlined"
+              to={path}
+              onClick={handleOpenDatePicker}
+              startIcon={isSmallScreen ? null : <Print color="secondary" />}
+              size="small"
+              color="secondary"
+              sx={isSmallScreen ? { minWidth: "50px", px: 0 } : null}
+            >
+              {isSmallScreen ? <Print color="secondary" sx={{ fontSize: "20px" }} /> : "Print"}
+            </Button>
+          )}
 
           {Boolean(onImport) && (
             <LoadingButton
@@ -278,26 +269,12 @@ const MasterlistToolbar = (props) => {
               to={path}
               onClick={handleOpenImport}
               variant="contained"
-              startIcon={
-                isSmallScreen ? null : (
-                  <SystemUpdateAltRounded
-                    color="primary"
-                    sx={{ fontSize: "20px" }}
-                  />
-                )
-              }
+              startIcon={isSmallScreen ? null : <SystemUpdateAltRounded color="primary" sx={{ fontSize: "20px" }} />}
               size="small"
               color="secondary"
               sx={isSmallScreen ? { minWidth: "50px", px: 0 } : null}
             >
-              {isSmallScreen ? (
-                <SystemUpdateAltRounded
-                  color="primary"
-                  sx={{ fontSize: "20px" }}
-                />
-              ) : (
-                "Import"
-              )}
+              {isSmallScreen ? <SystemUpdateAltRounded color="primary" sx={{ fontSize: "20px" }} /> : "Import"}
             </LoadingButton>
           )}
 
@@ -339,11 +316,21 @@ const MasterlistToolbar = (props) => {
               size="small"
               sx={isSmallScreen ? { minWidth: "50px", px: 0 } : null}
             >
-              {isSmallScreen ? (
-                <LibraryAdd color="black" sx={{ fontSize: "20px" }} />
-              ) : (
-                "Add"
-              )}
+              {isSmallScreen ? <LibraryAdd color="black" sx={{ fontSize: "20px" }} /> : "Add"}
+            </Button>
+          )}
+
+          {showPr && (
+            <Button
+              component={Link}
+              to={path}
+              onClick={handleOpenDrawer || handleOpenDialog}
+              variant="contained"
+              startIcon={isSmallScreen ? null : <LibraryAdd />}
+              size="small"
+              sx={isSmallScreen ? { minWidth: "50px", px: 0 } : null}
+            >
+              {isSmallScreen ? <LibraryAdd color="black" sx={{ fontSize: "20px" }} /> : "Add"}
             </Button>
           )}
 
@@ -381,18 +368,12 @@ const MasterlistToolbar = (props) => {
               to={path}
               onClick={syncHandler}
               variant="contained"
-              startIcon={
-                isSmallScreen ? null : <Sync sx={{ color: "primary.main" }} />
-              }
+              startIcon={isSmallScreen ? null : <Sync sx={{ color: "primary.main" }} />}
               size="small"
               color="secondary"
               sx={isSmallScreen ? { minWidth: "50px", px: 0 } : null}
             >
-              {isSmallScreen ? (
-                <Sync sx={{ color: "primary.main" }} />
-              ) : (
-                "Sync Data"
-              )}
+              {isSmallScreen ? <Sync sx={{ color: "primary.main" }} /> : "Sync Data"}
             </LoadingButton>
           )}
         </Box>
@@ -433,51 +414,45 @@ const MasterlistToolbar = (props) => {
           )}*/}
 
           {faStatus && (
-            <Tooltip
-              title="Filter"
-              TransitionComponent={Zoom}
-              placement="top"
-              arrow
-            >
+            <Tooltip title="Filter" TransitionComponent={Zoom} placement="top" arrow>
               <IconButton>
                 <FilterList />
               </IconButton>
             </Tooltip>
           )}
 
-          <TextField
-            autoComplete="off"
-            variant="outlined"
-            name="search"
-            label="🔍︎ Search"
-            // label="🔍 Search"
-            type="text"
-            size="small"
-            color="secondary"
-            sx={{
-              ".MuiInputBase-root": {
-                borderRadius: "15px",
-                border: ".5px",
-                background: "#f4f4f4",
-                width: "100%",
-                minWidth: "100px",
-              },
-            }}
-            onKeyDown={searchHandler}
-          />
+          {!hideSearch && (
+            <TextField
+              autoComplete="off"
+              variant="outlined"
+              name="search"
+              label="🔍︎ Search"
+              // label="🔍 Search"
+              type="text"
+              size="small"
+              color="secondary"
+              sx={{
+                ".MuiInputBase-root": {
+                  borderRadius: "15px",
+                  border: ".5px",
+                  background: "#f4f4f4",
+                  width: "100%",
+                  minWidth: "100px",
+                },
+              }}
+              onKeyDown={searchHandler}
+            />
+          )}
 
-          {requestFilter && <Tooltip
-            title="Filter"
-            TransitionComponent={Zoom}
-            placement="top"
-            arrow
-          >
-            <IconButton onClick={handleOpenRequestFilter}>
-              <FilterList />
-            </IconButton>
-          </Tooltip>}
+          {requestFilter && (
+            <Tooltip title="Filter" TransitionComponent={Zoom} placement="top" arrow>
+              <IconButton onClick={handleOpenRequestFilter}>
+                <FilterList />
+              </IconButton>
+            </Tooltip>
+          )}
 
-          {Boolean(requestFilter) &&
+          {Boolean(requestFilter) && (
             <Menu
               anchorEl={anchorElRequestFilter}
               open={openRequestFilter}
@@ -490,7 +465,9 @@ const MasterlistToolbar = (props) => {
               <FormGroup>
                 <Stack flexDirection="row" alignItems="center" p="10px" gap="10px">
                   <FilterAlt color="primary" />
-                  <Typography fontFamily="Anton, Impact" fontSize="20px" color="secondary" >FILTER</Typography>
+                  <Typography fontFamily="Anton, Impact" fontSize="20px" color="secondary">
+                    FILTER
+                  </Typography>
                 </Stack>
                 <Divider />
                 <MenuItem dense>
@@ -499,9 +476,11 @@ const MasterlistToolbar = (props) => {
                       <Checkbox
                         size="small"
                         onChange={() => handleFilterChange("For Approval")}
-                        checked={filter.includes("For Approval")} />
+                        checked={filter.includes("For Approval")}
+                      />
                     }
-                    label="For Approval" />
+                    label="For Approval"
+                  />
                 </MenuItem>
 
                 <MenuItem dense>
@@ -510,9 +489,11 @@ const MasterlistToolbar = (props) => {
                       <Checkbox
                         size="small"
                         onChange={() => handleFilterChange("For PR")}
-                        checked={filter.includes("For PR")} />
+                        checked={filter.includes("For PR")}
+                      />
                     }
-                    label="For PR" />
+                    label="For PR"
+                  />
                 </MenuItem>
 
                 <MenuItem dense>
@@ -521,9 +502,11 @@ const MasterlistToolbar = (props) => {
                       <Checkbox
                         size="small"
                         onChange={() => handleFilterChange("For PO")}
-                        checked={filter.includes("For PO")} />
+                        checked={filter.includes("For PO")}
+                      />
                     }
-                    label="For PO" />
+                    label="For PO"
+                  />
                 </MenuItem>
 
                 <MenuItem dense>
@@ -532,9 +515,11 @@ const MasterlistToolbar = (props) => {
                       <Checkbox
                         size="small"
                         onChange={() => handleFilterChange("For Tagging")}
-                        checked={filter.includes("For Tagging")} />
+                        checked={filter.includes("For Tagging")}
+                      />
                     }
-                    label="For Tagging" />
+                    label="For Tagging"
+                  />
                 </MenuItem>
 
                 <MenuItem dense>
@@ -543,9 +528,11 @@ const MasterlistToolbar = (props) => {
                       <Checkbox
                         size="small"
                         onChange={() => handleFilterChange("For Pickup")}
-                        checked={filter.includes("For Pickup")} />
+                        checked={filter.includes("For Pickup")}
+                      />
                     }
-                    label="For Pickup" />
+                    label="For Pickup"
+                  />
                 </MenuItem>
 
                 <MenuItem dense>
@@ -554,9 +541,11 @@ const MasterlistToolbar = (props) => {
                       <Checkbox
                         size="small"
                         onChange={() => handleFilterChange("Released")}
-                        checked={filter.includes("Released")} />
+                        checked={filter.includes("Released")}
+                      />
                     }
-                    label="Released" />
+                    label="Released"
+                  />
                 </MenuItem>
 
                 <MenuItem dense>
@@ -565,15 +554,15 @@ const MasterlistToolbar = (props) => {
                       <Checkbox
                         size="small"
                         onChange={() => handleFilterChange("Returned")}
-                        checked={filter.includes("Returned")} />
+                        checked={filter.includes("Returned")}
+                      />
                     }
-                    label="Returned" />
+                    label="Returned"
+                  />
                 </MenuItem>
-
               </FormGroup>
             </Menu>
-          }
-
+          )}
         </Box>
       </Box>
     </Box>

@@ -43,13 +43,7 @@ const AddRole = (props) => {
 
   const [
     postRole,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostRoleApiMutation();
 
   const [
@@ -80,19 +74,15 @@ const AddRole = (props) => {
       access_permission: [],
     },
   });
-  console.log(watch("access_permission").length);
-  console.log(postError);
+  // console.log(watch("access_permission").length);
+  // console.log(postError);
+  console.log(watch("access_permission"));
 
   useEffect(() => {
-    if (
-      (isPostError || isUpdateError) &&
-      (postError?.status === 422 || updateError?.status === 422)
-    ) {
+    if ((isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422)) {
       setError("role_name", {
         type: "validate",
-        message:
-          postError?.data?.errors.role_name ||
-          updateError?.data?.errors.role_name,
+        message: postError?.data?.errors.role_name || updateError?.data?.errors.role_name,
       });
       dispatch(
         openToast({
@@ -101,10 +91,7 @@ const AddRole = (props) => {
           variant: "error",
         })
       );
-    } else if (
-      (isPostError && postError?.status !== 422) ||
-      (isUpdateError && updateError?.status !== 422)
-    ) {
+    } else if ((isPostError && postError?.status !== 422) || (isUpdateError && updateError?.status !== 422)) {
       dispatch(
         openToast({
           message: "Something went wrong. Please try again.",
@@ -137,8 +124,6 @@ const AddRole = (props) => {
       setValue("id", data.id);
       setValue("role_name", data.role_name);
       setValue("access_permission", data.access_permission);
-
-      // console.log(watch("access_permission"));
     }
   }, [data]);
 
@@ -191,12 +176,7 @@ const AddRole = (props) => {
       disabled={data.action === "view"}
       label={label}
       value={value}
-      control={
-        <Checkbox
-          {...register("access_permission")}
-          checked={watch("access_permission")?.includes(value)}
-        />
-      }
+      control={<Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes(value)} />}
     />
   );
 
@@ -339,10 +319,7 @@ const AddRole = (props) => {
             label="Company"
             value="company"
             control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("company")}
-              />
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("company")} />
             }
           />
 
@@ -363,10 +340,7 @@ const AddRole = (props) => {
             label="Location"
             value="location"
             control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("location")}
-              />
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("location")} />
             }
           />
 
@@ -387,10 +361,7 @@ const AddRole = (props) => {
             label="Sub Unit"
             value="subunit"
             control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("subunit")}
-              />
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("subunit")} />
             }
           />
         </FormGroup>
@@ -407,10 +378,7 @@ const AddRole = (props) => {
             label="Division"
             value="division"
             control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("division")}
-              />
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("division")} />
             }
           />
 
@@ -421,9 +389,7 @@ const AddRole = (props) => {
             control={
               <Checkbox
                 {...register("access_permission")}
-                checked={watch("access_permission")?.includes(
-                  "type-of-request"
-                )}
+                checked={watch("access_permission")?.includes("type-of-request")}
               />
             }
           />
@@ -433,10 +399,7 @@ const AddRole = (props) => {
             label="Capex"
             value="capex"
             control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("capex")}
-              />
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("capex")} />
             }
           />
 
@@ -445,10 +408,7 @@ const AddRole = (props) => {
             label="Category"
             value="category"
             control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("category")}
-              />
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("category")} />
             }
           />
 
@@ -459,9 +419,7 @@ const AddRole = (props) => {
             control={
               <Checkbox
                 {...register("access_permission")}
-                checked={watch("access_permission")?.includes(
-                  "status-category"
-                )}
+                checked={watch("access_permission")?.includes("status-category")}
               />
             }
           />
@@ -539,9 +497,7 @@ const AddRole = (props) => {
             control={
               <Checkbox
                 {...register("access_permission")}
-                checked={watch("access_permission")?.includes(
-                  "approver-settings"
-                )}
+                checked={watch("access_permission")?.includes("approver-settings")}
               />
             }
           />
@@ -589,10 +545,7 @@ const AddRole = (props) => {
             label="Transfer"
             value="transfer"
             control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("transfer")}
-              />
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("transfer")} />
             }
           />
 
@@ -601,10 +554,7 @@ const AddRole = (props) => {
             label="Pull Out"
             value="pull-out"
             control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("pull-out")}
-              />
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("pull-out")} />
             }
           />
         </FormGroup>
@@ -616,17 +566,12 @@ const AddRole = (props) => {
             ml: 3,
           }}
         >
-
-
           <FormControlLabel
             disabled={data.action === "view"}
             label="Disposal"
             value="disposal"
             control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("disposal")}
-              />
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("disposal")} />
             }
           />
 
@@ -663,9 +608,7 @@ const AddRole = (props) => {
             control={
               <Checkbox
                 {...register("access_permission")}
-                checked={watch("access_permission")?.includes(
-                  "pending-request"
-                )}
+                checked={watch("access_permission")?.includes("pending-request")}
               />
             }
           />
@@ -677,9 +620,7 @@ const AddRole = (props) => {
             control={
               <Checkbox
                 {...register("access_permission")}
-                checked={watch("access_permission")?.includes(
-                  "approved=request"
-                )}
+                checked={watch("access_permission")?.includes("approved=request")}
               />
             }
           />
@@ -740,7 +681,7 @@ const AddRole = (props) => {
     "approved-request",
 
     // Monitoring
-    "request-monitoring"
+    "request-monitoring",
   ];
 
   const masterlistValue = [
@@ -766,22 +707,11 @@ const AddRole = (props) => {
 
   return (
     <Box className="add-role">
-      <Typography
-        color="secondary.main"
-        sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}
-      >
-        {!data.status
-          ? "Add Role"
-          : data.action === "view"
-            ? "Permissions"
-            : "Edit Role"}
+      <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
+        {!data.status ? "Add Role" : data.action === "view" ? "Permissions" : "Edit Role"}
       </Typography>
 
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmitHandler)}
-        sx={{ mx: "10px" }}
-      >
+      <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} sx={{ mx: "10px" }}>
         <CustomTextField
           className="add-role__textfield"
           required
@@ -812,25 +742,16 @@ const AddRole = (props) => {
               <FormLabel component="legend" sx={{ ml: "1px", pl: "5px" }}>
                 <FormControlLabel
                   sx={{ color: "text.main", fontWeight: "bold" }}
-                  label={
-                    !data.status
-                      ? "Select Role"
-                      : data.action === "view"
-                        ? "Selected Role"
-                        : "Select Roles"
-                  }
+                  label={!data.status ? "Select Role" : data.action === "view" ? "Selected Role" : "Select Roles"}
                   value="parent"
                   disabled={data.action === "view"}
                   control={
                     <Checkbox
-                      checked={
-                        watch("access_permission")?.length ? true : false
-                      }
+                      checked={watch("access_permission")?.length ? true : false}
                       indeterminate={
                         watch("access_permission")?.length === 16
                           ? false
-                          : watch("access_permission")?.length >= 1 &&
-                          watch("access_permission")?.length < 15
+                          : watch("access_permission")?.length >= 1 && watch("access_permission")?.length < 15
                       }
                       onChange={(e) => {
                         if (e.target.checked) {
@@ -868,19 +789,13 @@ const AddRole = (props) => {
                         disabled={data.action === "view"}
                         control={
                           <Checkbox
-                            checked={watch("access_permission").includes(
-                              "masterlist"
-                            )}
+                            checked={watch("access_permission").includes("masterlist")}
                             // checked={masterlistValue.every((perm) =>
                             //   watch("access_permission").includes(perm)
                             // )}
                             indeterminate={
-                              masterlistValue.some((perm) =>
-                                watch("access_permission").includes(perm)
-                              ) &&
-                              !masterlistValue.every((perm) =>
-                                watch("access_permission").includes(perm)
-                              )
+                              masterlistValue.some((perm) => watch("access_permission").includes(perm)) &&
+                              !masterlistValue.every((perm) => watch("access_permission").includes(perm))
                             }
                             onChange={(e) => {
                               if (e.target.checked) {
@@ -901,19 +816,11 @@ const AddRole = (props) => {
                                   ]),
                                 ]);
                               } else {
-                                const masterlistEmptyValue = watch(
-                                  "access_permission"
-                                ).filter(
-                                  (perm) =>
-                                    ![...masterlistValue,
-                                      "masterlist",
-                                    ].includes(perm)
+                                const masterlistEmptyValue = watch("access_permission").filter(
+                                  (perm) => ![...masterlistValue, "masterlist"].includes(perm)
                                 );
 
-                                setValue(
-                                  "access_permission",
-                                  masterlistEmptyValue
-                                );
+                                setValue("access_permission", masterlistEmptyValue);
                               }
                             }}
                           />
@@ -947,38 +854,22 @@ const AddRole = (props) => {
                         disabled={data.action === "view"}
                         control={
                           <Checkbox
-                            checked={watch("access_permission").includes(
-                              "user-management"
-                            )}
+                            checked={watch("access_permission").includes("user-management")}
                             // checked={masterlistValue.every((perm) =>
                             //   watch("access_permission").includes(perm)
                             // )}
                             indeterminate={
-                              userManagement.some((perm) =>
-                                watch("access_permission").includes(perm)
-                              ) &&
-                              !userManagement.every((perm) =>
-                                watch("access_permission").includes(perm)
-                              )
+                              userManagement.some((perm) => watch("access_permission").includes(perm)) &&
+                              !userManagement.every((perm) => watch("access_permission").includes(perm))
                             }
                             onChange={(e) => {
                               if (e.target.checked) {
                                 setValue("access_permission", [
-                                  ...new Set([
-                                    ...watch("access_permission"),
-                                    "user-accounts",
-                                    "role-management",
-                                  ]),
+                                  ...new Set([...watch("access_permission"), "user-accounts", "role-management"]),
                                 ]);
                               } else {
-                                const userEmptyValue = watch(
-                                  "access_permission"
-                                ).filter(
-                                  (perm) =>
-                                    ![
-                                      ...userManagement,
-                                      "user-management",
-                                    ].includes(perm)
+                                const userEmptyValue = watch("access_permission").filter(
+                                  (perm) => ![...userManagement, "user-management"].includes(perm)
                                 );
 
                                 setValue("access_permission", userEmptyValue);
@@ -1015,41 +906,25 @@ const AddRole = (props) => {
                         disabled={data.action === "view"}
                         control={
                           <Checkbox
-                            checked={watch("access_permission").includes(
-                              "settings"
-                            )}
+                            checked={watch("access_permission").includes("settings")}
                             // checked={masterlistValue.every((perm) =>
                             //   watch("access_permission").includes(perm)
                             // )}
                             indeterminate={
-                              settings.some((perm) =>
-                                watch("access_permission").includes(perm)
-                              ) &&
-                              !settings.every((perm) =>
-                                watch("access_permission").includes(perm)
-                              )
+                              settings.some((perm) => watch("access_permission").includes(perm)) &&
+                              !settings.every((perm) => watch("access_permission").includes(perm))
                             }
                             onChange={(e) => {
                               if (e.target.checked) {
                                 setValue("access_permission", [
-                                  ...new Set([
-                                    ...watch("access_permission"),
-                                    "approver-settings",
-                                    "form-settings",
-                                  ]),
+                                  ...new Set([...watch("access_permission"), "approver-settings", "form-settings"]),
                                 ]);
                               } else {
-                                const settingsEmptyValue = watch(
-                                  "access_permission"
-                                ).filter(
-                                  (perm) =>
-                                    ![...settings, "settings"].includes(perm)
+                                const settingsEmptyValue = watch("access_permission").filter(
+                                  (perm) => ![...settings, "settings"].includes(perm)
                                 );
 
-                                setValue(
-                                  "access_permission",
-                                  settingsEmptyValue
-                                );
+                                setValue("access_permission", settingsEmptyValue);
                               }
                             }}
                           />
@@ -1083,19 +958,13 @@ const AddRole = (props) => {
                         disabled={data.action === "view"}
                         control={
                           <Checkbox
-                            checked={watch("access_permission").includes(
-                              "request"
-                            )}
+                            checked={watch("access_permission").includes("request")}
                             // checked={masterlistValue.every((perm) =>
                             //   watch("access_permission").includes(perm)
                             // )}
                             indeterminate={
-                              request.some((perm) =>
-                                watch("access_permission").includes(perm)
-                              ) &&
-                              !request.every((perm) =>
-                                watch("access_permission").includes(perm)
-                              )
+                              request.some((perm) => watch("access_permission").includes(perm)) &&
+                              !request.every((perm) => watch("access_permission").includes(perm))
                             }
                             onChange={(e) => {
                               if (e.target.checked) {
@@ -1106,21 +975,15 @@ const AddRole = (props) => {
                                     "transfer",
                                     "pull-out",
                                     "disposal",
-                                    "purchase-request"
+                                    "purchase-request",
                                   ]),
                                 ]);
                               } else {
-                                const requestEmptyValue = watch(
-                                  "access_permission"
-                                ).filter(
-                                  (perm) =>
-                                    ![...request, "request"].includes(perm)
+                                const requestEmptyValue = watch("access_permission").filter(
+                                  (perm) => ![...request, "request"].includes(perm)
                                 );
 
-                                setValue(
-                                  "access_permission",
-                                  requestEmptyValue
-                                );
+                                setValue("access_permission", requestEmptyValue);
                               }
                             }}
                           />
@@ -1205,12 +1068,7 @@ const AddRole = (props) => {
 
         <Divider sx={{ pb: "15px" }} />
 
-        <Stack
-          flexDirection="row"
-          justifyContent="flex-end"
-          gap="20px"
-          sx={{ pt: "15px" }}
-        >
+        <Stack flexDirection="row" justifyContent="flex-end" gap="20px" sx={{ pt: "15px" }}>
           <LoadingButton
             type="submit"
             variant="contained"
@@ -1235,11 +1093,7 @@ const AddRole = (props) => {
             onClick={handleCloseDrawer}
             disabled={(isPostLoading || isUpdateLoading) === true}
           >
-            {!data.status
-              ? "Cancel"
-              : data.action === "view"
-                ? "Close"
-                : "Cancel"}
+            {!data.status ? "Cancel" : data.action === "view" ? "Close" : "Cancel"}
           </Button>
         </Stack>
       </Box>

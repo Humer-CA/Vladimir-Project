@@ -10,11 +10,7 @@ import NoRecordsFound from "../../Layout/NoRecordsFound";
 // RTK
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
-import {
-  closeConfirm,
-  openConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
+import { closeConfirm, openConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
 
 // MUI
 import {
@@ -120,10 +116,7 @@ const PendingRequest = () => {
 
   // console.log(approvalData)
 
-  const [patchApprovalStatus, { isLoading }] =
-    usePatchApprovalStatusApiMutation();
-
-
+  const [patchApprovalStatus, { isLoading }] = usePatchApprovalStatusApiMutation();
 
   // CONFIRMATION
   const onApprovalApproveHandler = (id) => {
@@ -165,8 +158,6 @@ const PendingRequest = () => {
             );
 
             dispatch(closeConfirm());
-
-
           } catch (err) {
             if (err?.status === 422) {
               dispatch(
@@ -244,9 +235,8 @@ const PendingRequest = () => {
                   variant: "error",
                 })
               );
-
             } else if (err?.status !== 422) {
-              console.log(err)
+              console.log(err);
               dispatch(
                 openToast({
                   message: "Something went wrong. Please try again.",
@@ -262,25 +252,16 @@ const PendingRequest = () => {
   };
 
   const handleViewRequisition = (data) => {
-    navigate(
-      `/approving/${data.transaction_number}`,
-      {
-        state: { ...data, }
-      },
-    )
+    navigate(`/approving/${data.transaction_number}`, {
+      state: { ...data },
+    });
   };
 
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
       {approvalLoading && <MasterlistSkeleton category={true} onAdd={true} />}
 
-      {approvalError && (
-        <ErrorFetching
-          refetch={refetch}
-          category={approvalData}
-          error={errorData}
-        />
-      )}
+      {approvalError && <ErrorFetching refetch={refetch} category={approvalData} error={errorData} />}
 
       {approvalData && !approvalError && (
         <Box className="mcontainer__wrapper">
@@ -315,9 +296,7 @@ const PendingRequest = () => {
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell-category">
-                      Transaction No.
-                    </TableCell>
+                    <TableCell className="tbl-cell-category">Transaction No.</TableCell>
 
                     <TableCell className="tbl-cell-category">
                       <TableSortLabel
@@ -367,9 +346,7 @@ const PendingRequest = () => {
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell-category  text-center">
-                      Action
-                    </TableCell>
+                    <TableCell className="tbl-cell-category  text-center">Action</TableCell>
                   </TableRow>
                 </TableHead>
 
@@ -379,41 +356,32 @@ const PendingRequest = () => {
                   ) : (
                     <>
                       {approvalSuccess &&
-                        [...approvalData.data]
-                          .sort(comparator(order, orderBy))
-                          .map((data) => (
-                            <TableRow
-                              key={data.id}
-                              hover={true}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="tbl-cell-category tr-cen-pad45">
-                                {data.id}
-                              </TableCell>
+                        [...approvalData.data].sort(comparator(order, orderBy)).map((data) => (
+                          <TableRow
+                            key={data.id}
+                            hover={true}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell-category tr-cen-pad45">{data.id}</TableCell>
 
-                              <TableCell className="tbl-cell-category ">
-                                {data.asset_request?.transaction_number}
-                              </TableCell>
+                            <TableCell className="tbl-cell-category ">
+                              {data.asset_request?.transaction_number}
+                            </TableCell>
 
-                              <TableCell className="tbl-cell-category">
-                                <Typography
-                                  fontSize={14}
-                                  fontWeight={600}
-                                  color={"secondary"}
-                                  noWrap
-                                >
-                                  {data.requester?.employee_id}
-                                </Typography>
-                                <Typography fontSize={12} color={"gray"}>
-                                  {data.requester?.firstname}
-                                </Typography>
-                              </TableCell>
+                            <TableCell className="tbl-cell-category">
+                              <Typography fontSize={14} fontWeight={600} color={"secondary"} noWrap>
+                                {data.requester?.employee_id}
+                              </Typography>
+                              <Typography fontSize={12} color={"gray"}>
+                                {data.requester?.firstname}
+                              </Typography>
+                            </TableCell>
 
-                              {/* <TableCell className="tbl-cell-category">
+                            {/* <TableCell className="tbl-cell-category">
                                 <Typography
                                   fontSize={14}
                                   fontWeight={600}
@@ -427,56 +395,46 @@ const PendingRequest = () => {
                                 </Typography>
                               </TableCell> */}
 
-                              <TableCell className="tbl-cell-category ">
-                                {data.number_of_item}
-                              </TableCell>
+                            <TableCell className="tbl-cell-category ">{data.number_of_item}</TableCell>
 
-                              <TableCell className="tbl-cell-category text-center">
-                                <IconButton
-                                  onClick={() => handleViewRequisition(data)
-                                  }>
-                                  <Visibility color="secondary" />
-                                </IconButton>
-                              </TableCell>
+                            <TableCell className="tbl-cell-category text-center">
+                              <IconButton onClick={() => handleViewRequisition(data)}>
+                                <Visibility color="secondary" />
+                              </IconButton>
+                            </TableCell>
 
-                              <TableCell className="tbl-cell-category text-center capitalized">
-                                {data.status === "For Approval" && (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#f5cc2a2f",
-                                      color: "#c59e00",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="PENDING"
-                                  />
-                                )}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell-category tr-cen-pad45">
-                                {Moment(
-                                  data.asset_request?.date_requested
-                                ).format("MMM DD, YYYY")}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell-category text-center">
-                                <ActionMenu
-                                  status={status}
-                                  data={data}
-                                  showApprover
-                                  onApprovalApproveHandler={
-                                    onApprovalApproveHandler
-                                  }
-                                  onApprovalReturnHandler={
-                                    onApprovalReturnHandler
-                                  }
-                                  hideArchive
+                            <TableCell className="tbl-cell-category text-center capitalized">
+                              {data.status === "For Approval" && (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#f5cc2a2f",
+                                    color: "#c59e00",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="PENDING"
                                 />
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                              )}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell-category tr-cen-pad45">
+                              {Moment(data.asset_request?.date_requested).format("MMM DD, YYYY")}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell-category text-center">
+                              <ActionMenu
+                                status={status}
+                                data={data}
+                                showApprover
+                                onApprovalApproveHandler={onApprovalApproveHandler}
+                                onApprovalReturnHandler={onApprovalReturnHandler}
+                                hideArchive
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </>
                   )}
                 </TableBody>
@@ -496,9 +454,7 @@ const PendingRequest = () => {
               component="div"
               count={approvalSuccess ? approvalData.total : 0}
               page={approvalSuccess ? approvalData.current_page - 1 : 0}
-              rowsPerPage={
-                approvalSuccess ? parseInt(approvalData?.per_page) : 5
-              }
+              rowsPerPage={approvalSuccess ? parseInt(approvalData?.per_page) : 5}
               onPageChange={pageHandler}
               onRowsPerPageChange={limitHandler}
             />

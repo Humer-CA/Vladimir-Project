@@ -13,11 +13,7 @@ import ExportCapex from "./Capex/ExportCapex";
 // RTK
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
 
 import {
   useGetCapexAllApiQuery,
@@ -43,19 +39,10 @@ import {
   Typography,
 } from "@mui/material";
 
-import {
-  ExpandCircleDown,
-  ExpandCircleDownOutlined,
-  Help,
-  IosShareRounded,
-  ReportProblem,
-} from "@mui/icons-material";
+import { ExpandCircleDown, ExpandCircleDownOutlined, Help, IosShareRounded, ReportProblem } from "@mui/icons-material";
 import useExcel from "../../Hooks/Xlsx";
 
-import {
-  openExport,
-  closeImport,
-} from "../../Redux/StateManagement/booleanStateSlice";
+import { openExport, closeImport } from "../../Redux/StateManagement/booleanStateSlice";
 
 const Capex = () => {
   const [search, setSearch] = useState("");
@@ -130,8 +117,7 @@ const Capex = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const [capexExportTrigger, { data: capexAllData, refetch: capexRefetchAll }] =
-    useLazyGetCapexAllApiQuery();
+  const [capexExportTrigger, { data: capexAllData, refetch: capexRefetchAll }] = useLazyGetCapexAllApiQuery();
 
   const [patchCapexStatusApi, { isLoading }] = usePatchCapexStatusApiMutation();
 
@@ -224,7 +210,13 @@ const Capex = () => {
   const handleExport = async () => {
     try {
       const res = await capexExportTrigger().unwrap();
-      const exportData = res.flatMap((item) => {
+
+      if (!Array.isArray(res)) {
+        console.error("Expected an array in the response");
+        return;
+      }
+
+      const exportData = res?.flatMap((item) => {
         if (Array.isArray(item.sub_capex) && item.sub_capex.length > 0) {
           return item.sub_capex.map((subItem) => ({
             ID: item.id,
@@ -246,7 +238,7 @@ const Capex = () => {
             Status: item.is_active === 1 ? "Active" : "Deactivated",
           };
         }
-      }).flat();
+      });
 
       excelExport(exportData, `Vladimir-Capex.xlsx`);
     } catch (err) {
@@ -264,10 +256,7 @@ const Capex = () => {
 
   return (
     <Box className="mcontainer">
-      <Typography
-        className="mcontainer__title"
-        sx={{ fontFamily: "Anton, Roboto, Helvetica", fontSize: "2rem" }}
-      >
+      <Typography className="mcontainer__title" sx={{ fontFamily: "Anton, Roboto, Helvetica", fontSize: "2rem" }}>
         Capex
       </Typography>
 
@@ -283,8 +272,8 @@ const Capex = () => {
               onStatusChange={setStatus}
               onSearchChange={setSearch}
               onSetPage={setPage}
-              onAdd={() => { }}
-              onImport={() => { }}
+              onAdd={() => {}}
+              onImport={() => {}}
             />
 
             <Box>
@@ -301,12 +290,13 @@ const Capex = () => {
                         },
                       }}
                     >
-                      <TableCell className="tbl-cell-col text-center">
+                      <TableCell>
                         <ExpandCircleDown
                           sx={{
                             position: "absolute",
                             inset: 0,
                             margin: "auto",
+                            color: "secondary.main",
                           }}
                         />
                       </TableCell>
@@ -351,9 +341,7 @@ const Capex = () => {
                         </TableSortLabel>
                       </TableCell>
 
-                      <TableCell className="tbl-cell-col text-center">
-                        Status
-                      </TableCell>
+                      <TableCell className="tbl-cell-col text-center">Status</TableCell>
 
                       <TableCell className="tbl-cell-col text-center">
                         <TableSortLabel
@@ -383,9 +371,7 @@ const Capex = () => {
                                 data={data}
                                 status={status}
                                 onUpdateHandler={onUpdateHandler}
-                                onArchiveRestoreHandler={
-                                  onArchiveRestoreHandler
-                                }
+                                onArchiveRestoreHandler={onArchiveRestoreHandler}
                               />
                             ))}
                       </>
@@ -414,12 +400,7 @@ const Capex = () => {
               </Button>
 
               <TablePagination
-                rowsPerPageOptions={[
-                  5,
-                  10,
-                  15,
-                  { label: "All", value: parseInt(capexData?.total) },
-                ]}
+                rowsPerPageOptions={[5, 10, 15, { label: "All", value: parseInt(capexData?.total) }]}
                 component="div"
                 count={capexSuccess ? capexData?.total : 0}
                 page={capexSuccess ? capexData?.current_page - 1 : 0}
@@ -433,10 +414,7 @@ const Capex = () => {
       )}
 
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        <AddCapex
-          data={updateCapex}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddCapex data={updateCapex} onUpdateResetHandler={onUpdateResetHandler} />
       </Dialog>
 
       <Dialog

@@ -131,6 +131,7 @@ img {
     }
   }
 
+  // ? Table Properties
   &__table {
     border-radius: 10px;
     position: relative;
@@ -224,6 +225,7 @@ img {
     padding-right: 45px;
   }
 
+  // ? Css Props
   .text-weight {
     font-weight: bold;
     color: $secondary;
@@ -238,6 +240,7 @@ img {
     line-height: 12px;
   }
 
+  // ? Pagination
   &__pagination {
     overscroll-behavior: none;
     box-shadow: 0px -3px 19px -10px rgba(166, 166, 166, 0.4);
@@ -257,6 +260,7 @@ img {
     }
   }
 
+  // ? Other CSS
   &__export {
     width: inherit;
 
