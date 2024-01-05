@@ -260,9 +260,7 @@ const PendingRequest = () => {
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
       {approvalLoading && <MasterlistSkeleton category={true} onAdd={true} />}
-
       {approvalError && <ErrorFetching refetch={refetch} category={approvalData} error={errorData} />}
-
       {approvalData && !approvalError && (
         <Box className="mcontainer__wrapper">
           <MasterlistToolbar

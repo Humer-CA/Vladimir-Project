@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../../Style/Masterlist/addMasterlist.scss";
-import CustomTextField from "../../../Components/Reusable/CustomTextField";
+import CustomNumberField from "../../../Components/Reusable/CustomNumberField";
 import CustomAutoComplete from "../../../Components/Reusable/CustomAutoComplete";
 
 import { useForm } from "react-hook-form";
@@ -23,16 +23,19 @@ import {
   useGetPurchaseRequestAllApiQuery,
 } from "../../../Redux/Query/Request/PurchaseRequest";
 import { useGetCompanyAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Company";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object().shape({
   id: yup.string(),
+  transaction_number: yup.number(),
   pr_number: yup.string().required(),
-  business_unit_id: yup.string().required(),
+  business_unit_id: yup.object().required(),
 });
 
 const AddPr = (props) => {
-  const { data } = props;
+  const { transactionData } = props;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [
     postPr,
@@ -53,6 +56,7 @@ const AddPr = (props) => {
       id: "",
       pr_number: "",
       business_unit_id: null,
+      transaction_number: transactionData?.transaction_number,
     },
   });
 
@@ -60,14 +64,22 @@ const AddPr = (props) => {
 
   useEffect(() => {
     if (isPostError && postError?.status === 422) {
-      setError("pr_number", {
+      setError("business_unit_id", {
         type: "validate",
-        message: postError?.data?.errors.pr_number,
+        message: postError?.data?.errors.business_unit_id,
       }) ||
-        setError("business_unit_id", {
+        setError("pr_number", {
           type: "validate",
-          message: postError?.data?.errors.business_unit_id,
-        });
+          message: postError?.data?.errors.pr_number,
+        }) ||
+        dispatch(
+          openToast({
+            message: postError?.data?.errors.detail,
+
+            duration: 5000,
+            variant: "error",
+          })
+        );
     } else if (isPostError && postError?.status !== 422) {
       dispatch(
         openToast({
@@ -89,31 +101,23 @@ const AddPr = (props) => {
           duration: 5000,
         })
       );
-
-      setTimeout(() => {
-        onUpdateResetHandler();
-      }, 500);
+      navigate(-1);
     }
   }, [isPostSuccess]);
 
-  useEffect(() => {
-    if (data) {
-      setValue("id", data.id);
-      setValue("pr_number", data.pr_number);
-      setValue("business_unit_id", data.business_unit_id);
-    }
-  }, [data]);
-
   const onSubmitHandler = (formData) => {
-    postPr(formData);
+    // console.log(formData)
+    const newFormData = {
+      transaction_number: transactionData?.transaction_number,
+      pr_number: formData?.pr_number,
+      business_unit_id: formData?.business_unit_id?.id,
+    };
+    postPr(newFormData);
   };
 
   const handleCloseDialog = () => {
     dispatch(closeDialog());
   };
-
-  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-  const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
   return (
     <Stack width="100%" gap={2}>
@@ -135,14 +139,14 @@ const AddPr = (props) => {
               <TextField
                 color="secondary"
                 {...params}
-                label={"Business Unit"}
+                label={"Business Operation"}
                 error={!!errors?.business_unit_id?.message}
                 helperText={errors?.business_unit_id?.message}
               />
             )}
           />
 
-          <CustomTextField
+          <CustomNumberField
             control={control}
             name="pr_number"
             label="PR Number"
@@ -161,9 +165,9 @@ const AddPr = (props) => {
             variant="contained"
             size="small"
             loading={isPostLoading}
-            disabled={watch("pr_number") === ""}
+            disabled={watch("pr_number") === "" || watch("business_unit_id") === null}
           >
-            {data ? "Update" : "Create"}
+            Add
           </LoadingButton>
 
           <Button

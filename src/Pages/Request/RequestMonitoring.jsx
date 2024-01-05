@@ -33,10 +33,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import {
-  IosShareRounded,
-  Visibility,
-} from "@mui/icons-material";
+import { IosShareRounded, Visibility } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
 import RequestTimeline from "./RequestTimeline";
@@ -124,7 +121,7 @@ const RequestMonitoring = () => {
 
   const handleViewTimeline = (data) => {
     dispatch(openDialog());
-    setTransactionIdData(data)
+    setTransactionIdData(data);
   };
 
   const handleExport = async () => {
@@ -138,7 +135,7 @@ const RequestMonitoring = () => {
       };
 
       const res = await requestDataTrigger(apiParams).unwrap();
-      console.log(res)
+      console.log(res);
       const newObj = res?.data?.map((item) => {
         return {
           // ID: item?.id,
@@ -171,32 +168,24 @@ const RequestMonitoring = () => {
             variant: "error",
           })
         );
-        console.log(err)
+        console.log(err);
       }
     }
   };
 
   const handleEditRequisition = (data) => {
-    navigate(
-      `/request-monitoring/${data.transaction_number}`,
-      {
-        state: { ...data },
-      },
-    );
+    navigate(`/request-monitoring/${data.transaction_number}`, {
+      state: { ...data },
+    });
   };
 
   return (
     <Box className="mcontainer">
-      <Typography
-        className="mcontainer__title"
-        sx={{ fontFamily: "Anton", fontSize: "2rem" }}
-      >
+      <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "2rem" }}>
         Request Monitoring
       </Typography>
       {requisitionLoading && <MasterlistSkeleton onAdd={true} />}
-      {requisitionError && (
-        <ErrorFetching refetch={refetch} error={errorData} />
-      )}
+      {requisitionError && <ErrorFetching refetch={refetch} error={errorData} />}
       {requisitionData && !requisitionError && (
         <>
           <Box className="mcontainer__wrapper">
@@ -222,13 +211,10 @@ const RequestMonitoring = () => {
                         },
                       }}
                     >
-
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `transaction_number`}
-                          direction={
-                            orderBy === `transaction_number` ? order : `asc`
-                          }
+                          direction={orderBy === `transaction_number` ? order : `asc`}
                           onClick={() => onSort(`transaction_number`)}
                         >
                           Transaction No.
@@ -238,9 +224,7 @@ const RequestMonitoring = () => {
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `acquisition_details`}
-                          direction={
-                            orderBy === `acquisition_details` ? order : `asc`
-                          }
+                          direction={orderBy === `acquisition_details` ? order : `asc`}
                           onClick={() => onSort(`acquisition_details`)}
                         >
                           Acquisition Details
@@ -250,25 +234,19 @@ const RequestMonitoring = () => {
                       <TableCell className="tbl-cell text-center">
                         <TableSortLabel
                           active={orderBy === `item_count`}
-                          direction={
-                            orderBy === `item_count` ? order : `asc`
-                          }
+                          direction={orderBy === `item_count` ? order : `asc`}
                           onClick={() => onSort(`item_count`)}
                         >
                           Quantity of PR
                         </TableSortLabel>
                       </TableCell>
 
-                      <TableCell className="tbl-cell text-center">
-                        View Information
-                      </TableCell>
+                      <TableCell className="tbl-cell text-center">View Information</TableCell>
 
                       <TableCell className="tbl-cell" align="center">
                         <TableSortLabel
                           active={orderBy === `status`}
-                          direction={
-                            orderBy === `status` ? order : `asc`
-                          }
+                          direction={orderBy === `status` ? order : `asc`}
                           onClick={() => onSort(`status`)}
                         >
                           View Status
@@ -284,7 +262,6 @@ const RequestMonitoring = () => {
                           Date Created
                         </TableSortLabel>
                       </TableCell>
-
                     </TableRow>
                   </TableHead>
 
@@ -294,88 +271,73 @@ const RequestMonitoring = () => {
                     ) : (
                       <>
                         {requisitionSuccess &&
-                          [...requisitionData?.data]
-                            ?.sort(comparator(order, orderBy))
-                            ?.map((data) => (
-                              <TableRow
-                                key={data.id}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    borderBottom: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell className="tbl-cell text-weight">
-                                  {data.transaction_number}
-                                </TableCell>
-                                <TableCell className="tbl-cell">
-                                  {data.acquisition_details}
-                                </TableCell>
-                                <TableCell className="tbl-cell text-weight tr-cen-pad45">
-                                  {data.item_count}
-                                </TableCell>
-                                <TableCell className="tbl-cell text-weight text-center">
+                          [...requisitionData?.data]?.sort(comparator(order, orderBy))?.map((data) => (
+                            <TableRow
+                              key={data.id}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  borderBottom: 0,
+                                },
+                              }}
+                            >
+                              <TableCell className="tbl-cell text-weight">{data.transaction_number}</TableCell>
+                              <TableCell className="tbl-cell">{data.acquisition_details}</TableCell>
+                              <TableCell className="tbl-cell text-weight tr-cen-pad45">{data.item_count}</TableCell>
+                              <TableCell className="tbl-cell text-weight text-center">
+                                <Tooltip placement="top" title="View Request Information" arrow>
+                                  <IconButton onClick={() => handleEditRequisition(data)}>
+                                    <Visibility />
+                                  </IconButton>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell className="tbl-cell tr-cen-pad45">
+                                {data.status !== "Returned" ? (
                                   <Tooltip
                                     placement="top"
-                                    title="View Request Information"
+                                    title={`${data?.current_approver?.firstname} 
+                                        ${data?.current_approver?.lastname}`}
                                     arrow
                                   >
-                                    <IconButton
-                                      onClick={() =>
-                                        handleEditRequisition(data)
-                                      }
-                                    >
-                                      <Visibility />
-                                    </IconButton>
-                                  </Tooltip>
-                                </TableCell>
-                                <TableCell className="tbl-cell tr-cen-pad45">
-                                  {data.status !== "Returned" ? (
-                                    <Tooltip
-                                      placement="top"
-                                      title={`${data?.current_approver?.firstname} 
-                                        ${data?.current_approver?.lastname}`}
-                                      arrow
-                                    >
-                                      <Chip onClick={() => handleViewTimeline(data)}
-                                        size="small"
-                                        variant={data.status === "Approved" ? "filled" : "outlined"}
-                                        sx={{
-                                          borderColor: "active.dark",
-                                          color: data?.status === "Approved" ? "white" : "active.dark",
-                                          fontSize: "0.7rem",
-                                          px: 1,
-                                          cursor: "pointer",
-                                          backgroundColor: data?.status === "Approved" && "success.main",
-                                          ":hover": { backgroundColor: data?.status === "Approved" ? "success.dark" : "red" }
-                                        }}
-                                        label={`${data.status}`}
-                                      />
-                                    </Tooltip>
-                                  ) : (
                                     <Chip
-                                      placement="top"
                                       onClick={() => handleViewTimeline(data)}
                                       size="small"
-                                      variant="filled"
+                                      variant={data.status === "Approved" ? "filled" : "outlined"}
                                       sx={{
-                                        backgroundColor: "error.light",
-                                        color: "white",
+                                        borderColor: "active.dark",
+                                        color: data?.status === "Approved" ? "white" : "active.dark",
                                         fontSize: "0.7rem",
                                         px: 1,
-                                        ":hover": { backgroundColor: "error.dark" }
+                                        cursor: "pointer",
+                                        backgroundColor: data?.status === "Approved" && "success.main",
+                                        ":hover": {
+                                          backgroundColor: data?.status === "Approved" ? "success.dark" : "red",
+                                        },
                                       }}
                                       label={`${data.status}`}
                                     />
-                                  )}
-                                </TableCell>
-                                <TableCell className="tbl-cell tr-cen-pad45">
-                                  {Moment(data.created_at).format(
-                                    "MMM DD, YYYY"
-                                  )}
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                                  </Tooltip>
+                                ) : (
+                                  <Chip
+                                    placement="top"
+                                    onClick={() => handleViewTimeline(data)}
+                                    size="small"
+                                    variant="filled"
+                                    sx={{
+                                      backgroundColor: "error.light",
+                                      color: "white",
+                                      fontSize: "0.7rem",
+                                      px: 1,
+                                      ":hover": { backgroundColor: "error.dark" },
+                                    }}
+                                    label={`${data.status}`}
+                                  />
+                                )}
+                              </TableCell>
+                              <TableCell className="tbl-cell tr-cen-pad45">
+                                {Moment(data.created_at).format("MMM DD, YYYY")}
+                              </TableCell>
+                            </TableRow>
+                          ))}
                       </>
                     )}
                   </TableBody>
@@ -411,14 +373,8 @@ const RequestMonitoring = () => {
           </Box>
         </>
       )}
-      <Dialog
-        open={dialog}
-        onClose={() => dispatch(closeDialog())}
-        PaperProps={{ sx: { borderRadius: "10px" } }}
-      >
-        <RequestTimeline
-          data={transactionIdData}
-        />
+      <Dialog open={dialog} onClose={() => dispatch(closeDialog())} PaperProps={{ sx: { borderRadius: "10px" } }}>
+        <RequestTimeline data={transactionIdData} />
       </Dialog>
     </Box>
   );

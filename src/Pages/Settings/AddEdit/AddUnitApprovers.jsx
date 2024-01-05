@@ -39,16 +39,8 @@ import { useGetDepartmentAllApiQuery } from "../../../Redux/Query/Masterlist/Fis
 const schema = yup.object().shape({
   id: yup.string(),
 
-  department_id: yup
-    .object()
-    .required()
-    .typeError("Sub Unit is required")
-    .label("Sub Unit"),
-  subunit_id: yup
-    .object()
-    .required()
-    .typeError("Sub Unit is required")
-    .label("Sub Unit"),
+  department_id: yup.object().required().typeError("Sub Unit is required").label("Department"),
+  subunit_id: yup.object().required().typeError("Sub Unit is required").label("Sub Unit"),
 
   approver_id: yup.array().required().label("Approver"),
 });
@@ -60,13 +52,7 @@ const AddUnitApprovers = (props) => {
 
   const [
     postUnitApprovers,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostUnitApproversApiMutation();
 
   const [
@@ -129,16 +115,12 @@ const AddUnitApprovers = (props) => {
   });
 
   useEffect(() => {
-    const errorData =
-      (isPostError || isUpdateError) &&
-      (postError?.status === 422 || updateError?.status === 422);
+    const errorData = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
 
     if (errorData) {
       const errors = (postError?.data || updateError?.data)?.errors || {};
 
-      Object.entries(errors).forEach(([name, [message]]) =>
-        setError(name, { type: "validate", message })
-      );
+      Object.entries(errors).forEach(([name, [message]]) => setError(name, { type: "validate", message }));
     }
 
     const showToast = () => {
@@ -198,9 +180,7 @@ const AddUnitApprovers = (props) => {
   };
 
   const deleteApproverHandler = (id) => {
-    const filteredApprovers = watch("approver_id").filter(
-      (item) => item?.id !== id
-    );
+    const filteredApprovers = watch("approver_id").filter((item) => item?.id !== id);
     setValue("approver_id", filteredApprovers);
   };
 
@@ -245,19 +225,10 @@ const AddUnitApprovers = (props) => {
           alignSelf: "center",
         }}
       >
-        {data.action === "view"
-          ? "View Approvers"
-          : data.action === "update"
-            ? "Update Approvers"
-            : "Assign Approvers"}
+        {data.action === "view" ? "View Approvers" : data.action === "update" ? "Update Approvers" : "Assign Approvers"}
       </Typography>
 
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmitHandler)}
-        className="add-masterlist__content"
-        gap={1.5}
-      >
+      <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} className="add-masterlist__content" gap={1.5}>
         <Divider />
 
         {/* <CustomAutoComplete
@@ -312,7 +283,7 @@ const AddUnitApprovers = (props) => {
           )}
           fullWidth
           onChange={(_, value) => {
-            setValue("subunit_id", null)
+            setValue("subunit_id", null);
             return value;
           }}
         />
@@ -321,9 +292,7 @@ const AddUnitApprovers = (props) => {
           autoComplete
           name="subunit_id"
           control={control}
-          options={subUnitData?.filter(
-            (item) => item?.department?.id === watch("department_id")?.id
-          )}
+          options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
           loading={isSubUnitLoading}
           size="small"
           disabled={data.status}
@@ -347,12 +316,7 @@ const AddUnitApprovers = (props) => {
             p: 2,
           }}
         >
-          <Stack
-            flexDirection="row"
-            gap={2}
-            width="100%"
-            alignItems="flex-start"
-          >
+          <Stack flexDirection="row" gap={2} width="100%" alignItems="flex-start">
             <Autocomplete
               value={selectedApprovers}
               loading={isApproverLoading}
@@ -362,8 +326,7 @@ const AddUnitApprovers = (props) => {
               filterOptions={filterOptions}
               getOptionDisabled={(option) => {
                 return (
-                  option?.approver?.employee_id ===
-                  watch("subunit_id")?.employee_id ||
+                  option?.approver?.employee_id === watch("subunit_id")?.employee_id ||
                   watch("approver_id").some((data) => data?.id === option.id)
                 );
               }}
@@ -438,13 +401,7 @@ const AddUnitApprovers = (props) => {
                 setList={setListApprovers}
               >
                 {watch("approver_id").map((approver, index) => (
-                  <Stack
-                    key={index}
-                    flexDirection="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    my={1}
-                  >
+                  <Stack key={index} flexDirection="row" justifyContent="space-between" alignItems="center" my={1}>
                     <Stack
                       flexDirection="row"
                       alignItems="center"
@@ -462,17 +419,14 @@ const AddUnitApprovers = (props) => {
                           sx={{
                             width: 24,
                             height: 24,
-                            backgroundColor:
-                              data.action === "view" ? "gray" : "primary.main",
+                            backgroundColor: data.action === "view" ? "gray" : "primary.main",
                             fontSize: "16px",
                           }}
                         >
                           {index + 1}
                         </Avatar>
                         <Stack>
-                          <Typography>
-                            {`${approver?.approver?.firstname} ${approver?.approver?.lastname}`}
-                          </Typography>
+                          <Typography>{`${approver?.approver?.firstname} ${approver?.approver?.lastname}`}</Typography>
                           <Typography fontSize="12px" color="gray" mt="-2px">
                             {approver?.approver?.employee_id}
                           </Typography>
@@ -505,12 +459,7 @@ const AddUnitApprovers = (props) => {
           {data.action === "view" ? (
             ""
           ) : (
-            <LoadingButton
-              type="submit"
-              variant="contained"
-              size="small"
-              loading={isPostLoading || isUpdateLoading}
-            >
+            <LoadingButton type="submit" variant="contained" size="small" loading={isPostLoading || isUpdateLoading}>
               {data.status ? "Update" : "Create"}
             </LoadingButton>
           )}

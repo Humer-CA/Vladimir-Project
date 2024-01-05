@@ -97,11 +97,7 @@ const Confirmation = (props) => {
   // };
 
   return (
-    <Box
-      className="confirmation"
-      component="form"
-      onSubmit={handleSubmit(handleConfirm)}
-    >
+    <Box className="confirmation" component="form" onSubmit={handleSubmit(handleConfirm)}>
       <SvgIcon
         component={icon}
         htmlColor={iconColor}
@@ -116,18 +112,13 @@ const Confirmation = (props) => {
         Confirmation
       </DialogTitle>
 
-      <DialogContent sx={{ padding: 0, paddingBottom: 2 }}>
+      <DialogContent sx={{ padding: 0, paddingBottom: remarks ? 2 : 0 }}>
         <DialogContentText component="div">{message}</DialogContentText>
       </DialogContent>
 
       {remarks && (
         <Stack gap={1} width="90%">
-          <Typography
-            fontFamily="Anton"
-            fontWeight="bold"
-            fontSize={20}
-            color="secondary"
-          >
+          <Typography fontFamily="Anton" fontWeight="bold" fontSize={20} color="secondary">
             Remarks
           </Typography>
 
@@ -148,14 +139,7 @@ const Confirmation = (props) => {
       )}
 
       {/* <DialogActions> */}
-      <Stack
-        alignContent="flex-start"
-        justifyContent="center"
-        flexDirection="row"
-        gap={2}
-        marginTop={3}
-      >
-
+      <Stack alignContent="flex-start" justifyContent="center" flexDirection="row" gap={2} marginTop={3}>
         <LoadingButton
           color="primary"
           // onClick={handleConfirm}
@@ -166,13 +150,7 @@ const Confirmation = (props) => {
           Yes
         </LoadingButton>
 
-        <Button
-          autoFocus
-          variant="outlined"
-          color="secondary"
-          onClick={handleClose}
-          disabled={loading === true}
-        >
+        <Button autoFocus variant="outlined" color="secondary" onClick={handleClose} disabled={loading === true}>
           No
         </Button>
       </Stack>

@@ -20,13 +20,15 @@
     & .parentSidebar__wrapper {
       display: flex;
       justify-content: center;
-      align-content: center;
+      // align-content: center;
       align-items: flex-start;
       flex-wrap: wrap;
       gap: 15px;
       padding: 5px;
       margin: 5px;
-      // height: calc(100vh - 230px);
+
+      //! remove this line if it malfunction
+      height: calc(100vh - 230px);
 
       @media (max-width: 590px) {
         height: 100%;
