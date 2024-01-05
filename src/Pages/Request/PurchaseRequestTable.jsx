@@ -53,17 +53,15 @@ const PurchaseRequestTable = (props) => {
   const [status, setStatus] = useState("active");
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
-  const [urlPath, setUrlPath] = useState(true);
 
-  const [transactionIdData, setTransactionIdData] = useState();
+  //   const [transactionIdwasd, setTransactionIdData] = useState();
 
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width: 500px)");
-  const drawer = useSelector((state) => state.booleanState.drawer);
-  const dialog = useSelector((state) => state.booleanState.dialog);
+  //   const drawer = useSelector((state) => state.booleanState.drawer);
+  //   const dialog = useSelector((state) => state.booleanState.dialog);
 
-  // Table Sorting --------------------------------
-
+  //* Table Sorting -------------------------------------------------------
   const [order, setOrder] = useState("desc");
   const [orderBy, setOrderBy] = useState("id");
 
@@ -89,7 +87,7 @@ const PurchaseRequestTable = (props) => {
     setOrderBy(property);
   };
 
-  // Table Properties --------------------------------
+  //* Table Properties ---------------------------------------------------
   const perPageHandler = (e) => {
     setPage(1);
     setPerPage(parseInt(e.target.value));
