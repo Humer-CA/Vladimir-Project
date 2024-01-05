@@ -23,6 +23,12 @@ export const purchaseRequestApi = createApi({
       providesTags: ["PurchaseRequest"],
     }),
 
+    getPurchaseRequestWithPrApi: builder.query({
+      query: (params) =>
+        `adding-pr?toPr=0&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
+      providesTags: ["PurchaseRequest"],
+    }),
+
     getPurchaseRequestAllApi: builder.query({
       query: () => `asset-request?pagination=none`,
       // transformResponse: (response) => response.data,
@@ -31,7 +37,7 @@ export const purchaseRequestApi = createApi({
 
     addPurchaseRequestApi: builder.mutation({
       query: (data) => ({
-        url: `/adding-pr`,
+        url: `/adding-pr/${data?.transaction_number}`,
         method: "PUT",
         body: data,
       }),
@@ -40,8 +46,9 @@ export const purchaseRequestApi = createApi({
 
     removePurchaseRequestApi: builder.mutation({
       query: (body) => ({
-        url: `/remove-pr/${body?.reference_number}`,
+        url: `/remove-pr/${body?.transaction_number}`,
         method: "PUT",
+        body: console.log(body),
       }),
       invalidatesTags: ["PurchaseRequest"],
     }),
@@ -50,6 +57,7 @@ export const purchaseRequestApi = createApi({
 
 export const {
   useGetPurchaseRequestApiQuery,
+  useGetPurchaseRequestWithPrApiQuery,
   useGetPurchaseRequestAllApiQuery,
   useLazyGetPurchaseRequestAllApiQuery,
   useLazyGetPurchaseRequestApiQuery,
