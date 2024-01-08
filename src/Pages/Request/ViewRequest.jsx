@@ -345,20 +345,21 @@ const ViewRequest = (props) => {
           </Button>
         )}
 
-      {transactionData?.pr_number !== "-" && (
-        <Button
-          variant="contained"
-          color="error"
-          size="small"
-          startIcon={<RemoveShoppingCart color="secondary" />}
-          onClick={() => onRemovePrHandler(transactionData)}
-          sx={{ position: "absolute", right: 10, height: "30px" }}
-        >
-          <Typography fontWeight={500} fontSize={14}>
-            Remove PR
-          </Typography>
-        </Button>
-      )}
+      {(transactionData?.pr_number !== "-" || transactionData?.pr_number === null) &&
+        location.pathname === `/purchase-request/${transactionData?.transaction_number}` && (
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            startIcon={<RemoveShoppingCart color="secondary" />}
+            onClick={() => onRemovePrHandler(transactionData)}
+            sx={{ position: "absolute", right: 10, height: "30px" }}
+          >
+            <Typography fontWeight={500} fontSize={14}>
+              Remove PR
+            </Typography>
+          </Button>
+        )}
 
       <Box className="request mcontainer__wrapper" p={2}>
         {/* TABLE */}
