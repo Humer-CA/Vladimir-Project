@@ -526,56 +526,55 @@ const AddRequisition = (props) => {
 
       letter_of_request:
         updateRequest &&
-        (watch("letter_of_request") === null
-          ? ""
-          : updateRequest.letter_of_request !== null
-          ? transactionDataApi[0]?.attachments?.letter_of_request?.file_name ===
-            updateRequest?.letter_of_request?.file_name
-            ? "x"
-            : formData.letter_of_request
-          : formData.letter_of_request),
+        (watch("letter_of_request") === null ||
+          (updateRequest.letter_of_request !== null &&
+            transactionDataApi[0]?.attachments?.letter_of_request?.file_name ===
+              updateRequest?.letter_of_request?.file_name))
+          ? "x"
+          : formData.letter_of_request,
 
       quotation:
         updateRequest &&
-        (watch("quotation") === null
-          ? ""
-          : updateRequest.quotation !== null
-          ? transactionDataApi[0]?.attachments?.quotation?.file_name === updateRequest?.quotation?.file_name
-            ? "x"
-            : formData.quotation
-          : formData.quotation),
+        (watch("quotation") === null ||
+          (updateRequest.quotation !== null &&
+            transactionDataApi[0]?.attachments?.quotation?.file_name === updateRequest?.quotation?.file_name))
+          ? "x"
+          : formData.quotation,
 
       specification_form:
         updateRequest &&
-        (watch("specification_form") === null
-          ? ""
-          : updateRequest.specification_form !== null
-          ? transactionDataApi[0]?.attachments?.specification_form?.file_name ===
-            updateRequest?.specification_form?.file_name
-            ? "x"
-            : formData.specification_form
-          : formData.specification_form),
+        (watch("specification_form") === null ||
+          (updateRequest.specification_form !== null &&
+            transactionDataApi[0]?.attachments?.specification_form?.file_name ===
+              updateRequest?.specification_form?.file_name))
+          ? "x"
+          : formData.specification_form,
 
       tool_of_trade:
         updateRequest &&
-        (watch("tool_of_trade") === null
-          ? ""
-          : updateRequest.tool_of_trade !== null
-          ? transactionDataApi[0]?.attachments?.tool_of_trade?.file_name === updateRequest?.tool_of_trade?.file_name
-            ? "x"
-            : formData.tool_of_trade
-          : formData.tool_of_trade),
+        (watch("tool_of_trade") === null ||
+          (updateRequest.tool_of_trade !== null &&
+            transactionDataApi[0]?.attachments?.tool_of_trade?.file_name === updateRequest?.tool_of_trade?.file_name))
+          ? "x"
+          : formData.tool_of_trade,
 
       other_attachments:
         updateRequest &&
-        (watch("other_attachments") === null
-          ? ""
-          : updateRequest.other_attachments !== null
-          ? transactionDataApi[0]?.attachments?.other_attachments?.file_name ===
-            updateRequest?.other_attachments?.file_name
-            ? "x"
-            : formData.other_attachments
-          : formData.other_attachments),
+        (watch("other_attachments") === null ||
+          (updateRequest.other_attachments !== null &&
+            transactionDataApi[0]?.attachments?.other_attachments?.file_name ===
+              updateRequest?.other_attachments?.file_name))
+          ? "x"
+          : formData.other_attachments,
+
+      // // (watch("other_attachments") === null
+      // //   ? ""
+      // //   : updateRequest.other_attachments !== null
+      // //   ? transactionDataApi[0]?.attachments?.other_attachments?.file_name ===
+      // //     updateRequest?.other_attachments?.file_name
+      // //     ? "x"
+      // //     : formData.other_attachments
+      // //   : formData.other_attachments),
     };
     const payload = new FormData();
     Object.entries(data).forEach((item) => {
@@ -1554,13 +1553,18 @@ const AddRequisition = (props) => {
                               }
                               onDeleteHandler={!transactionData && onDeleteHandler}
                               onDeleteReferenceHandler={
-                                transactionData
-                                  ? transactionData?.item_count !== 1
-                                    ? transactionDataApi.length !== 1
-                                      ? onVoidReferenceHandler
-                                      : false
-                                    : false
-                                  : false
+                                transactionData &&
+                                transactionData.item_count !== 1 &&
+                                transactionDataApi.length !== 1 &&
+                                onVoidReferenceHandler
+
+                                // // transactionData
+                                // //   ? transactionData?.item_count !== 1
+                                // //     ? transactionDataApi.length !== 1
+                                // //       ? onVoidReferenceHandler
+                                // //       : false
+                                // //     : false
+                                // //   : false
                               }
                               onUpdateHandler={onUpdateHandler}
                               onUpdateResetHandler={onUpdateResetHandler}
