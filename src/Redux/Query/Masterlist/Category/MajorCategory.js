@@ -20,7 +20,7 @@ export const majorCategoryApi = createApi({
   endpoints: (builder) => ({
     getMajorCategoryApi: builder.query({
       query: (params) =>
-        `/major-category?search=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `/major-category?search=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["majorCategory"],
     }),
 

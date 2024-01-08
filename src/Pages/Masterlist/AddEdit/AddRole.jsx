@@ -358,6 +358,15 @@ const AddRole = (props) => {
 
           <FormControlLabel
             disabled={data.action === "view"}
+            label="Supplier"
+            value="supplier"
+            control={
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("supplier")} />
+            }
+          />
+
+          <FormControlLabel
+            disabled={data.action === "view"}
             label="Sub Unit"
             value="subunit"
             control={
@@ -808,6 +817,7 @@ const AddRole = (props) => {
                                     "subunit",
                                     "location",
                                     "account-title",
+                                    "supplier",
                                     "division",
                                     "type-of-request",
                                     "capex",

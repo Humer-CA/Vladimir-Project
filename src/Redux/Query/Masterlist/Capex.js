@@ -20,7 +20,7 @@ export const capexApi = createApi({
   endpoints: (builder) => ({
     getCapexApi: builder.query({
       query: (params) =>
-        `capex?search=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `capex?search=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["Capex"],
     }),
 

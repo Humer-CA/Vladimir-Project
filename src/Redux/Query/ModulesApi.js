@@ -20,7 +20,7 @@ export const modulesApi = createApi({
   endpoints: (builder) => ({
     getModulesApi: builder.query({
       query: (params) =>
-        `setup/get-modules=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `setup/get-modules=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["Modules"],
     }),
 

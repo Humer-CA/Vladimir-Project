@@ -81,7 +81,7 @@ const PendingRequest = () => {
 
   // Table Properties --------------------------------
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
     setPerPage(parseInt(e.target.value));
   };
@@ -454,7 +454,7 @@ const PendingRequest = () => {
               page={approvalSuccess ? approvalData.current_page - 1 : 0}
               rowsPerPage={approvalSuccess ? parseInt(approvalData?.per_page) : 5}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
         </Box>

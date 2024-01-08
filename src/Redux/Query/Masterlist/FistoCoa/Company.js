@@ -19,7 +19,7 @@ export const companyApi = createApi({
   endpoints: (builder) => ({
     getCompanyApi: builder.query({
       query: (params) =>
-        `/company?search=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `/company?search=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["Company"],
     }),
 
@@ -38,8 +38,4 @@ export const companyApi = createApi({
   }),
 });
 
-export const {
-  useGetCompanyApiQuery,
-  useGetCompanyAllApiQuery,
-  usePostCompanyApiMutation,
-} = companyApi;
+export const { useGetCompanyApiQuery, useGetCompanyAllApiQuery, usePostCompanyApiMutation } = companyApi;

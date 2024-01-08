@@ -8,11 +8,7 @@ import AddServiceProvider from "./AddEdit/AddServiceProvider";
 // RTK
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
 import {
   usePostServiceProviderStatusApiMutation,
   useGetServiceProvidersApiQuery,
@@ -40,7 +36,7 @@ import NoRecordsFound from "../../Layout/NoRecordsFound";
 const ServiceProvider = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateServiceProvider, setUpdateServiceProvider] = useState({
     status: false,
@@ -79,9 +75,9 @@ const ServiceProvider = () => {
 
   const drawer = useSelector((state) => state.booleanState.drawer);
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -99,15 +95,14 @@ const ServiceProvider = () => {
   } = useGetServiceProvidersApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
     { refetchOnMountOrArgChange: true }
   );
 
-  const [postServiceProviderStatusApi, { isLoading }] =
-    usePostServiceProviderStatusApiMutation();
+  const [postServiceProviderStatusApi, { isLoading }] = usePostServiceProviderStatusApiMutation();
 
   const dispatch = useDispatch();
 
@@ -188,9 +183,7 @@ const ServiceProvider = () => {
 
       {serviceProviderLoading && <MasterlistSkeleton onAdd={true} />}
 
-      {serviceProviderError && (
-        <ErrorFetching refetch={refetch} error={errorData} />
-      )}
+      {serviceProviderError && <ErrorFetching refetch={refetch} error={errorData} />}
 
       {serviceProviderData && !serviceProviderError && (
         <Box className="mcontainer__wrapper">
@@ -227,18 +220,14 @@ const ServiceProvider = () => {
                     <TableCell className="tbl-cell">
                       <TableSortLabel
                         active={orderBy === `service_provider_name`}
-                        direction={
-                          orderBy === `service_provider_name` ? order : `asc`
-                        }
+                        direction={orderBy === `service_provider_name` ? order : `asc`}
                         onClick={() => onSort(`service_provider_name`)}
                       >
                         Service Provider
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Status
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Status</TableCell>
 
                     <TableCell className="tbl-cell text-center">
                       <TableSortLabel
@@ -250,9 +239,7 @@ const ServiceProvider = () => {
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Action
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Action</TableCell>
                   </TableRow>
                 </TableHead>
 
@@ -262,70 +249,62 @@ const ServiceProvider = () => {
                   ) : (
                     <>
                       {serviceProviderSuccess &&
-                        [...serviceProviderData.data]
-                          .sort(comparator(order, orderBy))
-                          .map((data) => (
-                            <TableRow
-                              key={data.id}
-                              hover={true}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {data.id}
-                              </TableCell>
+                        [...serviceProviderData.data].sort(comparator(order, orderBy)).map((data) => (
+                          <TableRow
+                            key={data.id}
+                            hover={true}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell tr-cen-pad45">{data.id}</TableCell>
 
-                              <TableCell className="tbl-cell text-weight">
-                                {data.service_provider_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell text-weight">{data.service_provider_name}</TableCell>
 
-                              <TableCell className="tbl-cell text-center">
-                                {data.is_active ? (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#27ff811f",
-                                      color: "active.dark",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="ACTIVE"
-                                  />
-                                ) : (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#fc3e3e34",
-                                      color: "error.light",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="INACTIVE"
-                                  />
-                                )}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {Moment(data.created_at).format("MMM DD, YYYY")}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell text-center">
-                                <ActionMenu
-                                  status={status}
-                                  data={data}
-                                  onUpdateHandler={onUpdateHandler}
-                                  onArchiveRestoreHandler={
-                                    onArchiveRestoreHandler
-                                  }
+                            <TableCell className="tbl-cell text-center">
+                              {data.is_active ? (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#27ff811f",
+                                    color: "active.dark",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="ACTIVE"
                                 />
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                              ) : (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#fc3e3e34",
+                                    color: "error.light",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="INACTIVE"
+                                />
+                              )}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell tr-cen-pad45">
+                              {Moment(data.created_at).format("MMM DD, YYYY")}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell text-center">
+                              <ActionMenu
+                                status={status}
+                                data={data}
+                                onUpdateHandler={onUpdateHandler}
+                                onArchiveRestoreHandler={onArchiveRestoreHandler}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </>
                   )}
                 </TableBody>
@@ -335,35 +314,19 @@ const ServiceProvider = () => {
 
           <Box className="mcontainer__pagination">
             <TablePagination
-              rowsPerPageOptions={[
-                5,
-                10,
-                15,
-                { label: "All", value: parseInt(serviceProviderData?.total) },
-              ]}
+              rowsPerPageOptions={[5, 10, 15, { label: "All", value: parseInt(serviceProviderData?.total) }]}
               component="div"
               count={serviceProviderSuccess ? serviceProviderData.total : 0}
-              page={
-                serviceProviderSuccess
-                  ? serviceProviderData.current_page - 1
-                  : 0
-              }
-              rowsPerPage={
-                serviceProviderSuccess
-                  ? parseInt(serviceProviderData?.per_page)
-                  : 5
-              }
+              page={serviceProviderSuccess ? serviceProviderData.current_page - 1 : 0}
+              rowsPerPage={serviceProviderSuccess ? parseInt(serviceProviderData?.per_page) : 5}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
         </Box>
       )}
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        <AddServiceProvider
-          data={updateServiceProvider}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddServiceProvider data={updateServiceProvider} onUpdateResetHandler={onUpdateResetHandler} />
       </Dialog>
     </Box>
   );

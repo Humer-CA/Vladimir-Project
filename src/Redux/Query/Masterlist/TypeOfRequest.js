@@ -20,7 +20,7 @@ export const typeOfRequestApi = createApi({
   endpoints: (builder) => ({
     getTypeOfRequestApi: builder.query({
       query: (params) =>
-        `type-of-request?search=${params.search}&limit=${params.perPage}&status=${params.status}&page=${params.page}`,
+        `type-of-request?search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
       providesTags: ["TypeOfRequest"],
     }),
 

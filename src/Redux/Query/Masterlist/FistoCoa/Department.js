@@ -19,7 +19,7 @@ export const departmentApi = createApi({
   endpoints: (builder) => ({
     getDepartmentApi: builder.query({
       query: (params) =>
-        `/department?search=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `/department?search=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["Department"],
     }),
 
@@ -40,8 +40,4 @@ export const departmentApi = createApi({
   }),
 });
 
-export const {
-  useGetDepartmentApiQuery,
-  useGetDepartmentAllApiQuery,
-  usePostDepartmentApiMutation,
-} = departmentApi;
+export const { useGetDepartmentApiQuery, useGetDepartmentAllApiQuery, usePostDepartmentApiMutation } = departmentApi;

@@ -20,7 +20,7 @@ export const roleManagementApi = createApi({
   endpoints: (builder) => ({
     getRoleApi: builder.query({
       query: (params) =>
-        `search/role-management?search=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `role-management?search=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["Role"],
     }),
 

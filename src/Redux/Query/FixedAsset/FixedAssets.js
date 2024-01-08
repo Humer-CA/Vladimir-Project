@@ -20,7 +20,7 @@ export const fixedAssetApi = createApi({
   endpoints: (builder) => ({
     getFixedAssetApi: builder.query({
       query: (params) =>
-        `fixed-asset-search?search=${params.search}&page=${params.page}&per_page=${params.perPage}&status=${params.status}`,
+        `fixed-asset-search?search=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       // query: (params) => `fixed-assets/search=${params.search}&page=${params.page}&limit=${params.limit}`,
       providesTags: ["FixedAsset"],
     }),
@@ -32,11 +32,7 @@ export const fixedAssetApi = createApi({
     }),
 
     getFixedAssetIdApi: builder.query({
-      query: ({
-        vladimir_tag_number: tagNumber,
-        is_additional_cost,
-        id: additionalCostID,
-      }) => {
+      query: ({ vladimir_tag_number: tagNumber, is_additional_cost, id: additionalCostID }) => {
         if (is_additional_cost) {
           return `additional-cost/${additionalCostID}`;
         }
@@ -142,11 +138,7 @@ export const fixedAssetApi = createApi({
 
     getPrintViewingApi: builder.query({
       query: (params) => {
-        const queryParams = [
-          `search=${params.search}`,
-          `limit=${params.limit}`,
-          `page=${params.page}`,
-        ];
+        const queryParams = [`search=${params.search}`, `per_page=${params.per_page}`, `page=${params.page}`];
 
         if (params.startDate) {
           queryParams.push(`startDate=${params.startDate}`);

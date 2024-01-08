@@ -25,7 +25,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import Zoom from "@mui/material/Zoom";
-import Badge from '@mui/material/Badge';
+import Badge from "@mui/material/Badge";
 
 // Icons
 import {
@@ -78,19 +78,11 @@ const Sidebar = () => {
   const [settingsCollapse, setSettingsCollapse] = useState(false);
   const [requestCollapse, setRequestCollapse] = useState(false);
   const [reportCollapse, setReportCollapse] = useState(false);
-  const collapseArray = [
-    masterListCollapse,
-    userCollapse,
-    settingsCollapse,
-    requestCollapse,
-    reportCollapse,
-  ];
+  const collapseArray = [masterListCollapse, userCollapse, settingsCollapse, requestCollapse, reportCollapse];
 
   const dispatch = useDispatch();
   const collapse = useSelector((state) => state.sidebar.open);
-  const permissions = useSelector(
-    (state) => state.userLogin?.user.role.access_permission
-  );
+  const permissions = useSelector((state) => state.userLogin?.user.role.access_permission);
 
   const drawer = useSelector((state) => state.booleanState.drawer);
 
@@ -157,6 +149,13 @@ const Sidebar = () => {
         },
 
         {
+          label: "Supplier",
+          icon: StoreRounded,
+          path: "/masterlist/supplier",
+          permission: "supplier",
+        },
+
+        {
           label: "Sub Unit",
           icon: Segment,
           path: "/masterlist/sub-unit",
@@ -191,12 +190,6 @@ const Sidebar = () => {
         //   permission: [],
         // },
 
-        // {
-        //   label: "Supplier",
-        //   icon: StoreRounded,
-        //   path: "/masterlist/supplier",
-        //   permission: [],
-        // },
         {
           label: "Category",
           icon: Category,
@@ -400,8 +393,6 @@ const Sidebar = () => {
       setter: closeCollapse,
     },
 
-
-
     {
       label: "Reports",
       icon: SummarizeRounded,
@@ -466,13 +457,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     if (collapse) {
-      const routes = [
-        "masterlist",
-        "user-management",
-        "settings",
-        "request",
-        "reports",
-      ];
+      const routes = ["masterlist", "user-management", "settings", "request", "reports"];
       const match = routes.find((route) => pathname.includes(route));
       if (match) {
         const stateVariable = `${match}Collapse`;
@@ -544,12 +529,7 @@ const Sidebar = () => {
                     disablePadding
                     dense
                   >
-                    <Tooltip
-                      title={!collapse && item.label}
-                      TransitionComponent={Zoom}
-                      placement="right"
-                      arrow
-                    >
+                    <Tooltip title={!collapse && item.label} TransitionComponent={Zoom} placement="right" arrow>
                       <ListItemButton
                         className="sidebar__menu-btn"
                         component={NavLink}
@@ -570,61 +550,45 @@ const Sidebar = () => {
                         {collapse && Boolean(item.children?.length) && (
                           <ExpandLessRounded
                             sx={{
-                              transform: item.open
-                                ? "rotate(0deg)"
-                                : "rotate(180deg)",
+                              transform: item.open ? "rotate(0deg)" : "rotate(180deg)",
                               transition: "0.2s ease-in-out",
                             }}
                           />
                         )}
                       </ListItemButton>
-
                     </Tooltip>
 
-                    {
-                      Boolean(item.children?.length) && (
-                        <Collapse
-                          in={item.open}
-                          timeout="auto"
-                          unmountOnExit
-                          sx={{ width: "100%" }}
-                        >
-                          <List
-                            component="div"
-                            className="sidebar__menu-list"
-                            sx={{ pt: 0.5 }}
-                          >
-                            {item.children.map((childItem) => {
-                              return (
-                                permissions
-                                  .split(", ")
-                                  .includes(childItem.permission) && (
-                                  <ListItemButton
-                                    className="sidebar__menu-btn-list"
-                                    key={childItem.path}
-                                    component={NavLink}
-                                    to={childItem.path}
-                                    sx={{
-                                      width: "208px",
-                                      ml: 2,
-                                      borderRadius: "12px",
-                                      px: 0,
-                                    }}
-                                    dense
-                                  >
-                                    <ListItemIcon sx={{ pl: 2, py: 0.5 }}>
-                                      <SvgIcon component={childItem.icon} />
-                                    </ListItemIcon>
-                                    <ListItemText primary={childItem.label} />
-                                  </ListItemButton>
-                                )
-                              );
-                            })}
-                          </List>
-                          <Divider sx={{ mb: "10px", mx: "15px" }} />
-                        </Collapse>
-                      )
-                    }
+                    {Boolean(item.children?.length) && (
+                      <Collapse in={item.open} timeout="auto" unmountOnExit sx={{ width: "100%" }}>
+                        <List component="div" className="sidebar__menu-list" sx={{ pt: 0.5 }}>
+                          {item.children.map((childItem) => {
+                            return (
+                              permissions.split(", ").includes(childItem.permission) && (
+                                <ListItemButton
+                                  className="sidebar__menu-btn-list"
+                                  key={childItem.path}
+                                  component={NavLink}
+                                  to={childItem.path}
+                                  sx={{
+                                    width: "208px",
+                                    ml: 2,
+                                    borderRadius: "12px",
+                                    px: 0,
+                                  }}
+                                  dense
+                                >
+                                  <ListItemIcon sx={{ pl: 2, py: 0.5 }}>
+                                    <SvgIcon component={childItem.icon} />
+                                  </ListItemIcon>
+                                  <ListItemText primary={childItem.label} />
+                                </ListItemButton>
+                              )
+                            );
+                          })}
+                        </List>
+                        <Divider sx={{ mb: "10px", mx: "15px" }} />
+                      </Collapse>
+                    )}
                   </ListItem>
                 )
               );
@@ -647,7 +611,7 @@ const Sidebar = () => {
             </p>
           )}
         </Box>
-      </Box >
+      </Box>
     </>
   );
 };

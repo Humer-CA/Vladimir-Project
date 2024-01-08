@@ -20,7 +20,7 @@ export const approverSettingsApi = createApi({
   endpoints: (builder) => ({
     getApproverSettingsApi: builder.query({
       query: (params) =>
-        `approver-setting?search=${params.search}&limit=${params.limit}&status=${params.status}&page=${params.page}`,
+        `approver-setting?search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
       providesTags: ["ApproverSettings"],
     }),
 

@@ -10,11 +10,7 @@ import NoRecordsFound from "../../../Layout/NoRecordsFound";
 // RTK
 import { useDispatch } from "react-redux";
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../../Redux/StateManagement/confirmSlice";
 import { useSelector } from "react-redux";
 import {
   useGetDepreciationStatusApiQuery,
@@ -41,7 +37,7 @@ import { Help, ReportProblem } from "@mui/icons-material";
 const DepreciationStatus = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateDepreciationStatus, setUpdateDepreciationStatus] = useState({
     status: false,
@@ -80,9 +76,9 @@ const DepreciationStatus = () => {
 
   // Table Properties --------------------------------
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -100,15 +96,14 @@ const DepreciationStatus = () => {
   } = useGetDepreciationStatusApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
     { refetchOnMountOrArgChange: true }
   );
 
-  const [patchDepreciationStatusApi, { isLoading }] =
-    usePatchDepreciationStatusStatusApiMutation();
+  const [patchDepreciationStatusApi, { isLoading }] = usePatchDepreciationStatusStatusApiMutation();
 
   const dispatch = useDispatch();
 
@@ -200,16 +195,10 @@ const DepreciationStatus = () => {
 
   return (
     <>
-      {depreciationStatusLoading && (
-        <MasterlistSkeleton category={true} onAdd={true} />
-      )}
+      {depreciationStatusLoading && <MasterlistSkeleton category={true} onAdd={true} />}
 
       {depreciationStatusError && (
-        <ErrorFetching
-          refetch={refetch}
-          category={depreciationStatusData}
-          error={errorData}
-        />
+        <ErrorFetching refetch={refetch} category={depreciationStatusData} error={errorData} />
       )}
 
       {depreciationStatusData && !depreciationStatusError && (
@@ -247,18 +236,14 @@ const DepreciationStatus = () => {
                     <TableCell className="tbl-cell">
                       <TableSortLabel
                         active={orderBy === `depreciation_status_name`}
-                        direction={
-                          orderBy === `depreciation_status_name` ? order : `asc`
-                        }
+                        direction={orderBy === `depreciation_status_name` ? order : `asc`}
                         onClick={() => onSort(`depreciation_status_name`)}
                       >
                         Depreciation Status
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Status
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Status</TableCell>
 
                     <TableCell className="tbl-cell text-center">
                       <TableSortLabel
@@ -280,71 +265,63 @@ const DepreciationStatus = () => {
                   ) : (
                     <>
                       {depreciationStatusSuccess &&
-                        [...depreciationStatusData.data]
-                          .sort(comparator(order, orderBy))
-                          .map((data) => (
-                            <TableRow
-                              key={data.id}
-                              hover={true}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {data.id}
-                              </TableCell>
+                        [...depreciationStatusData.data].sort(comparator(order, orderBy)).map((data) => (
+                          <TableRow
+                            key={data.id}
+                            hover={true}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell tr-cen-pad45">{data.id}</TableCell>
 
-                              <TableCell className="tbl-cell text-weight">
-                                {data.depreciation_status_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell text-weight">{data.depreciation_status_name}</TableCell>
 
-                              <TableCell className="tbl-cell text-center">
-                                {data.is_active ? (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#27ff811f",
-                                      color: "active.dark",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="ACTIVE"
-                                  />
-                                ) : (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#fc3e3e34",
-                                      color: "error.light",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="INACTIVE"
-                                  />
-                                )}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {Moment(data.created_at).format("MMM DD, YYYY")}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell ">
-                                <ActionMenu
-                                  status={status}
-                                  data={data}
-                                  hideEdit={true}
-                                  onUpdateHandler={onUpdateHandler}
-                                  onArchiveRestoreHandler={
-                                    onArchiveRestoreHandler
-                                  }
+                            <TableCell className="tbl-cell text-center">
+                              {data.is_active ? (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#27ff811f",
+                                    color: "active.dark",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="ACTIVE"
                                 />
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                              ) : (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#fc3e3e34",
+                                    color: "error.light",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="INACTIVE"
+                                />
+                              )}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell tr-cen-pad45">
+                              {Moment(data.created_at).format("MMM DD, YYYY")}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell ">
+                              <ActionMenu
+                                status={status}
+                                data={data}
+                                hideEdit={true}
+                                onUpdateHandler={onUpdateHandler}
+                                onArchiveRestoreHandler={onArchiveRestoreHandler}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </>
                   )}
                 </TableBody>
@@ -364,30 +341,17 @@ const DepreciationStatus = () => {
                 },
               ]}
               component="div"
-              count={
-                depreciationStatusSuccess ? depreciationStatusData.total : 0
-              }
-              page={
-                depreciationStatusSuccess
-                  ? depreciationStatusData.current_page - 1
-                  : 0
-              }
-              rowsPerPage={
-                depreciationStatusSuccess
-                  ? parseInt(depreciationStatusData?.per_page)
-                  : 5
-              }
+              count={depreciationStatusSuccess ? depreciationStatusData.total : 0}
+              page={depreciationStatusSuccess ? depreciationStatusData.current_page - 1 : 0}
+              rowsPerPage={depreciationStatusSuccess ? parseInt(depreciationStatusData?.per_page) : 5}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
         </Box>
       )}
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        <AddDepreciationStatus
-          data={updateDepreciationStatus}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddDepreciationStatus data={updateDepreciationStatus} onUpdateResetHandler={onUpdateResetHandler} />
       </Dialog>
     </>
   );

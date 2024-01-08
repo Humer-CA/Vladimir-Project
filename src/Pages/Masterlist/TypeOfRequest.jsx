@@ -8,11 +8,7 @@ import AddTypeOfRequest from "./AddEdit/AddTypeOfRequest";
 // RTK
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
 import {
   useGetTypeOfRequestApiQuery,
   usePostTypeOfRequestStatusApiMutation,
@@ -99,15 +95,14 @@ const TypeOfRequest = () => {
   } = useGetTypeOfRequestApiQuery(
     {
       page: page,
-      perPage: perPage,
+      per_page: perPage,
       status: status,
       search: search,
     },
     { refetchOnMountOrArgChange: true }
   );
 
-  const [postTypeOfRequestStatusApi, { isLoading }] =
-    usePostTypeOfRequestStatusApiMutation();
+  const [postTypeOfRequestStatusApi, { isLoading }] = usePostTypeOfRequestStatusApiMutation();
 
   const dispatch = useDispatch();
 
@@ -197,16 +192,11 @@ const TypeOfRequest = () => {
 
   return (
     <Box className="mcontainer">
-      <Typography
-        className="mcontainer__title"
-        sx={{ fontFamily: "Anton", fontSize: "2rem" }}
-      >
+      <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "2rem" }}>
         Type Of Request
       </Typography>
       {typeOfRequestLoading && <MasterlistSkeleton onAdd={true} />}
-      {typeOfRequestError && (
-        <ErrorFetching refetch={refetch} error={errorData} />
-      )}
+      {typeOfRequestError && <ErrorFetching refetch={refetch} error={errorData} />}
       {typeOfRequestData && !typeOfRequestError && (
         <>
           <Box className="mcontainer__wrapper">
@@ -243,18 +233,14 @@ const TypeOfRequest = () => {
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `type_of_request_name`}
-                          direction={
-                            orderBy === `type_of_request_name` ? order : `asc`
-                          }
+                          direction={orderBy === `type_of_request_name` ? order : `asc`}
                           onClick={() => onSort(`type_of_request_name`)}
                         >
                           Type of Request
                         </TableSortLabel>
                       </TableCell>
 
-                      <TableCell className="tbl-cell text-center">
-                        Status
-                      </TableCell>
+                      <TableCell className="tbl-cell text-center">Status</TableCell>
 
                       <TableCell className="tbl-cell text-center">
                         <TableSortLabel
@@ -276,71 +262,61 @@ const TypeOfRequest = () => {
                     ) : (
                       <>
                         {typeOfRequestSuccess &&
-                          [...typeOfRequestData?.data]
-                            ?.sort(comparator(order, orderBy))
-                            ?.map((data) => (
-                              <TableRow
-                                key={data.id}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    borderBottom: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell className="tbl-cell tr-cen-pad45">
-                                  {data.id}
-                                </TableCell>
+                          [...typeOfRequestData?.data]?.sort(comparator(order, orderBy))?.map((data) => (
+                            <TableRow
+                              key={data.id}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  borderBottom: 0,
+                                },
+                              }}
+                            >
+                              <TableCell className="tbl-cell tr-cen-pad45">{data.id}</TableCell>
 
-                                <TableCell className="tbl-cell text-weight">
-                                  {data.type_of_request_name}
-                                </TableCell>
+                              <TableCell className="tbl-cell text-weight">{data.type_of_request_name}</TableCell>
 
-                                <TableCell className="tbl-cell text-center">
-                                  {data.is_active ? (
-                                    <Chip
-                                      size="small"
-                                      variant="contained"
-                                      sx={{
-                                        background: "#27ff811f",
-                                        color: "active.dark",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label="ACTIVE"
-                                    />
-                                  ) : (
-                                    <Chip
-                                      size="small"
-                                      variant="contained"
-                                      sx={{
-                                        background: "#fc3e3e34",
-                                        color: "error.light",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label="INACTIVE"
-                                    />
-                                  )}
-                                </TableCell>
-
-                                <TableCell className="tbl-cell tr-cen-pad45">
-                                  {Moment(data.created_at).format(
-                                    "MMM DD, YYYY"
-                                  )}
-                                </TableCell>
-
-                                <TableCell className="tbl-cell ">
-                                  <ActionMenu
-                                    status={status}
-                                    data={data}
-                                    onUpdateHandler={onUpdateHandler}
-                                    onArchiveRestoreHandler={
-                                      onArchiveRestoreHandler
-                                    }
+                              <TableCell className="tbl-cell text-center">
+                                {data.is_active ? (
+                                  <Chip
+                                    size="small"
+                                    variant="contained"
+                                    sx={{
+                                      background: "#27ff811f",
+                                      color: "active.dark",
+                                      fontSize: "0.7rem",
+                                      px: 1,
+                                    }}
+                                    label="ACTIVE"
                                   />
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                                ) : (
+                                  <Chip
+                                    size="small"
+                                    variant="contained"
+                                    sx={{
+                                      background: "#fc3e3e34",
+                                      color: "error.light",
+                                      fontSize: "0.7rem",
+                                      px: 1,
+                                    }}
+                                    label="INACTIVE"
+                                  />
+                                )}
+                              </TableCell>
+
+                              <TableCell className="tbl-cell tr-cen-pad45">
+                                {Moment(data.created_at).format("MMM DD, YYYY")}
+                              </TableCell>
+
+                              <TableCell className="tbl-cell ">
+                                <ActionMenu
+                                  status={status}
+                                  data={data}
+                                  onUpdateHandler={onUpdateHandler}
+                                  onArchiveRestoreHandler={onArchiveRestoreHandler}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
                       </>
                     )}
                   </TableBody>
@@ -360,10 +336,7 @@ const TypeOfRequest = () => {
         </>
       )}
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        <AddTypeOfRequest
-          data={updateTypeOfRequest}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddTypeOfRequest data={updateTypeOfRequest} onUpdateResetHandler={onUpdateResetHandler} />
       </Dialog>
     </Box>
   );

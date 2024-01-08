@@ -20,7 +20,7 @@ export const cycleCountStatusApi = createApi({
   endpoints: (builder) => ({
     getCycleCountStatusApi: builder.query({
       query: (params) =>
-        `cycle-count-status?=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `cycle-count-status?=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["CycleCountStatus"],
     }),
 

@@ -7,11 +7,7 @@ import ErrorFetching from "../ErrorFetching";
 import { useDispatch } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
 
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
 
 import { useLazyGetFistoAccountTitleAllApiQuery } from "../../Redux/Query/Masterlist/FistoCoa/FistoAccountTitle";
 import {
@@ -43,7 +39,7 @@ import ActionMenu from "../../Components/Reusable/ActionMenu";
 const AccountTitle = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
 
   // Table Sorting --------------------------------
@@ -75,9 +71,9 @@ const AccountTitle = () => {
 
   // Table Properties --------------------------------
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -108,7 +104,7 @@ const AccountTitle = () => {
   } = useGetAccountTitleApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
@@ -117,17 +113,10 @@ const AccountTitle = () => {
 
   const [
     postAccountTitle,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostAccountTitleApiMutation();
 
-  const [patchAccountTitleStatus, { isLoading }] =
-    usePatchAccountTitleStatusApiMutation();
+  const [patchAccountTitleStatus, { isLoading }] = usePatchAccountTitleStatusApiMutation();
 
   useEffect(() => {
     if (fistoAccountTitleApiSuccess) {
@@ -271,18 +260,11 @@ const AccountTitle = () => {
 
   return (
     <Box className="mcontainer">
-      <Typography
-        className="mcontainer__title"
-        sx={{ fontFamily: "Anton", fontSize: "2rem" }}
-      >
+      <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "2rem" }}>
         Account Title
       </Typography>
       {accountTitleApiLoading && <MasterlistSkeleton onSync={true} />}
-
-      {accountTitleApiError && (
-        <ErrorFetching refetch={accountTitleApiRefetch} error={errorData} />
-      )}
-
+      {accountTitleApiError && <ErrorFetching refetch={accountTitleApiRefetch} error={errorData} />}
       {accountTitleApiData && !accountTitleApiError && (
         <>
           <Box className="mcontainer__wrapper">
@@ -320,9 +302,7 @@ const AccountTitle = () => {
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `account_title_code`}
-                          direction={
-                            orderBy === `account_title_code` ? order : `asc`
-                          }
+                          direction={orderBy === `account_title_code` ? order : `asc`}
                           onClick={() => onSort(`account_title_code`)}
                         >
                           Account Title Code
@@ -332,18 +312,14 @@ const AccountTitle = () => {
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `account_title_name`}
-                          direction={
-                            orderBy === `account_title_name` ? order : `asc`
-                          }
+                          direction={orderBy === `account_title_name` ? order : `asc`}
                           onClick={() => onSort(`account_title_name`)}
                         >
                           Account Title Name
                         </TableSortLabel>
                       </TableCell>
 
-                      <TableCell className="tbl-cell text-center">
-                        Status
-                      </TableCell>
+                      <TableCell className="tbl-cell text-center">Status</TableCell>
 
                       <TableCell className="tbl-cell text-center">
                         <TableSortLabel
@@ -355,9 +331,7 @@ const AccountTitle = () => {
                         </TableSortLabel>
                       </TableCell>
 
-                      <TableCell className="tbl-cell text-center">
-                        Action
-                      </TableCell>
+                      <TableCell className="tbl-cell text-center">Action</TableCell>
                     </TableRow>
                   </TableHead>
 
@@ -367,76 +341,64 @@ const AccountTitle = () => {
                     ) : (
                       <>
                         {accountTitleApiSuccess &&
-                          [...accountTitleApiData.data]
-                            .sort(comparator(order, orderBy))
-                            .map((data) => (
-                              <TableRow
-                                key={data.id}
-                                hover={true}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    borderBottom: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell className="tbl-cell tr-cen-pad45 tbl-coa">
-                                  {data.id}
-                                </TableCell>
+                          [...accountTitleApiData.data].sort(comparator(order, orderBy)).map((data) => (
+                            <TableRow
+                              key={data.id}
+                              hover={true}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  borderBottom: 0,
+                                },
+                              }}
+                            >
+                              <TableCell className="tbl-cell tr-cen-pad45 tbl-coa">{data.id}</TableCell>
 
-                                <TableCell className="tbl-cell">
-                                  {data.account_title_code}
-                                </TableCell>
+                              <TableCell className="tbl-cell">{data.account_title_code}</TableCell>
 
-                                <TableCell className="tbl-cell">
-                                  {data.account_title_name}
-                                </TableCell>
+                              <TableCell className="tbl-cell">{data.account_title_name}</TableCell>
 
-                                <TableCell className="tbl-cell text-center">
-                                  {data.is_active ? (
-                                    <Chip
-                                      size="small"
-                                      variant="contained"
-                                      sx={{
-                                        background: "#27ff811f",
-                                        color: "active.dark",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label="ACTIVE"
-                                    />
-                                  ) : (
-                                    <Chip
-                                      size="small"
-                                      variant="contained"
-                                      sx={{
-                                        background: "#fc3e3e34",
-                                        color: "error.light",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label="INACTIVE"
-                                    />
-                                  )}
-                                </TableCell>
-
-                                <TableCell className="tbl-cell tr-cen-pad45">
-                                  {Moment(data.updated_at).format(
-                                    "MMM DD, YYYY"
-                                  )}
-                                </TableCell>
-
-                                <TableCell className="tbl-cell text-center">
-                                  <ActionMenu
-                                    hideEdit={true}
-                                    data={data}
-                                    status={status}
-                                    onArchiveRestoreHandler={
-                                      onArchiveRestoreHandler
-                                    }
+                              <TableCell className="tbl-cell text-center">
+                                {data.is_active ? (
+                                  <Chip
+                                    size="small"
+                                    variant="contained"
+                                    sx={{
+                                      background: "#27ff811f",
+                                      color: "active.dark",
+                                      fontSize: "0.7rem",
+                                      px: 1,
+                                    }}
+                                    label="ACTIVE"
                                   />
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                                ) : (
+                                  <Chip
+                                    size="small"
+                                    variant="contained"
+                                    sx={{
+                                      background: "#fc3e3e34",
+                                      color: "error.light",
+                                      fontSize: "0.7rem",
+                                      px: 1,
+                                    }}
+                                    label="INACTIVE"
+                                  />
+                                )}
+                              </TableCell>
+
+                              <TableCell className="tbl-cell tr-cen-pad45">
+                                {Moment(data.updated_at).format("MMM DD, YYYY")}
+                              </TableCell>
+
+                              <TableCell className="tbl-cell text-center">
+                                <ActionMenu
+                                  hideEdit={true}
+                                  data={data}
+                                  status={status}
+                                  onArchiveRestoreHandler={onArchiveRestoreHandler}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
                       </>
                     )}
                   </TableBody>
@@ -447,25 +409,15 @@ const AccountTitle = () => {
             <Box className="mcontainer__pagination">
               <TablePagination
                 rowsPerPageOptions={[
-                  5,
-                  10,
-                  15,
-                  { label: "All", value: parseInt(accountTitleApiData?.total) },
+                  5, 10, 15, 100,
+                  // { label: "All", value: parseInt(accountTitleApiData?.total) },
                 ]}
                 component="div"
                 count={accountTitleApiSuccess ? accountTitleApiData.total : 0}
-                page={
-                  accountTitleApiSuccess
-                    ? accountTitleApiData.current_page - 1
-                    : 0
-                }
-                rowsPerPage={
-                  accountTitleApiSuccess
-                    ? parseInt(accountTitleApiData?.per_page)
-                    : 5
-                }
+                page={accountTitleApiSuccess ? accountTitleApiData.current_page - 1 : 0}
+                rowsPerPage={accountTitleApiSuccess ? parseInt(accountTitleApiData?.per_page) : 5}
                 onPageChange={pageHandler}
-                onRowsPerPageChange={limitHandler}
+                onRowsPerPageChange={perPageHandler}
               />
             </Box>
           </Box>

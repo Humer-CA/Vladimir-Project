@@ -20,7 +20,7 @@ export const unitApproversApi = createApi({
   endpoints: (builder) => ({
     getUnitApproversApi: builder.query({
       query: (params) =>
-        `department-unit-approvers?search=${params.search}&per_page=${params.perPage}&status=${params.status}&page=${params.page}`,
+        `department-unit-approvers?search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
       providesTags: ["UnitApprovers"],
     }),
 

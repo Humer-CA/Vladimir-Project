@@ -10,11 +10,7 @@ import NoRecordsFound from "../../../Layout/NoRecordsFound";
 // RTK
 import { useDispatch } from "react-redux";
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../../Redux/StateManagement/confirmSlice";
 import { useSelector } from "react-redux";
 
 import {
@@ -42,7 +38,7 @@ import { Help, ReportProblem } from "@mui/icons-material";
 const AssetMovementStatus = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateAssetMovementStatus, setUpdateAssetMovementStatus] = useState({
     status: false,
@@ -81,9 +77,9 @@ const AssetMovementStatus = () => {
 
   // Table Properties --------------------------------
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -101,15 +97,14 @@ const AssetMovementStatus = () => {
   } = useGetAssetMovementStatusApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
     { refetchOnMountOrArgChange: true }
   );
 
-  const [patchAssetMovementStatusApi, { isLoading }] =
-    usePatchAssetMovementStatusStatusApiMutation();
+  const [patchAssetMovementStatusApi, { isLoading }] = usePatchAssetMovementStatusStatusApiMutation();
 
   const dispatch = useDispatch();
 
@@ -201,16 +196,10 @@ const AssetMovementStatus = () => {
 
   return (
     <>
-      {assetMovementStatusLoading && (
-        <MasterlistSkeleton category={true} onAdd={true} />
-      )}
+      {assetMovementStatusLoading && <MasterlistSkeleton category={true} onAdd={true} />}
 
       {assetMovementStatusError && (
-        <ErrorFetching
-          refetch={refetch}
-          category={assetMovementStatusData}
-          error={errorData}
-        />
+        <ErrorFetching refetch={refetch} category={assetMovementStatusData} error={errorData} />
       )}
 
       {assetMovementStatusData && !assetMovementStatusError && (
@@ -220,7 +209,7 @@ const AssetMovementStatus = () => {
             onStatusChange={setStatus}
             onSearchChange={setSearch}
             onSetPage={setPage}
-            onAdd={() => { }}
+            onAdd={() => {}}
           />
 
           <Box>
@@ -248,18 +237,14 @@ const AssetMovementStatus = () => {
                     <TableCell className="tbl-cell">
                       <TableSortLabel
                         active={orderBy === `movement_status_name`}
-                        direction={
-                          orderBy === `movement_status_name` ? order : `asc`
-                        }
+                        direction={orderBy === `movement_status_name` ? order : `asc`}
                         onClick={() => onSort(`movement_status_name`)}
                       >
                         Asset Movement Status
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Status
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Status</TableCell>
 
                     <TableCell className="tbl-cell text-center">
                       <TableSortLabel
@@ -281,71 +266,63 @@ const AssetMovementStatus = () => {
                   ) : (
                     <>
                       {assetMovementStatusSuccess &&
-                        [...assetMovementStatusData.data]
-                          .sort(comparator(order, orderBy))
-                          .map((data) => (
-                            <TableRow
-                              key={data.id}
-                              hover={true}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {data.id}
-                              </TableCell>
+                        [...assetMovementStatusData.data].sort(comparator(order, orderBy)).map((data) => (
+                          <TableRow
+                            key={data.id}
+                            hover={true}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell tr-cen-pad45">{data.id}</TableCell>
 
-                              <TableCell className="tbl-cell text-weight">
-                                {data.movement_status_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell text-weight">{data.movement_status_name}</TableCell>
 
-                              <TableCell className="tbl-cell text-center">
-                                {data.is_active ? (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#27ff811f",
-                                      color: "active.dark",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="ACTIVE"
-                                  />
-                                ) : (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#fc3e3e34",
-                                      color: "error.light",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="INACTIVE"
-                                  />
-                                )}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {Moment(data.created_at).format("MMM DD, YYYY")}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell ">
-                                <ActionMenu
-                                  status={status}
-                                  data={data}
-                                  hideEdit={true}
-                                  onUpdateHandler={onUpdateHandler}
-                                  onArchiveRestoreHandler={
-                                    onArchiveRestoreHandler
-                                  }
+                            <TableCell className="tbl-cell text-center">
+                              {data.is_active ? (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#27ff811f",
+                                    color: "active.dark",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="ACTIVE"
                                 />
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                              ) : (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#fc3e3e34",
+                                    color: "error.light",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="INACTIVE"
+                                />
+                              )}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell tr-cen-pad45">
+                              {Moment(data.created_at).format("MMM DD, YYYY")}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell ">
+                              <ActionMenu
+                                status={status}
+                                data={data}
+                                hideEdit={true}
+                                onUpdateHandler={onUpdateHandler}
+                                onArchiveRestoreHandler={onArchiveRestoreHandler}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </>
                   )}
                 </TableBody>
@@ -365,30 +342,17 @@ const AssetMovementStatus = () => {
                 },
               ]}
               component="div"
-              count={
-                assetMovementStatusSuccess ? assetMovementStatusData.total : 0
-              }
-              page={
-                assetMovementStatusSuccess
-                  ? assetMovementStatusData.current_page - 1
-                  : 0
-              }
-              rowsPerPage={
-                assetMovementStatusSuccess
-                  ? parseInt(assetMovementStatusData?.per_page)
-                  : 5
-              }
+              count={assetMovementStatusSuccess ? assetMovementStatusData.total : 0}
+              page={assetMovementStatusSuccess ? assetMovementStatusData.current_page - 1 : 0}
+              rowsPerPage={assetMovementStatusSuccess ? parseInt(assetMovementStatusData?.per_page) : 5}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
         </Box>
       )}
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        <AddAssetMovementStatus
-          data={updateAssetMovementStatus}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddAssetMovementStatus data={updateAssetMovementStatus} onUpdateResetHandler={onUpdateResetHandler} />
       </Dialog>
     </>
   );

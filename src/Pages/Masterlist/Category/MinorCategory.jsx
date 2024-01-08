@@ -7,11 +7,7 @@ import AddMinorCategory from "../AddEdit/AddMinorCategory.jsx";
 // RTK
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
-import {
-  closeConfirm,
-  openConfirm,
-  onLoading,
-} from "../../../Redux/StateManagement/confirmSlice";
+import { closeConfirm, openConfirm, onLoading } from "../../../Redux/StateManagement/confirmSlice";
 import {
   useGetMinorCategoryApiQuery,
   usePutMinorCategoryStatusApiMutation,
@@ -41,7 +37,7 @@ import NoRecordsFound from "../../../Layout/NoRecordsFound";
 const MinorCategory = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateMinorCategory, setUpdateMinorCategory] = useState({
     status: false,
@@ -83,9 +79,9 @@ const MinorCategory = () => {
 
   const drawer = useSelector((state) => state.booleanState.drawer);
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -103,15 +99,14 @@ const MinorCategory = () => {
   } = useGetMinorCategoryApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
     { refetchOnMountOrArgChange: true }
   );
 
-  const [putMinorCategoryStatusApi, { isLoading }] =
-    usePutMinorCategoryStatusApiMutation();
+  const [putMinorCategoryStatusApi, { isLoading }] = usePutMinorCategoryStatusApiMutation();
 
   const dispatch = useDispatch();
 
@@ -224,17 +219,9 @@ const MinorCategory = () => {
 
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
-      {minorCategoryLoading && (
-        <MasterlistSkeleton category onAdd={true} />
-      )}
+      {minorCategoryLoading && <MasterlistSkeleton category onAdd={true} />}
 
-      {minorCategoryError && (
-        <ErrorFetching
-          refetch={refetch}
-          category={minorCategoryData}
-          error={errorData}
-        />
-      )}
+      {minorCategoryError && <ErrorFetching refetch={refetch} category={minorCategoryData} error={errorData} />}
 
       {minorCategoryData && !minorCategoryError && (
         <Box className="mcontainer__wrapper">
@@ -243,7 +230,7 @@ const MinorCategory = () => {
             onStatusChange={setStatus}
             onSearchChange={setSearch}
             onSetPage={setPage}
-            onAdd={() => { }}
+            onAdd={() => {}}
           />
 
           <Box>
@@ -271,9 +258,7 @@ const MinorCategory = () => {
                     <TableCell className="tbl-cell-category">
                       <TableSortLabel
                         active={orderBy === `minor_category_name`}
-                        direction={
-                          orderBy === `minor_category_name` ? order : `asc`
-                        }
+                        direction={orderBy === `minor_category_name` ? order : `asc`}
                         onClick={() => onSort(`minor_category_name`)}
                       >
                         Minor Category
@@ -283,9 +268,7 @@ const MinorCategory = () => {
                     <TableCell className="tbl-cell-category">
                       <TableSortLabel
                         active={orderBy === `major_category_name`}
-                        direction={
-                          orderBy === `major_category_name` ? order : `asc`
-                        }
+                        direction={orderBy === `major_category_name` ? order : `asc`}
                         onClick={() => onSort(`major_category_name`)}
                       >
                         Major Category
@@ -295,9 +278,7 @@ const MinorCategory = () => {
                     <TableCell className="tbl-cell-category">
                       <TableSortLabel
                         active={orderBy === `account_title_code`}
-                        direction={
-                          orderBy === `account_title_code` ? order : `asc`
-                        }
+                        direction={orderBy === `account_title_code` ? order : `asc`}
                         onClick={() => onSort(`account_title_code`)}
                       >
                         Account Title Code
@@ -307,9 +288,7 @@ const MinorCategory = () => {
                     <TableCell className="tbl-cell-category">
                       <TableSortLabel
                         active={orderBy === `account_title_name`}
-                        direction={
-                          orderBy === `account_title_name` ? order : `asc`
-                        }
+                        direction={orderBy === `account_title_name` ? order : `asc`}
                         onClick={() => onSort(`account_title_name`)}
                       >
                         Account Title
@@ -326,9 +305,7 @@ const MinorCategory = () => {
                       </TableSortLabel>
                     </TableCell> */}
 
-                    <TableCell className="tbl-cell-category text-center">
-                      Status
-                    </TableCell>
+                    <TableCell className="tbl-cell-category text-center">Status</TableCell>
 
                     <TableCell className="tbl-cell-category text-center">
                       <TableSortLabel
@@ -339,9 +316,7 @@ const MinorCategory = () => {
                         Date Created
                       </TableSortLabel>
                     </TableCell>
-                    <TableCell className="tbl-cell-category  text-center">
-                      Action
-                    </TableCell>
+                    <TableCell className="tbl-cell-category  text-center">Action</TableCell>
                   </TableRow>
                 </TableHead>
 
@@ -351,86 +326,80 @@ const MinorCategory = () => {
                   ) : (
                     <>
                       {minorCategorySuccess &&
-                        [...minorCategoryData.data]
-                          .sort(comparator(order, orderBy))
-                          .map((data) => (
-                            <TableRow
-                              key={data.id}
-                              hover={true}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="tbl-cell-category tr-cen-pad45">
-                                {data.id}
-                              </TableCell>
+                        [...minorCategoryData.data].sort(comparator(order, orderBy)).map((data) => (
+                          <TableRow
+                            key={data.id}
+                            hover={true}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell-category tr-cen-pad45">{data.id}</TableCell>
 
-                              <TableCell className="tbl-cell-category text-weight capitalized">
-                                {data.minor_category_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell-category text-weight capitalized">
+                              {data.minor_category_name}
+                            </TableCell>
 
-                              <TableCell className="tbl-cell-category capitalized">
-                                {data.major_category.major_category_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell-category capitalized">
+                              {data.major_category.major_category_name}
+                            </TableCell>
 
-                              <TableCell className="tbl-cell-category capitalized">
-                                {data.account_title?.account_title_code}
-                              </TableCell>
+                            <TableCell className="tbl-cell-category capitalized">
+                              {data.account_title?.account_title_code}
+                            </TableCell>
 
-                              <TableCell className="tbl-cell-category capitalized">
-                                {data.account_title?.account_title_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell-category capitalized">
+                              {data.account_title?.account_title_name}
+                            </TableCell>
 
-                              {/* <TableCell className="tbl-cell-category capitalized">
+                            {/* <TableCell className="tbl-cell-category capitalized">
                                 {data.division.division_name}
                               </TableCell> */}
 
-                              <TableCell className="tbl-cell-category text-center">
-                                {data.is_active ? (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#27ff811f",
-                                      color: "active.dark",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="ACTIVE"
-                                  />
-                                ) : (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#fc3e3e34",
-                                      color: "error.light",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="INACTIVE"
-                                  />
-                                )}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell-category tr-cen-pad45">
-                                {Moment(data.created_at).format("MMM DD, YYYY")}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell-category text-center">
-                                <ActionMenu
-                                  status={status}
-                                  data={data}
-                                  onUpdateHandler={onUpdateHandler}
-                                  onArchiveRestoreHandler={
-                                    onArchiveRestoreHandler
-                                  }
+                            <TableCell className="tbl-cell-category text-center">
+                              {data.is_active ? (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#27ff811f",
+                                    color: "active.dark",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="ACTIVE"
                                 />
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                              ) : (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#fc3e3e34",
+                                    color: "error.light",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="INACTIVE"
+                                />
+                              )}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell-category tr-cen-pad45">
+                              {Moment(data.created_at).format("MMM DD, YYYY")}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell-category text-center">
+                              <ActionMenu
+                                status={status}
+                                data={data}
+                                onUpdateHandler={onUpdateHandler}
+                                onArchiveRestoreHandler={onArchiveRestoreHandler}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </>
                   )}
                 </TableBody>
@@ -449,22 +418,15 @@ const MinorCategory = () => {
               ]}
               component="div"
               count={minorCategorySuccess ? minorCategoryData.total : 0}
-              page={
-                minorCategorySuccess ? minorCategoryData.current_page - 1 : 0
-              }
-              rowsPerPage={
-                minorCategorySuccess ? parseInt(minorCategoryData?.per_page) : 5
-              }
+              page={minorCategorySuccess ? minorCategoryData.current_page - 1 : 0}
+              rowsPerPage={minorCategorySuccess ? parseInt(minorCategoryData?.per_page) : 5}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
 
           <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-            <AddMinorCategory
-              data={updateMinorCategory}
-              onUpdateResetHandler={onUpdateResetHandler}
-            />
+            <AddMinorCategory data={updateMinorCategory} onUpdateResetHandler={onUpdateResetHandler} />
           </Dialog>
         </Box>
       )}

@@ -10,11 +10,7 @@ import NoRecordsFound from "../../../Layout/NoRecordsFound";
 // RTK
 import { useDispatch } from "react-redux";
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../../Redux/StateManagement/confirmSlice";
 import { useSelector } from "react-redux";
 
 import {
@@ -42,7 +38,7 @@ import { Help, ReportProblem } from "@mui/icons-material";
 const CycleCountStatus = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateCycleCountStatus, setUpdateCycleCountStatus] = useState({
     status: false,
@@ -81,9 +77,9 @@ const CycleCountStatus = () => {
 
   // Table Properties --------------------------------
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -101,15 +97,14 @@ const CycleCountStatus = () => {
   } = useGetCycleCountStatusApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
     { refetchOnMountOrArgChange: true }
   );
 
-  const [patchCycleCountStatusApi, { isLoading }] =
-    usePatchCycleCountStatusStatusApiMutation();
+  const [patchCycleCountStatusApi, { isLoading }] = usePatchCycleCountStatusStatusApiMutation();
 
   const dispatch = useDispatch();
 
@@ -201,17 +196,9 @@ const CycleCountStatus = () => {
 
   return (
     <>
-      {cycleCountStatusLoading && (
-        <MasterlistSkeleton category={true} onAdd={true} />
-      )}
+      {cycleCountStatusLoading && <MasterlistSkeleton category={true} onAdd={true} />}
 
-      {cycleCountStatusError && (
-        <ErrorFetching
-          refetch={refetch}
-          category={cycleCountStatusData}
-          error={errorData}
-        />
-      )}
+      {cycleCountStatusError && <ErrorFetching refetch={refetch} category={cycleCountStatusData} error={errorData} />}
 
       {cycleCountStatusData && !cycleCountStatusError && (
         <Box className="mcontainer__wrapper">
@@ -220,7 +207,7 @@ const CycleCountStatus = () => {
             onStatusChange={setStatus}
             onSearchChange={setSearch}
             onSetPage={setPage}
-            onAdd={() => { }}
+            onAdd={() => {}}
           />
 
           <Box>
@@ -248,18 +235,14 @@ const CycleCountStatus = () => {
                     <TableCell className="tbl-cell">
                       <TableSortLabel
                         active={orderBy === `cycle_count_status_name`}
-                        direction={
-                          orderBy === `cycle_count_status_name` ? order : `asc`
-                        }
+                        direction={orderBy === `cycle_count_status_name` ? order : `asc`}
                         onClick={() => onSort(`cycle_count_status_name`)}
                       >
                         Cycle Count Status
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Status
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Status</TableCell>
 
                     <TableCell className="tbl-cell text-center">
                       <TableSortLabel
@@ -281,71 +264,63 @@ const CycleCountStatus = () => {
                   ) : (
                     <>
                       {cycleCountStatusSuccess &&
-                        [...cycleCountStatusData.data]
-                          .sort(comparator(order, orderBy))
-                          .map((data) => (
-                            <TableRow
-                              key={data.id}
-                              hover={true}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {data.id}
-                              </TableCell>
+                        [...cycleCountStatusData.data].sort(comparator(order, orderBy)).map((data) => (
+                          <TableRow
+                            key={data.id}
+                            hover={true}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell tr-cen-pad45">{data.id}</TableCell>
 
-                              <TableCell className="tbl-cell text-weight">
-                                {data.cycle_count_status_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell text-weight">{data.cycle_count_status_name}</TableCell>
 
-                              <TableCell className="tbl-cell text-center">
-                                {data.is_active ? (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#27ff811f",
-                                      color: "active.dark",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="ACTIVE"
-                                  />
-                                ) : (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#fc3e3e34",
-                                      color: "error.light",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="INACTIVE"
-                                  />
-                                )}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {Moment(data.created_at).format("MMM DD, YYYY")}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell ">
-                                <ActionMenu
-                                  status={status}
-                                  data={data}
-                                  hideEdit={true}
-                                  onUpdateHandler={onUpdateHandler}
-                                  onArchiveRestoreHandler={
-                                    onArchiveRestoreHandler
-                                  }
+                            <TableCell className="tbl-cell text-center">
+                              {data.is_active ? (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#27ff811f",
+                                    color: "active.dark",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="ACTIVE"
                                 />
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                              ) : (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#fc3e3e34",
+                                    color: "error.light",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="INACTIVE"
+                                />
+                              )}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell tr-cen-pad45">
+                              {Moment(data.created_at).format("MMM DD, YYYY")}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell ">
+                              <ActionMenu
+                                status={status}
+                                data={data}
+                                hideEdit={true}
+                                onUpdateHandler={onUpdateHandler}
+                                onArchiveRestoreHandler={onArchiveRestoreHandler}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </>
                   )}
                 </TableBody>
@@ -355,35 +330,19 @@ const CycleCountStatus = () => {
 
           <Box className="mcontainer__pagination">
             <TablePagination
-              rowsPerPageOptions={[
-                5,
-                10,
-                15,
-                { label: "All", value: parseInt(cycleCountStatusData?.total) },
-              ]}
+              rowsPerPageOptions={[5, 10, 15, { label: "All", value: parseInt(cycleCountStatusData?.total) }]}
               component="div"
               count={cycleCountStatusSuccess ? cycleCountStatusData.total : 0}
-              page={
-                cycleCountStatusSuccess
-                  ? cycleCountStatusData.current_page - 1
-                  : 0
-              }
-              rowsPerPage={
-                cycleCountStatusSuccess
-                  ? parseInt(cycleCountStatusData?.per_page)
-                  : 5
-              }
+              page={cycleCountStatusSuccess ? cycleCountStatusData.current_page - 1 : 0}
+              rowsPerPage={cycleCountStatusSuccess ? parseInt(cycleCountStatusData?.per_page) : 5}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
         </Box>
       )}
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        <AddCycleCountStatus
-          data={updateCycleCountStatus}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddCycleCountStatus data={updateCycleCountStatus} onUpdateResetHandler={onUpdateResetHandler} />
       </Dialog>
     </>
   );

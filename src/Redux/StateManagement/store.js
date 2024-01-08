@@ -32,17 +32,19 @@ import { majorCategoryApi } from "../Query/Masterlist/Category/MajorCategory";
 import { minorCategoryApi } from "../Query/Masterlist/Category/MinorCategory";
 // import { categoryListApi } from '../Query/Masterlist/Category/CategoryList'
 // import { serviceProviderApi } from '../Query/Masterlist/ServiceProviderApi'
-// import { supplierApi } from '../Query/Masterlist/SupplierApi'
 
 import { fistoCompanyApi } from "../Query/Masterlist/FistoCoa/FistoCompany";
 import { fistoDepartmentApi } from "../Query/Masterlist/FistoCoa/FistoDepartment";
 import { fistoLocationApi } from "../Query/Masterlist/FistoCoa/FistoLocation";
 import { fistoAccountTitleApi } from "../Query/Masterlist/FistoCoa/FistoAccountTitle";
+import { fistoSupplierApi } from "../Query/Masterlist/FistoCoa/FistoSupplier";
+
 import { companyApi } from "../Query/Masterlist/FistoCoa/Company";
 import { departmentApi } from "../Query/Masterlist/FistoCoa/Department";
 import { subUnitApi } from "../Query/Masterlist/SubUnit";
 import { locationApi } from "../Query/Masterlist/FistoCoa/Location";
 import { accountTitleApi } from "../Query/Masterlist/FistoCoa/AccountTitle";
+import { supplierApi } from "../Query/Masterlist/FistoCoa/Supplier";
 import { divisionApi } from "../Query/Masterlist/Division";
 
 // User Management
@@ -103,17 +105,18 @@ export const store = configureStore({
     [majorCategoryApi.reducerPath]: majorCategoryApi.reducer,
     [minorCategoryApi.reducerPath]: minorCategoryApi.reducer,
     // [categoryListApi.reducerPath]: categoryListApi.reducer,
-    // [supplierApi.reducerPath]: supplierApi.reducer,
 
     [fistoCompanyApi.reducerPath]: fistoCompanyApi.reducer,
     [fistoDepartmentApi.reducerPath]: fistoDepartmentApi.reducer,
     [fistoLocationApi.reducerPath]: fistoLocationApi.reducer,
     [fistoAccountTitleApi.reducerPath]: fistoAccountTitleApi.reducer,
+    [fistoSupplierApi.reducerPath]: fistoSupplierApi.reducer,
 
     [companyApi.reducerPath]: companyApi.reducer,
     [departmentApi.reducerPath]: departmentApi.reducer,
     [locationApi.reducerPath]: locationApi.reducer,
     [accountTitleApi.reducerPath]: accountTitleApi.reducer,
+    [supplierApi.reducerPath]: supplierApi.reducer,
 
     [subUnitApi.reducerPath]: subUnitApi.reducer,
     [divisionApi.reducerPath]: divisionApi.reducer,
@@ -162,16 +165,17 @@ export const store = configureStore({
       majorCategoryApi.middleware,
       minorCategoryApi.middleware,
       // categoryListApi.middleware,
-      // supplierApi.middleware,
       fistoCompanyApi.middleware,
       fistoDepartmentApi.middleware,
       fistoLocationApi.middleware,
       fistoAccountTitleApi.middleware,
+      fistoSupplierApi.middleware,
 
       companyApi.middleware,
       departmentApi.middleware,
       locationApi.middleware,
       accountTitleApi.middleware,
+      supplierApi.middleware,
       subUnitApi.middleware,
 
       divisionApi.middleware,

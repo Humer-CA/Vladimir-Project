@@ -7,17 +7,10 @@ import ErrorFetching from "../ErrorFetching";
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
 
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
 
 import { useLazyGetFistoLocationAllApiQuery } from "../../Redux/Query/Masterlist/FistoCoa/FistoLocation";
-import {
-  usePostLocationApiMutation,
-  useGetLocationApiQuery,
-} from "../../Redux/Query/Masterlist/FistoCoa/Location";
+import { usePostLocationApiMutation, useGetLocationApiQuery } from "../../Redux/Query/Masterlist/FistoCoa/Location";
 
 // MUI
 import {
@@ -39,15 +32,12 @@ import { Help } from "@mui/icons-material";
 import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 import NoRecordsFound from "../../Layout/NoRecordsFound";
 import ViewTagged from "../../Components/Reusable/ViewTagged";
-import {
-  closeDialog,
-  openDialog,
-} from "../../Redux/StateManagement/booleanStateSlice";
+import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
 
 const Location = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [viewDepartment, setViewDepartment] = useState({
     id: null,
@@ -86,9 +76,9 @@ const Location = () => {
 
   // Table Properties --------------------------------
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -119,7 +109,7 @@ const Location = () => {
   } = useGetLocationApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
@@ -128,13 +118,7 @@ const Location = () => {
 
   const [
     postLocation,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostLocationApiMutation();
 
   useEffect(() => {
@@ -265,17 +249,12 @@ const Location = () => {
 
   return (
     <Box className="mcontainer">
-      <Typography
-        className="mcontainer__title"
-        sx={{ fontFamily: "Anton", fontSize: "2rem" }}
-      >
+      <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "2rem" }}>
         Location
       </Typography>
       {locationApiLoading && <MasterlistSkeleton onSync={true} />}
 
-      {locationApiError && (
-        <ErrorFetching refetch={locationApiRefetch} error={errorData} />
-      )}
+      {locationApiError && <ErrorFetching refetch={locationApiRefetch} error={errorData} />}
 
       {locationApiData && !locationApiError && (
         <>
@@ -314,9 +293,7 @@ const Location = () => {
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `location_code`}
-                          direction={
-                            orderBy === `location_code` ? order : `asc`
-                          }
+                          direction={orderBy === `location_code` ? order : `asc`}
                           onClick={() => onSort(`location_code`)}
                         >
                           Location Code
@@ -326,9 +303,7 @@ const Location = () => {
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `location_name`}
-                          direction={
-                            orderBy === `location_name` ? order : `asc`
-                          }
+                          direction={orderBy === `location_name` ? order : `asc`}
                           onClick={() => onSort(`location_name`)}
                         >
                           Location Name
@@ -339,18 +314,14 @@ const Location = () => {
                         <TableSortLabel
                           sx={{ ml: "30px" }}
                           active={orderBy === `location_name`}
-                          direction={
-                            orderBy === `location_name` ? order : `asc`
-                          }
+                          direction={orderBy === `location_name` ? order : `asc`}
                           onClick={() => onSort(`location_name`)}
                         >
                           Department
                         </TableSortLabel>
                       </TableCell>
 
-                      <TableCell className="tbl-cell text-center">
-                        Status
-                      </TableCell>
+                      <TableCell className="tbl-cell text-center">Status</TableCell>
 
                       <TableCell className="tbl-cell text-center">
                         <TableSortLabel
@@ -371,80 +342,70 @@ const Location = () => {
                     ) : (
                       <>
                         {locationApiSuccess &&
-                          [...locationApiData.data]
-                            .sort(comparator(order, orderBy))
-                            .map((data) => (
-                              <TableRow
-                                key={data.id}
-                                hover={true}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    borderBottom: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell className="tbl-cell tr-cen-pad45  tbl-coa">
-                                  {data.id}
-                                </TableCell>
+                          [...locationApiData.data].sort(comparator(order, orderBy)).map((data) => (
+                            <TableRow
+                              key={data.id}
+                              hover={true}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  borderBottom: 0,
+                                },
+                              }}
+                            >
+                              <TableCell className="tbl-cell tr-cen-pad45  tbl-coa">{data.id}</TableCell>
 
-                                <TableCell className="tbl-cell">
-                                  {data.location_code}
-                                </TableCell>
+                              <TableCell className="tbl-cell">{data.location_code}</TableCell>
 
-                                <TableCell className="tbl-cell">
-                                  {data.location_name}
-                                </TableCell>
+                              <TableCell className="tbl-cell">{data.location_name}</TableCell>
 
-                                <TableCell className="tbl-cell" align="center">
-                                  <Button
-                                    sx={{
-                                      textTransform: "capitalize",
-                                      textDecoration: "underline",
-                                    }}
-                                    variant="text"
+                              <TableCell className="tbl-cell" align="center">
+                                <Button
+                                  sx={{
+                                    textTransform: "capitalize",
+                                    textDecoration: "underline",
+                                  }}
+                                  variant="text"
+                                  size="small"
+                                  color="link"
+                                  onClick={() => handleViewDepartment(data)}
+                                >
+                                  <Typography fontSize={13}>View</Typography>
+                                </Button>
+                              </TableCell>
+
+                              <TableCell className="tbl-cell text-center">
+                                {data.is_active ? (
+                                  <Chip
                                     size="small"
-                                    color="link"
-                                    onClick={() => handleViewDepartment(data)}
-                                  >
-                                    <Typography fontSize={13}>View</Typography>
-                                  </Button>
-                                </TableCell>
+                                    variant="contained"
+                                    sx={{
+                                      background: "#27ff811f",
+                                      color: "active.dark",
+                                      fontSize: "0.7rem",
+                                      px: 1,
+                                    }}
+                                    label="ACTIVE"
+                                  />
+                                ) : (
+                                  <Chip
+                                    size="small"
+                                    variant="contained"
+                                    sx={{
+                                      background: "#fc3e3e34",
+                                      color: "error.light",
+                                      fontSize: "0.7rem",
+                                      px: 1,
+                                    }}
+                                    label="INACTIVE"
+                                  />
+                                )}
+                              </TableCell>
 
-                                <TableCell className="tbl-cell text-center">
-                                  {data.is_active ? (
-                                    <Chip
-                                      size="small"
-                                      variant="contained"
-                                      sx={{
-                                        background: "#27ff811f",
-                                        color: "active.dark",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label="ACTIVE"
-                                    />
-                                  ) : (
-                                    <Chip
-                                      size="small"
-                                      variant="contained"
-                                      sx={{
-                                        background: "#fc3e3e34",
-                                        color: "error.light",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label="INACTIVE"
-                                    />
-                                  )}
-                                </TableCell>
-
-                                <TableCell className="tbl-cell tr-cen-pad45">
-                                  {Moment(data.updated_at).format(
-                                    "MMM DD, YYYY"
-                                  )}
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                              <TableCell className="tbl-cell tr-cen-pad45">
+                                {Moment(data.updated_at).format("MMM DD, YYYY")}
+                              </TableCell>
+                            </TableRow>
+                          ))}
                       </>
                     )}
                   </TableBody>
@@ -455,29 +416,21 @@ const Location = () => {
             <Box className="mcontainer__pagination">
               <TablePagination
                 rowsPerPageOptions={[
-                  5,
-                  10,
-                  15,
-                  { label: "All", value: parseInt(locationApiData?.total) },
+                  5, 10, 15, 100,
+                  // { label: "All", value: parseInt(locationApiData?.total) },
                 ]}
                 component="div"
                 count={locationApiSuccess ? locationApiData.total : 0}
                 page={locationApiSuccess ? locationApiData.current_page - 1 : 0}
-                rowsPerPage={
-                  locationApiSuccess ? parseInt(locationApiData?.per_page) : 5
-                }
+                rowsPerPage={locationApiSuccess ? parseInt(locationApiData?.per_page) : 5}
                 onPageChange={pageHandler}
-                onRowsPerPageChange={limitHandler}
+                onRowsPerPageChange={perPageHandler}
               />
             </Box>
           </Box>
         </>
       )}
-      <Dialog
-        open={dialog}
-        onClose={() => dispatch(closeDialog())}
-        PaperProps={{ sx: { borderRadius: "10px" } }}
-      >
+      <Dialog open={dialog} onClose={() => dispatch(closeDialog())} PaperProps={{ sx: { borderRadius: "10px" } }}>
         <ViewTagged
           data={viewDepartment}
           mapData={mapDepartmentData}

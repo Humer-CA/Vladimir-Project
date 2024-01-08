@@ -915,6 +915,7 @@ const AddFixedAsset = (props) => {
 
               if (!isIncluded) {
                 setValue("minor_category_id", null);
+                setValue("account_title_id", null);
               }
 
               setValue("est_useful_life", value.est_useful_life);

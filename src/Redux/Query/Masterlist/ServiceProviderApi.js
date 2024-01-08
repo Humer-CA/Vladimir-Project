@@ -18,7 +18,7 @@ export const serviceProviderApi = createApi({
   endpoints: (builder) => ({
     getServiceProvidersApi: builder.query({
       query: (params) =>
-        `/service-providers?search=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `/service-providers?search=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["ServiceProvider"],
     }),
 

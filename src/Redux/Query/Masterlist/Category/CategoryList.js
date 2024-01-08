@@ -19,7 +19,7 @@ export const categoryListApi = createApi({
   endpoints: (builder) => ({
     getCategoryListApi: builder.query({
       query: (params) =>
-        `/category-lists?search=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `/category-lists?search=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["categoryList"],
     }),
 

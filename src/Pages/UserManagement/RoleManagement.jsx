@@ -9,16 +9,9 @@ import { useDispatch } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
 import { openDrawer } from "../../Redux/StateManagement/booleanStateSlice";
 
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
 
-import {
-  usePostRoleStatusApiMutation,
-  useGetRoleApiQuery,
-} from "../../Redux/Query/UserManagement/RoleManagementApi";
+import { usePostRoleStatusApiMutation, useGetRoleApiQuery } from "../../Redux/Query/UserManagement/RoleManagementApi";
 
 import { useSelector } from "react-redux";
 
@@ -46,7 +39,7 @@ import NoRecordsFound from "../../Layout/NoRecordsFound";
 const Role = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateRole, setUpdateRole] = useState({
     status: false,
@@ -87,9 +80,9 @@ const Role = () => {
 
   // Table Properties --------------------------------
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -107,7 +100,7 @@ const Role = () => {
   } = useGetRoleApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
@@ -223,10 +216,7 @@ const Role = () => {
 
   return (
     <Box className="mcontainer">
-      <Typography
-        className="mcontainer__title"
-        sx={{ fontFamily: "Anton", fontSize: "2rem" }}
-      >
+      <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "2rem" }}>
         Role Management
       </Typography>
 
@@ -276,13 +266,9 @@ const Role = () => {
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Access Permission
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Access Permission</TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Status
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Status</TableCell>
 
                     <TableCell className="tbl-cell text-center">
                       <TableSortLabel
@@ -294,9 +280,7 @@ const Role = () => {
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Action
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Action</TableCell>
                   </TableRow>
                 </TableHead>
 
@@ -306,85 +290,77 @@ const Role = () => {
                   ) : (
                     <>
                       {roleSuccess &&
-                        [...roleData.data]
-                          .sort(comparator(order, orderBy))
-                          .map((data) => (
-                            <TableRow
-                              key={data.id}
-                              hover={true}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {data.id}
-                              </TableCell>
+                        [...roleData.data].sort(comparator(order, orderBy)).map((data) => (
+                          <TableRow
+                            key={data.id}
+                            hover={true}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell tr-cen-pad45">{data.id}</TableCell>
 
-                              <TableCell className="tbl-cell text-weight capitalized">
-                                {data.role_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell text-weight capitalized">{data.role_name}</TableCell>
 
-                              <TableCell className="tbl-cell text-center">
-                                <Button
-                                  sx={{
-                                    textTransform: "capitalize",
-                                    textDecoration: "underline",
-                                  }}
-                                  variant="text"
+                            <TableCell className="tbl-cell text-center">
+                              <Button
+                                sx={{
+                                  textTransform: "capitalize",
+                                  textDecoration: "underline",
+                                }}
+                                variant="text"
+                                size="small"
+                                color="link"
+                                onClick={() => handleViewRole(data)}
+                              >
+                                View
+                              </Button>
+                            </TableCell>
+
+                            <TableCell className="tbl-cell text-center">
+                              {data.is_active ? (
+                                <Chip
                                   size="small"
-                                  color="link"
-                                  onClick={() => handleViewRole(data)}
-                                >
-                                  View
-                                </Button>
-                              </TableCell>
-
-                              <TableCell className="tbl-cell text-center">
-                                {data.is_active ? (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#27ff811f",
-                                      color: "active.dark",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="ACTIVE"
-                                  />
-                                ) : (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#fc3e3e34",
-                                      color: "error.light",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="INACTIVE"
-                                  />
-                                )}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {Moment(data.created_at).format("MMM DD, YYYY")}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell text-center">
-                                <ActionMenu
-                                  status={status}
-                                  data={data}
-                                  onUpdateHandler={onUpdateHandler}
-                                  onArchiveRestoreHandler={
-                                    onArchiveRestoreHandler
-                                  }
+                                  variant="contained"
+                                  sx={{
+                                    background: "#27ff811f",
+                                    color: "active.dark",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="ACTIVE"
                                 />
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                              ) : (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#fc3e3e34",
+                                    color: "error.light",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="INACTIVE"
+                                />
+                              )}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell tr-cen-pad45">
+                              {Moment(data.created_at).format("MMM DD, YYYY")}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell text-center">
+                              <ActionMenu
+                                status={status}
+                                data={data}
+                                onUpdateHandler={onUpdateHandler}
+                                onArchiveRestoreHandler={onArchiveRestoreHandler}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </>
                   )}
                 </TableBody>
@@ -395,26 +371,21 @@ const Role = () => {
           <Box className="mcontainer__pagination">
             <TablePagination
               rowsPerPageOptions={[
-                5,
-                10,
-                15,
-                { label: "All", value: parseInt(roleData?.total) },
+                5, 10, 15, 100,
+                //  { label: "All", value: parseInt(roleData?.total) }
               ]}
               component="div"
               count={roleSuccess ? roleData.total : 0}
               page={roleSuccess ? roleData.current_page - 1 : 0}
               rowsPerPage={roleSuccess ? parseInt(roleData?.per_page) : 5}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
         </Box>
       )}
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        <AddRole
-          data={updateRole}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddRole data={updateRole} onUpdateResetHandler={onUpdateResetHandler} />
       </Dialog>
     </Box>
   );

@@ -47,7 +47,7 @@ import { openExport, closeImport } from "../../Redux/StateManagement/booleanStat
 const Capex = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateCapex, setUpdateCapex] = useState({
     status: false,
@@ -90,9 +90,9 @@ const Capex = () => {
   };
 
   // Table Properties --------------------------------
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -110,7 +110,7 @@ const Capex = () => {
   } = useGetCapexApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
@@ -400,13 +400,16 @@ const Capex = () => {
               </Button>
 
               <TablePagination
-                rowsPerPageOptions={[5, 10, 15, { label: "All", value: parseInt(capexData?.total) }]}
+                rowsPerPageOptions={[
+                  5, 10, 15, 100,
+                  // { label: "All", value: parseInt(capexData?.total) }
+                ]}
                 component="div"
                 count={capexSuccess ? capexData?.total : 0}
                 page={capexSuccess ? capexData?.current_page - 1 : 0}
                 rowsPerPage={capexSuccess ? parseInt(capexData?.per_page) : 5}
                 onPageChange={pageHandler}
-                onRowsPerPageChange={limitHandler}
+                onRowsPerPageChange={perPageHandler}
               />
             </Box>
           </Box>

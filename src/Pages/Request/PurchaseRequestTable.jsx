@@ -118,7 +118,7 @@ const PurchaseRequestTable = (props) => {
   const dispatch = useDispatch();
 
   const handleViewData = (data) => {
-    navigate(`/purchase-request/${data.transaction_number}`, {
+    navigate(`/request/purchase-request/${data.transaction_number}`, {
       state: { ...data },
     });
   };

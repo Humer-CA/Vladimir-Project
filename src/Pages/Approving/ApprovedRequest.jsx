@@ -10,11 +10,7 @@ import NoRecordsFound from "../../Layout/NoRecordsFound";
 // RTK
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
-import {
-  closeConfirm,
-  openConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
+import { closeConfirm, openConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
 
 // MUI
 import {
@@ -34,10 +30,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Help, ReportProblem, Visibility } from "@mui/icons-material";
-import {
-  useGetApprovalApiQuery,
-  usePatchApprovalStatusApiMutation,
-} from "../../Redux/Query/Approving/Approval";
+import { useGetApprovalApiQuery, usePatchApprovalStatusApiMutation } from "../../Redux/Query/Approving/Approval";
 import { useNavigate } from "react-router-dom";
 
 const PendingRequest = (props) => {
@@ -47,7 +40,7 @@ const PendingRequest = (props) => {
   const [page, setPage] = useState(1);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // Table Sorting --------------------------------
 
@@ -80,7 +73,7 @@ const PendingRequest = (props) => {
 
   const drawer = useSelector((state) => state.booleanState.drawer);
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
     setPerPage(parseInt(e.target.value));
   };
@@ -115,25 +108,16 @@ const PendingRequest = (props) => {
 
   // console.log(approvalData);
   const handleViewRequisition = (data) => {
-    navigate(
-      `/request-monitoring/${data.transaction_number}`,
-      {
-        state: { ...data },
-      },
-    );
+    navigate(`/request-monitoring/${data.transaction_number}`, {
+      state: { ...data },
+    });
   };
 
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
       {approvalLoading && <MasterlistSkeleton category={true} onAdd={true} />}
 
-      {approvalError && (
-        <ErrorFetching
-          refetch={refetch}
-          category={approvalData}
-          error={errorData}
-        />
-      )}
+      {approvalError && <ErrorFetching refetch={refetch} category={approvalData} error={errorData} />}
 
       {approvalData && !approvalError && (
         <Box className="mcontainer__wrapper">
@@ -245,41 +229,32 @@ const PendingRequest = (props) => {
                   ) : (
                     <>
                       {approvalSuccess &&
-                        [...approvalData.data]
-                          .sort(comparator(order, orderBy))
-                          .map((data) => (
-                            <TableRow
-                              key={data.id}
-                              hover={true}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="tbl-cell-category tr-cen-pad45">
-                                {data.id}
-                              </TableCell>
+                        [...approvalData.data].sort(comparator(order, orderBy)).map((data) => (
+                          <TableRow
+                            key={data.id}
+                            hover={true}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell-category tr-cen-pad45">{data.id}</TableCell>
 
-                              <TableCell className="tbl-cell-category ">
-                                {data.asset_request?.transaction_number}
-                              </TableCell>
+                            <TableCell className="tbl-cell-category ">
+                              {data.asset_request?.transaction_number}
+                            </TableCell>
 
-                              <TableCell className="tbl-cell-category">
-                                <Typography
-                                  fontSize={14}
-                                  fontWeight={600}
-                                  color={"secondary"}
-                                  noWrap
-                                >
-                                  {data.requester?.employee_id}
-                                </Typography>
-                                <Typography fontSize={12} color={"gray"}>
-                                  {data.requester?.firstname}
-                                </Typography>
-                              </TableCell>
+                            <TableCell className="tbl-cell-category">
+                              <Typography fontSize={14} fontWeight={600} color={"secondary"} noWrap>
+                                {data.requester?.employee_id}
+                              </Typography>
+                              <Typography fontSize={12} color={"gray"}>
+                                {data.requester?.firstname}
+                              </Typography>
+                            </TableCell>
 
-                              {/* <TableCell className="tbl-cell-category">
+                            {/* <TableCell className="tbl-cell-category">
                                 <Typography
                                   fontSize={14}
                                   fontWeight={600}
@@ -293,40 +268,37 @@ const PendingRequest = (props) => {
                                 </Typography>
                               </TableCell> */}
 
-                              <TableCell className="tbl-cell-category ">
-                                {data.number_of_item}
-                              </TableCell>
+                            <TableCell className="tbl-cell-category ">{data.number_of_item}</TableCell>
 
-                              <TableCell className="tbl-cell-category" align="center">
-                                <IconButton onClick={() => handleViewRequisition(data)
-                                }>
-                                  <Visibility color="secondary" />
-                                </IconButton>
-                              </TableCell>
+                            <TableCell className="tbl-cell-category" align="center">
+                              <IconButton onClick={() => handleViewRequisition(data)}>
+                                <Visibility color="secondary" />
+                              </IconButton>
+                            </TableCell>
 
-                              <TableCell className="tbl-cell-category text-center capitalized">
-                                <Chip
-                                  size="small"
-                                  variant="contained"
-                                  sx={{
-                                    background: "#27ff811f",
-                                    color: "active.dark",
-                                    fontSize: "0.7rem",
-                                    px: 1,
-                                  }}
-                                  label="APPROVED"
-                                />
-                              </TableCell>
+                            <TableCell className="tbl-cell-category text-center capitalized">
+                              <Chip
+                                size="small"
+                                variant="contained"
+                                sx={{
+                                  background: "#27ff811f",
+                                  color: "active.dark",
+                                  fontSize: "0.7rem",
+                                  px: 1,
+                                }}
+                                label="APPROVED"
+                              />
+                            </TableCell>
 
-                              <TableCell className="tbl-cell-category tr-cen-pad45">
-                                {Moment(data.created_at).format("MMM DD, YYYY")}
-                              </TableCell>
+                            <TableCell className="tbl-cell-category tr-cen-pad45">
+                              {Moment(data.created_at).format("MMM DD, YYYY")}
+                            </TableCell>
 
-                              <TableCell className="tbl-cell-category tr-cen-pad45">
-                                {Moment(data.created_at).format("MMM DD, YYYY")}
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                            <TableCell className="tbl-cell-category tr-cen-pad45">
+                              {Moment(data.created_at).format("MMM DD, YYYY")}
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </>
                   )}
                 </TableBody>
@@ -346,14 +318,11 @@ const PendingRequest = (props) => {
               component="div"
               count={approvalSuccess ? approvalData.total : 0}
               page={approvalSuccess ? approvalData.current_page - 1 : 0}
-              rowsPerPage={
-                approvalSuccess ? parseInt(approvalData?.per_page) : 5
-              }
+              rowsPerPage={approvalSuccess ? parseInt(approvalData?.per_page) : 5}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
-
         </Box>
       )}
     </Stack>

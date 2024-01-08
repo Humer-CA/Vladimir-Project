@@ -1547,13 +1547,13 @@ const AddRequisition = (props) => {
                               hideArchive
                               status={data?.status}
                               data={data}
-                              showDelete={transactionData ? false : true}
+                              // showDelete={transactionData ? false : true}
                               editRequest={
                                 transactionDataApi[0]?.can_edit === 1 || transactionData?.status === "Return"
                                   ? true
                                   : false
                               }
-                              onDeleteHandler={onDeleteHandler}
+                              // onDeleteHandler={onDeleteHandler}
                               // onDeleteReferenceHandler={(transactionData?.item_count !== 1) ? (transactionDataApi?.length === 1 ? onVoidReferenceHandler : false) : false}
                               onDeleteReferenceHandler={
                                 transactionData?.item_count !== 1

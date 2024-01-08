@@ -7,17 +7,10 @@ import ErrorFetching from "../ErrorFetching";
 import { useDispatch } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
 
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
 
 import { useLazyGetFistoCompanyAllApiQuery } from "../../Redux/Query/Masterlist/FistoCoa/FistoCompany";
-import {
-  usePostCompanyApiMutation,
-  useGetCompanyApiQuery,
-} from "../../Redux/Query/Masterlist/FistoCoa/Company";
+import { usePostCompanyApiMutation, useGetCompanyApiQuery } from "../../Redux/Query/Masterlist/FistoCoa/Company";
 
 // MUI
 import {
@@ -42,7 +35,7 @@ import NoRecordsFound from "../../Layout/NoRecordsFound";
 const Company = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
 
   const dispatch = useDispatch();
@@ -76,9 +69,9 @@ const Company = () => {
 
   // Table Properties --------------------------------
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -110,7 +103,7 @@ const Company = () => {
   } = useGetCompanyApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
@@ -121,13 +114,7 @@ const Company = () => {
 
   const [
     postCompany,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostCompanyApiMutation();
 
   useEffect(() => {
@@ -213,18 +200,11 @@ const Company = () => {
 
   return (
     <Box className="mcontainer">
-      <Typography
-        className="mcontainer__title"
-        sx={{ fontFamily: "Anton", fontSize: "2rem" }}
-      >
+      <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "2rem" }}>
         Company
       </Typography>
       {companyApiLoading && <MasterlistSkeleton onSync={true} />}
-
-      {companyApiError && (
-        <ErrorFetching refetch={companyApiRefetch} error={errorData} />
-      )}
-
+      {companyApiError && <ErrorFetching refetch={companyApiRefetch} error={errorData} />}
       {companyApiData && !companyApiError && (
         <>
           <Box className="mcontainer__wrapper">
@@ -279,9 +259,7 @@ const Company = () => {
                         </TableSortLabel>
                       </TableCell>
 
-                      <TableCell className="tbl-cell text-center">
-                        Status
-                      </TableCell>
+                      <TableCell className="tbl-cell text-center">Status</TableCell>
 
                       <TableCell className="tbl-cell text-center">
                         <TableSortLabel
@@ -301,65 +279,55 @@ const Company = () => {
                     ) : (
                       <>
                         {companyApiSuccess &&
-                          [...companyApiData.data]
-                            .sort(comparator(order, orderBy))
-                            .map((data) => (
-                              <TableRow
-                                key={data.id}
-                                hover={true}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    borderBottom: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell className="tbl-cell tr-cen-pad45 tbl-coa">
-                                  {data.id}
-                                </TableCell>
+                          [...companyApiData.data].sort(comparator(order, orderBy)).map((data) => (
+                            <TableRow
+                              key={data.id}
+                              hover={true}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  borderBottom: 0,
+                                },
+                              }}
+                            >
+                              <TableCell className="tbl-cell tr-cen-pad45 tbl-coa">{data.id}</TableCell>
 
-                                <TableCell className="tbl-cell">
-                                  {data.company_code}
-                                </TableCell>
+                              <TableCell className="tbl-cell">{data.company_code}</TableCell>
 
-                                <TableCell className="tbl-cell">
-                                  {data.company_name}
-                                </TableCell>
+                              <TableCell className="tbl-cell">{data.company_name}</TableCell>
 
-                                <TableCell className="tbl-cell text-center">
-                                  {data.is_active ? (
-                                    <Chip
-                                      size="small"
-                                      variant="contained"
-                                      sx={{
-                                        background: "#27ff811f",
-                                        color: "active.dark",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label="ACTIVE"
-                                    />
-                                  ) : (
-                                    <Chip
-                                      size="small"
-                                      variant="contained"
-                                      sx={{
-                                        background: "#fc3e3e34",
-                                        color: "error.light",
-                                        fontSize: "0.7rem",
-                                        px: 1,
-                                      }}
-                                      label="INACTIVE"
-                                    />
-                                  )}
-                                </TableCell>
+                              <TableCell className="tbl-cell text-center">
+                                {data.is_active ? (
+                                  <Chip
+                                    size="small"
+                                    variant="contained"
+                                    sx={{
+                                      background: "#27ff811f",
+                                      color: "active.dark",
+                                      fontSize: "0.7rem",
+                                      px: 1,
+                                    }}
+                                    label="ACTIVE"
+                                  />
+                                ) : (
+                                  <Chip
+                                    size="small"
+                                    variant="contained"
+                                    sx={{
+                                      background: "#fc3e3e34",
+                                      color: "error.light",
+                                      fontSize: "0.7rem",
+                                      px: 1,
+                                    }}
+                                    label="INACTIVE"
+                                  />
+                                )}
+                              </TableCell>
 
-                                <TableCell className="tbl-cell tr-cen-pad45">
-                                  {Moment(data.updated_at).format(
-                                    "MMM DD, YYYY"
-                                  )}
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                              <TableCell className="tbl-cell tr-cen-pad45">
+                                {Moment(data.updated_at).format("MMM DD, YYYY")}
+                              </TableCell>
+                            </TableRow>
+                          ))}
                       </>
                     )}
                   </TableBody>
@@ -370,19 +338,15 @@ const Company = () => {
             <Box className="mcontainer__pagination">
               <TablePagination
                 rowsPerPageOptions={[
-                  5,
-                  10,
-                  15,
-                  { label: "All", value: parseInt(companyApiData?.total) },
+                  5, 10, 15, 100,
+                  // { label: "All", value: parseInt(companyApiData?.total) },
                 ]}
                 component="div"
                 count={companyApiSuccess ? companyApiData.total : 0}
                 page={companyApiSuccess ? companyApiData.current_page - 1 : 0}
-                rowsPerPage={
-                  companyApiSuccess ? parseInt(companyApiData?.per_page) : 5
-                }
+                rowsPerPage={companyApiSuccess ? parseInt(companyApiData?.per_page) : 5}
                 onPageChange={pageHandler}
-                onRowsPerPageChange={limitHandler}
+                onRowsPerPageChange={perPageHandler}
               />
             </Box>
           </Box>

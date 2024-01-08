@@ -120,6 +120,11 @@ const router = createBrowserRouter([
               },
 
               {
+                path: "supplier",
+                element: <Supplier />,
+              },
+
+              {
                 path: "sub-unit",
                 element: <SubUnit />,
               },
@@ -142,11 +147,6 @@ const router = createBrowserRouter([
               {
                 path: "service-provider",
                 element: <ServiceProvider />,
-              },
-
-              {
-                path: "supplier",
-                element: <Supplier />,
               },
 
               {
@@ -247,6 +247,10 @@ const router = createBrowserRouter([
                 path: "purchase-request",
                 element: <PurchaseRequest />,
               },
+              {
+                path: "purchase-request/:transaction_number",
+                element: <ViewRequest />,
+              },
             ],
           },
 
@@ -281,10 +285,6 @@ const router = createBrowserRouter([
             element: <ViewRequest />,
           },
 
-          {
-            path: "purchase-request/:transaction_number",
-            element: <ViewRequest />,
-          },
           // }
 
           {

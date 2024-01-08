@@ -19,7 +19,7 @@ export const locationApi = createApi({
   endpoints: (builder) => ({
     getLocationApi: builder.query({
       query: (params) =>
-        `/location?search=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `/location?search=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["Location"],
     }),
 
@@ -39,8 +39,4 @@ export const locationApi = createApi({
   }),
 });
 
-export const {
-  useGetLocationApiQuery,
-  useGetLocationAllApiQuery,
-  usePostLocationApiMutation,
-} = locationApi;
+export const { useGetLocationApiQuery, useGetLocationAllApiQuery, usePostLocationApiMutation } = locationApi;

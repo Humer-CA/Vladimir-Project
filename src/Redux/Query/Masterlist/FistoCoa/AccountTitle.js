@@ -19,7 +19,7 @@ export const accountTitleApi = createApi({
   endpoints: (builder) => ({
     getAccountTitleApi: builder.query({
       query: (params) =>
-        `/account-title?search=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `/account-title?search=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["AccountTitle"],
     }),
 

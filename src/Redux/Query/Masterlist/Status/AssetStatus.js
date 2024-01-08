@@ -20,7 +20,7 @@ export const assetStatusApi = createApi({
   endpoints: (builder) => ({
     getAssetStatusApi: builder.query({
       query: (params) =>
-        `asset-status?=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `asset-status?=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["AssetStatus"],
     }),
 

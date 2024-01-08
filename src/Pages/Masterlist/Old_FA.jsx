@@ -70,7 +70,7 @@ const FixedAsset = (props) => {
   const navigate = useNavigate();
   const { excelExport } = useExcel();
   const [search, setSearch] = useState("");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("active");
   // const [scanAsset, setScanAsset] = useState(false);
@@ -121,12 +121,8 @@ const FixedAsset = (props) => {
   });
 
   const drawer = useSelector((state) => state.booleanState.drawer);
-  const drawer2 = useSelector(
-    (state) => state.booleanState.drawerMultiple.drawer2
-  );
-  const drawer1 = useSelector(
-    (state) => state.booleanState.drawerMultiple.drawer1
-  );
+  const drawer2 = useSelector((state) => state.booleanState.drawerMultiple.drawer2);
+  const drawer1 = useSelector((state) => state.booleanState.drawerMultiple.drawer1);
   const add = useSelector((state) => state.booleanState.add);
   const importFile = useSelector((state) => state.booleanState.importFile);
   const datePicker = useSelector((state) => state.booleanState.datePicker);
@@ -162,9 +158,9 @@ const FixedAsset = (props) => {
 
   // Table Properties --------------------------------
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -182,7 +178,7 @@ const FixedAsset = (props) => {
   } = useGetFixedAssetApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
@@ -266,20 +262,13 @@ const FixedAsset = (props) => {
 
   return (
     <Box className="mcontainer">
-      <Typography
-        className="mcontainer__title"
-        sx={{ fontFamily: "Anton", fontSize: "2rem" }}
-      >
+      <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "2rem" }}>
         Fixed Assets
       </Typography>
 
-      {fixedAssetLoading && (
-        <MasterlistSkeleton onAdd={true} onImport={true} onPrint={true} />
-      )}
+      {fixedAssetLoading && <MasterlistSkeleton onAdd={true} onImport={true} onPrint={true} />}
 
-      {fixedAssetError && (
-        <ErrorFetching refetch={fixedAssetRefetch} error={errorData} />
-      )}
+      {fixedAssetError && <ErrorFetching refetch={fixedAssetRefetch} error={errorData} />}
 
       {fixedAssetData && !fixedAssetError && (
         <Box className="mcontainer__wrapper">
@@ -323,9 +312,7 @@ const FixedAsset = (props) => {
                     <TableCell className="tbl-cell-fa">
                       <TableSortLabel
                         active={orderBy === `vladimir_tag_number`}
-                        direction={
-                          orderBy === `vladimir_tag_number` ? order : `asc`
-                        }
+                        direction={orderBy === `vladimir_tag_number` ? order : `asc`}
                         onClick={() => onSort(`vladimir_tag_number`)}
                       >
                         Vladimir Tag #
@@ -639,9 +626,7 @@ const FixedAsset = (props) => {
                     <TableCell className="tbl-cell-fa text-center">
                       <TableSortLabel
                         active={orderBy === `asset_status_name`}
-                        direction={
-                          orderBy === `asset_status_name` ? order : `asc`
-                        }
+                        direction={orderBy === `asset_status_name` ? order : `asc`}
                         onClick={() => onSort(`asset_status_name`)}
                       >
                         Asset Status
@@ -744,95 +729,69 @@ const FixedAsset = (props) => {
                   ) : (
                     <>
                       {fixedAssetSuccess &&
-                        [...fixedAssetData.data]
-                          .sort(comparator(order, orderBy))
-                          .map((data, index) => {
-                            return (
-                              <TableRow
-                                key={index}
-                                hover={true}
-                                onClick={() => handleTableData(data)}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    borderBottom: 0,
-                                  },
-                                  cursor: "pointer",
-                                }}
-                              >
-                                {/* <TableCell sx={{ display: "none" }}>
+                        [...fixedAssetData.data].sort(comparator(order, orderBy)).map((data, index) => {
+                          return (
+                            <TableRow
+                              key={index}
+                              hover={true}
+                              onClick={() => handleTableData(data)}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  borderBottom: 0,
+                                },
+                                cursor: "pointer",
+                              }}
+                            >
+                              {/* <TableCell sx={{ display: "none" }}>
                                   {data.id}
                                 </TableCell> */}
 
-                                <TableCell className="tbl-cell-fa">
-                                  <Typography
-                                    variant="h6"
-                                    fontSize="16px"
-                                    color="secondary"
-                                    fontWeight="bold"
-                                  >
-                                    {data.vladimir_tag_number}
-                                  </Typography>
-                                  <Typography fontSize="13px" color="gray">
-                                    {data.asset_description}
-                                  </Typography>
-                                  <Typography
-                                    fontSize="12px"
-                                    fontWeight="bold"
-                                    color={
-                                      data.is_additional_cost === 0
-                                        ? "black.main"
-                                        : "success.light"
-                                    }
-                                  >
-                                    {data.is_additional_cost === 0
-                                      ? `Additional Cost Count - ${data.additional_cost_count}`
-                                      : `(Additional Cost)`}
-                                  </Typography>
-                                  <Typography
-                                    fontSize="12px"
-                                    color="primary"
-                                    fontWeight="bold"
-                                  >
-                                    {data.type_of_request.type_of_request_name.toUpperCase()}
-                                  </Typography>
-                                </TableCell>
+                              <TableCell className="tbl-cell-fa">
+                                <Typography variant="h6" fontSize="16px" color="secondary" fontWeight="bold">
+                                  {data.vladimir_tag_number}
+                                </Typography>
+                                <Typography fontSize="13px" color="gray">
+                                  {data.asset_description}
+                                </Typography>
+                                <Typography
+                                  fontSize="12px"
+                                  fontWeight="bold"
+                                  color={data.is_additional_cost === 0 ? "black.main" : "success.light"}
+                                >
+                                  {data.is_additional_cost === 0
+                                    ? `Additional Cost Count - ${data.additional_cost_count}`
+                                    : `(Additional Cost)`}
+                                </Typography>
+                                <Typography fontSize="12px" color="primary" fontWeight="bold">
+                                  {data.type_of_request.type_of_request_name.toUpperCase()}
+                                </Typography>
+                              </TableCell>
 
-                                <TableCell className="tbl-cell-fa">
-                                  <Typography
-                                    variant="p"
-                                    fontSize="14px"
-                                    color="secondary"
-                                    fontWeight="bold"
-                                  >
-                                    {data.capex.capex}
-                                  </Typography>
-                                  <Typography fontSize="12px" color="gray">
-                                    {data.capex.project_name}
-                                  </Typography>
+                              <TableCell className="tbl-cell-fa">
+                                <Typography variant="p" fontSize="14px" color="secondary" fontWeight="bold">
+                                  {data.capex.capex}
+                                </Typography>
+                                <Typography fontSize="12px" color="gray">
+                                  {data.capex.project_name}
+                                </Typography>
 
-                                  <Typography
-                                    variant="p"
-                                    fontSize="12px"
-                                    color="secondary.light"
-                                    fontWeight="bold"
-                                  >
-                                    {data.sub_capex.sub_capex} (
-                                    {data.sub_capex.sub_project})
-                                  </Typography>
-                                </TableCell>
+                                <Typography variant="p" fontSize="12px" color="secondary.light" fontWeight="bold">
+                                  {data.sub_capex.sub_capex} ({data.sub_capex.sub_project})
+                                </Typography>
+                              </TableCell>
 
-                                {/* <TableCell className="tbl-cell-fa">
+                              {/* <TableCell className="tbl-cell-fa">
                                   {data.acquisition_date}
                                 </TableCell> */}
 
-                                {/* <TableCell
+                              {/* <TableCell
                                    
                                   className="tbl-cell-fa"
                                 >
                                   {data.accountable}
                                 </TableCell> */}
 
-                                {/* <TableCell
+                              {/* <TableCell
                                    
                                   className="tbl-cell-fa"
                                 >
@@ -846,19 +805,19 @@ const FixedAsset = (props) => {
                                   {data.brand}
                                 </TableCell> */}
 
-                                {/* <TableCell className="tbl-cell-fa">
+                              {/* <TableCell className="tbl-cell-fa">
                                   <Typography fontSize="14px" color="secondary">
                                     {data.additional_cost_count}
                                   </Typography>
                                 </TableCell> */}
 
-                                <TableCell className="tbl-cell-fa">
-                                  <Typography fontSize="14px" color="secondary">
-                                    {data.division.division_name}
-                                  </Typography>
-                                </TableCell>
+                              <TableCell className="tbl-cell-fa">
+                                <Typography fontSize="14px" color="secondary">
+                                  {data.division.division_name}
+                                </Typography>
+                              </TableCell>
 
-                                {/* <TableCell
+                              {/* <TableCell
                                    
                                   className="tbl-cell-fa"
                                 >
@@ -872,7 +831,7 @@ const FixedAsset = (props) => {
                                   {data.minor_category.minor_category_name}
                                 </TableCell> */}
 
-                                {/* <TableCell
+                              {/* <TableCell
                                    
                                   className="tbl-cell-fa"
                                 >
@@ -893,7 +852,7 @@ const FixedAsset = (props) => {
                                   {data.quantity}
                                 </TableCell> */}
 
-                                {/* <TableCell
+                              {/* <TableCell
                                    
                                   className="tbl-cell-fa"
                                 >
@@ -993,90 +952,86 @@ const FixedAsset = (props) => {
                                   {data.start_depreciation}
                                 </TableCell> */}
 
-                                <TableCell className="tbl-cell-fa">
-                                  <Typography fontSize="12px" color="gray">
-                                    {data.company.company_code}
-                                    {" - "} {data.company.company_name}
-                                  </Typography>
-                                  <Typography fontSize="12px" color="gray">
-                                    {data.department.department_code}
-                                    {" - "}
-                                    {data.department.department_name}
-                                  </Typography>
-                                  <Typography fontSize="12px" color="gray">
-                                    {data.location.location_code} {" - "}
-                                    {data.location.location_name}
-                                  </Typography>
-                                  <Typography fontSize="12px" color="gray">
-                                    {data.account_title.account_title_code}
-                                    {" - "}
-                                    {data.account_title.account_title_name}
-                                  </Typography>
-                                </TableCell>
+                              <TableCell className="tbl-cell-fa">
+                                <Typography fontSize="12px" color="gray">
+                                  {data.company.company_code}
+                                  {" - "} {data.company.company_name}
+                                </Typography>
+                                <Typography fontSize="12px" color="gray">
+                                  {data.department.department_code}
+                                  {" - "}
+                                  {data.department.department_name}
+                                </Typography>
+                                <Typography fontSize="12px" color="gray">
+                                  {data.location.location_code} {" - "}
+                                  {data.location.location_name}
+                                </Typography>
+                                <Typography fontSize="12px" color="gray">
+                                  {data.account_title.account_title_code}
+                                  {" - "}
+                                  {data.account_title.account_title_name}
+                                </Typography>
+                              </TableCell>
 
-                                <TableCell className="tbl-cell-fa tr-cen-pad45">
-                                  <FaStatusChange
-                                    faStatus={
-                                      data.asset_status.asset_status_name
-                                    }
-                                    data={data.asset_status.asset_status_name}
-                                  />
-                                </TableCell>
+                              <TableCell className="tbl-cell-fa tr-cen-pad45">
+                                <FaStatusChange
+                                  faStatus={data.asset_status.asset_status_name}
+                                  data={data.asset_status.asset_status_name}
+                                />
+                              </TableCell>
 
-                                <TableCell className="tbl-cell-fa tr-cen-pad45">
-                                  {Moment(data.created_at).format(
-                                    "MMM DD, YYYY"
-                                  )}
-                                </TableCell>
-                              </TableRow>
+                              <TableCell className="tbl-cell-fa tr-cen-pad45">
+                                {Moment(data.created_at).format("MMM DD, YYYY")}
+                              </TableCell>
+                            </TableRow>
 
-                              // <TableRow
-                              //   key={data.id}
-                              //   hover={true}
-                              //   onClick={() => handleTableData(data)}
-                              //   sx={{
-                              //     "& > *": {
-                              //       borderBottom: 0,
-                              //     },
-                              //     display: "flex",
-                              //     justifyContent: "flex-start",
-                              //     alignItems: "center",
-                              //     gap: 5,
-                              //     px: 5,
-                              //     cursor: "pointer",
-                              //     borderRadius: "10px",
-                              //     border: "1px solid #c7c7c750",
-                              //     borderCollapse: "separate",
-                              //     borderSpacing: "10px",
-                              //   }}
-                              // >
-                              //   <TableCell>{data.id}</TableCell>
+                            // <TableRow
+                            //   key={data.id}
+                            //   hover={true}
+                            //   onClick={() => handleTableData(data)}
+                            //   sx={{
+                            //     "& > *": {
+                            //       borderBottom: 0,
+                            //     },
+                            //     display: "flex",
+                            //     justifyContent: "flex-start",
+                            //     alignItems: "center",
+                            //     gap: 5,
+                            //     px: 5,
+                            //     cursor: "pointer",
+                            //     borderRadius: "10px",
+                            //     border: "1px solid #c7c7c750",
+                            //     borderCollapse: "separate",
+                            //     borderSpacing: "10px",
+                            //   }}
+                            // >
+                            //   <TableCell>{data.id}</TableCell>
 
-                              //   <TableCell>
-                              //     <Typography
-                              //       variant="h6"
-                              //       fontSize="16px"
-                              //       color="secondary"
-                              //       fontWeight="bold"
-                              //     >
-                              //       {data.vladimir_tag_number}
-                              //     </Typography>
-                              //     <Typography fontSize="12px" color="gray">
-                              //       {data.asset_description}
-                              //     </Typography>
-                              //   </TableCell>
+                            //   <TableCell>
+                            //     <Typography
+                            //       variant="h6"
+                            //       fontSize="16px"
+                            //       color="secondary"
+                            //       fontWeight="bold"
+                            //     >
+                            //       {data.vladimir_tag_number}
+                            //     </Typography>
+                            //     <Typography fontSize="12px" color="gray">
+                            //       {data.asset_description}
+                            //     </Typography>
+                            //   </TableCell>
 
-                              //   <TableCell>
-                              //     <Typography fontSize="12px" color="gray">
-                              //       Capex
-                              //     </Typography>
-                              //     <Typography fontSize="12px" color="gray">
-                              //       {data.capex.capex}
-                              //     </Typography>
-                              //   </TableCell>
-                              // </TableRow>
-                            );
-                          })}
+                            //   <TableCell>
+                            //     <Typography fontSize="12px" color="gray">
+                            //       Capex
+                            //     </Typography>
+                            //     <Typography fontSize="12px" color="gray">
+                            //       {data.capex.capex}
+                            //     </Typography>
+                            //   </TableCell>
+                            // </TableRow>
+                          );
+                        })}
                     </>
                   )}
                 </TableBody>
@@ -1108,11 +1063,9 @@ const FixedAsset = (props) => {
               component="div"
               count={fixedAssetSuccess ? fixedAssetData.total : 0}
               page={fixedAssetSuccess ? fixedAssetData.current_page - 1 : 0}
-              rowsPerPage={
-                fixedAssetSuccess ? parseInt(fixedAssetData?.per_page) : 5
-              }
+              rowsPerPage={fixedAssetSuccess ? parseInt(fixedAssetData?.per_page) : 5}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
         </Box>
@@ -1131,11 +1084,7 @@ const FixedAsset = (props) => {
           },
         }}
       >
-        <AddFixedAsset
-          status={status}
-          data={updateFixedAsset}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddFixedAsset status={status} data={updateFixedAsset} onUpdateResetHandler={onUpdateResetHandler} />
       </Drawer>
 
       {/* Add Cost */}
@@ -1151,11 +1100,7 @@ const FixedAsset = (props) => {
           },
         }}
       >
-        <AddCost
-          status={status}
-          data={updateFixedAsset}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddCost status={status} data={updateFixedAsset} onUpdateResetHandler={onUpdateResetHandler} />
       </Drawer>
 
       {/* <Drawer

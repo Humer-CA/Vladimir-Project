@@ -20,7 +20,7 @@ export const depreciationStatusApi = createApi({
   endpoints: (builder) => ({
     getDepreciationStatusApi: builder.query({
       query: (params) =>
-        `depreciation-status?=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `depreciation-status?=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["DepreciationStatus"],
     }),
 

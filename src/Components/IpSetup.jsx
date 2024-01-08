@@ -20,10 +20,7 @@ import * as yup from "yup";
 
 import { useDispatch } from "react-redux";
 import { openToast } from "../Redux/StateManagement/toastSlice";
-import {
-  openIpSetupDialog,
-  closeIpSetupDialog,
-} from "../Redux/StateManagement/ipSetupSlice";
+import { openIpSetupDialog, closeIpSetupDialog } from "../Redux/StateManagement/ipSetupSlice";
 
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -68,11 +65,7 @@ import {
   Warning,
 } from "@mui/icons-material";
 import axios from "axios";
-import {
-  closeConfirm,
-  onLoading,
-  openConfirm,
-} from "../Redux/StateManagement/confirmSlice";
+import { closeConfirm, onLoading, openConfirm } from "../Redux/StateManagement/confirmSlice";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -83,7 +76,7 @@ const schema = yup.object().shape({
 const IpSetup = (props) => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [ipAddress, setIpAddress] = useState("");
   const [ipName, setIpName] = useState({
@@ -131,9 +124,9 @@ const IpSetup = (props) => {
 
   // Table Properties --------------------------------
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -141,9 +134,7 @@ const IpSetup = (props) => {
     setPage(page + 1);
   };
 
-  const isLocalIp =
-    process.env.VLADIMIR_BASE_URL ===
-    `https://pretestalpha.rdfmis.ph/server/api`;
+  const isLocalIp = process.env.VLADIMIR_BASE_URL === `https://pretestalpha.rdfmis.ph/server/api`;
   const {
     data: ipData,
     isLoading: isIpLoading,
@@ -153,7 +144,7 @@ const IpSetup = (props) => {
   } = useGetIpAddressApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
@@ -169,7 +160,7 @@ const IpSetup = (props) => {
   // } = useGetIpAddressPretestApi(
   //   {
   //     page: page,
-  //     limit: limit,
+  //     perPage: perPage,
   //     status: status,
   //     search: search,
   //   },
@@ -178,17 +169,10 @@ const IpSetup = (props) => {
 
   const [
     postIpAddress,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostIpAddressApiMutation();
 
-  const [patchIpStatusApi, { patchData }] =
-    usePatchIpAddressStatusApiMutation();
+  const [patchIpStatusApi, { patchData }] = usePatchIpAddressStatusApiMutation();
 
   const [deleteIpStatusApi, { deleteData }] = useDeleteIpAddressApiMutation();
 
@@ -250,16 +234,11 @@ const IpSetup = (props) => {
     const token = localStorage.getItem("token");
 
     axios
-      .get(
-        isLocalIp
-          ? "https://pretestalpha.rdfmis.ph/server/api"
-          : "https://vladimir.rdfmis.ph/server/api",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .get(isLocalIp ? "https://pretestalpha.rdfmis.ph/server/api" : "https://vladimir.rdfmis.ph/server/api", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         const data = response.data;
         setIpAddress(data?.data);
@@ -535,11 +514,7 @@ const IpSetup = (props) => {
           }}
           onSubmit={handleSubmit(onSubmitHandler)}
         >
-          <Stack
-            alignItems="center"
-            gap={isSmallerScreen ? 1 : 2}
-            flexDirection={isSmallScreen ? "row" : "column"}
-          >
+          <Stack alignItems="center" gap={isSmallerScreen ? 1 : 2} flexDirection={isSmallScreen ? "row" : "column"}>
             {isSmallScreen ? (
               <IconButton onClick={handleCloseDialog}>
                 <ArrowBackIosNewRounded />
@@ -566,9 +541,7 @@ const IpSetup = (props) => {
           </Stack>
 
           <Stack
-            flexDirection={
-              isSmallerScreen ? "column" : isSmallScreen ? "row" : "column"
-            }
+            flexDirection={isSmallerScreen ? "column" : isSmallScreen ? "row" : "column"}
             alignItems="center"
             justifyContent="center"
             gap={2}
@@ -608,11 +581,7 @@ const IpSetup = (props) => {
               variant="contained"
               startIcon={<AddCircle />}
               sx={{
-                width: isSmallerScreen
-                  ? "100%"
-                  : isSmallScreen
-                  ? "200px"
-                  : "100%",
+                width: isSmallerScreen ? "100%" : isSmallScreen ? "200px" : "100%",
                 borderRadius: "10px",
               }}
               loading={isPostLoading}
@@ -727,78 +696,66 @@ const IpSetup = (props) => {
                   ) : (
                     <>
                       {isIpSuccess &&
-                        [...ipData.data.data]
-                          .sort(comparator(order, orderBy))
-                          .map((data) => (
-                            <TableRow
-                              key={data.id}
-                              hover={true}
+                        [...ipData.data.data].sort(comparator(order, orderBy)).map((data) => (
+                          <TableRow
+                            key={data.id}
+                            hover={true}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                              "& > *": {
+                                padding: "10px",
+                              },
+                            }}
+                          >
+                            <TableCell sx={{ textAlign: "center", pr: "45px" }}>{data.id}</TableCell>
+
+                            <TableCell className="tbl-cell">{data.ip}</TableCell>
+
+                            <TableCell className="tbl-cell">{data.name}</TableCell>
+
+                            <TableCell sx={{ textAlign: "center" }}>
+                              {data.is_active ? (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#27ff811f",
+                                    color: "active.dark",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="ACTIVE"
+                                />
+                              ) : (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#fc3e3e34",
+                                    color: "error.light",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="INACTIVE"
+                                />
+                              )}
+                            </TableCell>
+
+                            <TableCell sx={{ textAlign: "center", pr: "45px" }}>
+                              {moment(data.updated_at).format("MMM DD, YYYY")}
+                            </TableCell>
+
+                            <TableCell
                               sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                                "& > *": {
-                                  padding: "10px",
-                                },
+                                whiteSpace: "nowrap",
+                                textAlign: "center",
                               }}
                             >
-                              <TableCell
-                                sx={{ textAlign: "center", pr: "45px" }}
-                              >
-                                {data.id}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell">
-                                {data.ip}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell">
-                                {data.name}
-                              </TableCell>
-
-                              <TableCell sx={{ textAlign: "center" }}>
-                                {data.is_active ? (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#27ff811f",
-                                      color: "active.dark",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="ACTIVE"
-                                  />
-                                ) : (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#fc3e3e34",
-                                      color: "error.light",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="INACTIVE"
-                                  />
-                                )}
-                              </TableCell>
-
-                              <TableCell
-                                sx={{ textAlign: "center", pr: "45px" }}
-                              >
-                                {moment(data.updated_at).format("MMM DD, YYYY")}
-                              </TableCell>
-
-                              <TableCell
-                                sx={{
-                                  whiteSpace: "nowrap",
-                                  textAlign: "center",
-                                }}
-                              >
-                                {data.is_active ? (
-                                  <>
-                                    {/* <Tooltip
+                              {data.is_active ? (
+                                <>
+                                  {/* <Tooltip
                                       title="Active"
                                       placement="top"
                                       arrow
@@ -820,63 +777,36 @@ const IpSetup = (props) => {
                                       </IconButton>
                                     </Tooltip> */}
 
-                                    <Tooltip
-                                      title="Disable Print"
-                                      placement="top"
-                                      arrow
-                                    >
-                                      <IconButton
-                                        size="small"
-                                        onClick={() =>
-                                          onSetStatusHandler(data.id, "disable")
-                                        }
-                                      >
-                                        <PrintDisabledRounded
-                                        // sx={{ color: "primary.main" }}
-                                        />
-                                      </IconButton>
-                                    </Tooltip>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Tooltip
-                                      title="Activate"
-                                      placement="top"
-                                      arrow
-                                    >
-                                      <IconButton
-                                        size="small"
-                                        onClick={() =>
-                                          onSetStatusHandler(data.id)
-                                        }
-                                      >
-                                        <CheckCircleOutline
-                                        // sx={{ color: "primary.main" }}
-                                        />
-                                      </IconButton>
-                                    </Tooltip>
+                                  <Tooltip title="Disable Print" placement="top" arrow>
+                                    <IconButton size="small" onClick={() => onSetStatusHandler(data.id, "disable")}>
+                                      <PrintDisabledRounded
+                                      // sx={{ color: "primary.main" }}
+                                      />
+                                    </IconButton>
+                                  </Tooltip>
+                                </>
+                              ) : (
+                                <>
+                                  <Tooltip title="Activate" placement="top" arrow>
+                                    <IconButton size="small" onClick={() => onSetStatusHandler(data.id)}>
+                                      <CheckCircleOutline
+                                      // sx={{ color: "primary.main" }}
+                                      />
+                                    </IconButton>
+                                  </Tooltip>
 
-                                    <Tooltip
-                                      title="Delete"
-                                      placement="top"
-                                      arrow
-                                    >
-                                      <IconButton
-                                        size="small"
-                                        onClick={() =>
-                                          onDeleteHandler(data.id, "delete")
-                                        }
-                                      >
-                                        <Delete
-                                        // sx={{ color: "black.main" }}
-                                        />
-                                      </IconButton>
-                                    </Tooltip>
-                                  </>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                                  <Tooltip title="Delete" placement="top" arrow>
+                                    <IconButton size="small" onClick={() => onDeleteHandler(data.id, "delete")}>
+                                      <Delete
+                                      // sx={{ color: "black.main" }}
+                                      />
+                                    </IconButton>
+                                  </Tooltip>
+                                </>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </>
                   )}
                 </TableBody>
@@ -900,7 +830,7 @@ const IpSetup = (props) => {
                 page={isIpSuccess ? ipData?.data?.current_page - 1 : 0}
                 rowsPerPage={isIpSuccess ? parseInt(ipData?.data?.per_page) : 5}
                 onPageChange={pageHandler}
-                onRowsPerPageChange={limitHandler}
+                onRowsPerPageChange={perPageHandler}
               />
             </Box>
           </Box>

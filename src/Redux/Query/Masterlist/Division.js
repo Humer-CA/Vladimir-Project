@@ -20,7 +20,7 @@ export const divisionApi = createApi({
   endpoints: (builder) => ({
     getDivisionApi: builder.query({
       query: (params) =>
-        `division?search=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `division?search=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["Division"],
     }),
 

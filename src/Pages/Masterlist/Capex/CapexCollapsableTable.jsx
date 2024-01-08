@@ -32,11 +32,7 @@ import {
   ReportProblem,
   TitleRounded,
 } from "@mui/icons-material";
-import {
-  closeConfirm,
-  onLoading,
-  openConfirm,
-} from "../../../Redux/StateManagement/confirmSlice";
+import { closeConfirm, onLoading, openConfirm } from "../../../Redux/StateManagement/confirmSlice";
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
 import { usePatchSubCapexStatusApiMutation } from "../../../Redux/Query/Masterlist/Capex";
 import { useGetSubCapexApiQuery } from "../../../Redux/Query/Masterlist/SubCapex";
@@ -48,7 +44,7 @@ const CustomTableCollapse = (props) => {
   const [subCapexDialog, setSubCapexDialog] = useState(false);
 
   const [search, setSearch] = useState("");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateSubCapex, setUpdateSubCapex] = useState({
     status: false,
@@ -95,15 +91,14 @@ const CustomTableCollapse = (props) => {
   } = useGetSubCapexApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
     { refetchOnMountOrArgChange: true }
   );
 
-  const [patchSubCapexStatusApi, { isLoading }] =
-    usePatchSubCapexStatusApiMutation();
+  const [patchSubCapexStatusApi, { isLoading }] = usePatchSubCapexStatusApiMutation();
 
   // Functions ----------------------------------------------------------------
   const dataId = openCollapsable === data?.id;
@@ -211,31 +206,19 @@ const CustomTableCollapse = (props) => {
           </IconButton>
         </TableCell>
 
-        <TableCell
-          className="tbl-cell-col tr-cen-pad45"
-          sx={dataId ? { color: "white" } : null}
-        >
+        <TableCell className="tbl-cell-col tr-cen-pad45" sx={dataId ? { color: "white" } : null}>
           {data.id}
         </TableCell>
 
-        <TableCell
-          className="tbl-cell-col"
-          sx={dataId ? { color: "white" } : null}
-        >
+        <TableCell className="tbl-cell-col" sx={dataId ? { color: "white" } : null}>
           {data.capex}
         </TableCell>
 
-        <TableCell
-          className="tbl-cell-col"
-          sx={dataId ? { color: "white" } : null}
-        >
+        <TableCell className="tbl-cell-col" sx={dataId ? { color: "white" } : null}>
           {data.project_name}
         </TableCell>
 
-        <TableCell
-          className="tbl-cell-col tr-cen-pad45"
-          sx={dataId ? { color: "white" } : null}
-        >
+        <TableCell className="tbl-cell-col tr-cen-pad45" sx={dataId ? { color: "white" } : null}>
           {/* <Chip
             label={data.sub_capex_count === 0 ? "-" : data.sub_capex_count}
             sx={{
@@ -246,10 +229,7 @@ const CustomTableCollapse = (props) => {
           {data.sub_capex_count === 0 ? "-" : data.sub_capex_count}
         </TableCell>
 
-        <TableCell
-          className="tbl-cell-col  text-center"
-          sx={dataId ? { color: "white" } : null}
-        >
+        <TableCell className="tbl-cell-col  text-center" sx={dataId ? { color: "white" } : null}>
           {data.is_active ? (
             <Chip
               size="small"
@@ -295,10 +275,7 @@ const CustomTableCollapse = (props) => {
           )}
         </TableCell>
 
-        <TableCell
-          className="tbl-cell-col tr-cen-pad45"
-          sx={dataId ? { color: "white" } : null}
-        >
+        <TableCell className="tbl-cell-col tr-cen-pad45" sx={dataId ? { color: "white" } : null}>
           {Moment(data.created_at).format("MMM DD, YYYY")}
         </TableCell>
 
@@ -327,10 +304,7 @@ const CustomTableCollapse = (props) => {
             : null
         }
       >
-        <TableCell
-          sx={{ paddingBottom: 0, paddingTop: 0, border: 0 }}
-          colSpan={999}
-        >
+        <TableCell sx={{ paddingBottom: 0, paddingTop: 0, border: 0 }} colSpan={999}>
           <Collapse in={dataId} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Chip
@@ -356,10 +330,7 @@ const CustomTableCollapse = (props) => {
                       },
                     }}
                   >
-                    <TableCell
-                      sx={{ fontWeight: "bold" }}
-                      className="tbl-cell-col text-center"
-                    >
+                    <TableCell sx={{ fontWeight: "bold" }} className="tbl-cell-col text-center">
                       <TableSortLabel
                         active={orderBy === `id`}
                         direction={orderBy === `id` ? order : `asc`}
@@ -399,9 +370,7 @@ const CustomTableCollapse = (props) => {
                       </TableSortLabel>
                     </TableCell> */}
 
-                    <TableCell className="tbl-cell-col text-center">
-                      Status
-                    </TableCell>
+                    <TableCell className="tbl-cell-col text-center">Status</TableCell>
 
                     <TableCell className="tbl-cell-col text-center">
                       <TableSortLabel
@@ -413,9 +382,7 @@ const CustomTableCollapse = (props) => {
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell-col text-center">
-                      Action
-                    </TableCell>
+                    <TableCell className="tbl-cell-col text-center">Action</TableCell>
 
                     {/* <TableCell className="tbl-cell-col">Date Created</TableCell> */}
                   </TableRow>
@@ -433,12 +400,7 @@ const CustomTableCollapse = (props) => {
                           position: "relative",
                         }}
                       >
-                        <Stack
-                          flexDirection="row"
-                          alignItems="center"
-                          justifyContent="center"
-                          gap="5px"
-                        >
+                        <Stack flexDirection="row" alignItems="center" justifyContent="center" gap="5px">
                           <img src={NoDataFile} alt="" width="35px" />
                           <Typography
                             variant="p"
@@ -455,88 +417,74 @@ const CustomTableCollapse = (props) => {
                     </TableRow>
                   ) : (
                     <>
-                      {[...data.sub_capex]
-                        .sort(comparator(order, orderBy))
-                        .map((subCapex) => (
-                          <TableRow
-                            key={subCapex.id}
-                            sx={{
-                              "&:last-child td, &:last-child th": {
-                                borderBottom: 0,
-                              },
-                            }}
-                          >
-                            <TableCell className="tbl-cell-col tr-cen-pad45">
-                              {subCapex.id}
-                            </TableCell>
+                      {[...data.sub_capex].sort(comparator(order, orderBy)).map((subCapex) => (
+                        <TableRow
+                          key={subCapex.id}
+                          sx={{
+                            "&:last-child td, &:last-child th": {
+                              borderBottom: 0,
+                            },
+                          }}
+                        >
+                          <TableCell className="tbl-cell-col tr-cen-pad45">{subCapex.id}</TableCell>
 
-                            <TableCell className="tbl-cell-col">
-                              {data.capex + "-" + subCapex.sub_capex}
-                            </TableCell>
+                          <TableCell className="tbl-cell-col">{data.capex + "-" + subCapex.sub_capex}</TableCell>
 
-                            <TableCell className="tbl-cell-col">
-                              {subCapex.sub_project}
-                            </TableCell>
+                          <TableCell className="tbl-cell-col">{subCapex.sub_project}</TableCell>
 
-                            <TableCell className="tbl-cell-col text-center">
-                              {subCapex.is_active ? (
-                                <Chip
-                                  size="small"
-                                  variant="contained"
-                                  sx={
-                                    dataId
-                                      ? {
-                                          background: "#27ff814f",
-                                          color: "active.dark",
-                                          fontSize: "0.7rem",
-                                          px: 1,
-                                        }
-                                      : {
-                                          background: "#27ff811f",
-                                          color: "active.dark",
-                                          fontSize: "0.7rem",
-                                          px: 1,
-                                        }
-                                  }
-                                  label="ACTIVE"
-                                />
-                              ) : (
-                                <Chip
-                                  size="small"
-                                  variant="contained"
-                                  sx={{
-                                    background: "#fc3e3e34",
-                                    color: "error.light",
-                                    fontSize: "0.7rem",
-                                    px: 1,
-                                  }}
-                                  label="INACTIVE"
-                                />
-                              )}
-                            </TableCell>
-
-                            <TableCell className="tbl-cell-col tr-cen-pad45">
-                              {Moment(subCapex.created_at).format(
-                                "MMM DD, YYYY"
-                              )}
-                            </TableCell>
-
-                            <TableCell className="tbl-cell-col text-center">
-                              <ActionMenu
-                                status={
-                                  subCapex.is_active ? "active" : "deactivated"
+                          <TableCell className="tbl-cell-col text-center">
+                            {subCapex.is_active ? (
+                              <Chip
+                                size="small"
+                                variant="contained"
+                                sx={
+                                  dataId
+                                    ? {
+                                        background: "#27ff814f",
+                                        color: "active.dark",
+                                        fontSize: "0.7rem",
+                                        px: 1,
+                                      }
+                                    : {
+                                        background: "#27ff811f",
+                                        color: "active.dark",
+                                        fontSize: "0.7rem",
+                                        px: 1,
+                                      }
                                 }
-                                data={subCapex}
-                                setSubCapexDialog={setSubCapexDialog}
-                                onUpdateHandler={onUpdateSubCapexHandler}
-                                onArchiveRestoreHandler={
-                                  onSubCapexArchiveRestoreHandler
-                                }
-                                hideEdit
+                                label="ACTIVE"
                               />
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                            ) : (
+                              <Chip
+                                size="small"
+                                variant="contained"
+                                sx={{
+                                  background: "#fc3e3e34",
+                                  color: "error.light",
+                                  fontSize: "0.7rem",
+                                  px: 1,
+                                }}
+                                label="INACTIVE"
+                              />
+                            )}
+                          </TableCell>
+
+                          <TableCell className="tbl-cell-col tr-cen-pad45">
+                            {Moment(subCapex.created_at).format("MMM DD, YYYY")}
+                          </TableCell>
+
+                          <TableCell className="tbl-cell-col text-center">
+                            <ActionMenu
+                              status={subCapex.is_active ? "active" : "deactivated"}
+                              data={subCapex}
+                              setSubCapexDialog={setSubCapexDialog}
+                              onUpdateHandler={onUpdateSubCapexHandler}
+                              onArchiveRestoreHandler={onSubCapexArchiveRestoreHandler}
+                              hideEdit
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))}
                     </>
                   )}
 
@@ -578,10 +526,7 @@ const CustomTableCollapse = (props) => {
         </TableCell>
       </TableRow>
 
-      <Dialog
-        open={subCapexDialog}
-        PaperProps={{ sx: { borderRadius: "10px" } }}
-      >
+      <Dialog open={subCapexDialog} PaperProps={{ sx: { borderRadius: "10px" } }}>
         <AddSubCapex
           data={updateSubCapex}
           capexId={data?.id}

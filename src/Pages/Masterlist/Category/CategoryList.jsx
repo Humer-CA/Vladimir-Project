@@ -8,11 +8,7 @@ import CustomTableCollapse from "../../../Components/Reusable/CustomTableCollaps
 // RTK
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
-import {
-  closeConfirm,
-  openConfirm,
-  onLoading,
-} from "../../../Redux/StateManagement/confirmSlice";
+import { closeConfirm, openConfirm, onLoading } from "../../../Redux/StateManagement/confirmSlice";
 import {
   useGetCategoryListApiQuery,
   usePutCategoryListStatusApiMutation,
@@ -31,11 +27,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import {
-  ExpandCircleDownOutlined,
-  Help,
-  ReportProblem,
-} from "@mui/icons-material";
+import { ExpandCircleDownOutlined, Help, ReportProblem } from "@mui/icons-material";
 import MasterlistSkeleton from "../../Skeleton/MasterlistSkeleton";
 import ErrorFetching from "../../ErrorFetching";
 
@@ -43,7 +35,7 @@ const CategoryList = () => {
   const category = true;
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateCategoryList, setUpdateCategoryList] = useState({
     status: false,
@@ -56,9 +48,9 @@ const CategoryList = () => {
 
   const drawer = useSelector((state) => state.booleanState.drawer);
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -76,15 +68,14 @@ const CategoryList = () => {
   } = useGetCategoryListApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
     { refetchOnMountOrArgChange: true }
   );
 
-  const [putCategoryListStatusApi, { isLoading }] =
-    usePutCategoryListStatusApiMutation();
+  const [putCategoryListStatusApi, { isLoading }] = usePutCategoryListStatusApiMutation();
 
   const dispatch = useDispatch();
 
@@ -180,9 +171,7 @@ const CategoryList = () => {
     <>
       {categoryListLoading && <MasterlistSkeleton category={category} />}
 
-      {categoryListError && (
-        <ErrorFetching refetch={refetch} error={errorData} />
-      )}
+      {categoryListError && <ErrorFetching refetch={refetch} error={errorData} />}
 
       {categoryListData && !categoryListError && (
         <Box className="mcontainer__wrapper">
@@ -244,19 +233,14 @@ const CategoryList = () => {
               component="div"
               count={categoryListSuccess ? categoryListData.total : 0}
               page={categoryListSuccess ? categoryListData.current_page - 1 : 0}
-              rowsPerPage={
-                categoryListSuccess ? parseInt(categoryListData?.per_page) : 5
-              }
+              rowsPerPage={categoryListSuccess ? parseInt(categoryListData?.per_page) : 5}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
 
           <Dialog open={drawer} onClose={() => {}}>
-            <AddCategoryList
-              data={updateCategoryList}
-              onUpdateResetHandler={onUpdateResetHandler}
-            />
+            <AddCategoryList data={updateCategoryList} onUpdateResetHandler={onUpdateResetHandler} />
           </Dialog>
         </Box>
       )}

@@ -8,15 +8,8 @@ import AddModules from "./AddEdit/AddModules";
 // RTK
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
-import {
-  usePostModuleStatusApiMutation,
-  useGetModulesApiQuery,
-} from "../../Redux/Query/ModulesApi";
+import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
+import { usePostModuleStatusApiMutation, useGetModulesApiQuery } from "../../Redux/Query/ModulesApi";
 
 // MUI
 import {
@@ -37,7 +30,7 @@ import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 const Modules = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateModule, setUpdateModule] = useState({
     status: false,
@@ -47,9 +40,9 @@ const Modules = () => {
 
   const drawer = useSelector((state) => state.booleanState.drawer);
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -67,7 +60,7 @@ const Modules = () => {
   } = useGetModulesApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
@@ -144,10 +137,7 @@ const Modules = () => {
 
   return (
     <Box className="mcontainer">
-      <Typography
-        className="mcontainer__title"
-        sx={{ fontFamily: "Anton", fontSize: "2rem" }}
-      >
+      <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "2rem" }}>
         Modules
       </Typography>
 
@@ -158,12 +148,7 @@ const Modules = () => {
       {modules && !modulesError && (
         <>
           <Box className="mcontainer__wrapper">
-            <MasterlistToolbar
-              path="#"
-              onStatusChange={setStatus}
-              onSearchChange={setSearch}
-              onSetPage={setPage}
-            />
+            <MasterlistToolbar path="#" onStatusChange={setStatus} onSearchChange={setSearch} onSetPage={setPage} />
 
             <Box>
               <TableContainer className="mcontainer__th-body">
@@ -193,13 +178,9 @@ const Modules = () => {
                             },
                           }}
                         >
-                          <TableCell className="tbl-cell">
-                            {modules.id}
-                          </TableCell>
+                          <TableCell className="tbl-cell">{modules.id}</TableCell>
 
-                          <TableCell className="tbl-cell text-weight">
-                            {modules.module_name}
-                          </TableCell>
+                          <TableCell className="tbl-cell text-weight">{modules.module_name}</TableCell>
 
                           <TableCell className="tbl-cell">
                             {modules.is_active ? (
@@ -255,18 +236,13 @@ const Modules = () => {
 
             <Box className="mcontainer__pagination">
               <TablePagination
-                rowsPerPageOptions={[
-                  5,
-                  10,
-                  15,
-                  { label: "All", value: parseInt(modules?.total) },
-                ]}
+                rowsPerPageOptions={[5, 10, 15, { label: "All", value: parseInt(modules?.total) }]}
                 component="div"
                 count={modulesSuccess ? modules.total : 0}
                 page={modulesSuccess ? modules.current_page - 1 : 0}
                 rowsPerPage={modulesSuccess ? parseInt(modules?.per_page) : 5}
                 onPageChange={pageHandler}
-                onRowsPerPageChange={limitHandler}
+                onRowsPerPageChange={perPageHandler}
               />
             </Box>
           </Box>
@@ -274,10 +250,7 @@ const Modules = () => {
       )}
 
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        <AddModules
-          data={updateModule}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddModules data={updateModule} onUpdateResetHandler={onUpdateResetHandler} />
       </Dialog>
     </Box>
   );

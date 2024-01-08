@@ -6,16 +6,9 @@ import ActionMenu from "../../Components/Reusable/ActionMenu";
 // RTK
 import { useDispatch } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
 
-import {
-  usePostDivisionStatusApiMutation,
-  useGetDivisionApiQuery,
-} from "../../Redux/Query/Masterlist/Division";
+import { usePostDivisionStatusApiMutation, useGetDivisionApiQuery } from "../../Redux/Query/Masterlist/Division";
 
 import { useSelector } from "react-redux";
 
@@ -45,7 +38,7 @@ import { openDrawer } from "../../Redux/StateManagement/booleanStateSlice";
 const Division = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
-  const [limit, setLimit] = useState(5);
+  const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateDivision, setUpdateDivision] = useState({
     status: false,
@@ -86,9 +79,9 @@ const Division = () => {
 
   // Table Properties --------------------------------
 
-  const limitHandler = (e) => {
+  const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -106,15 +99,14 @@ const Division = () => {
   } = useGetDivisionApiQuery(
     {
       page: page,
-      limit: limit,
+      per_page: perPage,
       status: status,
       search: search,
     },
     { refetchOnMountOrArgChange: true }
   );
 
-  const [postDivisionStatusApi, { isLoading }] =
-    usePostDivisionStatusApiMutation();
+  const [postDivisionStatusApi, { isLoading }] = usePostDivisionStatusApiMutation();
 
   // console.log(divisionData);
 
@@ -223,10 +215,7 @@ const Division = () => {
 
   return (
     <Box className="mcontainer">
-      <Typography
-        className="mcontainer__title"
-        sx={{ fontFamily: "Anton", fontSize: "2rem" }}
-      >
+      <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "2rem" }}>
         Division
       </Typography>
 
@@ -274,13 +263,9 @@ const Division = () => {
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Department
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Department</TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Status
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Status</TableCell>
 
                     <TableCell className="tbl-cell text-center">
                       <TableSortLabel
@@ -302,85 +287,77 @@ const Division = () => {
                   ) : (
                     <>
                       {divisionSuccess &&
-                        [...divisionData.data]
-                          .sort(comparator(order, orderBy))
-                          .map((data) => (
-                            <TableRow
-                              key={data.id}
-                              hover={true}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {data.id}
-                              </TableCell>
+                        [...divisionData.data].sort(comparator(order, orderBy)).map((data) => (
+                          <TableRow
+                            key={data.id}
+                            hover={true}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell tr-cen-pad45">{data.id}</TableCell>
 
-                              <TableCell className="tbl-cell text-weight">
-                                {data.division_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell text-weight">{data.division_name}</TableCell>
 
-                              <TableCell className="tbl-cell text-weight text-center">
-                                <Button
-                                  sx={{
-                                    textTransform: "capitalize",
-                                    textDecoration: "underline",
-                                  }}
-                                  variant="text"
+                            <TableCell className="tbl-cell text-weight text-center">
+                              <Button
+                                sx={{
+                                  textTransform: "capitalize",
+                                  textDecoration: "underline",
+                                }}
+                                variant="text"
+                                size="small"
+                                color="link"
+                                onClick={() => handleViewDepartment(data)}
+                              >
+                                <Typography fontSize={13}>View</Typography>
+                              </Button>
+                            </TableCell>
+
+                            <TableCell className="tbl-cell text-center">
+                              {data.is_active ? (
+                                <Chip
                                   size="small"
-                                  color="link"
-                                  onClick={() => handleViewDepartment(data)}
-                                >
-                                  <Typography fontSize={13}>View</Typography>
-                                </Button>
-                              </TableCell>
-
-                              <TableCell className="tbl-cell text-center">
-                                {data.is_active ? (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#27ff811f",
-                                      color: "active.dark",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="ACTIVE"
-                                  />
-                                ) : (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#fc3e3e34",
-                                      color: "error.light",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="INACTIVE"
-                                  />
-                                )}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {Moment(data.created_at).format("MMM DD, YYYY")}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell ">
-                                <ActionMenu
-                                  status={status}
-                                  data={data}
-                                  onUpdateHandler={onUpdateHandler}
-                                  onArchiveRestoreHandler={
-                                    onArchiveRestoreHandler
-                                  }
+                                  variant="contained"
+                                  sx={{
+                                    background: "#27ff811f",
+                                    color: "active.dark",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="ACTIVE"
                                 />
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                              ) : (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#fc3e3e34",
+                                    color: "error.light",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="INACTIVE"
+                                />
+                              )}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell tr-cen-pad45">
+                              {Moment(data.created_at).format("MMM DD, YYYY")}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell ">
+                              <ActionMenu
+                                status={status}
+                                data={data}
+                                onUpdateHandler={onUpdateHandler}
+                                onArchiveRestoreHandler={onArchiveRestoreHandler}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </>
                   )}
                 </TableBody>
@@ -390,31 +367,20 @@ const Division = () => {
 
           <Box className="mcontainer__pagination">
             <TablePagination
-              rowsPerPageOptions={[
-                5,
-                10,
-                15,
-                { label: "All", value: parseInt(divisionData?.total) },
-              ]}
+              rowsPerPageOptions={[5, 10, 15, { label: "All", value: parseInt(divisionData?.total) }]}
               component="div"
               count={divisionSuccess ? divisionData.total : 0}
               page={divisionSuccess ? divisionData.current_page - 1 : 0}
-              rowsPerPage={
-                divisionSuccess ? parseInt(divisionData?.per_page) : 5
-              }
+              rowsPerPage={divisionSuccess ? parseInt(divisionData?.per_page) : 5}
               onPageChange={pageHandler}
-              onRowsPerPageChange={limitHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
         </Box>
       )}
 
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        <AddDivision
-          data={updateDivision}
-          refetch={refetch}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddDivision data={updateDivision} refetch={refetch} onUpdateResetHandler={onUpdateResetHandler} />
       </Dialog>
     </Box>
   );

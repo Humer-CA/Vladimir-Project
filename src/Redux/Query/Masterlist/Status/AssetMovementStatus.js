@@ -20,7 +20,7 @@ export const assetMovementStatusApi = createApi({
   endpoints: (builder) => ({
     getAssetMovementStatusApi: builder.query({
       query: (params) =>
-        `movement-status?search=${params.search}&page=${params.page}&limit=${params.limit}&status=${params.status}`,
+        `movement-status?search=${params.search}&page=${params.page}&per_page=${params.per_page}&status=${params.status}`,
       providesTags: ["AssetMovementStatus"],
     }),
 
