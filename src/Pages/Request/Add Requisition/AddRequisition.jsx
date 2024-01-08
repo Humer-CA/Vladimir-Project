@@ -39,7 +39,17 @@ import {
   createFilterOptions,
   useMediaQuery,
 } from "@mui/material";
-import { AddToPhotos, ArrowBackIosRounded, Create, Info, Remove, Report, Save, SaveAlt, Update } from "@mui/icons-material";
+import {
+  AddToPhotos,
+  ArrowBackIosRounded,
+  Create,
+  Info,
+  Remove,
+  Report,
+  Save,
+  SaveAlt,
+  Update,
+} from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
 // RTK
@@ -143,7 +153,7 @@ const AddRequisition = (props) => {
     other_attachments: null,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [updateToggle, setUpdateToggle] = useState(true)
+  const [updateToggle, setUpdateToggle] = useState(true);
 
   const { state: transactionData } = useLocation();
 
@@ -160,13 +170,7 @@ const AddRequisition = (props) => {
 
   const [
     postRequisition,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostRequisitionApiMutation();
 
   const [
@@ -193,13 +197,7 @@ const AddRequisition = (props) => {
 
   const [
     postRequestSms,
-    {
-      data: smsData,
-      isLoading: isSmsLoading,
-      isSuccess: isSmsSuccess,
-      isError: isSmsError,
-      error: smsError,
-    },
+    { data: smsData, isLoading: isSmsLoading, isSuccess: isSmsSuccess, isError: isSmsError, error: smsError },
   ] = usePostRequisitionSmsApiMutation();
 
   const {
@@ -274,7 +272,7 @@ const AddRequisition = (props) => {
     handleSubmit,
     control,
     register,
-    formState: { errors },
+    formState: { errors, isDirty },
     setError,
     reset,
     watch,
@@ -310,7 +308,6 @@ const AddRequisition = (props) => {
       other_attachments: null,
     },
   });
-
 
   useEffect(() => {
     const errorData = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
@@ -361,9 +358,9 @@ const AddRequisition = (props) => {
         setValue("location_id", transaction?.location);
         setValue("account_title_id", transaction?.account_title);
         setValue("acquisition_details", transaction?.acquisition_details);
-      })
+      });
     // setShowEdit(true)
-  }, [transactionDataApi])
+  }, [transactionDataApi]);
 
   useEffect(() => {
     if (updateRequest.id) {
@@ -381,20 +378,19 @@ const AddRequisition = (props) => {
       setValue("asset_specification", updateRequest?.asset_specification);
       setValue("quantity", updateRequest?.quantity);
       setValue("brand", updateRequest?.brand);
-      setValue(
-        "cellphone_number",
-        updateRequest?.cellphone_number === "-" ? "" : updateRequest?.cellphone_number
-      );
+      setValue("cellphone_number", updateRequest?.cellphone_number === "-" ? "" : updateRequest?.cellphone_number);
       setValue("additional_info", updateRequest?.additional_info);
       // ATTACHMENTS
       setValue("letter_of_request", updateRequest?.letter_of_request === "-" ? "" : updateRequest?.letter_of_request);
       setValue("quotation", updateRequest?.quotation === "-" ? "" : updateRequest?.quotation);
-      setValue("specification_form", updateRequest?.specification_form === "-" ? "" : updateRequest?.specification_form);
+      setValue(
+        "specification_form",
+        updateRequest?.specification_form === "-" ? "" : updateRequest?.specification_form
+      );
       setValue("tool_of_trade", updateRequest?.tool_of_trade === "-" ? "" : updateRequest?.tool_of_trade);
       setValue("other_attachments", updateRequest?.other_attachments === "-" ? "" : updateRequest?.other_attachments);
     }
   }, [updateRequest]);
-
 
   // Table Sorting --------------------------------
   const [order, setOrder] = useState("desc");
@@ -422,7 +418,6 @@ const AddRequisition = (props) => {
     setOrderBy(property);
   };
 
-
   const onSubmitHandler = () => {
     dispatch(
       openConfirm({
@@ -438,7 +433,11 @@ const AddRequisition = (props) => {
                 fontWeight: "bold",
               }}
             >
-              {transactionDataApi.length === 0 ? "CREATE" : (transactionDataApi[0]?.can_resubmit === 0 ? "SUBMIT" : "RESUBMIT")}
+              {transactionDataApi.length === 0
+                ? "CREATE"
+                : transactionDataApi[0]?.can_resubmit === 0
+                ? "SUBMIT"
+                : "RESUBMIT"}
             </Typography>{" "}
             this Data?
           </Box>
@@ -453,15 +452,14 @@ const AddRequisition = (props) => {
                 duration: 5000,
               })
             );
-            navigate(- 1);
+            navigate(-1);
             deleteAllRequest();
-
-          } else if ((transactionDataApi[0]?.can_resubmit === 1)) {
+          } else if (transactionDataApi[0]?.can_resubmit === 1) {
             resubmitRequest({
               transaction_number: transactionData?.transaction_number,
               ...transactionDataApi,
             });
-            navigate(- 1);
+            navigate(-1);
             dispatch(
               openToast({
                 message: "Successfully Resubmitted",
@@ -472,11 +470,13 @@ const AddRequisition = (props) => {
           }
 
           const smsData = {
-            system_name: "Vladimir", message: "You have a pending approval", mobile_number: "+639913117181"
-          }
+            system_name: "Vladimir",
+            message: "You have a pending approval",
+            mobile_number: "+639913117181",
+          };
 
           postRequisition(addRequestAllApi);
-          postRequestSms(smsData)
+          postRequestSms(smsData);
           deleteAllRequest();
           reset({
             letter_of_request: null,
@@ -512,7 +512,8 @@ const AddRequisition = (props) => {
       location_id: formData?.location_id.id?.toString(),
       account_title_id: formData?.account_title_id.id?.toString(),
       accountability: formData?.accountability?.toString(),
-      accountable: formData?.accountable === null ? "" : formData?.accountable?.general_info?.full_id_number_full_name?.toString(),
+      accountable:
+        formData?.accountable === null ? "" : formData?.accountable?.general_info?.full_id_number_full_name?.toString(),
       acquisition_details: formData?.acquisition_details?.toString(),
 
       asset_description: formData?.asset_description?.toString(),
@@ -524,55 +525,57 @@ const AddRequisition = (props) => {
       additional_info: formData?.additional_info?.toString(),
 
       letter_of_request:
-        updateRequest && (watch("letter_of_request") === null
+        updateRequest &&
+        (watch("letter_of_request") === null
           ? ""
           : updateRequest.letter_of_request !== null
-            ? transactionDataApi[0]?.attachments?.letter_of_request?.file_name ===
-              updateRequest?.letter_of_request?.file_name
-              ? "x"
-              : formData.letter_of_request
-            : formData.letter_of_request),
+          ? transactionDataApi[0]?.attachments?.letter_of_request?.file_name ===
+            updateRequest?.letter_of_request?.file_name
+            ? "x"
+            : formData.letter_of_request
+          : formData.letter_of_request),
 
       quotation:
-        updateRequest && (watch("quotation") === null
+        updateRequest &&
+        (watch("quotation") === null
           ? ""
           : updateRequest.quotation !== null
-            ? transactionDataApi[0]?.attachments?.quotation?.file_name ===
-              updateRequest?.quotation?.file_name
-              ? "x"
-              : formData.quotation
-            : formData.quotation),
+          ? transactionDataApi[0]?.attachments?.quotation?.file_name === updateRequest?.quotation?.file_name
+            ? "x"
+            : formData.quotation
+          : formData.quotation),
 
       specification_form:
-        updateRequest && (watch("specification_form") === null
+        updateRequest &&
+        (watch("specification_form") === null
           ? ""
           : updateRequest.specification_form !== null
-            ? transactionDataApi[0]?.attachments?.specification_form?.file_name ===
-              updateRequest?.specification_form?.file_name
-              ? "x"
-              : formData.specification_form
-            : formData.specification_form),
+          ? transactionDataApi[0]?.attachments?.specification_form?.file_name ===
+            updateRequest?.specification_form?.file_name
+            ? "x"
+            : formData.specification_form
+          : formData.specification_form),
 
       tool_of_trade:
-        updateRequest && (watch("tool_of_trade") === null
+        updateRequest &&
+        (watch("tool_of_trade") === null
           ? ""
           : updateRequest.tool_of_trade !== null
-            ? transactionDataApi[0]?.attachments?.tool_of_trade?.file_name ===
-              updateRequest?.tool_of_trade?.file_name
-              ? "x"
-              : formData.tool_of_trade
-            : formData.tool_of_trade),
+          ? transactionDataApi[0]?.attachments?.tool_of_trade?.file_name === updateRequest?.tool_of_trade?.file_name
+            ? "x"
+            : formData.tool_of_trade
+          : formData.tool_of_trade),
 
       other_attachments:
-        updateRequest && (watch("other_attachments") === null
+        updateRequest &&
+        (watch("other_attachments") === null
           ? ""
           : updateRequest.other_attachments !== null
-            ? transactionDataApi[0]?.attachments?.other_attachments?.file_name ===
-              updateRequest?.other_attachments?.file_name
-              ? "x"
-              : formData.other_attachments
-            : formData.other_attachments),
-
+          ? transactionDataApi[0]?.attachments?.other_attachments?.file_name ===
+            updateRequest?.other_attachments?.file_name
+            ? "x"
+            : formData.other_attachments
+          : formData.other_attachments),
     };
     const payload = new FormData();
     Object.entries(data).forEach((item) => {
@@ -586,7 +589,8 @@ const AddRequisition = (props) => {
 
     axios
       .post(
-        `${process.env.VLADIMIR_BASE_URL}/${transactionData ? `update-request/${updateRequest?.reference_number}` : "request-container"
+        `${process.env.VLADIMIR_BASE_URL}/${
+          transactionData ? `update-request/${updateRequest?.reference_number}` : "request-container"
         }`,
         payload,
         {
@@ -653,8 +657,6 @@ const AddRequisition = (props) => {
       });
 
     // postRequest(payload);
-
-
   };
 
   const onDeleteHandler = async (id) => {
@@ -775,8 +777,7 @@ const AddRequisition = (props) => {
 
   const RemoveFile = ({ title, value }) => {
     return (
-      <Tooltip title={`Remove ${title}`
-      } arrow>
+      <Tooltip title={`Remove ${title}`} arrow>
         <IconButton
           onClick={() => {
             setValue(value, null);
@@ -793,7 +794,7 @@ const AddRequisition = (props) => {
         >
           <Remove />
         </IconButton>
-      </Tooltip >
+      </Tooltip>
     );
   };
 
@@ -938,9 +939,8 @@ const AddRequisition = (props) => {
     });
   };
 
-
-  console.log("TransactionData", transactionData)
-  console.log("DataAPI", transactionDataApi)
+  // console.log("TransactionData", transactionData);
+  // console.log("DataAPI", transactionDataApi);
 
   return (
     <>
@@ -960,7 +960,7 @@ const AddRequisition = (props) => {
           <Typography color="secondary.main">Back</Typography>
         </Button>
 
-        <Box className="request mcontainer__wrapper" p={2} >
+        <Box className="request mcontainer__wrapper" p={2}>
           {/* FORM */}
           <Box>
             <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
@@ -1040,9 +1040,9 @@ const AddRequisition = (props) => {
                     )}
                     fullWidth
                     onChange={(_, value) => {
-                      setValue("subunit_id", null)
-                      setValue("location_id", null)
-                      return value
+                      setValue("subunit_id", null);
+                      setValue("location_id", null);
+                      return value;
                     }}
                   />
 
@@ -1248,10 +1248,10 @@ const AddRequisition = (props) => {
                     error={!!errors?.quantity}
                     helperText={errors?.quantity?.message}
                     fullWidth
-                  // isAllowed={(values) => {
-                  //   const { floatValue } = values;
-                  //   return floatValue >= 1;
-                  // }}
+                    // isAllowed={(values) => {
+                    //   const { floatValue } = values;
+                    //   return floatValue >= 1;
+                    // }}
                   />
                   <CustomPatternfield
                     control={control}
@@ -1285,7 +1285,14 @@ const AddRequisition = (props) => {
                   <Typography sx={sxSubtitle}>Attachments</Typography>
                   <Stack flexDirection="row" gap={1} alignItems="center">
                     {watch("letter_of_request") !== null ? (
-                      <UpdateField label={"Letter of Request"} value={transactionDataApi.length ? watch("letter_of_request")?.name || updateRequest?.letter_of_request?.file_name : watch("letter_of_request")?.name} />
+                      <UpdateField
+                        label={"Letter of Request"}
+                        value={
+                          transactionDataApi.length
+                            ? watch("letter_of_request")?.name || updateRequest?.letter_of_request?.file_name
+                            : watch("letter_of_request")?.name
+                        }
+                      />
                     ) : (
                       <CustomAttachment
                         control={control}
@@ -1302,7 +1309,10 @@ const AddRequisition = (props) => {
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
                     {watch("quotation") !== null ? (
-                      <UpdateField label={"Quotation"} value={watch("quotation")?.name || updateRequest?.quotation?.file_name} />
+                      <UpdateField
+                        label={"Quotation"}
+                        value={watch("quotation")?.name || updateRequest?.quotation?.file_name}
+                      />
                     ) : (
                       <CustomAttachment control={control} name="quotation" label="Quotation" inputRef={QuotationRef} />
                     )}
@@ -1311,7 +1321,10 @@ const AddRequisition = (props) => {
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
                     {watch("specification_form") !== null ? (
-                      <UpdateField label={"Specification Form"} value={watch("specification_form")?.name || updateRequest?.specification_form?.file_name} />
+                      <UpdateField
+                        label={"Specification Form"}
+                        value={watch("specification_form")?.name || updateRequest?.specification_form?.file_name}
+                      />
                     ) : (
                       <CustomAttachment
                         control={control}
@@ -1328,7 +1341,10 @@ const AddRequisition = (props) => {
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
                     {watch("tool_of_trade") !== null ? (
-                      <UpdateField label={"Tool of Trade"} value={watch("tool_of_trade")?.name || updateRequest?.tool_of_trade?.file_name} />
+                      <UpdateField
+                        label={"Tool of Trade"}
+                        value={watch("tool_of_trade")?.name || updateRequest?.tool_of_trade?.file_name}
+                      />
                     ) : (
                       <CustomAttachment
                         control={control}
@@ -1342,7 +1358,10 @@ const AddRequisition = (props) => {
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
                     {watch("other_attachments") !== null ? (
-                      <UpdateField label={"Other Attachments"} value={watch("other_attachments")?.name || updateRequest?.other_attachments?.file_name} />
+                      <UpdateField
+                        label={"Other Attachments"}
+                        value={watch("other_attachments")?.name || updateRequest?.other_attachments?.file_name}
+                      />
                     ) : (
                       <CustomAttachment
                         control={control}
@@ -1367,12 +1386,12 @@ const AddRequisition = (props) => {
               variant="contained"
               type="submit"
               size="small"
-              disabled={updateToggle}
+              disabled={transactionData === null ? !isDirty : updateToggle}
               fullWidth
               sx={{ gap: 1 }}
             >
-              {transactionDataApi ? <Update /> : <AddToPhotos />}{" "}
-              <Typography variant="p">{transactionDataApi ? "UPDATE" : "ADD"}</Typography>
+              {transactionData ? <Update /> : <AddToPhotos />}{" "}
+              <Typography variant="p">{transactionData ? "UPDATE" : "ADD"}</Typography>
             </LoadingButton>
             <Divider orientation="vertical" />
           </Box>
@@ -1380,7 +1399,8 @@ const AddRequisition = (props) => {
           {/* TABLE */}
           <Box className="request__table">
             <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
-              {`${transactionData ? "TRANSACTION NO." : "CURRENT ASSET"}`} {transactionData && transactionData?.transaction_number}
+              {`${transactionData ? "TRANSACTION NO." : "CURRENT ASSET"}`}{" "}
+              {transactionData && transactionData?.transaction_number}
             </Typography>
 
             <TableContainer
@@ -1412,138 +1432,146 @@ const AddRequisition = (props) => {
                 </TableHead>
 
                 <TableBody sx={{ height: "calc" }}>
-                  {isRequestLoading || isTransactionLoading ? <LoadingData /> :
-                    (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.length === 0) ? (
-                      <NoRecordsFound request />
-                    ) : (
-                      <>
-                        {(transactionData
-                          ? transactionDataApi : addRequestAllApi).map((data, index) => (
-                            <TableRow
-                              key={index}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="tbl-cell tr-cen-pad45 text-weight">{transactionData ? data?.reference_number : index + 1}</TableCell>
-                              <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
-                              <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
-                              <TableCell className="tbl-cell">
-                                <Typography fontSize={10} color="gray">
-                                  {`(${data.company?.company_code}) - ${data.company?.company_name}`}
+                  {isRequestLoading || isTransactionLoading ? (
+                    <LoadingData />
+                  ) : (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.length === 0) ? (
+                    <NoRecordsFound request />
+                  ) : (
+                    <>
+                      {(transactionData ? transactionDataApi : addRequestAllApi).map((data, index) => (
+                        <TableRow
+                          key={index}
+                          sx={{
+                            "&:last-child td, &:last-child th": {
+                              borderBottom: 0,
+                            },
+                          }}
+                        >
+                          <TableCell className="tbl-cell tr-cen-pad45 text-weight">
+                            {transactionData ? data?.reference_number : index + 1}
+                          </TableCell>
+                          <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
+                          <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
+                          <TableCell className="tbl-cell">
+                            <Typography fontSize={10} color="gray">
+                              {`(${data.company?.company_code}) - ${data.company?.company_name}`}
+                            </Typography>
+                            <Typography fontSize={10} color="gray">
+                              {`(${data.department?.department_code}) - ${data.department?.department_name}`}
+                            </Typography>
+                            <Typography fontSize={10} color="gray">
+                              {`(${data.location?.location_code}) - ${data.location?.location_name}`}
+                            </Typography>
+                            <Typography fontSize={10} color="gray">
+                              {`(${data.account_title?.account_title_code}) - ${data.account_title?.account_title_name}`}
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell className="tbl-cell">
+                            {data.accountability === "Personal Issued" ? (
+                              <>
+                                <Box>{data?.accountable?.general_info?.full_id_number}</Box>
+                                <Box>{data?.accountable?.general_info?.full_name}</Box>
+                              </>
+                            ) : (
+                              "Common"
+                            )}
+                          </TableCell>
+
+                          <TableCell className="tbl-cell">
+                            <Typography fontWeight={600} fontSize="14px" color="secondary.main">
+                              {data.asset_description}
+                            </Typography>
+                            <Typography fontSize="12px" color="text.light">
+                              {data.asset_specification}
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
+
+                          <TableCell className="tbl-cell">
+                            {data.cellphone_number === null ? "-" : data.cellphone_number}
+                          </TableCell>
+
+                          <TableCell className="tbl-cell">{data.additional_info}</TableCell>
+
+                          <TableCell className="tbl-cell">
+                            {data?.attachments?.letter_of_request && (
+                              <Stack flexDirection="row" gap={1}>
+                                <Typography fontSize={12} fontWeight={600}>
+                                  Letter of Request:
                                 </Typography>
-                                <Typography fontSize={10} color="gray">
-                                  {`(${data.department?.department_code}) - ${data.department?.department_name}`}
+                                {data?.attachments?.letter_of_request?.file_name}
+                              </Stack>
+                            )}
+
+                            {data?.attachments?.quotation && (
+                              <Stack flexDirection="row" gap={1}>
+                                <Typography fontSize={12} fontWeight={600}>
+                                  Quotation:
                                 </Typography>
-                                <Typography fontSize={10} color="gray">
-                                  {`(${data.location?.location_code}) - ${data.location?.location_name}`}
+                                {data?.attachments?.quotation?.file_name}
+                              </Stack>
+                            )}
+
+                            {data?.attachments?.specification_form && (
+                              <Stack flexDirection="row" gap={1}>
+                                <Typography fontSize={12} fontWeight={600}>
+                                  Specification:
                                 </Typography>
-                                <Typography fontSize={10} color="gray">
-                                  {`(${data.account_title?.account_title_code}) - ${data.account_title?.account_title_name}`}
+                                {data?.attachments?.specification_form?.file_name}
+                              </Stack>
+                            )}
+
+                            {data?.attachments?.tool_of_trade && (
+                              <Stack flexDirection="row" gap={1}>
+                                <Typography fontSize={12} fontWeight={600}>
+                                  Tool of Trade:
                                 </Typography>
-                              </TableCell>
+                                {data?.attachments?.tool_of_trade?.file_name}
+                              </Stack>
+                            )}
 
-                              <TableCell className="tbl-cell">
-                                {data.accountability === "Personal Issued" ? (
-                                  <>
-                                    <Box>{data?.accountable?.general_info?.full_id_number}</Box>
-                                    <Box>{data?.accountable?.general_info?.full_name}</Box>
-                                  </>
-                                ) : (
-                                  "Common"
-                                )}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell">
-                                <Typography fontWeight={600} fontSize="14px" color="secondary.main">
-                                  {data.asset_description}
+                            {data?.attachments?.other_attachments && (
+                              <Stack flexDirection="row" gap={1}>
+                                <Typography fontSize={12} fontWeight={600}>
+                                  Other Attachment:
                                 </Typography>
-                                <Typography fontSize="12px" color="text.light">
-                                  {data.asset_specification}
-                                </Typography>
-                              </TableCell>
+                                {data?.attachments?.other_attachments?.file_name}
+                              </Stack>
+                            )}
+                          </TableCell>
 
-                              <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
-
-                              <TableCell className="tbl-cell">
-                                {data.cellphone_number === null ? "-" : data.cellphone_number}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell">
-                                {data.additional_info}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell">
-                                {data?.attachments?.letter_of_request && (
-                                  <Stack flexDirection="row" gap={1}>
-                                    <Typography fontSize={12} fontWeight={600}>
-                                      Letter of Request:
-                                    </Typography>
-                                    {data?.attachments?.letter_of_request?.file_name}
-                                  </Stack>
-                                )}
-
-                                {data?.attachments?.quotation && (
-                                  <Stack flexDirection="row" gap={1}>
-                                    <Typography fontSize={12} fontWeight={600}>
-                                      Quotation:
-                                    </Typography>
-                                    {data?.attachments?.quotation?.file_name}
-                                  </Stack>
-                                )}
-
-                                {data?.attachments?.specification_form && (
-                                  <Stack flexDirection="row" gap={1}>
-                                    <Typography fontSize={12} fontWeight={600}>
-                                      Specification:
-                                    </Typography>
-                                    {data?.attachments?.specification_form?.file_name}
-                                  </Stack>
-                                )}
-
-                                {data?.attachments?.tool_of_trade && (
-                                  <Stack flexDirection="row" gap={1}>
-                                    <Typography fontSize={12} fontWeight={600}>
-                                      Tool of Trade:
-                                    </Typography>
-                                    {data?.attachments?.tool_of_trade?.file_name}
-                                  </Stack>
-                                )}
-
-                                {data?.attachments?.other_attachments && (
-                                  <Stack flexDirection="row" gap={1}>
-                                    <Typography fontSize={12} fontWeight={600}>
-                                      Other Attachment:
-                                    </Typography>
-                                    {data?.attachments?.other_attachments?.file_name}
-                                  </Stack>
-                                )}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell">
-                                <ActionMenu
-                                  hideArchive
-                                  status={data?.status}
-                                  data={data}
-                                  showDelete={transactionData ? false : true}
-                                  editRequest={transactionDataApi[0]?.can_edit === 1 || (transactionData?.status === "Return") ? true : false}
-                                  onDeleteHandler={onDeleteHandler}
-                                  // onDeleteReferenceHandler={(transactionData?.item_count !== 1) ? (transactionDataApi?.length === 1 ? onVoidReferenceHandler : false) : false}
-                                  onDeleteReferenceHandler={(transactionData?.item_count !== 1) ? (transactionDataApi.length !== 1 ? onVoidReferenceHandler : false) : false}
-                                  onUpdateHandler={onUpdateHandler}
-                                  onUpdateResetHandler={onUpdateResetHandler}
-                                  setUpdateToggle={setUpdateToggle}
-                                // setShowEdit={setShowEdit}
-                                />
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        }
-                      </>
-                    )
-                  }
+                          <TableCell className="tbl-cell">
+                            <ActionMenu
+                              hideArchive
+                              status={data?.status}
+                              data={data}
+                              showDelete={transactionData ? false : true}
+                              editRequest={
+                                transactionDataApi[0]?.can_edit === 1 || transactionData?.status === "Return"
+                                  ? true
+                                  : false
+                              }
+                              onDeleteHandler={onDeleteHandler}
+                              // onDeleteReferenceHandler={(transactionData?.item_count !== 1) ? (transactionDataApi?.length === 1 ? onVoidReferenceHandler : false) : false}
+                              onDeleteReferenceHandler={
+                                transactionData?.item_count !== 1
+                                  ? transactionDataApi.length !== 1
+                                    ? onVoidReferenceHandler
+                                    : false
+                                  : false
+                              }
+                              onUpdateHandler={onUpdateHandler}
+                              onUpdateResetHandler={onUpdateResetHandler}
+                              setUpdateToggle={setUpdateToggle}
+                              // setShowEdit={setShowEdit}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -1580,10 +1608,16 @@ const AddRequisition = (props) => {
                       />
                     )
                   }
-                  disabled={(transactionData ? transactionDataApi.length === 0 : addRequestAllApi.length === 0) ? true : false}
+                  disabled={
+                    (transactionData ? transactionDataApi.length === 0 : addRequestAllApi.length === 0) ? true : false
+                  }
                   loading={isPostLoading || isUpdateLoading}
                 >
-                  {transactionDataApi.length === 0 ? "Create" : (transactionDataApi[0]?.can_resubmit === 0 ? "Submit" : "Resubmit")}
+                  {transactionDataApi.length === 0
+                    ? "Create"
+                    : transactionDataApi[0]?.can_resubmit === 0
+                    ? "Submit"
+                    : "Resubmit"}
                 </LoadingButton>
 
                 {/* <Button
@@ -1601,7 +1635,7 @@ const AddRequisition = (props) => {
             </Stack>
           </Box>
         </Box>
-      </Box >
+      </Box>
     </>
   );
 };

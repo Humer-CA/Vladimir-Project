@@ -69,8 +69,7 @@ const schema = yup.object().shape({
     })
     .when("type_of_request_id", {
       is: (value) => value === "2",
-      then: (yup) =>
-        yup.required().typeError("CAPEX is a required field").label("CAPEX"),
+      then: (yup) => yup.required().typeError("CAPEX is a required field").label("CAPEX"),
     }),
 
   // project_name: yup.string().when("type_of_request_id", {
@@ -157,28 +156,16 @@ const schema = yup.object().shape({
 
   asset_specification: yup.string().required().label("Asset Specification"),
 
-  acquisition_date: yup
-    .string()
-    .required()
-    .label("Acquisition Date")
-    .typeError("Acquisition Date is a required field"),
+  acquisition_date: yup.string().required().label("Acquisition Date").typeError("Acquisition Date is a required field"),
 
-  accountability: yup
-    .string()
-    .typeError("Accountability is a required field")
-    .required()
-    .label("Accountability"),
+  accountability: yup.string().typeError("Accountability is a required field").required().label("Accountability"),
 
   accountable: yup
     .object()
     .nullable()
     .when("accountability", {
       is: (value) => value === "Personal Issued",
-      then: (yup) =>
-        yup
-          .label("Accountable")
-          .required()
-          .typeError("Accountable is a required field"),
+      then: (yup) => yup.label("Accountable").required().typeError("Accountable is a required field"),
     }),
 
   // accountable: yup.string().required().label("Accountable"),
@@ -188,11 +175,7 @@ const schema = yup.object().shape({
   care_of: yup.string().label("Care Of"),
 
   voucher: yup.string(),
-  voucher_date: yup
-    .string()
-    .nullable()
-    .label("Voucher Date")
-    .typeError("Voucher Date is a required field"),
+  voucher_date: yup.string().nullable().label("Voucher Date").typeError("Voucher Date is a required field"),
   receipt: yup.string(),
 
   quantity: yup.number().required().typeError("Quantity is a required field"),
@@ -235,28 +218,12 @@ const schema = yup.object().shape({
 
   est_useful_life: yup.string().required().label("Estimated Useful Life"),
 
-  release_date: yup
-    .string()
-    .nullable()
-    .typeError("Release Date is a required field")
-    .label("Release Date"),
+  release_date: yup.string().nullable().typeError("Release Date is a required field").label("Release Date"),
 
-  acquisition_cost: yup
-    .number()
-    .required()
-    .typeError("Acquisition Cost is a required field"),
-  months_depreciated: yup
-    .number()
-    .required()
-    .typeError("Months Depreciated is a required field"),
-  scrap_value: yup
-    .number()
-    .required()
-    .typeError("Scrap Value is a required field"),
-  depreciable_basis: yup
-    .number()
-    .required()
-    .typeError("Depreciable Basis is a required field"),
+  acquisition_cost: yup.number().required().typeError("Acquisition Cost is a required field"),
+  months_depreciated: yup.number().required().typeError("Months Depreciated is a required field"),
+  scrap_value: yup.number().required().typeError("Scrap Value is a required field"),
+  depreciable_basis: yup.number().required().typeError("Depreciable Basis is a required field"),
   // accumulated_cost: yup.number().required(),
   // start_depreciation: yup
   //   .string()
@@ -284,13 +251,7 @@ const AddFixedAsset = (props) => {
 
   const [
     postFixedAsset,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostFixedAssetApiMutation();
 
   const [
@@ -422,7 +383,7 @@ const AddFixedAsset = (props) => {
     handleSubmit,
     control,
     register,
-    formState: { errors },
+    formState: { errors, isDirty },
     setError,
     reset,
     watch,
@@ -523,16 +484,12 @@ const AddFixedAsset = (props) => {
   // GPT error fetching ----------------------------------------------------------
 
   useEffect(() => {
-    const errorData =
-      (isPostError || isUpdateError) &&
-      (postError?.status === 422 || updateError?.status === 422);
+    const errorData = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
 
     if (errorData) {
       const errors = (postError?.data || updateError?.data)?.errors || {};
 
-      Object.entries(errors).forEach(([name, [message]]) =>
-        setError(name, { type: "validate", message })
-      );
+      Object.entries(errors).forEach(([name, [message]]) => setError(name, { type: "validate", message }));
     }
 
     const showToast = () => {
@@ -608,17 +565,11 @@ const AddFixedAsset = (props) => {
         },
       });
 
-      setValue(
-        "cellphone_number",
-        data.cellphone_number === "-" ? null : data.cellphone_number.slice(2)
-      );
+      setValue("cellphone_number", data.cellphone_number === "-" ? null : data.cellphone_number.slice(2));
       setValue("brand", data.brand);
       setValue("care_of", data.care_of);
       setValue("voucher", data.voucher);
-      setValue(
-        "voucher_date",
-        data.voucher_date === "-" ? null : voucherDateFormat
-      );
+      setValue("voucher_date", data.voucher_date === "-" ? null : voucherDateFormat);
       setValue("receipt", data.receipt);
       setValue("quantity", data.quantity);
       setValue("asset_status_id", data.asset_status);
@@ -628,10 +579,7 @@ const AddFixedAsset = (props) => {
       setValue("depreciation_method", data.depreciation_method);
       setValue("est_useful_life", data.est_useful_life);
       setValue("depreciation_status_id", data.depreciation_status);
-      setValue(
-        "release_date",
-        data.voucher_date === "-" ? null : releaseDateFormat
-      );
+      setValue("release_date", data.voucher_date === "-" ? null : releaseDateFormat);
       setValue("acquisition_cost", data.acquisition_cost);
       setValue("months_depreciated", data.months_depreciated);
       setValue("scrap_value", data.scrap_value);
@@ -647,20 +595,14 @@ const AddFixedAsset = (props) => {
 
   useEffect(() => {
     if (watch("acquisition_cost") && watch("scrap_value")) {
-      setValue(
-        "depreciable_basis",
-        watch("acquisition_cost") - watch("scrap_value")
-      );
+      setValue("depreciable_basis", watch("acquisition_cost") - watch("scrap_value"));
     }
 
     if (watch("depreciable_basis") < 0) {
       setValue("depreciable_basis", 0);
     }
 
-    if (
-      watch("acquisition_cost") - watch("scrap_value") ===
-      watch("acquisition_cost")
-    ) {
+    if (watch("acquisition_cost") - watch("scrap_value") === watch("acquisition_cost")) {
       setValue("depreciable_basis", watch("acquisition_cost"));
     }
   }, [watch("acquisition_cost"), watch("scrap_value")]);
@@ -672,45 +614,30 @@ const AddFixedAsset = (props) => {
 
     const newObj = {
       ...formData,
-      cellphone_number: formData.cellphone_number
-        ? "09" + formData.cellphone_number
-        : null,
+      cellphone_number: formData.cellphone_number ? "09" + formData.cellphone_number : null,
 
-      acquisition_date: moment(new Date(formData.acquisition_date)).format(
-        "YYYY-MM-DD"
-      ),
+      acquisition_date: moment(new Date(formData.acquisition_date)).format("YYYY-MM-DD"),
 
       release_date:
-        formData.release_date === null
-          ? null
-          : moment(new Date(formData.release_date)).format("YYYY-MM-DD"),
+        formData.release_date === null ? null : moment(new Date(formData.release_date)).format("YYYY-MM-DD"),
 
       voucher_date:
-        formData.voucher_date === null
-          ? null
-          : moment(new Date(formData.voucher_date)).format("YYYY-MM-DD"),
+        formData.voucher_date === null ? null : moment(new Date(formData.voucher_date)).format("YYYY-MM-DD"),
 
       start_depreciation:
-        formData.start_depreciation === null
-          ? null
-          : moment(new Date(formData.start_depreciation)).format("YYYY-MM"),
+        formData.start_depreciation === null ? null : moment(new Date(formData.start_depreciation)).format("YYYY-MM"),
 
       end_depreciation:
-        formData.end_depreciation === null
-          ? null
-          : moment(new Date(formData.end_depreciation)).format("YYYY-MM"),
+        formData.end_depreciation === null ? null : moment(new Date(formData.end_depreciation)).format("YYYY-MM"),
       accountable: formData.accountable === null ? null : formData.accountable,
 
-      months_depreciated:
-        formData.months_depreciated === null ? 0 : formData.months_depreciated,
+      months_depreciated: formData.months_depreciated === null ? 0 : formData.months_depreciated,
 
-      acquisition_cost:
-        formData.acquisition_cost === null ? 0 : formData.acquisition_cost,
+      acquisition_cost: formData.acquisition_cost === null ? 0 : formData.acquisition_cost,
 
       scrap_value: formData.scrap_value === null ? 0 : formData.scrap_value,
 
-      depreciable_basis:
-        formData.depreciable_basis === null ? 0 : formData.depreciable_basis,
+      depreciable_basis: formData.depreciable_basis === null ? 0 : formData.depreciable_basis,
     };
 
     if (data.status) {
@@ -747,19 +674,12 @@ const AddFixedAsset = (props) => {
   // console.log(data);
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit(onSubmitHandler)}
-      className="addFixedAsset"
-    >
+    <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} className="addFixedAsset">
       <Box className="addFixedAsset__title">
         <IconButton onClick={handleCloseDrawer}>
           <ArrowForwardIosRounded color="secondary" />
         </IconButton>
-        <Typography
-          color="secondary.main"
-          sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}
-        >
+        <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
           {data.status ? "Edit Fixed Asset" : "Add Fixed Asset"}
         </Typography>
       </Box>
@@ -809,9 +729,7 @@ const AddFixedAsset = (props) => {
                 options={subCapexData}
                 loading={isSubCapexLoading}
                 size="small"
-                getOptionLabel={(option) =>
-                  `${option.sub_capex}  (${option.sub_project})`
-                }
+                getOptionLabel={(option) => `${option.sub_capex}  (${option.sub_project})`}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 renderInput={(params) => (
                   <TextField
@@ -822,10 +740,10 @@ const AddFixedAsset = (props) => {
                     helperText={errors?.sub_capex_id?.message}
                   />
                 )}
-              // onChange={(_, value) => {
-              //   setValue("project_name", value.project_name);
-              //   return value;
-              // }}
+                // onChange={(_, value) => {
+                //   setValue("project_name", value.project_name);
+                //   return value;
+                // }}
               />
             )}
 
@@ -977,9 +895,7 @@ const AddFixedAsset = (props) => {
             loading={isMajorCategoryLoading}
             size="small"
             getOptionLabel={(option) => option.major_category_name}
-            isOptionEqualToValue={(option, value) =>
-              option.major_category_name === value.major_category_name
-            }
+            isOptionEqualToValue={(option, value) => option.major_category_name === value.major_category_name}
             renderInput={(params) => (
               <TextField
                 color="secondary"
@@ -990,19 +906,12 @@ const AddFixedAsset = (props) => {
               />
             )}
             onChange={(_, value) => {
-              const filteredMajorCategoryData = majorCategoryData?.filter(
-                (obj) => {
-                  return obj.major_category_name === value.major_category_name;
-                }
-              );
-              const isIncluded =
-                filteredMajorCategoryData[0]?.minor_category.some(
-                  (category) => {
-                    return (
-                      category.id === data.minor_category?.minor_category_id
-                    );
-                  }
-                );
+              const filteredMajorCategoryData = majorCategoryData?.filter((obj) => {
+                return obj.major_category_name === value.major_category_name;
+              });
+              const isIncluded = filteredMajorCategoryData[0]?.minor_category.some((category) => {
+                return category.id === data.minor_category?.minor_category_id;
+              });
 
               if (!isIncluded) {
                 setValue("minor_category_id", null);
@@ -1026,9 +935,7 @@ const AddFixedAsset = (props) => {
             loading={isMinorCategoryLoading}
             size="small"
             getOptionLabel={(option) => option.minor_category_name}
-            isOptionEqualToValue={(option, value) =>
-              option.minor_category_name === value.minor_category_name
-            }
+            isOptionEqualToValue={(option, value) => option.minor_category_name === value.minor_category_name}
             renderInput={(params) => (
               <TextField
                 color="secondary"
@@ -1065,9 +972,7 @@ const AddFixedAsset = (props) => {
             options={departmentData}
             loading={isDepartmentLoading}
             size="small"
-            getOptionLabel={(option) =>
-              option.department_code + " - " + option.department_name
-            }
+            getOptionLabel={(option) => option.department_code + " - " + option.department_name}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             renderInput={(params) => (
               <TextField
@@ -1079,9 +984,7 @@ const AddFixedAsset = (props) => {
               />
             )}
             onChange={(_, value) => {
-              const companyID = companyData?.find(
-                (item) => item.sync_id === value.company.company_sync_id
-              );
+              const companyID = companyData?.find((item) => item.sync_id === value.company.company_sync_id);
 
               if (value) {
                 setValue("company_id", companyID);
@@ -1100,12 +1003,8 @@ const AddFixedAsset = (props) => {
             options={companyData}
             loading={isCompanyLoading}
             size="small"
-            getOptionLabel={(option) =>
-              option.company_code + " - " + option.company_name
-            }
-            isOptionEqualToValue={(option, value) =>
-              option.company_id === value.company_id
-            }
+            getOptionLabel={(option) => option.company_code + " - " + option.company_name}
+            isOptionEqualToValue={(option, value) => option.company_id === value.company_id}
             renderInput={(params) => (
               <TextField
                 color="secondary"
@@ -1129,12 +1028,8 @@ const AddFixedAsset = (props) => {
             })}
             loading={isLocationLoading}
             size="small"
-            getOptionLabel={(option) =>
-              option.location_code + " - " + option.location_name
-            }
-            isOptionEqualToValue={(option, value) =>
-              option.location_id === value.location_id
-            }
+            getOptionLabel={(option) => option.location_code + " - " + option.location_name}
+            isOptionEqualToValue={(option, value) => option.location_id === value.location_id}
             renderInput={(params) => (
               <TextField
                 color="secondary"
@@ -1154,12 +1049,8 @@ const AddFixedAsset = (props) => {
             loading={isAccountTitleLoading}
             size="small"
             // disabled
-            getOptionLabel={(option) =>
-              option.account_title_code + " - " + option.account_title_name
-            }
-            isOptionEqualToValue={(option, value) =>
-              option.account_title_code === value.account_title_code
-            }
+            getOptionLabel={(option) => option.account_title_code + " - " + option.account_title_name}
+            isOptionEqualToValue={(option, value) => option.account_title_code === value.account_title_code}
             renderInput={(params) => (
               <TextField
                 color="secondary"
@@ -1271,8 +1162,7 @@ const AddFixedAsset = (props) => {
                 // `(${option.general_info?.full_id_number}) - ${option.general_info?.full_name}`
               }
               isOptionEqualToValue={(option, value) =>
-                option.general_info?.full_id_number ===
-                value.general_info?.full_id_number
+                option.general_info?.full_id_number === value.general_info?.full_id_number
               }
               renderInput={(params) => (
                 <TextField
@@ -1536,10 +1426,7 @@ const AddFixedAsset = (props) => {
                 if (value === "Supplier Rebase") {
                   setValue(
                     "depreciation_status_id",
-                    depreciationStatusData.find(
-                      (item) =>
-                        item.depreciation_status_name === "Fully Depreciated"
-                    )
+                    depreciationStatusData.find((item) => item.depreciation_status_name === "Fully Depreciated")
                   );
                   setValue("acquisition_cost", 0);
                   setValue("months_depreciated", 0);
@@ -1603,13 +1490,9 @@ const AddFixedAsset = (props) => {
                   const selectedDate = new Date(e);
                   const today = new Date();
                   const monthsDepreciated =
-                    selectedDate.getFullYear() === today.getFullYear() &&
-                      selectedDate.getMonth() === today.getMonth()
+                    selectedDate.getFullYear() === today.getFullYear() && selectedDate.getMonth() === today.getMonth()
                       ? 0
-                      : moment().diff(
-                        moment(selectedDate).add(1, "months"),
-                        "months"
-                      ) + 1;
+                      : moment().diff(moment(selectedDate).add(1, "months"), "months") + 1;
                   setValue("months_depreciated", monthsDepreciated);
                   return e;
                 }}
@@ -1655,13 +1538,7 @@ const AddFixedAsset = (props) => {
                 size="small"
                 error={!!errors?.est_useful_life}
                 helperText={errors?.est_useful_life?.message}
-                fullWidth={
-                  watch("depreciation_method") !== "Supplier Rebase"
-                    ? isFullWidth
-                      ? false
-                      : true
-                    : true
-                }
+                fullWidth={watch("depreciation_method") !== "Supplier Rebase" ? (isFullWidth ? false : true) : true}
               />
 
               {watch("depreciation_method") !== "Supplier Rebase" && (
@@ -1703,11 +1580,11 @@ const AddFixedAsset = (props) => {
                   }}
                   thousandSeparator
                   fullWidth
-                // onChange={(_, value) => {
-                //   setValue("scrap_value", 0);
-                //   setValue("depreciable_basis", watch("acquisition_cost"));
-                //   return value;
-                // }}
+                  // onChange={(_, value) => {
+                  //   setValue("scrap_value", 0);
+                  //   setValue("depreciable_basis", watch("acquisition_cost"));
+                  //   return value;
+                  // }}
                 />
 
                 <CustomNumberField
@@ -1744,10 +1621,10 @@ const AddFixedAsset = (props) => {
                 fullWidth
                 error={!!errors?.depreciable_basis}
                 helperText={errors?.depreciable_basis?.message}
-              // isAllowed={(values) => {
-              //   const { floatValue } = values;
-              //   return floatValue >= 1;
-              // }}
+                // isAllowed={(values) => {
+                //   const { floatValue } = values;
+                //   return floatValue >= 1;
+                // }}
               />
             )}
 
@@ -1855,17 +1732,12 @@ const AddFixedAsset = (props) => {
           variant="contained"
           size="small"
           loading={isUpdateLoading || isPostLoading}
-        // disabled={watch("release_date") === null}
+          disabled={!isDirty}
         >
           {data.status ? "Update" : "Create"}
         </LoadingButton>
 
-        <Button
-          variant="outlined"
-          color="secondary"
-          size="small"
-          onClick={handleCloseDrawer}
-        >
+        <Button variant="outlined" color="secondary" size="small" onClick={handleCloseDrawer}>
           Cancel
         </Button>
       </Box>
