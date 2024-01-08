@@ -208,7 +208,7 @@ const ActionMenu = (props) => {
             </MenuItem>
           )}
 
-          {showDelete && (
+          {(showDelete || onDeleteHandler) && (
             <MenuItem onClick={handleDelete} dense>
               <ListItemIcon>
                 <Delete />
