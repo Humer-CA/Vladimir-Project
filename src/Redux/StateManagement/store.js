@@ -74,6 +74,8 @@ import { purchaseRequestApi } from "../Query/Request/PurchaseRequest";
 import { approvalApi } from "../Query/Approving/Approval";
 import { requisitionSmsApi } from "../Query/Request/RequisitionSms";
 
+import { receivingApi } from "../Query/Receiving";
+
 export const store = configureStore({
   reducer: {
     sidebar: sidebarReducer,

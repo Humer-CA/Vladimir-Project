@@ -310,6 +310,8 @@ const ViewRequest = (props) => {
     dispatch(closeDialog());
   };
 
+  console.log(location.pathname);
+
   return (
     <Box className="mcontainer" sx={{ height: "calc(100vh - 380px)" }}>
       {isRequestError && <ErrorFetching refetch={isRequestRefetch} error={errorData} />}
@@ -329,7 +331,7 @@ const ViewRequest = (props) => {
       </Button>
 
       {transactionData?.pr_number === "-" &&
-        location.pathname === `/purchase-request/${transactionData?.transaction_number}` && (
+        location.pathname === `/request/purchase-request/${transactionData?.transaction_number}` && (
           <Button
             variant="contained"
             color="primary"
@@ -347,7 +349,7 @@ const ViewRequest = (props) => {
         )}
 
       {(transactionData?.pr_number !== "-" || transactionData?.pr_number === null) &&
-        location.pathname === `/purchase-request/${transactionData?.transaction_number}` && (
+        location.pathname === `/request/purchase-request/${transactionData?.transaction_number}` && (
           <Button
             variant="contained"
             color="error"

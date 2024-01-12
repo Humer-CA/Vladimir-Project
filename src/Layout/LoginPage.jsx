@@ -60,7 +60,7 @@ const LoginPage = () => {
       setloading(true);
 
       const res = await vladimirAPI.post("/auth/login", data);
-      console.log(res);
+      // console.log(res);
 
       localStorage.setItem("token", res.data.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.data.user));
