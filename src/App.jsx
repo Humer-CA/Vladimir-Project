@@ -26,13 +26,14 @@ import Company from "./Pages/Masterlist/Company";
 import Department from "./Pages/Masterlist/Department";
 import Location from "./Pages/Masterlist/Location";
 import AccountTitle from "./Pages/Masterlist/AccountTitle";
+import Supplier from "./Pages/Masterlist/Supplier";
+import SubUnit from "./Pages/Masterlist/SubUnit";
 import Division from "./Pages/Masterlist/Division";
 import TypeOfRequest from "./Pages/Masterlist/TypeOfRequest";
 import Capex from "./Pages/Masterlist/Capex";
 
 import Category from "./Pages/Masterlist/Category";
 import ServiceProvider from "./Pages/Masterlist/ServiceProvider";
-import Supplier from "./Pages/Masterlist/Supplier";
 
 import UserManagement from "./Pages/UserManagement";
 import UserAccounts from "./Pages/UserManagement/UserAccounts";
@@ -47,18 +48,20 @@ import Settings from "./Pages/Settings";
 import ApproverSettings from "./Pages/Settings/ApproverSettings";
 import FormSettings from "./Pages/Settings/FormSettings";
 
-import Requisition from "./Pages/Request/Requisition";
+import Requisition from "./Pages/Asset Requisition/Requisition";
+import AddRequisition from "./Pages/Asset Requisition/Add Requisition/AddRequisition";
+import PurchaseRequest from "./Pages/Asset Requisition/PurchaseRequest";
+import ViewRequest from "./Pages/Asset Requisition/ViewRequest";
+import RequestMonitoring from "./Pages/Asset Requisition/RequestMonitoring";
+
+import AssetRequisition from "./Pages/Asset Requisition";
+
+import Approving from "./Pages/Approving/Approving";
+import Receiving from "./Pages/Receiving/Receiving";
 
 import PageNotFound from "./Pages/PageNotFound";
 import Confirmation from "./Components/Reusable/Confirmation";
-import SubUnit from "./Pages/Masterlist/SubUnit";
-import AddRequisition from "./Pages/Request/Add Requisition/AddRequisition";
-import Request from "./Pages/Request";
-import Approving from "./Pages/Approving/Approving";
-import RequestMonitoring from "./Pages/Request/RequestMonitoring";
-import ViewRequest from "./Pages/Request/ViewRequest";
-import PurchaseRequest from "./Pages/Request/PurchaseRequest";
-import Receiving from "./Pages/Receiving/Receiving";
+import AssetMovement from "./Pages/Asset Movement";
 
 const router = createBrowserRouter([
   {
@@ -220,14 +223,46 @@ const router = createBrowserRouter([
           },
 
           {
-            path: "request",
-            element: <Request />,
+            path: "asset-requisition",
+            element: <AssetRequisition />,
             children: [
               {
                 path: "requisition",
                 element: <Requisition />,
               },
+              {
+                path: "purchase-request",
+                element: <PurchaseRequest />,
+              },
+              {
+                path: "purchase-request/:transaction_number",
+                element: <ViewRequest />,
+              },
+              {
+                path: "requisition/add-requisition",
+                element: <AddRequisition />,
+              },
+              {
+                path: "requisition/add-requisition/:transaction_number",
+                element: <AddRequisition />,
+              },
+            ],
+          },
 
+          // {
+          //   path: "asset-requisition/requisition/add-requisition",
+          //   element: <AddRequisition />,
+          // },
+
+          // {
+          //   path: "asset-requisition/requisition/add-requisition/:transaction_number",
+          //   element: <AddRequisition />,
+          // },
+
+          {
+            path: "asset-movement",
+            element: <AssetMovement />,
+            children: [
               {
                 path: "transfer",
                 // element: <UserAccounts />,
@@ -244,26 +279,7 @@ const router = createBrowserRouter([
                 path: "disposal",
                 // element: <Category />,
               },
-              {
-                path: "purchase-request",
-                element: <PurchaseRequest />,
-              },
-              {
-                path: "purchase-request/:transaction_number",
-                element: <ViewRequest />,
-              },
             ],
-          },
-
-          // Requisition {
-          {
-            path: "request/requisition/add-requisition",
-            element: <AddRequisition />,
-          },
-
-          {
-            path: "request/requisition/add-requisition/:transaction_number",
-            element: <AddRequisition />,
           },
 
           {
@@ -290,8 +306,6 @@ const router = createBrowserRouter([
             path: "receiving",
             element: <Receiving />,
           },
-
-          // }
 
           {
             path: "asset-for-tagging",

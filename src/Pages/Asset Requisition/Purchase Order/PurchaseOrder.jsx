@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TabContext, TabPanel } from "@mui/lab";
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 
-import ReceivingTable from "./ReceivingTable";
+import ReceivingTable from "./PurchaseOrderTable";
 
 const Receiving = () => {
   const [value, setValue] = useState("1");

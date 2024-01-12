@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../Style/Request/request.scss";
-import AddPr from "../Request/AddEdit/AddPr";
+import AddPr from "./AddEdit/AddPr";
 import { LoadingData } from "../../Components/LottieFiles/LottieComponents";
 
 import {
@@ -331,7 +331,7 @@ const ViewRequest = (props) => {
       </Button>
 
       {transactionData?.pr_number === "-" &&
-        location.pathname === `/request/purchase-request/${transactionData?.transaction_number}` && (
+        location.pathname === `/asset-requisition/purchase-request/${transactionData?.transaction_number}` && (
           <Button
             variant="contained"
             color="primary"
@@ -349,7 +349,7 @@ const ViewRequest = (props) => {
         )}
 
       {(transactionData?.pr_number !== "-" || transactionData?.pr_number === null) &&
-        location.pathname === `/request/purchase-request/${transactionData?.transaction_number}` && (
+        location.pathname === `/asset-requisition/purchase-request/${transactionData?.transaction_number}` && (
           <Button
             variant="contained"
             color="error"

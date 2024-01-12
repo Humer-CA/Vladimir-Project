@@ -33,14 +33,10 @@
     flex: 1;
     color: index.$text;
     width: 100%;
-    overflow: overlay;
+    overflow: auto;
+    overflow-x: hidden;
     transition: 0.3s ease-in-out;
     white-space: nowrap;
-
-    @media (max-height: 650px) {
-      padding: 0;
-      margin: 0;
-    }
   }
 
   &__menu-btn.active {
@@ -109,11 +105,11 @@
   padding: 0;
   margin: 0;
 
-  @media only screen and (min-width: 801px) {
-    width: 75px;
-  }
+  // // @media only screen and (min-width: 801px) {
+  // //   width: 75px;
+  // // }
 
-  @media (max-height: 703px) and (min-width: 801px) {
-    width: 85px;
-  }
+  // @media only screen and (min-width: 801px) {
+  //   width: 85px;
+  // }
 }

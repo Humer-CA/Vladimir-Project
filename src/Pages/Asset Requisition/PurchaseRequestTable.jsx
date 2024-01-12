@@ -41,17 +41,25 @@ import {
 import { Help, LibraryAdd, Report, ReportProblem, Visibility } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
-import { useGetReceivingApiQuery, useGetReceivedApiQuery } from "../../Redux/Query/Receiving/Receiving";
+import RequestTimeline from "./RequestTimeline";
+import {
+  useGetPurchaseRequestApiQuery,
+  useGetPurchaseRequestWithPrApiQuery,
+} from "../../Redux/Query/Request/PurchaseRequest";
 
-const ReceivingTable = (props) => {
-  const { received } = props;
+const PurchaseRequestTable = (props) => {
+  const { withPr } = props;
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
 
+  //   const [transactionIdwasd, setTransactionIdData] = useState();
+
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width: 500px)");
+  //   const drawer = useSelector((state) => state.booleanState.drawer);
+  //   const dialog = useSelector((state) => state.booleanState.dialog);
 
   //* Table Sorting -------------------------------------------------------
   const [order, setOrder] = useState("desc");
@@ -91,13 +99,13 @@ const ReceivingTable = (props) => {
   };
 
   const {
-    data: receivingData,
-    isLoading: receivingLoading,
-    isSuccess: receivingSuccess,
-    isError: receivingError,
+    data: purchaseRequestData,
+    isLoading: purchaseRequestLoading,
+    isSuccess: purchaseRequestSuccess,
+    isError: purchaseRequestError,
     error: errorData,
     refetch,
-  } = (received ? useGetReceivedApiQuery : useGetReceivingApiQuery)(
+  } = (withPr ? useGetPurchaseRequestWithPrApiQuery : useGetPurchaseRequestApiQuery)(
     {
       page: page,
       per_page: perPage,
@@ -110,7 +118,7 @@ const ReceivingTable = (props) => {
   const dispatch = useDispatch();
 
   const handleViewData = (data) => {
-    navigate(`/receiving/${data.transaction_number}`, {
+    navigate(`/asset-requisition/purchase-request/${data.transaction_number}`, {
       state: { ...data },
     });
   };
@@ -121,9 +129,9 @@ const ReceivingTable = (props) => {
 
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
-      {receivingLoading && <MasterlistSkeleton onAdd={true} />}
-      {receivingError && <ErrorFetching refetch={refetch} error={errorData} />}
-      {receivingData && !receivingError && (
+      {purchaseRequestLoading && <MasterlistSkeleton onAdd={true} />}
+      {purchaseRequestError && <ErrorFetching refetch={refetch} error={errorData} />}
+      {purchaseRequestData && !purchaseRequestError && (
         <>
           <Box className="mcontainer__wrapper">
             <MasterlistToolbar onStatusChange={setStatus} onSearchChange={setSearch} onSetPage={setPage} hideArchive />
@@ -150,7 +158,7 @@ const ReceivingTable = (props) => {
                         </TableSortLabel>
                       </TableCell>
 
-                      {received && (
+                      {withPr && (
                         <TableCell className="tbl-cell">
                           <TableSortLabel
                             active={orderBy === `pr_number`}
@@ -191,12 +199,12 @@ const ReceivingTable = (props) => {
                   </TableHead>
 
                   <TableBody>
-                    {receivingData?.data?.length === 0 ? (
+                    {purchaseRequestData?.data?.length === 0 ? (
                       <NoRecordsFound />
                     ) : (
                       <>
-                        {receivingSuccess &&
-                          [...receivingData?.data]?.sort(comparator(order, orderBy))?.map((data) => (
+                        {purchaseRequestSuccess &&
+                          [...purchaseRequestData?.data]?.sort(comparator(order, orderBy))?.map((data) => (
                             <TableRow
                               key={data.id}
                               sx={{
@@ -206,7 +214,7 @@ const ReceivingTable = (props) => {
                               }}
                             >
                               <TableCell className="tbl-cell text-weight">{data.transaction_number}</TableCell>
-                              {received && <TableCell className="tbl-cell ">{data.pr_number}</TableCell>}
+                              {withPr && <TableCell className="tbl-cell ">{data.pr_number}</TableCell>}
                               <TableCell className="tbl-cell ">
                                 {`(${data.requestor?.employee_id}) - ${data.requestor?.firstname} ${data.requestor?.lastname}`}
                               </TableCell>
@@ -231,10 +239,10 @@ const ReceivingTable = (props) => {
               </TableContainer>
             </Box>
             <CustomTablePagination
-              total={receivingData?.total}
-              success={receivingSuccess}
-              current_page={receivingData?.current_page}
-              per_page={receivingData?.per_page}
+              total={purchaseRequestData?.total}
+              success={purchaseRequestSuccess}
+              current_page={purchaseRequestData?.current_page}
+              per_page={purchaseRequestData?.per_page}
               onPageChange={pageHandler}
               onRowsPerPageChange={perPageHandler}
             />
@@ -245,4 +253,4 @@ const ReceivingTable = (props) => {
   );
 };
 
-export default ReceivingTable;
+export default PurchaseRequestTable;

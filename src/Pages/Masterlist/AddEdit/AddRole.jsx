@@ -285,10 +285,11 @@ const AddRole = (props) => {
       { label: "Printing of Tag", value: "print-fa" },
       { label: "Settings", value: "settings" },
       { label: "Request Monitoring", value: "request-monitoring" },
+      { label: "Asset Requisition", value: "asset-requisition" },
     ];
 
     const secondGroup = [
-      { label: "Request", value: "request" },
+      { label: "Asset Movement", value: "asset-movement" },
       { label: "Approving", value: "approving" },
       { label: "Receiving", value: "receiving" },
       { label: "Asset for Tagging", value: "asset-for-tagging" },
@@ -528,7 +529,7 @@ const AddRole = (props) => {
     );
   };
 
-  const Request = () => {
+  const AssetRequisition = () => {
     return (
       <Stack flexDirection="row" flexWrap="wrap">
         <FormGroup
@@ -550,6 +551,44 @@ const AddRole = (props) => {
             }
           />
 
+          <FormControlLabel
+            disabled={data.action === "view"}
+            label="Purchase Request"
+            value="purchase-request"
+            control={
+              <Checkbox
+                {...register("access_permission")}
+                checked={watch("access_permission")?.includes("purchase-request")}
+              />
+            }
+          />
+
+          <FormControlLabel
+            disabled={data.action === "view"}
+            label="Purchase Order"
+            value="purchase-order"
+            control={
+              <Checkbox
+                {...register("access_permission")}
+                checked={watch("access_permission")?.includes("purchase-order")}
+              />
+            }
+          />
+        </FormGroup>
+      </Stack>
+    );
+  };
+
+  const AssetMovement = () => {
+    return (
+      <Stack flexDirection="row" flexWrap="wrap">
+        <FormGroup
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            ml: 3,
+          }}
+        >
           <FormControlLabel
             disabled={data.action === "view"}
             label="Transfer"
@@ -582,18 +621,6 @@ const AddRole = (props) => {
             value="disposal"
             control={
               <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("disposal")} />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Purchase Request"
-            value="purchase-request"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("purchase-request")}
-              />
             }
           />
         </FormGroup>
@@ -647,7 +674,8 @@ const AddRole = (props) => {
     "fixed-assets",
     "print-fa",
     "settings",
-    "request",
+    "asset-requisition",
+    "asset-movement",
     "approving",
     "monitoring",
     "receiving",
@@ -706,14 +734,11 @@ const AddRole = (props) => {
     "category",
     "status-category",
   ];
-
   const userManagement = ["user-accounts", "role-management"];
-
   const settings = ["approver-settings", "form-settings"];
+  const assetRequisition = ["requisition", "purchase-request", "purchase-order"];
+  const assetMovement = ["transfer", "evaluation", "pull-out", "disposal"];
 
-  const request = ["requisition", "transfer", "pull-out", "disposal", "purchase-request"];
-
-  const approving = ["pending-request", "approved-request"];
   // console.log(watch("access_permission"));
 
   return (
@@ -948,7 +973,7 @@ const AddRole = (props) => {
                 </Box>
               )}
 
-              {watch("access_permission").includes("request") && (
+              {watch("access_permission").includes("asset-requisition") && (
                 <Box>
                   <Divider sx={{ mx: "30px" }} />
                   <FormControl
@@ -964,19 +989,19 @@ const AddRole = (props) => {
                   >
                     <FormLabel component="legend" sx={{ ml: "1px", pl: "5px" }}>
                       <FormControlLabel
-                        label="Request"
-                        value="request"
+                        label="Asset Requisition"
+                        value="asset-requisition"
                         sx={{ color: "text.main", fontWeight: "bold" }}
                         disabled={data.action === "view"}
                         control={
                           <Checkbox
-                            checked={watch("access_permission").includes("request")}
+                            checked={watch("access_permission").includes("asset-requisition")}
                             // checked={masterlistValue.every((perm) =>
                             //   watch("access_permission").includes(perm)
                             // )}
                             indeterminate={
-                              request.some((perm) => watch("access_permission").includes(perm)) &&
-                              !request.every((perm) => watch("access_permission").includes(perm))
+                              assetRequisition.some((perm) => watch("access_permission").includes(perm)) &&
+                              !assetRequisition.every((perm) => watch("access_permission").includes(perm))
                             }
                             onChange={(e) => {
                               if (e.target.checked) {
@@ -984,25 +1009,81 @@ const AddRole = (props) => {
                                   ...new Set([
                                     ...watch("access_permission"),
                                     "requisition",
-                                    "transfer",
-                                    "pull-out",
-                                    "disposal",
                                     "purchase-request",
+                                    "purchase-order",
                                   ]),
                                 ]);
                               } else {
-                                const requestEmptyValue = watch("access_permission").filter(
-                                  (perm) => ![...request, "request"].includes(perm)
+                                const assetRequisitionEmptyValue = watch("access_permission").filter(
+                                  (perm) => ![...assetRequisition, "asset-requisition"].includes(perm)
                                 );
 
-                                setValue("access_permission", requestEmptyValue);
+                                setValue("access_permission", assetRequisitionEmptyValue);
                               }
                             }}
                           />
                         }
                       />
                     </FormLabel>
-                    <Request />
+                    <AssetRequisition />
+                  </FormControl>
+                </Box>
+              )}
+
+              {watch("access_permission").includes("asset-movement") && (
+                <Box>
+                  <Divider sx={{ mx: "30px" }} />
+                  <FormControl
+                    fullWidth
+                    component="fieldset"
+                    sx={{
+                      border: "1px solid #a6a6a6af ",
+                      borderRadius: "10px",
+                      px: "10px",
+                      mt: "10px",
+                      mb: "15px",
+                    }}
+                  >
+                    <FormLabel component="legend" sx={{ ml: "1px", pl: "5px" }}>
+                      <FormControlLabel
+                        label="Asset Movement"
+                        value="asset-movement"
+                        sx={{ color: "text.main", fontWeight: "bold" }}
+                        disabled={data.action === "view"}
+                        control={
+                          <Checkbox
+                            checked={watch("access_permission").includes("asset-movement")}
+                            // checked={masterlistValue.every((perm) =>
+                            //   watch("access_permission").includes(perm)
+                            // )}
+                            indeterminate={
+                              assetRequisition.some((perm) => watch("access_permission").includes(perm)) &&
+                              !assetRequisition.every((perm) => watch("access_permission").includes(perm))
+                            }
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setValue("access_permission", [
+                                  ...new Set([
+                                    ...watch("access_permission"),
+                                    "transfer",
+                                    "evaluation",
+                                    "pull-out",
+                                    "disposal",
+                                  ]),
+                                ]);
+                              } else {
+                                const assetMovementEmptyValue = watch("access_permission").filter(
+                                  (perm) => ![...assetMovement, "asset-movement"].includes(perm)
+                                );
+
+                                setValue("access_permission", assetMovementEmptyValue);
+                              }
+                            }}
+                          />
+                        }
+                      />
+                    </FormLabel>
+                    <AssetMovement />
                   </FormControl>
                 </Box>
               )}

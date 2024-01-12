@@ -19,13 +19,13 @@ export const receivingApi = createApi({
   endpoints: (builder) => ({
     getReceivingApi: builder.query({
       query: (params) =>
-        `adding-pr?toPr=1&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
+        `adding-po?toPo=1&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
       providesTags: ["Receiving"],
     }),
 
     getReceivedApi: builder.query({
       query: (params) =>
-        `adding-pr?toPr=0&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
+        `adding-po?toPo=0&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
       providesTags: ["Receiving"],
     }),
 
@@ -37,7 +37,7 @@ export const receivingApi = createApi({
 
     addReceivingApi: builder.mutation({
       query: (data) => ({
-        url: `/adding-pr/${data?.transaction_number}`,
+        url: `/adding-po/${data?.transaction_number}`,
         method: "PUT",
         body: data,
       }),

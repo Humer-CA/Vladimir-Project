@@ -20,13 +20,6 @@ import Cards from "../../Components/Reusable/Cards";
 
 const RequestList = [
   {
-    icon: <RequestQuote />,
-    label: "Requisition",
-    description: "Requesting of Fixed Assets",
-    path: "/request/requisition",
-  },
-
-  {
     icon: <TransferWithinAStation />,
     label: "Transfer",
     description: "Requesting for Asset Transfer",
@@ -53,23 +46,16 @@ const RequestList = [
     description: "List of For Disposal Items",
     path: "/request/disposal",
   },
-
-  {
-    icon: <ShoppingBag />,
-    label: "Purchase Request",
-    description: "Matching of Purchase Request",
-    path: "/request/purchase-request",
-  },
 ];
 
-const Request = () => {
+const AssetMovement = () => {
   const location = useLocation();
   const isSmallScreen = useMediaQuery("(max-width: 590px)");
   // console.log(location.pathname);
 
   return (
     <>
-      {location.pathname === "/request" ? (
+      {location.pathname === "/asset-movement" ? (
         <>
           <Typography
             color="secondary"
@@ -80,7 +66,7 @@ const Request = () => {
               marginLeft: isSmallScreen ? null : "30px",
             }}
           >
-            Request
+            Asset Movement
           </Typography>
           <Box className="parentSidebar">
             <Box className="parentSidebar__container">
@@ -100,4 +86,4 @@ const Request = () => {
   );
 };
 
-export default Request;
+export default AssetMovement;

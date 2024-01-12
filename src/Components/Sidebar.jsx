@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../Style/sidebar.scss";
 import { NavLink, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -70,16 +70,28 @@ import {
   PostAdd,
   ShoppingBasket,
   CallReceived,
+  MoveUpRounded,
 } from "@mui/icons-material";
 
 const Sidebar = () => {
   const [state, setState] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
   const [masterListCollapse, setMasterListCollapse] = useState(false);
   const [userCollapse, setUserCollapse] = useState(false);
   const [settingsCollapse, setSettingsCollapse] = useState(false);
-  const [requestCollapse, setRequestCollapse] = useState(false);
+  const [assetRequestCollapse, setAssetRequestCollapse] = useState(false);
+  const [assetMovementCollapse, setAssetMovementCollapse] = useState(false);
   const [reportCollapse, setReportCollapse] = useState(false);
-  const collapseArray = [masterListCollapse, userCollapse, settingsCollapse, requestCollapse, reportCollapse];
+  const collapseArray = [
+    masterListCollapse,
+    userCollapse,
+    settingsCollapse,
+    assetRequestCollapse,
+    assetMovementCollapse,
+    reportCollapse,
+  ];
+
+  const sidebarRef = useRef(null);
 
   const dispatch = useDispatch();
   const collapse = useSelector((state) => state.sidebar.open);
@@ -95,7 +107,8 @@ const Sidebar = () => {
     setMasterListCollapse(false);
     setUserCollapse(false);
     setSettingsCollapse(false);
-    setRequestCollapse(false);
+    setAssetRequestCollapse(false);
+    setAssetMovementCollapse(false);
     setReportCollapse(false);
   };
 
@@ -218,7 +231,7 @@ const Sidebar = () => {
         setMasterListCollapse(!masterListCollapse);
         setUserCollapse(false);
         setSettingsCollapse(false);
-        setRequestCollapse(false);
+        setAssetRequestCollapse(false);
         setReportCollapse(false);
         closeCollapse;
         dispatch(openSidebar());
@@ -250,7 +263,7 @@ const Sidebar = () => {
         setUserCollapse(!userCollapse);
         setMasterListCollapse(false);
         setSettingsCollapse(false);
-        setRequestCollapse(false);
+        setAssetRequestCollapse(false);
         setReportCollapse(false);
         closeCollapse;
         dispatch(openSidebar());
@@ -290,7 +303,7 @@ const Sidebar = () => {
         setSettingsCollapse(!settingsCollapse);
         setUserCollapse(false);
         setMasterListCollapse(false);
-        setRequestCollapse(false);
+        setAssetRequestCollapse(false);
         setReportCollapse(false);
         closeCollapse;
         dispatch(openSidebar());
@@ -298,34 +311,65 @@ const Sidebar = () => {
     },
 
     {
-      label: "Request",
+      label: "Asset Requisition",
       icon: FactCheckRounded,
-      path: "/request",
-      permission: "request",
+      path: "/asset-requisition",
+      permission: "asset-requisition",
       children: [
         {
           label: "Requisition",
           icon: AssignmentTurnedIn,
-          path: "/request/requisition",
+          path: "/asset-requisition/requisition",
           permission: "requisition",
+          setter: closeCollapse,
         },
+
+        {
+          label: "Purchase Request",
+          icon: ShoppingBasket,
+          path: "/asset-requisition/purchase-request",
+          permission: "purchase-request",
+          setter: closeCollapse,
+        },
+      ],
+      open: assetRequestCollapse,
+      setter: () => {
+        setAssetRequestCollapse(!assetRequestCollapse);
+        setMasterListCollapse(false);
+        setUserCollapse(false);
+        setSettingsCollapse(false);
+        setReportCollapse(false);
+        closeCollapse;
+        dispatch(openSidebar());
+      },
+    },
+
+    {
+      label: "Asset Movement",
+      icon: MoveUpRounded,
+      path: "/asset-movement",
+      permission: "asset-movement",
+      children: [
         {
           label: "Transfer",
           icon: AccountBox,
           path: "/request/transfer",
           permission: "transfer",
+          setter: closeCollapse,
         },
         {
           label: "Pull Out",
           icon: ManageAccountsSharp,
           path: "/request/pull-out",
           permission: "pull-out",
+          setter: closeCollapse,
         },
         {
           label: "Evaluation",
           icon: Category,
           path: "/request/evaluation",
           permission: "evaluation",
+          setter: closeCollapse,
         },
         {
           label: "Disposal",
@@ -334,20 +378,14 @@ const Sidebar = () => {
           permission: "disposal",
           setter: closeCollapse,
         },
-        {
-          label: "Purchase Request",
-          icon: ShoppingBasket,
-          path: "/request/purchase-request",
-          permission: "purchase-request",
-          setter: closeCollapse,
-        },
       ],
-      open: requestCollapse,
+      open: assetMovementCollapse,
       setter: () => {
-        setRequestCollapse(!requestCollapse);
+        setAssetMovementCollapse(!assetMovementCollapse);
         setMasterListCollapse(false);
         setUserCollapse(false);
         setSettingsCollapse(false);
+        setAssetRequestCollapse(false);
         setReportCollapse(false);
         closeCollapse;
         dispatch(openSidebar());
@@ -394,75 +432,53 @@ const Sidebar = () => {
     //   setter: closeCollapse,
     // },
 
-    {
-      label: "On Hand in Process",
-      icon: ClassRounded,
-      path: "/on-hand-in-process",
-      permission: "on-hand-in-process",
-      setter: closeCollapse,
-    },
+    // {
+    //   label: "On Hand in Process",
+    //   icon: ClassRounded,
+    //   path: "/on-hand-in-process",
+    //   permission: "on-hand-in-process",
+    //   setter: closeCollapse,
+    // },
 
-    {
-      label: "Reports",
-      icon: SummarizeRounded,
-      path: "/reports/report1",
-      permission: "reports",
-      children: [
-        {
-          label: "Report 1",
-          icon: SummarizeRounded,
-          path: "/reports/report1",
-          permission: [],
-        },
-        {
-          label: "Report 2",
-          icon: SummarizeRounded,
-          path: "/reports/report2",
-          permission: [],
-        },
-        {
-          label: "Report 3",
-          icon: SummarizeRounded,
-          path: "/reports/report3",
-          permission: [],
-        },
-      ],
-      open: reportCollapse,
-      setter: () => {
-        setReportCollapse(!reportCollapse);
-        setMasterListCollapse(false);
-        setUserCollapse(false);
-        setRequestCollapse(false);
-        closeCollapse;
-        dispatch(openSidebar());
-      },
-    },
+    // {
+    //   label: "Reports",
+    //   icon: SummarizeRounded,
+    //   path: "/reports/report1",
+    //   permission: "reports",
+    //   children: [
+    //     {
+    //       label: "Report 1",
+    //       icon: SummarizeRounded,
+    //       path: "/reports/report1",
+    //       permission: [],
+    //     },
+    //     {
+    //       label: "Report 2",
+    //       icon: SummarizeRounded,
+    //       path: "/reports/report2",
+    //       permission: [],
+    //     },
+    //     {
+    //       label: "Report 3",
+    //       icon: SummarizeRounded,
+    //       path: "/reports/report3",
+    //       permission: [],
+    //     },
+    //   ],
+    //   open: reportCollapse,
+    //   setter: () => {
+    //     setReportCollapse(!reportCollapse);
+    //     setMasterListCollapse(false);
+    //     setUserCollapse(false);
+    //     setAssetRequestCollapse(false);
+    //     closeCollapse;
+    //     dispatch(openSidebar());
+    //   },
+    // },
   ];
 
   const { pathname } = useLocation();
   const location = useLocation();
-
-  // useEffect(() => {
-  //   if (!collapse) {
-  //     closeCollapse();
-  //   }
-
-  //   if (pathname === "/") {
-  //     closeCollapse();
-  //   }
-
-  //   if (collapse && pathname.match(/masterlist/)) {
-  //     setMasterListCollapse(true);
-  //   } else if (collapse && pathname.match(/user-management/)) {
-  //     setUserCollapse(true);
-  //   } else if (collapse && pathname.match(/settings/)) {
-  //     setSettingsCollapse(true);
-  //   } else if (collapse && pathname.match(/request/)) {
-  //     setRequestCollapse(true);
-  //   } else if (collapse && pathname.match(/reports/)) {
-  //     setReportCollapse(true);
-  //   }
-  // }, [collapse, pathname]);
 
   useEffect(() => {
     if (collapse) {
@@ -479,9 +495,31 @@ const Sidebar = () => {
     }
   }, [collapse, pathname]);
 
+  useEffect(() => {
+    const checkOverflow = () => {
+      const content = sidebarRef.current;
+
+      if (content) {
+        const overflowing = content.scrollHeight > content.clientHeight || content.scrollWidth > content.clientWidth;
+
+        setIsOverflowing(overflowing);
+      }
+    };
+
+    checkOverflow();
+    window.addEventListener("resize", checkOverflow);
+
+    return () => {
+      window.removeEventListener("resize", checkOverflow);
+    };
+  }, []);
+
   return (
     <>
-      <Box className={`sidebar ${collapse ? "" : "collapsed"}`}>
+      <Box
+        className={`sidebar ${collapse ? "" : "collapsed"}`}
+        sx={{ width: collapse ? null : isOverflowing ? "85px" : "75px" }}
+      >
         <Box>
           {collapse ? (
             <IconButton
@@ -520,7 +558,7 @@ const Sidebar = () => {
           </Box>
         </Box>
 
-        <Box className="sidebar__menus">
+        <Box className="sidebar__menus" ref={sidebarRef} overflowX="hidden">
           <List>
             {MENU_LIST.map((item) => {
               return (

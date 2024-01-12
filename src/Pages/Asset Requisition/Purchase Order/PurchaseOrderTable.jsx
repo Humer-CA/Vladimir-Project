@@ -41,25 +41,17 @@ import {
 import { Help, LibraryAdd, Report, ReportProblem, Visibility } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
-import RequestTimeline from "./RequestTimeline";
-import {
-  useGetPurchaseRequestApiQuery,
-  useGetPurchaseRequestWithPrApiQuery,
-} from "../../Redux/Query/Request/PurchaseRequest";
+import { useGetReceivingApiQuery, useGetReceivedApiQuery } from "../../Redux/Query/Receiving/Receiving";
 
-const PurchaseRequestTable = (props) => {
-  const { withPr } = props;
+const ReceivingTable = (props) => {
+  const { received } = props;
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
 
-  //   const [transactionIdwasd, setTransactionIdData] = useState();
-
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width: 500px)");
-  //   const drawer = useSelector((state) => state.booleanState.drawer);
-  //   const dialog = useSelector((state) => state.booleanState.dialog);
 
   //* Table Sorting -------------------------------------------------------
   const [order, setOrder] = useState("desc");
@@ -99,13 +91,13 @@ const PurchaseRequestTable = (props) => {
   };
 
   const {
-    data: purchaseRequestData,
-    isLoading: purchaseRequestLoading,
-    isSuccess: purchaseRequestSuccess,
-    isError: purchaseRequestError,
+    data: receivingData,
+    isLoading: receivingLoading,
+    isSuccess: receivingSuccess,
+    isError: receivingError,
     error: errorData,
     refetch,
-  } = (withPr ? useGetPurchaseRequestWithPrApiQuery : useGetPurchaseRequestApiQuery)(
+  } = (received ? useGetReceivedApiQuery : useGetReceivingApiQuery)(
     {
       page: page,
       per_page: perPage,
@@ -118,7 +110,7 @@ const PurchaseRequestTable = (props) => {
   const dispatch = useDispatch();
 
   const handleViewData = (data) => {
-    navigate(`/request/purchase-request/${data.transaction_number}`, {
+    navigate(`/receiving/${data.transaction_number}`, {
       state: { ...data },
     });
   };
@@ -129,9 +121,9 @@ const PurchaseRequestTable = (props) => {
 
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
-      {purchaseRequestLoading && <MasterlistSkeleton onAdd={true} />}
-      {purchaseRequestError && <ErrorFetching refetch={refetch} error={errorData} />}
-      {purchaseRequestData && !purchaseRequestError && (
+      {receivingLoading && <MasterlistSkeleton onAdd={true} />}
+      {receivingError && <ErrorFetching refetch={refetch} error={errorData} />}
+      {receivingData && !receivingError && (
         <>
           <Box className="mcontainer__wrapper">
             <MasterlistToolbar onStatusChange={setStatus} onSearchChange={setSearch} onSetPage={setPage} hideArchive />
@@ -158,7 +150,7 @@ const PurchaseRequestTable = (props) => {
                         </TableSortLabel>
                       </TableCell>
 
-                      {withPr && (
+                      {received && (
                         <TableCell className="tbl-cell">
                           <TableSortLabel
                             active={orderBy === `pr_number`}
@@ -199,12 +191,12 @@ const PurchaseRequestTable = (props) => {
                   </TableHead>
 
                   <TableBody>
-                    {purchaseRequestData?.data?.length === 0 ? (
+                    {receivingData?.data?.length === 0 ? (
                       <NoRecordsFound />
                     ) : (
                       <>
-                        {purchaseRequestSuccess &&
-                          [...purchaseRequestData?.data]?.sort(comparator(order, orderBy))?.map((data) => (
+                        {receivingSuccess &&
+                          [...receivingData?.data]?.sort(comparator(order, orderBy))?.map((data) => (
                             <TableRow
                               key={data.id}
                               sx={{
@@ -214,7 +206,7 @@ const PurchaseRequestTable = (props) => {
                               }}
                             >
                               <TableCell className="tbl-cell text-weight">{data.transaction_number}</TableCell>
-                              {withPr && <TableCell className="tbl-cell ">{data.pr_number}</TableCell>}
+                              {received && <TableCell className="tbl-cell ">{data.pr_number}</TableCell>}
                               <TableCell className="tbl-cell ">
                                 {`(${data.requestor?.employee_id}) - ${data.requestor?.firstname} ${data.requestor?.lastname}`}
                               </TableCell>
@@ -239,10 +231,10 @@ const PurchaseRequestTable = (props) => {
               </TableContainer>
             </Box>
             <CustomTablePagination
-              total={purchaseRequestData?.total}
-              success={purchaseRequestSuccess}
-              current_page={purchaseRequestData?.current_page}
-              per_page={purchaseRequestData?.per_page}
+              total={receivingData?.total}
+              success={receivingSuccess}
+              current_page={receivingData?.current_page}
+              per_page={receivingData?.per_page}
               onPageChange={pageHandler}
               onRowsPerPageChange={perPageHandler}
             />
@@ -253,4 +245,4 @@ const PurchaseRequestTable = (props) => {
   );
 };
 
-export default PurchaseRequestTable;
+export default ReceivingTable;
