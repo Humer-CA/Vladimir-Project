@@ -290,6 +290,7 @@ const AddRole = (props) => {
     const secondGroup = [
       { label: "Request", value: "request" },
       { label: "Approving", value: "approving" },
+      { label: "Receiving", value: "receiving" },
       { label: "Asset for Tagging", value: "asset-for-tagging" },
       { label: "Asset List", value: "asset-list" },
       { label: "On Hand", value: "on-hand" },
@@ -600,43 +601,43 @@ const AddRole = (props) => {
     );
   };
 
-  const Approving = () => {
-    return (
-      <Stack flexDirection="row" flexWrap="wrap">
-        <FormGroup
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            ml: 3,
-          }}
-        >
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Pending Request"
-            value="pending-request"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("pending-request")}
-              />
-            }
-          />
+  // const Approving = () => {
+  //   return (
+  //     <Stack flexDirection="row" flexWrap="wrap">
+  //       <FormGroup
+  //         sx={{
+  //           display: "flex",
+  //           flexDirection: "column",
+  //           ml: 3,
+  //         }}
+  //       >
+  //         <FormControlLabel
+  //           disabled={data.action === "view"}
+  //           label="Pending Request"
+  //           value="pending-request"
+  //           control={
+  //             <Checkbox
+  //               {...register("access_permission")}
+  //               checked={watch("access_permission")?.includes("pending-request")}
+  //             />
+  //           }
+  //         />
 
-          <FormControlLabel
-            disabled={data.action === "view"}
-            label="Approved Request"
-            value="approved=request"
-            control={
-              <Checkbox
-                {...register("access_permission")}
-                checked={watch("access_permission")?.includes("approved=request")}
-              />
-            }
-          />
-        </FormGroup>
-      </Stack>
-    );
-  };
+  //         <FormControlLabel
+  //           disabled={data.action === "view"}
+  //           label="Approved Request"
+  //           value="approved=request"
+  //           control={
+  //             <Checkbox
+  //               {...register("access_permission")}
+  //               checked={watch("access_permission")?.includes("approved=request")}
+  //             />
+  //           }
+  //         />
+  //       </FormGroup>
+  //     </Stack>
+  //   );
+  // };
 
   const permissions = [
     // List of permissions
@@ -649,6 +650,7 @@ const AddRole = (props) => {
     "request",
     "approving",
     "monitoring",
+    "receiving",
     "asset-for-tagging",
     "asset-list",
     "on-hand",
@@ -1004,6 +1006,7 @@ const AddRole = (props) => {
                   </FormControl>
                 </Box>
               )}
+
               {/* 
               {watch("access_permission").includes("approving") && (
                 <Box>

@@ -69,6 +69,7 @@ import {
   DomainVerification,
   PostAdd,
   ShoppingBasket,
+  CallReceived,
 } from "@mui/icons-material";
 
 const Sidebar = () => {
@@ -366,6 +367,14 @@ const Sidebar = () => {
       icon: PostAdd,
       path: "/request-monitoring",
       permission: "request-monitoring",
+      setter: closeCollapse,
+    },
+
+    {
+      label: "Receiving",
+      icon: CallReceived,
+      path: "/receiving",
+      permission: "receiving",
       setter: closeCollapse,
     },
 
