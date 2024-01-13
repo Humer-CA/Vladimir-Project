@@ -9,7 +9,7 @@
   height: 100%;
   width: 250px;
   transition: 0.3s ease-in-out;
-  overflow: overlay;
+  overflow: auto;
 
   &__logo-container {
     display: flex;
@@ -33,7 +33,7 @@
     flex: 1;
     color: index.$text;
     width: 100%;
-    overflow: auto;
+    overflow: overlay;
     overflow-x: hidden;
     transition: 0.3s ease-in-out;
     white-space: nowrap;

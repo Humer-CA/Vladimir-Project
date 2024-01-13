@@ -5,7 +5,7 @@ export const requisitionSmsApi = createApi({
   tagTypes: ["RequisitionSms"],
 
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://10.10.10.4:8000/api",
+    baseUrl: "http://10.10.10.15:80/api",
 
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
@@ -25,11 +25,7 @@ export const requisitionSmsApi = createApi({
       }),
       invalidatesTags: ["RequisitionSms"],
     }),
-
-   
   }),
 });
 
-export const {
-  usePostRequisitionSmsApiMutation
-} = requisitionSmsApi;
+export const { usePostRequisitionSmsApiMutation } = requisitionSmsApi;

@@ -498,168 +498,166 @@ const Sidebar = () => {
   useEffect(() => {
     const checkOverflow = () => {
       const content = sidebarRef.current;
-
       if (content) {
-        const overflowing = content.scrollHeight > content.clientHeight || content.scrollWidth > content.clientWidth;
-
+        const overflowing = content.scrollHeight > content.clientHeight;
         setIsOverflowing(overflowing);
       }
     };
 
-    checkOverflow();
-    window.addEventListener("resize", checkOverflow);
+    setTimeout(() => {
+      checkOverflow();
+    }, 200);
 
+    window.addEventListener("resize", checkOverflow);
     return () => {
       window.removeEventListener("resize", checkOverflow);
     };
   }, []);
 
   return (
-    <>
-      <Box
-        className={`sidebar ${collapse ? "" : "collapsed"}`}
-        sx={{ width: collapse ? null : isOverflowing ? "85px" : "75px" }}
-      >
-        <Box>
-          {collapse ? (
-            <IconButton
-              className="sidebar__closeBtn"
-              sx={{ position: "absolute", right: 10, top: 39, zIndex: 2 }}
-              onClick={handleMenuCollapse}
-              size="small"
-            >
-              <KeyboardDoubleArrowLeftRounded />
-            </IconButton>
-          ) : null}
-          <Box className="sidebar__logo-container">
-            <img
-              src={VladimirLogoSmally}
-              alt="Vladimir Logo"
-              style={{
-                width: "40px",
-              }}
-            />
-
-            {collapse && (
-              <Typography
-                color="secondary"
-                sx={{
-                  zIndex: 0,
-                  fontFamily: "Josefin Sans",
-                  fontSize: "22px",
-                  letterSpacing: "2px",
-                  pl: 2.3,
-                  userSelect: "none",
-                }}
-              >
-                VLADIMIR
-              </Typography>
-            )}
-          </Box>
-        </Box>
-
-        <Box className="sidebar__menus" ref={sidebarRef} overflowX="hidden">
-          <List>
-            {MENU_LIST.map((item) => {
-              return (
-                permissions.split(", ").includes(item.permission) && (
-                  <ListItem
-                    key={item.path}
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                      padding: 0,
-                      px: "10px",
-                    }}
-                    disablePadding
-                    dense
-                  >
-                    <Tooltip title={!collapse && item.label} TransitionComponent={Zoom} placement="right" arrow>
-                      <ListItemButton
-                        className="sidebar__menu-btn"
-                        component={NavLink}
-                        to={item.path}
-                        sx={{
-                          width: collapse ? "222px" : "98%",
-                          borderRadius: "12px",
-                          transition: "0.2s ease-in-out",
-                        }}
-                        onClick={item?.setter}
-                      >
-                        <ListItemIcon sx={{ py: 1, minWidth: "35px" }}>
-                          <Badge color="error" badgeContent={0} variant="dot">
-                            <SvgIcon component={item.icon} />
-                          </Badge>
-                        </ListItemIcon>
-                        {collapse && <ListItemText primary={item.label} />}
-                        {collapse && Boolean(item.children?.length) && (
-                          <ExpandLessRounded
-                            sx={{
-                              transform: item.open ? "rotate(0deg)" : "rotate(180deg)",
-                              transition: "0.2s ease-in-out",
-                            }}
-                          />
-                        )}
-                      </ListItemButton>
-                    </Tooltip>
-
-                    {Boolean(item.children?.length) && (
-                      <Collapse in={item.open} timeout="auto" unmountOnExit sx={{ width: "100%" }}>
-                        <List component="div" className="sidebar__menu-list" sx={{ pt: 0.5 }}>
-                          {item.children.map((childItem) => {
-                            return (
-                              permissions.split(", ").includes(childItem.permission) && (
-                                <ListItemButton
-                                  className="sidebar__menu-btn-list"
-                                  key={childItem.path}
-                                  component={NavLink}
-                                  to={childItem.path}
-                                  sx={{
-                                    width: "208px",
-                                    ml: 2,
-                                    borderRadius: "12px",
-                                    px: 0,
-                                  }}
-                                  dense
-                                >
-                                  <ListItemIcon sx={{ pl: 2, py: 0.5 }}>
-                                    <SvgIcon component={childItem.icon} />
-                                  </ListItemIcon>
-                                  <ListItemText primary={childItem.label} />
-                                </ListItemButton>
-                              )
-                            );
-                          })}
-                        </List>
-                        <Divider sx={{ mb: "10px", mx: "15px" }} />
-                      </Collapse>
-                    )}
-                  </ListItem>
-                )
-              );
-            })}
-          </List>
-        </Box>
-
-        <Box className="sidebar__copyright">
+    <Box
+      className={`sidebar ${collapse ? "" : "collapsed"}`}
+      sx={{ width: collapse ? null : isOverflowing ? "85px" : "75px" }}
+    >
+      <Box>
+        {collapse ? (
+          <IconButton
+            className="sidebar__closeBtn"
+            sx={{ position: "absolute", right: 10, top: 39, zIndex: 2 }}
+            onClick={handleMenuCollapse}
+            size="small"
+          >
+            <KeyboardDoubleArrowLeftRounded />
+          </IconButton>
+        ) : null}
+        <Box className="sidebar__logo-container">
           <img
-            src={MisLogo}
-            alt="MIS-Logo"
+            src={VladimirLogoSmally}
+            alt="Vladimir Logo"
             style={{
-              width: "50px",
+              width: "40px",
             }}
           />
+
           {collapse && (
-            <p>
-              Powered By MIS All rights reserved <br />
-              Copyrights © 2021
-            </p>
+            <Typography
+              color="secondary"
+              sx={{
+                zIndex: 0,
+                fontFamily: "Josefin Sans",
+                fontSize: "22px",
+                letterSpacing: "2px",
+                pl: 2.3,
+                userSelect: "none",
+              }}
+            >
+              VLADIMIR
+            </Typography>
           )}
         </Box>
       </Box>
-    </>
+
+      <Box className="sidebar__menus" ref={sidebarRef}>
+        <List>
+          {MENU_LIST.map((item) => {
+            return (
+              permissions.split(", ").includes(item.permission) && (
+                <ListItem
+                  key={item.path}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    padding: 0,
+                    px: "10px",
+                  }}
+                  disablePadding
+                  dense
+                >
+                  <Tooltip title={!collapse && item.label} TransitionComponent={Zoom} placement="right" arrow>
+                    <ListItemButton
+                      className="sidebar__menu-btn"
+                      component={NavLink}
+                      to={item.path}
+                      sx={{
+                        width: collapse ? "222px" : "98%",
+                        borderRadius: "12px",
+                        transition: "0.2s ease-in-out",
+                      }}
+                      onClick={item?.setter}
+                    >
+                      <ListItemIcon sx={{ py: 1, minWidth: "35px" }}>
+                        <Badge color="error" badgeContent={0} variant="dot">
+                          <SvgIcon component={item.icon} />
+                        </Badge>
+                      </ListItemIcon>
+                      {collapse && <ListItemText primary={item.label} />}
+                      {collapse && Boolean(item.children?.length) && (
+                        <ExpandLessRounded
+                          sx={{
+                            transform: item.open ? "rotate(0deg)" : "rotate(180deg)",
+                            transition: "0.2s ease-in-out",
+                          }}
+                        />
+                      )}
+                    </ListItemButton>
+                  </Tooltip>
+
+                  {Boolean(item.children?.length) && (
+                    <Collapse in={item.open} timeout="auto" unmountOnExit sx={{ width: "100%" }}>
+                      <List component="div" className="sidebar__menu-list" sx={{ pt: 0.5 }}>
+                        {item.children.map((childItem) => {
+                          return (
+                            permissions.split(", ").includes(childItem.permission) && (
+                              <ListItemButton
+                                className="sidebar__menu-btn-list"
+                                key={childItem.path}
+                                component={NavLink}
+                                to={childItem.path}
+                                sx={{
+                                  width: "208px",
+                                  ml: 2,
+                                  borderRadius: "12px",
+                                  px: 0,
+                                }}
+                                dense
+                              >
+                                <ListItemIcon sx={{ pl: 2, py: 0.5 }}>
+                                  <SvgIcon component={childItem.icon} />
+                                </ListItemIcon>
+                                <ListItemText primary={childItem.label} />
+                              </ListItemButton>
+                            )
+                          );
+                        })}
+                      </List>
+                      <Divider sx={{ mb: "10px", mx: "15px" }} />
+                    </Collapse>
+                  )}
+                </ListItem>
+              )
+            );
+          })}
+        </List>
+      </Box>
+
+      <Box className="sidebar__copyright">
+        <img
+          src={MisLogo}
+          alt="MIS-Logo"
+          style={{
+            width: "50px",
+          }}
+        />
+        {collapse && (
+          <p>
+            Powered By MIS All rights reserved <br />
+            Copyrights © 2021
+          </p>
+        )}
+      </Box>
+    </Box>
   );
 };
 

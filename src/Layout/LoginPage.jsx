@@ -52,9 +52,6 @@ const LoginPage = () => {
     },
   });
 
-  // console.log(watch("username"));
-  // console.log(watch("password"));
-
   const onSubmitHandler = async (data) => {
     try {
       setloading(true);
@@ -117,6 +114,7 @@ const LoginPage = () => {
       } else {
         Login(`/${route}`);
         reset();
+        checkOverflow();
       }
 
       setloading(false);
