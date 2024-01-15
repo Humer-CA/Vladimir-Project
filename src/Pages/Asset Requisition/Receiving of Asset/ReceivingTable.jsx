@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
 import Moment from "moment";
-import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
-import ActionMenu from "../../Components/Reusable/ActionMenu";
-import ErrorFetching from "../ErrorFetching";
-import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
-import NoRecordsFound from "../../Layout/NoRecordsFound";
-import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
+import MasterlistToolbar from "../../../Components/Reusable/MasterlistToolbar";
+import ActionMenu from "../../../Components/Reusable/ActionMenu";
+import ErrorFetching from "../../ErrorFetching";
+import MasterlistSkeleton from "../../Skeleton/MasterlistSkeleton";
+import NoRecordsFound from "../../../Layout/NoRecordsFound";
+import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
 
 // RTK
 import { useDispatch, useSelector } from "react-redux";
-import { openToast } from "../../Redux/StateManagement/toastSlice";
-import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
+import { openToast } from "../../../Redux/StateManagement/toastSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../../Redux/StateManagement/confirmSlice";
 import {
   useGetByTransactionApiQuery,
   useGetRequisitionApiQuery,
   usePatchRequisitionStatusApiMutation,
   useVoidRequisitionApiMutation,
-} from "../../Redux/Query/Request/Requisition";
+} from "../../../Redux/Query/Request/Requisition";
 
 // MUI
 import {
@@ -40,8 +40,8 @@ import {
 } from "@mui/material";
 import { Help, LibraryAdd, Report, ReportProblem, Visibility } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
-import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
-import { useGetReceivingApiQuery, useGetReceivedApiQuery } from "../../Redux/Query/Receiving/Receiving";
+import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanStateSlice";
+import { useGetReceivingApiQuery, useGetReceivedApiQuery } from "../../../Redux/Query/Receiving/Receiving";
 
 const ReceivingTable = (props) => {
   const { received } = props;
@@ -110,7 +110,7 @@ const ReceivingTable = (props) => {
   const dispatch = useDispatch();
 
   const handleViewData = (data) => {
-    navigate(`/receiving/${data.transaction_number}`, {
+    navigate(`/asset-requisition/requisition-receiving/${data.transaction_number}`, {
       state: { ...data },
     });
   };

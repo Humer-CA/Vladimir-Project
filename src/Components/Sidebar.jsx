@@ -71,6 +71,9 @@ import {
   ShoppingBasket,
   CallReceived,
   MoveUpRounded,
+  TransferWithinAStation,
+  RemoveFromQueue,
+  RuleFolder,
 } from "@mui/icons-material";
 
 const Sidebar = () => {
@@ -323,12 +326,18 @@ const Sidebar = () => {
           permission: "requisition",
           setter: closeCollapse,
         },
-
         {
           label: "Purchase Request",
           icon: ShoppingBasket,
           path: "/asset-requisition/purchase-request",
           permission: "purchase-request",
+          setter: closeCollapse,
+        },
+        {
+          label: "Receiving of Asset",
+          icon: CallReceived,
+          path: "/asset-requisition/requisition-receiving",
+          permission: "requisition-receiving",
           setter: closeCollapse,
         },
       ],
@@ -352,21 +361,21 @@ const Sidebar = () => {
       children: [
         {
           label: "Transfer",
-          icon: AccountBox,
+          icon: TransferWithinAStation,
           path: "/request/transfer",
           permission: "transfer",
           setter: closeCollapse,
         },
         {
           label: "Pull Out",
-          icon: ManageAccountsSharp,
+          icon: RemoveFromQueue,
           path: "/request/pull-out",
           permission: "pull-out",
           setter: closeCollapse,
         },
         {
           label: "Evaluation",
-          icon: Category,
+          icon: RuleFolder,
           path: "/request/evaluation",
           permission: "evaluation",
           setter: closeCollapse,
@@ -405,14 +414,6 @@ const Sidebar = () => {
       icon: PostAdd,
       path: "/request-monitoring",
       permission: "request-monitoring",
-      setter: closeCollapse,
-    },
-
-    {
-      label: "Receiving",
-      icon: CallReceived,
-      path: "/receiving",
-      permission: "receiving",
       setter: closeCollapse,
     },
 

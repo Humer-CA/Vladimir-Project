@@ -57,7 +57,7 @@ import RequestMonitoring from "./Pages/Asset Requisition/RequestMonitoring";
 import AssetRequisition from "./Pages/Asset Requisition";
 
 import Approving from "./Pages/Approving/Approving";
-import Receiving from "./Pages/Receiving/Receiving";
+import ReceivingOfAsset from "./Pages/Asset Requisition/Receiving of Asset/ReceivingOfAsset";
 
 import PageNotFound from "./Pages/PageNotFound";
 import Confirmation from "./Components/Reusable/Confirmation";
@@ -246,6 +246,14 @@ const router = createBrowserRouter([
                 path: "requisition/add-requisition/:transaction_number",
                 element: <AddRequisition />,
               },
+              {
+                path: "requisition-receiving",
+                element: <ReceivingOfAsset />,
+              },
+              {
+                path: "requisition-receiving/:transaction_number",
+                element: <ViewRequest />,
+              },
             ],
           },
 
@@ -300,11 +308,6 @@ const router = createBrowserRouter([
           {
             path: "request-monitoring/:transaction_number",
             element: <ViewRequest />,
-          },
-
-          {
-            path: "receiving",
-            element: <Receiving />,
           },
 
           {

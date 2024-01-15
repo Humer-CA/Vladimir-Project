@@ -43,9 +43,10 @@ import {
 } from "../../Redux/Query/Approving/Approval";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
 import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
-import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
+import { closeDialog, openDialog, closeDialog1, openDialog1 } from "../../Redux/StateManagement/booleanStateSlice";
 import { useRemovePurchaseRequestApiMutation } from "../../Redux/Query/Request/PurchaseRequest";
 import ErrorFetching from "../ErrorFetching";
+import AddReceivingOfAsset from "../Asset Requisition/Receiving of Asset/AddReceivingOfAsset";
 
 const ViewRequest = (props) => {
   const { approving } = props;
@@ -55,6 +56,9 @@ const ViewRequest = (props) => {
   const navigate = useNavigate();
 
   const dialog = useSelector((state) => state.booleanState.dialog);
+  const dialog1 = useSelector((state) => state.booleanState.dialogMultiple.dialog1);
+
+  console.log(dialog1);
 
   const [patchApprovalStatus, { isLoading }] = usePatchApprovalStatusApiMutation();
   const [getNextRequest, { data: nextData, isLoading: isNextRequestLoading }] = useLazyGetNextRequestQuery();
@@ -307,10 +311,8 @@ const ViewRequest = (props) => {
   };
 
   const handleCloseDialog = () => {
-    dispatch(closeDialog());
+    dispatch(closeDialog()) || dispatch(closeDialog1());
   };
-
-  console.log(location.pathname);
 
   return (
     <Box className="mcontainer" sx={{ height: "calc(100vh - 380px)" }}>
@@ -363,6 +365,23 @@ const ViewRequest = (props) => {
             </Typography>
           </Button>
         )}
+
+      {location.pathname === `/asset-requisition/requisition-receiving/${transactionData?.transaction_number}` && (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<InsertDriveFile color="secondary" />}
+          onClick={() => {
+            dispatch(openDialog1());
+          }}
+          sx={{ position: "absolute", right: 10, height: "30px" }}
+        >
+          <Typography fontWeight={400} fontSize={14}>
+            Input
+          </Typography>
+        </Button>
+      )}
 
       <Box className="request mcontainer__wrapper" p={2}>
         {/* TABLE */}
@@ -569,6 +588,26 @@ const ViewRequest = (props) => {
         }}
       >
         <AddPr transactionData={transactionData} />
+      </Dialog>
+
+      <Dialog
+        open={dialog1}
+        onClose={handleCloseDialog}
+        sx={{
+          ".MuiPaper-root": {
+            alignItems: "center",
+            padding: "20px",
+            margin: 0,
+            gap: "5px",
+            minWidth: "250px",
+            maxWidth: "350px",
+            width: "50%",
+            textAlign: "center",
+            borderRadius: "10px",
+          },
+        }}
+      >
+        <AddReceivingOfAsset transactionData={transactionData} />
       </Dialog>
     </Box>
   );

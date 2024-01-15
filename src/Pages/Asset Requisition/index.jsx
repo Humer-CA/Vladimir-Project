@@ -7,6 +7,8 @@ import { useLocation } from "react-router-dom";
 
 import { Box, Typography, useMediaQuery } from "@mui/material";
 import {
+  AssignmentTurnedIn,
+  CallReceived,
   HowToReg,
   ManageAccountsSharp,
   RemoveFromQueue,
@@ -14,23 +16,31 @@ import {
   RuleFolder,
   SettingsApplications,
   ShoppingBag,
+  ShoppingBasket,
   TransferWithinAStation,
 } from "@mui/icons-material";
 import Cards from "../../Components/Reusable/Cards";
 
 const RequestList = [
   {
-    icon: <RequestQuote />,
+    icon: <AssignmentTurnedIn />,
     label: "Requisition",
     description: "Requesting of Fixed Assets",
     path: "/request/requisition",
   },
 
   {
-    icon: <ShoppingBag />,
+    icon: <ShoppingBasket />,
     label: "Purchase Request",
     description: "Matching of Purchase Request",
     path: "/request/purchase-request",
+  },
+
+  {
+    icon: <CallReceived />,
+    label: "Receiving of Asset",
+    description: "Input of additional info and Purchase Order Number",
+    path: "/request/requisition-receiving",
   },
 ];
 

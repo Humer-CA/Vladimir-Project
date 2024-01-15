@@ -72,8 +72,7 @@ const MasterlistList = [
   {
     icon: <MonetizationOn />,
     label: "Capex",
-    description:
-      "Adding, editing and archiving of Capex and Sub Capex masterlist",
+    description: "Adding, editing and archiving of Capex and Sub Capex masterlist",
     path: "/masterlist/capex",
   },
 

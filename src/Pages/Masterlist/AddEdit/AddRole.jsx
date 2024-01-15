@@ -285,13 +285,12 @@ const AddRole = (props) => {
       { label: "Printing of Tag", value: "print-fa" },
       { label: "Settings", value: "settings" },
       { label: "Request Monitoring", value: "request-monitoring" },
-      { label: "Asset Requisition", value: "asset-requisition" },
     ];
 
     const secondGroup = [
+      { label: "Asset Requisition", value: "asset-requisition" },
       { label: "Asset Movement", value: "asset-movement" },
       { label: "Approving", value: "approving" },
-      { label: "Receiving", value: "receiving" },
       { label: "Asset for Tagging", value: "asset-for-tagging" },
       { label: "Asset List", value: "asset-list" },
       { label: "On Hand", value: "on-hand" },
@@ -370,9 +369,9 @@ const AddRole = (props) => {
           <FormControlLabel
             disabled={data.action === "view"}
             label="Sub Unit"
-            value="subunit"
+            value="sub-unit"
             control={
-              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("subunit")} />
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("sub-unit")} />
             }
           />
         </FormGroup>
@@ -565,12 +564,12 @@ const AddRole = (props) => {
 
           <FormControlLabel
             disabled={data.action === "view"}
-            label="Purchase Order"
-            value="purchase-order"
+            label="Receiving"
+            value="requisition-receiving"
             control={
               <Checkbox
                 {...register("access_permission")}
-                checked={watch("access_permission")?.includes("purchase-order")}
+                checked={watch("access_permission")?.includes("requisition-receiving")}
               />
             }
           />
@@ -615,6 +614,18 @@ const AddRole = (props) => {
             ml: 3,
           }}
         >
+          <FormControlLabel
+            disabled={data.action === "view"}
+            label="Evaluation"
+            value="evaluation"
+            control={
+              <Checkbox
+                {...register("access_permission")}
+                checked={watch("access_permission")?.includes("evaluation")}
+              />
+            }
+          />
+
           <FormControlLabel
             disabled={data.action === "view"}
             label="Disposal"
@@ -678,7 +689,6 @@ const AddRole = (props) => {
     "asset-movement",
     "approving",
     "monitoring",
-    "receiving",
     "asset-for-tagging",
     "asset-list",
     "on-hand",
@@ -708,12 +718,15 @@ const AddRole = (props) => {
     "approver-settings",
     "form-settings",
 
-    // Request
+    // Asset Requisition
     "requisition",
+    "purchase-request",
+    "requisition-receiving",
+
+    //Asset Movement
     "transfer",
     "pull-out",
     "disposal",
-    "purchase-request",
 
     // Approving
     "pending-request",
@@ -736,7 +749,7 @@ const AddRole = (props) => {
   ];
   const userManagement = ["user-accounts", "role-management"];
   const settings = ["approver-settings", "form-settings"];
-  const assetRequisition = ["requisition", "purchase-request", "purchase-order"];
+  const assetRequisition = ["requisition", "purchase-request", "requisition-receiving"];
   const assetMovement = ["transfer", "evaluation", "pull-out", "disposal"];
 
   // console.log(watch("access_permission"));
@@ -845,6 +858,7 @@ const AddRole = (props) => {
                                     "location",
                                     "account-title",
                                     "supplier",
+                                    "sub-unit",
                                     "division",
                                     "type-of-request",
                                     "capex",
@@ -1057,8 +1071,8 @@ const AddRole = (props) => {
                             //   watch("access_permission").includes(perm)
                             // )}
                             indeterminate={
-                              assetRequisition.some((perm) => watch("access_permission").includes(perm)) &&
-                              !assetRequisition.every((perm) => watch("access_permission").includes(perm))
+                              assetMovement.some((perm) => watch("access_permission").includes(perm)) &&
+                              !assetMovement.every((perm) => watch("access_permission").includes(perm))
                             }
                             onChange={(e) => {
                               if (e.target.checked) {

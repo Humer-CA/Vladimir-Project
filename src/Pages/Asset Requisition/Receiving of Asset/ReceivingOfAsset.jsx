@@ -4,7 +4,7 @@ import { Box, Tab, Tabs, Typography } from "@mui/material";
 
 import ReceivingTable from "./ReceivingTable";
 
-const Receiving = () => {
+const ReceivingOfAsset = () => {
   const [value, setValue] = useState("1");
 
   const handleChange = (event, newValue) => {
@@ -14,7 +14,7 @@ const Receiving = () => {
   return (
     <Box className="mcontainer">
       <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "1.6rem" }}>
-        Receiving
+        Receiving of Asset
       </Typography>
 
       <Box>
@@ -38,4 +38,4 @@ const Receiving = () => {
   );
 };
 
-export default Receiving;
+export default ReceivingOfAsset;

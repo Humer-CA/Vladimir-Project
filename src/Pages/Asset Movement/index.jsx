@@ -9,6 +9,7 @@ import { Box, Typography, useMediaQuery } from "@mui/material";
 import {
   HowToReg,
   ManageAccountsSharp,
+  PlaylistRemoveRounded,
   RemoveFromQueue,
   RequestQuote,
   RuleFolder,
@@ -41,7 +42,7 @@ const RequestList = [
   },
 
   {
-    icon: <ShoppingBag />,
+    icon: <PlaylistRemoveRounded />,
     label: "Disposal",
     description: "List of For Disposal Items",
     path: "/request/disposal",
