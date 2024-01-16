@@ -315,301 +315,310 @@ const ViewRequest = (props) => {
   };
 
   return (
-    <Box className="mcontainer" sx={{ height: "calc(100vh - 380px)" }}>
+    <>
       {isRequestError && <ErrorFetching refetch={isRequestRefetch} error={errorData} />}
-      <Button
-        variant="text"
-        color="secondary"
-        size="small"
-        startIcon={<ArrowBackIosRounded color="secondary" />}
-        onClick={() => {
-          navigate(-1);
-          // setApprovingValue("2");
-        }}
-        disableRipple
-        sx={{ width: "90px", marginLeft: "-15px", "&:hover": { backgroundColor: "transparent" } }}
-      >
-        <Typography color="secondary.main">Back</Typography>
-      </Button>
-
-      {transactionData?.pr_number === "-" &&
-        location.pathname === `/asset-requisition/purchase-request/${transactionData?.transaction_number}` && (
+      {!isRequestError && (
+        <Box className="mcontainer" sx={{ height: "calc(100vh - 380px)" }}>
           <Button
-            variant="contained"
-            color="primary"
+            variant="text"
+            color="secondary"
             size="small"
-            startIcon={<InsertDriveFile color="secondary" />}
+            startIcon={<ArrowBackIosRounded color="secondary" />}
             onClick={() => {
-              dispatch(openDialog());
+              navigate(-1);
+              // setApprovingValue("2");
             }}
-            sx={{ position: "absolute", right: 10, height: "30px" }}
+            disableRipple
+            sx={{ width: "90px", marginLeft: "-15px", "&:hover": { backgroundColor: "transparent" } }}
           >
-            <Typography fontWeight={400} fontSize={14}>
-              Add PR
-            </Typography>
+            <Typography color="secondary.main">Back</Typography>
           </Button>
-        )}
 
-      {(transactionData?.pr_number !== "-" || transactionData?.pr_number === null) &&
-        location.pathname === `/asset-requisition/purchase-request/${transactionData?.transaction_number}` && (
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            startIcon={<RemoveShoppingCart color="secondary" />}
-            onClick={() => onRemovePrHandler(transactionData)}
-            sx={{ position: "absolute", right: 10, height: "30px" }}
-          >
-            <Typography fontWeight={500} fontSize={14}>
-              Remove PR
-            </Typography>
-          </Button>
-        )}
-
-      {location.pathname === `/asset-requisition/requisition-receiving/${transactionData?.transaction_number}` && (
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          startIcon={<InsertDriveFile color="secondary" />}
-          onClick={() => {
-            dispatch(openDialog1());
-          }}
-          sx={{ position: "absolute", right: 10, height: "30px" }}
-        >
-          <Typography fontWeight={400} fontSize={14}>
-            Input
-          </Typography>
-        </Button>
-      )}
-
-      <Box className="request mcontainer__wrapper" p={2}>
-        {/* TABLE */}
-        <Box className="request__table">
-          <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
-            {`${transactionData ? "TRANSACTION NO." : "CURRENT ASSET"}`}{" "}
-            {transactionData && transactionData?.transaction_number}
-          </Typography>
-
-          <TableContainer
-            className="mcontainer__th-body  mcontainer__wrapper"
-            sx={{ height: "calc(100vh - 290px)", pt: 0 }}
-          >
-            <Table className="mcontainer__table " stickyHeader>
-              <TableHead>
-                <TableRow
-                  sx={{
-                    "& > *": {
-                      fontWeight: "bold!important",
-                      whiteSpace: "nowrap",
-                    },
-                  }}
-                >
-                  <TableCell className="tbl-cell">Ref. No.</TableCell>
-                  <TableCell className="tbl-cell">Type of Request</TableCell>
-                  {transactionData?.pr_number && <TableCell className="tbl-cell">PR Number</TableCell>}
-                  <TableCell className="tbl-cell">Attachment Type</TableCell>
-                  <TableCell className="tbl-cell">Chart of Accounts</TableCell>
-                  <TableCell className="tbl-cell">Accountability</TableCell>
-                  <TableCell className="tbl-cell">Asset Information</TableCell>
-                  <TableCell className="tbl-cell text-center">Quantity</TableCell>
-                  <TableCell className="tbl-cell">Cellphone #</TableCell>
-                  <TableCell className="tbl-cell">Remarks</TableCell>
-                  <TableCell className="tbl-cell">Attachments</TableCell>
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {isRequestLoading || isTransactionLoading ? (
-                  <LoadingData />
-                ) : (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.length === 0) ? (
-                  <NoRecordsFound />
-                ) : (
-                  <>
-                    {(transactionData ? transactionDataApi : addRequestAllApi).map((data, index) => (
-                      <TableRow
-                        key={index}
-                        sx={{
-                          "&:last-child td, &:last-child th": {
-                            borderBottom: 0,
-                          },
-                        }}
-                      >
-                        <TableCell className="tbl-cell tr-cen-pad45 text-weight">{data.reference_number}</TableCell>
-                        <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
-                        <TableCell className="tbl-cell">{data.pr_number}</TableCell>
-                        <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
-                        <TableCell className="tbl-cell">
-                          <Typography fontSize={10} color="gray">
-                            {`(${data.company?.company_code}) - ${data.company?.company_name}`}
-                          </Typography>
-                          <Typography fontSize={10} color="gray">
-                            {`(${data.department?.department_code}) - ${data.department?.department_name}`}
-                          </Typography>
-                          <Typography fontSize={10} color="gray">
-                            {`(${data.location?.location_code}) - ${data.location?.location_name}`}
-                          </Typography>
-                          <Typography fontSize={10} color="gray">
-                            {`(${data.account_title?.account_title_code}) - ${data.account_title?.account_title_name}`}
-                          </Typography>
-                        </TableCell>
-
-                        <TableCell className="tbl-cell">
-                          {data.accountability === "Personal Issued" ? (
-                            <>
-                              <Box>{data?.accountable?.general_info?.full_id_number}</Box>
-                              <Box>{data?.accountable?.general_info?.full_name}</Box>
-                            </>
-                          ) : (
-                            "Common"
-                          )}
-                        </TableCell>
-
-                        <TableCell className="tbl-cell">
-                          <Typography fontWeight={600} fontSize="14px" color="secondary.main">
-                            {data.asset_description}
-                          </Typography>
-                          <Typography fontSize="12px" color="text.light">
-                            {data.asset_specification}
-                          </Typography>
-                        </TableCell>
-
-                        <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
-
-                        <TableCell className="tbl-cell">
-                          {data.cellphone_number === null ? "-" : data.cellphone_number}
-                        </TableCell>
-
-                        <TableCell className="tbl-cell">
-                          {data.remarks === null ? "No Remarks" : data.remarks}
-                        </TableCell>
-
-                        <TableCell className="tbl-cell">
-                          {data?.attachments?.letter_of_request && (
-                            <Stack flexDirection="row" gap={1}>
-                              <Typography fontSize={12} fontWeight={600}>
-                                Letter of Request:
-                              </Typography>
-                              {data?.attachments?.letter_of_request?.file_name}
-                            </Stack>
-                          )}
-                          {data?.attachments?.quotation && (
-                            <Stack flexDirection="row" gap={1}>
-                              <Typography fontSize={12} fontWeight={600}>
-                                Quotation:
-                              </Typography>
-                              {data?.attachments?.quotation?.file_name}
-                            </Stack>
-                          )}
-                          {data?.attachments?.specification_form && (
-                            <Stack flexDirection="row" gap={1}>
-                              <Typography fontSize={12} fontWeight={600}>
-                                Specification:
-                              </Typography>
-                              {data?.attachments?.specification_form?.file_name}
-                            </Stack>
-                          )}
-                          {data?.attachments?.tool_of_trade && (
-                            <Stack flexDirection="row" gap={1}>
-                              <Typography fontSize={12} fontWeight={600}>
-                                Tool of Trade:
-                              </Typography>
-                              {data?.attachments?.tool_of_trade?.file_name}
-                            </Stack>
-                          )}
-                          {data?.attachments?.other_attachments && (
-                            <Stack flexDirection="row" gap={1}>
-                              <Typography fontSize={12} fontWeight={600}>
-                                Other Attachment:
-                              </Typography>
-                              {data?.attachments?.other_attachments?.file_name}
-                            </Stack>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-
-          {/* Buttons */}
-          <Stack flexDirection="row" justifyContent="space-between" alignItems={"center"}>
-            <Typography fontFamily="Anton, Impact, Roboto" fontSize="18px" color="secondary.main" sx={{ pt: "10px" }}>
-              Transactions : {transactionData ? transactionDataApi.length : addRequestAllApi.length} request
-            </Typography>
-
-            {location.pathname === `/approving/${transactionData?.transaction_number}` && (
-              <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
-                <Button
-                  variant="contained"
-                  size="small"
-                  color="secondary"
-                  onClick={() => onApprovalApproveHandler(transactionData?.asset_approval_id)}
-                  startIcon={<Check color="primary" />}
-                >
-                  Approve
-                </Button>
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => onApprovalReturnHandler(transactionData?.asset_approval_id)}
-                  startIcon={<Undo sx={{ color: "#5f3030" }} />}
-                  sx={{
-                    color: "white",
-                    backgroundColor: "error.main",
-                    ":hover": { backgroundColor: "error.dark" },
-                  }}
-                >
-                  Return
-                </Button>
-              </Stack>
+          {transactionData?.pr_number === "-" &&
+            location.pathname === `/asset-requisition/purchase-request/${transactionData?.transaction_number}` && (
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                startIcon={<InsertDriveFile color="secondary" />}
+                onClick={() => {
+                  dispatch(openDialog());
+                }}
+                sx={{ position: "absolute", right: 10, height: "30px" }}
+              >
+                <Typography fontWeight={400} fontSize={14}>
+                  Add PR
+                </Typography>
+              </Button>
             )}
-          </Stack>
+
+          {(transactionData?.pr_number !== "-" || transactionData?.pr_number === null) &&
+            location.pathname === `/asset-requisition/purchase-request/${transactionData?.transaction_number}` && (
+              <Button
+                variant="contained"
+                color="error"
+                size="small"
+                startIcon={<RemoveShoppingCart color="secondary" />}
+                onClick={() => onRemovePrHandler(transactionData)}
+                sx={{ position: "absolute", right: 10, height: "30px" }}
+              >
+                <Typography fontWeight={500} fontSize={14}>
+                  Remove PR
+                </Typography>
+              </Button>
+            )}
+
+          {location.pathname === `/asset-requisition/requisition-receiving/${transactionData?.transaction_number}` && (
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              startIcon={<InsertDriveFile color="secondary" />}
+              onClick={() => {
+                dispatch(openDialog1());
+              }}
+              sx={{ position: "absolute", right: 10, height: "30px" }}
+            >
+              <Typography fontWeight={400} fontSize={14}>
+                Input
+              </Typography>
+            </Button>
+          )}
+
+          <Box className="request mcontainer__wrapper" p={2}>
+            {/* TABLE */}
+            <Box className="request__table">
+              <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
+                {`${transactionData ? "TRANSACTION NO." : "CURRENT ASSET"}`}{" "}
+                {transactionData && transactionData?.transaction_number}
+              </Typography>
+
+              <TableContainer
+                className="mcontainer__th-body  mcontainer__wrapper"
+                sx={{ height: "calc(100vh - 290px)", pt: 0 }}
+              >
+                <Table className="mcontainer__table " stickyHeader>
+                  <TableHead>
+                    <TableRow
+                      sx={{
+                        "& > *": {
+                          fontWeight: "bold!important",
+                          whiteSpace: "nowrap",
+                        },
+                      }}
+                    >
+                      <TableCell className="tbl-cell">Ref. No.</TableCell>
+                      <TableCell className="tbl-cell">Type of Request</TableCell>
+                      {transactionData?.pr_number && <TableCell className="tbl-cell">PR Number</TableCell>}
+                      <TableCell className="tbl-cell">Attachment Type</TableCell>
+                      <TableCell className="tbl-cell">Chart of Accounts</TableCell>
+                      <TableCell className="tbl-cell">Accountability</TableCell>
+                      <TableCell className="tbl-cell">Asset Information</TableCell>
+                      <TableCell className="tbl-cell text-center">Quantity</TableCell>
+                      <TableCell className="tbl-cell">Cellphone #</TableCell>
+                      <TableCell className="tbl-cell">Remarks</TableCell>
+                      <TableCell className="tbl-cell">Attachments</TableCell>
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {isRequestLoading || isTransactionLoading ? (
+                      <LoadingData />
+                    ) : (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.length === 0) ? (
+                      <NoRecordsFound />
+                    ) : (
+                      <>
+                        {(transactionData ? transactionDataApi : addRequestAllApi).map((data, index) => (
+                          <TableRow
+                            key={index}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell tr-cen-pad45 text-weight">{data.reference_number}</TableCell>
+                            <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
+                            <TableCell className="tbl-cell">{data.pr_number}</TableCell>
+                            <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
+                            <TableCell className="tbl-cell">
+                              <Typography fontSize={10} color="gray">
+                                {`(${data.company?.company_code}) - ${data.company?.company_name}`}
+                              </Typography>
+                              <Typography fontSize={10} color="gray">
+                                {`(${data.department?.department_code}) - ${data.department?.department_name}`}
+                              </Typography>
+                              <Typography fontSize={10} color="gray">
+                                {`(${data.location?.location_code}) - ${data.location?.location_name}`}
+                              </Typography>
+                              <Typography fontSize={10} color="gray">
+                                {`(${data.account_title?.account_title_code}) - ${data.account_title?.account_title_name}`}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell className="tbl-cell">
+                              {data.accountability === "Personal Issued" ? (
+                                <>
+                                  <Box>{data?.accountable?.general_info?.full_id_number}</Box>
+                                  <Box>{data?.accountable?.general_info?.full_name}</Box>
+                                </>
+                              ) : (
+                                "Common"
+                              )}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell">
+                              <Typography fontWeight={600} fontSize="14px" color="secondary.main">
+                                {data.asset_description}
+                              </Typography>
+                              <Typography fontSize="12px" color="text.light">
+                                {data.asset_specification}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
+
+                            <TableCell className="tbl-cell">
+                              {data.cellphone_number === null ? "-" : data.cellphone_number}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell">
+                              {data.remarks === null ? "No Remarks" : data.remarks}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell">
+                              {data?.attachments?.letter_of_request && (
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize={12} fontWeight={600}>
+                                    Letter of Request:
+                                  </Typography>
+                                  {data?.attachments?.letter_of_request?.file_name}
+                                </Stack>
+                              )}
+                              {data?.attachments?.quotation && (
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize={12} fontWeight={600}>
+                                    Quotation:
+                                  </Typography>
+                                  {data?.attachments?.quotation?.file_name}
+                                </Stack>
+                              )}
+                              {data?.attachments?.specification_form && (
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize={12} fontWeight={600}>
+                                    Specification:
+                                  </Typography>
+                                  {data?.attachments?.specification_form?.file_name}
+                                </Stack>
+                              )}
+                              {data?.attachments?.tool_of_trade && (
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize={12} fontWeight={600}>
+                                    Tool of Trade:
+                                  </Typography>
+                                  {data?.attachments?.tool_of_trade?.file_name}
+                                </Stack>
+                              )}
+                              {data?.attachments?.other_attachments && (
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize={12} fontWeight={600}>
+                                    Other Attachment:
+                                  </Typography>
+                                  {data?.attachments?.other_attachments?.file_name}
+                                </Stack>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+              {/* Buttons */}
+              <Stack flexDirection="row" justifyContent="space-between" alignItems={"center"}>
+                <Typography
+                  fontFamily="Anton, Impact, Roboto"
+                  fontSize="18px"
+                  color="secondary.main"
+                  sx={{ pt: "10px" }}
+                >
+                  Transactions : {transactionData ? transactionDataApi.length : addRequestAllApi.length} request
+                </Typography>
+
+                {location.pathname === `/approving/${transactionData?.transaction_number}` && (
+                  <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      color="secondary"
+                      onClick={() => onApprovalApproveHandler(transactionData?.asset_approval_id)}
+                      startIcon={<Check color="primary" />}
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => onApprovalReturnHandler(transactionData?.asset_approval_id)}
+                      startIcon={<Undo sx={{ color: "#5f3030" }} />}
+                      sx={{
+                        color: "white",
+                        backgroundColor: "error.main",
+                        ":hover": { backgroundColor: "error.dark" },
+                      }}
+                    >
+                      Return
+                    </Button>
+                  </Stack>
+                )}
+              </Stack>
+            </Box>
+          </Box>
+
+          <Dialog
+            open={dialog}
+            onClose={handleCloseDialog}
+            sx={{
+              ".MuiPaper-root": {
+                alignItems: "center",
+                padding: "20px",
+                margin: 0,
+                gap: "5px",
+                minWidth: "250px",
+                maxWidth: "350px",
+                width: "50%",
+                textAlign: "center",
+                borderRadius: "10px",
+              },
+            }}
+          >
+            <AddPr transactionData={transactionData} />
+          </Dialog>
+
+          <Dialog
+            open={dialog1}
+            onClose={handleCloseDialog}
+            sx={{
+              ".MuiPaper-root": {
+                alignItems: "center",
+                padding: "20px",
+                margin: 0,
+                gap: "5px",
+                minWidth: "250px",
+                maxWidth: "350px",
+                width: "50%",
+                textAlign: "center",
+                borderRadius: "10px",
+              },
+            }}
+          >
+            <AddReceivingOfAsset transactionData={transactionData} />
+          </Dialog>
         </Box>
-      </Box>
-
-      <Dialog
-        open={dialog}
-        onClose={handleCloseDialog}
-        sx={{
-          ".MuiPaper-root": {
-            alignItems: "center",
-            padding: "20px",
-            margin: 0,
-            gap: "5px",
-            minWidth: "250px",
-            maxWidth: "350px",
-            width: "50%",
-            textAlign: "center",
-            borderRadius: "10px",
-          },
-        }}
-      >
-        <AddPr transactionData={transactionData} />
-      </Dialog>
-
-      <Dialog
-        open={dialog1}
-        onClose={handleCloseDialog}
-        sx={{
-          ".MuiPaper-root": {
-            alignItems: "center",
-            padding: "20px",
-            margin: 0,
-            gap: "5px",
-            minWidth: "250px",
-            maxWidth: "350px",
-            width: "50%",
-            textAlign: "center",
-            borderRadius: "10px",
-          },
-        }}
-      >
-        <AddReceivingOfAsset transactionData={transactionData} />
-      </Dialog>
-    </Box>
+      )}
+    </>
   );
 };
 

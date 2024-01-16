@@ -26,21 +26,21 @@ const RequestList = [
     icon: <AssignmentTurnedIn />,
     label: "Requisition",
     description: "Requesting of Fixed Assets",
-    path: "/request/requisition",
+    path: "/asset-requisition/requisition",
   },
 
   {
     icon: <ShoppingBasket />,
     label: "Purchase Request",
     description: "Matching of Purchase Request",
-    path: "/request/purchase-request",
+    path: "/asset-requisition/purchase-request",
   },
 
   {
     icon: <CallReceived />,
     label: "Receiving of Asset",
     description: "Input of additional info and Purchase Order Number",
-    path: "/request/requisition-receiving",
+    path: "/asset-requisition/requisition-receiving",
   },
 ];
 

@@ -24,28 +24,28 @@ const RequestList = [
     icon: <TransferWithinAStation />,
     label: "Transfer",
     description: "Requesting for Asset Transfer",
-    path: "/request/transfer",
+    path: "/asset-movement/transfer",
   },
 
   {
     icon: <RemoveFromQueue />,
     label: "Pull-Out",
     description: "Requesting for Asset Pull-Out",
-    path: "/request/pull-out",
+    path: "/asset-movement/pull-out",
   },
 
   {
     icon: <RuleFolder />,
     label: "Evaluation",
     description: "Requesting for Asset Evaluation",
-    path: "/request/evaluation",
+    path: "/asset-movement/evaluation",
   },
 
   {
     icon: <PlaylistRemoveRounded />,
     label: "Disposal",
     description: "List of For Disposal Items",
-    path: "/request/disposal",
+    path: "/asset-movement/disposal",
   },
 ];
 
