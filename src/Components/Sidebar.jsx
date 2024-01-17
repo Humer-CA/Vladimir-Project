@@ -77,22 +77,22 @@ import {
 } from "@mui/icons-material";
 
 const Sidebar = () => {
-  const [state, setState] = useState(false);
+  const [state, setState] = useState(true);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [masterListCollapse, setMasterListCollapse] = useState(false);
-  const [userCollapse, setUserCollapse] = useState(false);
+  const [userManagementCollapse, setUserManagementCollapse] = useState(false);
   const [settingsCollapse, setSettingsCollapse] = useState(false);
-  const [assetRequestCollapse, setAssetRequestCollapse] = useState(false);
+  const [assetRequisitionCollapse, setAssetRequisitionCollapse] = useState(false);
   const [assetMovementCollapse, setAssetMovementCollapse] = useState(false);
   const [reportCollapse, setReportCollapse] = useState(false);
-  const collapseArray = [
-    masterListCollapse,
-    userCollapse,
-    settingsCollapse,
-    assetRequestCollapse,
-    assetMovementCollapse,
-    reportCollapse,
-  ];
+  // const collapseArray = [
+  //   masterListCollapse,
+  //   userManagementCollapse,
+  //   settingsCollapse,
+  //   assetRequestCollapse,
+  //   assetMovementCollapse,
+  //   reportCollapse,
+  // ];
 
   const sidebarRef = useRef(null);
 
@@ -108,9 +108,9 @@ const Sidebar = () => {
 
   const closeCollapse = () => {
     setMasterListCollapse(false);
-    setUserCollapse(false);
+    setUserManagementCollapse(false);
     setSettingsCollapse(false);
-    setAssetRequestCollapse(false);
+    setAssetRequisitionCollapse(false);
     setAssetMovementCollapse(false);
     setReportCollapse(false);
   };
@@ -232,9 +232,10 @@ const Sidebar = () => {
       setter: (e) => {
         // e.preventDefault();
         setMasterListCollapse(!masterListCollapse);
-        setUserCollapse(false);
+        setUserManagementCollapse(false);
         setSettingsCollapse(false);
-        setAssetRequestCollapse(false);
+        setAssetRequisitionCollapse(false);
+        setAssetMovementCollapse(false);
         setReportCollapse(false);
         closeCollapse;
         dispatch(openSidebar());
@@ -260,13 +261,14 @@ const Sidebar = () => {
           permission: "role-management",
         },
       ],
-      open: userCollapse,
+      open: userManagementCollapse,
       setter: (e) => {
         // e.preventDefault();
-        setUserCollapse(!userCollapse);
+        setUserManagementCollapse(!userManagementCollapse);
         setMasterListCollapse(false);
         setSettingsCollapse(false);
-        setAssetRequestCollapse(false);
+        setAssetRequisitionCollapse(false);
+        setAssetMovementCollapse(false);
         setReportCollapse(false);
         closeCollapse;
         dispatch(openSidebar());
@@ -304,9 +306,10 @@ const Sidebar = () => {
       setter: (e) => {
         // e.preventDefault();
         setSettingsCollapse(!settingsCollapse);
-        setUserCollapse(false);
+        setUserManagementCollapse(false);
         setMasterListCollapse(false);
-        setAssetRequestCollapse(false);
+        setAssetRequisitionCollapse(false);
+        setAssetMovementCollapse(false);
         setReportCollapse(false);
         closeCollapse;
         dispatch(openSidebar());
@@ -341,12 +344,13 @@ const Sidebar = () => {
           setter: closeCollapse,
         },
       ],
-      open: assetRequestCollapse,
+      open: assetRequisitionCollapse,
       setter: () => {
-        setAssetRequestCollapse(!assetRequestCollapse);
+        setAssetRequisitionCollapse(!assetRequisitionCollapse);
         setMasterListCollapse(false);
-        setUserCollapse(false);
+        setUserManagementCollapse(false);
         setSettingsCollapse(false);
+        setAssetMovementCollapse(false);
         setReportCollapse(false);
         closeCollapse;
         dispatch(openSidebar());
@@ -392,9 +396,9 @@ const Sidebar = () => {
       setter: () => {
         setAssetMovementCollapse(!assetMovementCollapse);
         setMasterListCollapse(false);
-        setUserCollapse(false);
+        setUserManagementCollapse(false);
         setSettingsCollapse(false);
-        setAssetRequestCollapse(false);
+        setAssetRequisitionCollapse(false);
         setReportCollapse(false);
         closeCollapse;
         dispatch(openSidebar());
@@ -470,7 +474,7 @@ const Sidebar = () => {
     //   setter: () => {
     //     setReportCollapse(!reportCollapse);
     //     setMasterListCollapse(false);
-    //     setUserCollapse(false);
+    //     setUserManagementCollapse(false);
     //     setAssetRequestCollapse(false);
     //     closeCollapse;
     //     dispatch(openSidebar());
@@ -482,17 +486,24 @@ const Sidebar = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (collapse) {
-      const routes = ["masterlist", "user-management", "settings", "request", "reports"];
-      const match = routes.find((route) => pathname.includes(route));
-      if (match) {
-        const stateVariable = `${match}Collapse`;
-        setState(stateVariable, true);
-      }
-    } else if (pathname === "/") {
+    if (!collapse || pathname === "/") {
       closeCollapse();
-    } else {
-      closeCollapse();
+      return;
+    }
+
+    const routeStateMap = {
+      masterlist: setMasterListCollapse,
+      "user-management": setUserManagementCollapse,
+      settings: setSettingsCollapse,
+      "asset-requisition": setAssetRequisitionCollapse,
+      "asset-movement": setAssetMovementCollapse,
+      reports: setReportCollapse,
+    };
+
+    const match = Object.keys(routeStateMap).find((route) => pathname.includes(route));
+    console.log(routeStateMap);
+    if (match) {
+      routeStateMap[match](true);
     }
   }, [collapse, pathname]);
 
