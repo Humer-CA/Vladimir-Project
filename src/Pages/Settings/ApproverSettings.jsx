@@ -257,12 +257,12 @@ const ApproverSettings = () => {
                   </TableHead>
 
                   <TableBody>
-                    {approverSettingsData?.data?.data?.length === 0 ? (
+                    {approverSettingsData?.data?.length === 0 ? (
                       <NoRecordsFound />
                     ) : (
                       <>
                         {approverSettingsSuccess &&
-                          [...approverSettingsData?.data?.data]?.sort(comparator(order, orderBy))?.map((data) => (
+                          [...approverSettingsData?.data]?.sort(comparator(order, orderBy))?.map((data) => (
                             <TableRow
                               key={data.id}
                               sx={{

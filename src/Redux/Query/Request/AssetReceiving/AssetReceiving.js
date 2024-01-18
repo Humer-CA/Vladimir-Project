@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const receivingApi = createApi({
-  reducerPath: "receivingApi",
-  tagTypes: ["Receiving"],
+export const assetReceivingApi = createApi({
+  reducerPath: "assetReceivingApi",
+  tagTypes: ["AssetReceiving"],
 
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.VLADIMIR_BASE_URL,
@@ -17,50 +17,56 @@ export const receivingApi = createApi({
   }),
 
   endpoints: (builder) => ({
-    getReceivingApi: builder.query({
+    getAssetReceivingApi: builder.query({
       query: (params) =>
         `adding-po?toPo=1&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
-      providesTags: ["Receiving"],
+      providesTags: ["AssetReceiving"],
     }),
 
-    getReceivedApi: builder.query({
+    getAssetReceivedApi: builder.query({
       query: (params) =>
         `adding-po?toPo=0&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}`,
-      providesTags: ["Receiving"],
+      providesTags: ["AssetReceiving"],
     }),
 
-    getReceivingAllApi: builder.query({
+    getAssetReceivingAllApi: builder.query({
       query: () => `asset-request?pagination=none`,
       // transformResponse: (response) => response.data,
-      providesTags: ["Receiving"],
+      providesTags: ["AssetReceiving"],
     }),
 
-    addReceivingApi: builder.mutation({
+    getItemPerTransactionApi: builder.query({
+      query: (params) => `adding-po/${params?.transaction_number}?&per_page=${params.per_page}&page=${params.page}`,
+      providesTags: ["AssetReceiving"],
+    }),
+
+    addAssetReceivingApi: builder.mutation({
       query: (data) => ({
         url: `/adding-po/${data?.transaction_number}`,
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: ["Receiving"],
+      invalidatesTags: ["AssetReceiving"],
     }),
 
-    removeReceivingApi: builder.mutation({
+    removeAssetReceivingApi: builder.mutation({
       query: (body) => ({
         url: `/remove-pr/${body?.transaction_number}`,
         method: "PUT",
-        body: console.log(body),
+        // body: console.log(body),
       }),
-      invalidatesTags: ["Receiving"],
+      invalidatesTags: ["AssetReceiving"],
     }),
   }),
 });
 
 export const {
-  useGetReceivingApiQuery,
-  useGetReceivedApiQuery,
-  useGetReceivingAllApiQuery,
-  useLazyGetReceivingAllApiQuery,
-  useLazyGetReceivingApiQuery,
-  useAddReceivingApiMutation,
-  useRemoveReceivingApiMutation,
-} = receivingApi;
+  useGetAssetReceivingApiQuery,
+  useGetAssetReceivedApiQuery,
+  useGetAssetReceivingAllApiQuery,
+  useGetItemPerTransactionApiQuery,
+  useLazyGetAssetReceivingAllApiQuery,
+  useLazyGetAssetReceivingApiQuery,
+  useAddAssetReceivingApiMutation,
+  useRemoveAssetReceivingApiMutation,
+} = assetReceivingApi;

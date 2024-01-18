@@ -41,7 +41,10 @@ import {
 import { Help, LibraryAdd, Report, ReportProblem, Visibility } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanStateSlice";
-import { useGetReceivingApiQuery, useGetReceivedApiQuery } from "../../../Redux/Query/Receiving/Receiving";
+import {
+  useGetAssetReceivingApiQuery,
+  useGetAssetReceivedApiQuery,
+} from "../../../Redux/Query/Request/AssetReceiving/AssetReceiving";
 
 const ReceivingTable = (props) => {
   const { received } = props;
@@ -97,7 +100,7 @@ const ReceivingTable = (props) => {
     isError: receivingError,
     error: errorData,
     refetch,
-  } = (received ? useGetReceivedApiQuery : useGetReceivingApiQuery)(
+  } = (received ? useGetAssetReceivedApiQuery : useGetAssetReceivingApiQuery)(
     {
       page: page,
       per_page: perPage,
@@ -192,7 +195,7 @@ const ReceivingTable = (props) => {
 
                   <TableBody>
                     {receivingData?.data?.length === 0 ? (
-                      <NoRecordsFound />
+                      <NoRecordsFound category />
                     ) : (
                       <>
                         {receivingSuccess &&

@@ -46,7 +46,8 @@ import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
 import { closeDialog, openDialog, closeDialog1, openDialog1 } from "../../Redux/StateManagement/booleanStateSlice";
 import { useRemovePurchaseRequestApiMutation } from "../../Redux/Query/Request/PurchaseRequest";
 import ErrorFetching from "../ErrorFetching";
-import AddReceivingOfAsset from "../Asset Requisition/Receiving of Asset/AddReceivingOfAsset";
+import AddReceivingOfAsset from "./Receiving of Asset/ViewReceivingItems";
+import ViewReceivingItems from "./Receiving of Asset/ViewReceivingItems";
 
 const ViewRequest = (props) => {
   const { approving } = props;
@@ -57,8 +58,6 @@ const ViewRequest = (props) => {
 
   const dialog = useSelector((state) => state.booleanState.dialog);
   const dialog1 = useSelector((state) => state.booleanState.dialogMultiple.dialog1);
-
-  console.log(dialog1);
 
   const [patchApprovalStatus, { isLoading }] = usePatchApprovalStatusApiMutation();
   const [getNextRequest, { data: nextData, isLoading: isNextRequestLoading }] = useLazyGetNextRequestQuery();
@@ -374,9 +373,7 @@ const ViewRequest = (props) => {
               color="primary"
               size="small"
               startIcon={<InsertDriveFile color="secondary" />}
-              onClick={() => {
-                dispatch(openDialog1());
-              }}
+              onClick={() => dispatch(openDialog1())}
               sx={{ position: "absolute", right: 10, height: "30px" }}
             >
               <Typography fontWeight={400} fontSize={14}>
@@ -599,7 +596,7 @@ const ViewRequest = (props) => {
 
           <Dialog
             open={dialog1}
-            onClose={handleCloseDialog}
+            onClose={() => dispatch(closeDialog1())}
             sx={{
               ".MuiPaper-root": {
                 alignItems: "center",
@@ -607,14 +604,14 @@ const ViewRequest = (props) => {
                 margin: 0,
                 gap: "5px",
                 minWidth: "250px",
-                maxWidth: "350px",
-                width: "50%",
+                maxWidth: "100vw",
+                width: "85%",
                 textAlign: "center",
                 borderRadius: "10px",
               },
             }}
           >
-            <AddReceivingOfAsset transactionData={transactionData} />
+            <ViewReceivingItems transactionData={transactionData} />
           </Dialog>
         </Box>
       )}

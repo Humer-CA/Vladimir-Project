@@ -283,7 +283,7 @@ const Capex = () => {
                     <TableRow
                       sx={{
                         "& > *": {
-                          fontWeight: "bold!important",
+                          fontWeight: "bold",
                           whiteSpace: "nowrap",
                           color: "secondary.main",
                           position: "relative",

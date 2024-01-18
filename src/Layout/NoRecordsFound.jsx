@@ -7,12 +7,18 @@ const NoRecordsFound = (props) => {
   return (
     <>
       <TableRow>
-        <TableCell className="centeredTableCell" colSpan={999} rowSpan={999} sx={{ borderBottom: "none", height: category ? "calc(100vh - 435px)" : request ? "calc(100vh - 360px)" : "calc(100vh - 390px)", }}>
-          <Box
-            className="noRecordsFoundImg"
-          />
+        <TableCell
+          className="centeredTableCell"
+          colSpan={999}
+          rowSpan={999}
+          sx={{
+            borderBottom: "none",
+            height: category ? "calc(100vh - 440px)" : request ? "calc(100vh - 360px)" : "calc(100vh - 390px)",
+          }}
+        >
+          <Box className="noRecordsFoundImg" />
         </TableCell>
-      </TableRow >
+      </TableRow>
     </>
   );
 };

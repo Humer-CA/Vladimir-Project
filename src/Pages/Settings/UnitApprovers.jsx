@@ -102,7 +102,7 @@ const UnitApprovers = () => {
   } = useGetUnitApproversApiQuery(
     {
       page: page,
-      perPage: perPage,
+      per_page: perPage,
       status: status,
       search: search,
     },
@@ -275,7 +275,6 @@ const UnitApprovers = () => {
     setPage(1);
   };
 
-
   return (
     <>
       {unitApproversLoading && <MasterlistSkeleton category={true} onAdd={true} />}
@@ -288,7 +287,7 @@ const UnitApprovers = () => {
               onStatusChange={setStatus}
               onSearchChange={setSearch}
               onSetPage={setPage}
-              onAdd={() => { }}
+              onAdd={() => {}}
               hideArchive={true}
             />
 

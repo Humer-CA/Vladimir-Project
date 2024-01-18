@@ -638,7 +638,7 @@ const IpSetup = (props) => {
                   <TableRow
                     sx={{
                       "& > *": {
-                        fontWeight: "bold!important",
+                        fontWeight: "bold",
                         whiteSpace: "nowrap",
                         padding: "5px 10px",
                       },
