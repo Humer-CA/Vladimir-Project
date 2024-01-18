@@ -601,11 +601,12 @@ const ViewRequest = (props) => {
               ".MuiPaper-root": {
                 alignItems: "center",
                 padding: "20px",
+                pb: 0,
                 margin: 0,
                 gap: "5px",
                 minWidth: "250px",
                 maxWidth: "100vw",
-                width: "85%",
+                width: "90%",
                 textAlign: "center",
                 borderRadius: "10px",
               },

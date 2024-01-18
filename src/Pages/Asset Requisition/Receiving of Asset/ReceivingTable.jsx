@@ -124,7 +124,7 @@ const ReceivingTable = (props) => {
 
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
-      {receivingLoading && <MasterlistSkeleton onAdd={true} />}
+      {receivingLoading && <MasterlistSkeleton onAdd={true} category />}
       {receivingError && <ErrorFetching refetch={refetch} error={errorData} />}
       {receivingData && !receivingError && (
         <>
