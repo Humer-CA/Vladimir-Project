@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../../../Style/Masterlist/addMasterlist.scss";
+// import "../../../Style/Masterlist/addMasterlist.scss";
 import CustomNumberField from "../../../Components/Reusable/CustomNumberField";
 import CustomAutoComplete from "../../../Components/Reusable/CustomAutoComplete";
 
@@ -44,7 +44,7 @@ import {
   useGetItemPerTransactionApiQuery,
 } from "../../../Redux/Query/Request/AssetReceiving/AssetReceiving";
 import moment from "moment";
-import { useGetByTransactionApiQuery } from "../../../Redux/Query/Request/Requisition";
+import { LoadingData } from "../../../Components/LottieFiles/LottieComponents";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -75,6 +75,7 @@ const ViewReceivingItems = (props) => {
     { refetchOnMountOrArgChange: true }
   );
 
+  console.log(transactionData);
   //* Table Sorting -------------------------------------------------------
   const [order, setOrder] = useState("desc");
   const [orderBy, setOrderBy] = useState("id");
@@ -228,7 +229,9 @@ const ViewReceivingItems = (props) => {
             </TableHead>
 
             <TableBody>
-              {receivingData?.data?.length === 0 ? (
+              {receivingLoading ? (
+                <LoadingData />
+              ) : receivingData?.data?.length === 0 ? (
                 <NoRecordsFound />
               ) : (
                 <>

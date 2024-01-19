@@ -30,7 +30,7 @@ export const assetReceivingApi = createApi({
     }),
 
     getAssetReceivingAllApi: builder.query({
-      query: () => `asset-request?pagination=none`,
+      query: () => `adding-po?pagination=none`,
       // transformResponse: (response) => response.data,
       providesTags: ["AssetReceiving"],
     }),
