@@ -105,11 +105,16 @@
   padding: 0;
   margin: 0;
 
-  // // @media only screen and (min-width: 801px) {
-  // //   width: 75px;
-  // // }
+  @media only screen and (min-width: 801px) {
+    width: 75px;
+  }
+}
+.collapsed85 {
+  width: 0px;
+  padding: 0;
+  margin: 0;
 
-  // @media only screen and (min-width: 801px) {
-  //   width: 85px;
-  // }
+  @media only screen and (min-width: 801px) {
+    width: 85px;
+  }
 }

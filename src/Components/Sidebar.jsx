@@ -23,6 +23,7 @@ import {
   IconButton,
   Typography,
   Tooltip,
+  useMediaQuery,
 } from "@mui/material";
 import Zoom from "@mui/material/Zoom";
 import Badge from "@mui/material/Badge";
@@ -93,7 +94,7 @@ const Sidebar = () => {
   //   assetMovementCollapse,
   //   reportCollapse,
   // ];
-
+  const isSmallScreen = useMediaQuery("(width: 800)");
   const sidebarRef = useRef(null);
 
   const dispatch = useDispatch();
@@ -501,7 +502,6 @@ const Sidebar = () => {
     };
 
     const match = Object.keys(routeStateMap).find((route) => pathname.includes(route));
-    console.log(routeStateMap);
     if (match) {
       routeStateMap[match](true);
     }
@@ -524,13 +524,10 @@ const Sidebar = () => {
     return () => {
       window.removeEventListener("resize", checkOverflow);
     };
-  }, []);
+  }, [isSmallScreen]);
 
   return (
-    <Box
-      className={`sidebar ${collapse ? "" : "collapsed"}`}
-      sx={{ width: collapse ? null : isOverflowing ? "85px" : "75px" }}
-    >
+    <Box className={`sidebar ${collapse ? "" : isOverflowing === true ? "collapsed85" : "collapsed"}`}>
       <Box>
         {collapse ? (
           <IconButton
