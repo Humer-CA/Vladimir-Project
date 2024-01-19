@@ -13,6 +13,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
   Typography,
   useMediaQuery,
@@ -52,6 +53,8 @@ import ViewReceivingItems from "./Receiving of Asset/ViewReceivingItems";
 const ViewRequest = (props) => {
   const { approving } = props;
   const { state: transactionData } = useLocation();
+  const [perPage, setPerPage] = useState(5);
+  const [page, setPage] = useState(1);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,6 +70,7 @@ const ViewRequest = (props) => {
   const {
     data: addRequestAllApi = [],
     isLoading: isRequestLoading,
+    isSuccess: isRequestSuccess,
     isError: isRequestError,
     error: errorData,
     refetch: isRequestRefetch,
@@ -78,7 +82,7 @@ const ViewRequest = (props) => {
     isSuccess: isTransactionSuccess,
     refetch: isTransactionRefetch,
   } = useGetByTransactionApiQuery(
-    { transaction_number: transactionData?.transaction_number },
+    { page: page, per_page: perPage, transaction_number: transactionData?.transaction_number },
     { refetchOnMountOrArgChange: true }
   );
 
@@ -311,6 +315,16 @@ const ViewRequest = (props) => {
 
   const handleCloseDialog = () => {
     dispatch(closeDialog()) || dispatch(closeDialog1());
+  };
+
+  const perPageHandler = (e) => {
+    setPage(1);
+    setPerPage(parseInt(e.target.value));
+  };
+
+  const pageHandler = (_, page) => {
+    // console.log(page + 1);
+    setPage(page + 1);
   };
 
   return (

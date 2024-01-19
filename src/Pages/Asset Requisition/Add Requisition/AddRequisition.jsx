@@ -65,6 +65,7 @@ import {
   usePostResubmitRequisitionApiMutation,
   useUpdateRequisitionApiMutation,
   useDeleteRequisitionReferenceApiMutation,
+  useGetByTransactionPageApiQuery,
 } from "../../../Redux/Query/Request/Requisition";
 
 import { useGetTypeOfRequestAllApiQuery } from "../../../Redux/Query/Masterlist/TypeOfRequest";
@@ -81,6 +82,7 @@ import axios from "axios";
 import { closeConfirm, onLoading, openConfirm } from "../../../Redux/StateManagement/confirmSlice";
 import { usePostRequisitionSmsApiMutation } from "../../../Redux/Query/Request/RequisitionSms";
 import CustomPatternfield from "../../../Components/Reusable/CustomPatternfield";
+import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -153,6 +155,8 @@ const AddRequisition = (props) => {
     other_attachments: null,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [perPage, setPerPage] = useState(5);
+  const [page, setPage] = useState(1);
   const [updateToggle, setUpdateToggle] = useState(true);
 
   const { state: transactionData } = useLocation();
@@ -248,19 +252,35 @@ const AddRequisition = (props) => {
 
   // CONTAINER
   const {
-    data: addRequestAllApi = [],
+    data: addRequestAllApi,
     isLoading: isRequestLoading,
+    isSuccess: isRequestSuccess,
     refetch: isRequestRefetch,
-  } = useGetRequestContainerAllApiQuery({ refetchOnMountOrArgChange: true });
+  } = useGetRequestContainerAllApiQuery({ page: page, per_page: perPage }, { refetchOnMountOrArgChange: true });
+
+  console.log(addRequestAllApi);
 
   const {
     data: transactionDataApi = [],
     isLoading: isTransactionLoading,
+    isLoading: isTransactionSuccess,
     refetch: isTransactionRefetch,
   } = useGetByTransactionApiQuery(
     { transaction_number: transactionData?.transaction_number },
     { refetchOnMountOrArgChange: true }
   );
+
+  const {
+    data: transactionDataApiPage,
+    isLoading: isTransactionPageLoading,
+    isLoading: isTransactionPageSuccess,
+    refetch: isTransactionPageRefetch,
+  } = useGetByTransactionPageApiQuery(
+    { page: page, per_page: perPage, transaction_number: transactionData?.transaction_number },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  // console.log("DataAPI", transactionDataApiPage);
 
   const [postRequest, { data: postRequestData }] = usePostRequestContainerApiMutation();
   const [upDateRequest, { data: updateRequestData }] = useUpdateRequestContainerApiMutation();
@@ -944,8 +964,17 @@ const AddRequisition = (props) => {
     });
   };
 
+  const perPageHandler = (e) => {
+    setPage(1);
+    setPerPage(parseInt(e.target.value));
+  };
+
+  const pageHandler = (_, page) => {
+    // console.log(page + 1);
+    setPage(page + 1);
+  };
+
   // console.log("TransactionData", transactionData);
-  // console.log("DataAPI", transactionDataApi);
 
   return (
     <>
@@ -1585,6 +1614,17 @@ const AddRequisition = (props) => {
                 </TableBody>
               </Table>
             </TableContainer>
+
+            {(isTransactionSuccess || isRequestSuccess) && (
+              <CustomTablePagination
+                total={(transactionDataApiPage || addRequestAllApi)?.total}
+                success={isTransactionSuccess || isRequestSuccess}
+                current_page={(transactionDataApiPage || addRequestAllApi)?.current_page}
+                per_page={(transactionDataApiPage || addRequestAllApi)?.per_page}
+                onPageChange={pageHandler}
+                onRowsPerPageChange={perPageHandler}
+              />
+            )}
 
             {/* Buttons */}
             <Stack flexDirection="row" justifyContent="space-between" alignItems={"center"}>

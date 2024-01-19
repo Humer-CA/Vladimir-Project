@@ -58,6 +58,7 @@ import AssetRequisition from "./Pages/Asset Requisition";
 
 import Approving from "./Pages/Approving/Approving";
 import ReceivingOfAsset from "./Pages/Asset Requisition/Receiving of Asset/ReceivingOfAsset";
+import ViewRequestReceiving from "./Pages/Asset Requisition/Receiving of Asset/ViewRequestReceiving";
 
 import PageNotFound from "./Pages/PageNotFound";
 import Confirmation from "./Components/Reusable/Confirmation";
@@ -252,7 +253,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "requisition-receiving/:transaction_number",
-                element: <ViewRequest />,
+                element: <ViewRequestReceiving />,
               },
             ],
           },

@@ -46,7 +46,13 @@ export const requisitionApi = createApi({
     }),
 
     getByTransactionApi: builder.query({
-      query: ({ transaction_number }) => `asset-request/${transaction_number}`,
+      query: (params) => `asset-request/${params.transaction_number}`,
+      transformResponse: (res) => res.data,
+      providesTags: ["Requisition"],
+    }),
+
+    getByTransactionPageApi: builder.query({
+      query: (params) => `asset-request/${params?.transaction_number}?per_page=${params.per_page}&page=${params.page}`,
       providesTags: ["Requisition"],
     }),
 
@@ -135,6 +141,7 @@ export const {
   useLazyGetRequisitionAllApiQuery,
   useGetRequisitionIdApiQuery,
   useGetByTransactionApiQuery,
+  useGetByTransactionPageApiQuery,
   usePatchRequisitionStatusApiMutation,
   usePostRequisitionApiMutation,
   usePostResubmitRequisitionApiMutation,
