@@ -33,6 +33,7 @@ import { Help, ReportProblem } from "@mui/icons-material";
 import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 import NoRecordsFound from "../../Layout/NoRecordsFound";
 import AddApproverSettings from "./AddEdit/AddApproverSettings";
+import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
 
 const ApproverSettings = () => {
   const [search, setSearch] = useState("");
@@ -333,20 +334,11 @@ const ApproverSettings = () => {
             </Box>
 
             <Box className="mcontainer__pagination">
-              <TablePagination
-                rowsPerPageOptions={[
-                  5,
-                  10,
-                  15,
-                  {
-                    label: "All",
-                    value: parseInt(approverSettingsData?.data?.total),
-                  },
-                ]}
-                component="div"
-                count={approverSettingsSuccess ? approverSettingsData?.data?.total : 0}
-                page={approverSettingsSuccess ? approverSettingsData?.data?.current_page - 1 : 0}
-                rowsPerPage={approverSettingsSuccess ? parseInt(approverSettingsData?.data?.per_page) : 5}
+              <CustomTablePagination
+                total={approverSettingsData?.total}
+                success={approverSettingsSuccess}
+                current_page={approverSettingsData?.current_page}
+                per_page={approverSettingsData?.per_page}
                 onPageChange={pageHandler}
                 onRowsPerPageChange={perPageHandler}
               />
