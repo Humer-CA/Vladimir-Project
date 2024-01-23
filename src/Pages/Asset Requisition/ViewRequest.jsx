@@ -47,8 +47,6 @@ import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
 import { closeDialog, openDialog, closeDialog1, openDialog1 } from "../../Redux/StateManagement/booleanStateSlice";
 import { useRemovePurchaseRequestApiMutation } from "../../Redux/Query/Request/PurchaseRequest";
 import ErrorFetching from "../ErrorFetching";
-import AddReceivingOfAsset from "./Receiving of Asset/ViewReceivingItems";
-import ViewReceivingItems from "./Receiving of Asset/ViewReceivingItems";
 
 const ViewRequest = (props) => {
   const { approving } = props;
@@ -396,7 +394,7 @@ const ViewRequest = (props) => {
             </Button>
           )}
 
-          <Box className="request mcontainer__wrapper" p={2}>
+          <Box className="request mcontainer__wrapper" p={2} pb={0}>
             {/* TABLE */}
             <Box className="request__table">
               <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
@@ -606,27 +604,6 @@ const ViewRequest = (props) => {
             }}
           >
             <AddPr transactionData={transactionData} />
-          </Dialog>
-
-          <Dialog
-            open={dialog1}
-            onClose={() => dispatch(closeDialog1())}
-            sx={{
-              ".MuiPaper-root": {
-                alignItems: "center",
-                padding: "20px",
-                pb: 0,
-                margin: 0,
-                gap: "5px",
-                minWidth: "250px",
-                maxWidth: "100vw",
-                width: "90%",
-                textAlign: "center",
-                borderRadius: "10px",
-              },
-            }}
-          >
-            <ViewReceivingItems transactionData={transactionData} />
           </Dialog>
         </Box>
       )}

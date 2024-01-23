@@ -362,3 +362,7 @@ input::file-selector-button {
   inset: 0;
   margin: 0 auto;
 }
+
+.tableWhiteText :hover :active {
+  color: white;
+}

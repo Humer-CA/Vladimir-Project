@@ -50,10 +50,10 @@ export const assetReceivingApi = createApi({
     }),
 
     removeAssetReceivingApi: builder.mutation({
-      query: (body) => ({
-        url: `/remove-pr/${body?.transaction_number}`,
-        method: "PUT",
-        // body: console.log(body),
+      query: (id) => ({
+        url: `/adding-po/${id}`,
+        method: "DELETE",
+        body: console.log(id),
       }),
       invalidatesTags: ["AssetReceiving"],
     }),

@@ -1615,7 +1615,7 @@ const AddRequisition = (props) => {
               </Table>
             </TableContainer>
 
-            {(isTransactionSuccess || isRequestSuccess) && (
+            {/* {(isTransactionSuccess || isRequestSuccess) && (
               <CustomTablePagination
                 total={(transactionDataApiPage || addRequestAllApi)?.total}
                 success={isTransactionSuccess || isRequestSuccess}
@@ -1624,7 +1624,7 @@ const AddRequisition = (props) => {
                 onPageChange={pageHandler}
                 onRowsPerPageChange={perPageHandler}
               />
-            )}
+            )} */}
 
             {/* Buttons */}
             <Stack flexDirection="row" justifyContent="space-between" alignItems={"center"}>
