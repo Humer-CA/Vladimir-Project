@@ -42,7 +42,7 @@ export const assetReceivingApi = createApi({
 
     addAssetReceivingApi: builder.mutation({
       query: (data) => ({
-        url: `/adding-po/${data?.transaction_number}`,
+        url: `/adding-po/${data?.id}`,
         method: "PUT",
         body: data,
       }),
@@ -53,7 +53,7 @@ export const assetReceivingApi = createApi({
       query: (id) => ({
         url: `/adding-po/${id}`,
         method: "DELETE",
-        body: console.log(id),
+        // body: console.log(id),
       }),
       invalidatesTags: ["AssetReceiving"],
     }),

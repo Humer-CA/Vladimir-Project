@@ -114,7 +114,7 @@ const ReceivingTable = (props) => {
 
   const handleViewData = (data) => {
     navigate(`/asset-requisition/requisition-receiving/${data.transaction_number}`, {
-      state: { ...data },
+      state: { ...data, received },
     });
   };
 

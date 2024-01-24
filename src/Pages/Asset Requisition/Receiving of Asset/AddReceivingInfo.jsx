@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../../Style/Request/receiving.scss";
-import Moment from "moment";
-import MasterlistToolbar from "../../../Components/Reusable/MasterlistToolbar";
-import ActionMenu from "../../../Components/Reusable/ActionMenu";
-import ErrorFetching from "../../ErrorFetching";
-import MasterlistSkeleton from "../../Skeleton/MasterlistSkeleton";
-import NoRecordsFound from "../../../Layout/NoRecordsFound";
-import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
+import moment from "moment";
 
 // RTK
 import { useDispatch, useSelector } from "react-redux";
@@ -21,14 +15,25 @@ import * as yup from "yup";
 import { useAddAssetReceivingApiMutation } from "../../../Redux/Query/Request/AssetReceiving/AssetReceiving";
 import CustomTextField from "../../../Components/Reusable/CustomTextField";
 import { LoadingButton } from "@mui/lab";
-import { Close } from "@mui/icons-material";
+import { Close, Info } from "@mui/icons-material";
 import { closeDialog } from "../../../Redux/StateManagement/booleanStateSlice";
+import CustomDatePicker from "../../../Components/Reusable/CustomDatePicker";
+import CustomAutoComplete from "../../../Components/Reusable/CustomAutoComplete";
+import CustomNumberField from "../../../Components/Reusable/CustomNumberField";
+import { useGetSupplierAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Supplier";
 
 const schema = yup.object().shape({
   id: yup.string(),
-  po_number: yup.object().required().label("PO Number").typeError("PO Number is a required field"),
+  po_number: yup.string().required().label("PO Number").typeError("PO Number is a required field"),
   rr_number: yup.string().required().label("RR Number").typeError("RR Number is a required field"),
-  supplier_id: yup.string().required().label("Supplier").typeError("Supplier is a required field"),
+  supplier_id: yup
+    .string()
+    .required()
+    .transform((value) => {
+      return value?.id.toString();
+    })
+    .label("Supplier")
+    .typeError("Supplier is a required field"),
   delivery_date: yup.date().required().label("Delivery Date").typeError("Delivery Date is a required field"),
   quantity_delivered: yup
     .number()
@@ -56,13 +61,15 @@ const ReceivingTable = (props) => {
       po_number: "",
       rr_number: "",
       supplier_id: null,
-      delivery_date: "",
-      quantity_delivered: null,
+      delivery_date: null,
+      quantity_delivered: 1,
       unit_price: null,
     },
   });
 
   const newData = data?.data?.[0];
+  const { data: supplierData = [], isLoading: isSupplierLoading } = useGetSupplierAllApiQuery();
+
   const dispatch = useDispatch();
 
   // * API'S
@@ -103,7 +110,13 @@ const ReceivingTable = (props) => {
     errorData && showToast();
   }, [isPostError]);
 
-  const onSubmitHandler = () => {
+  const onSubmitHandler = (formData) => {
+    const newFormData = {
+      ...formData,
+      id: newData?.id,
+      delivery_date: moment(new Date(formData.delivery_date)).format("YYYY-MM-DD"),
+    };
+
     dispatch(
       openConfirm({
         icon: Info,
@@ -127,7 +140,7 @@ const ReceivingTable = (props) => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            const result = await printAsset({}).unwrap();
+            const result = await addReceivingInfo(newFormData).unwrap();
 
             dispatch(
               openToast({
@@ -135,6 +148,8 @@ const ReceivingTable = (props) => {
                 duration: 5000,
               })
             );
+
+            dispatch(closeDialog());
             dispatch(closeConfirm());
           } catch (err) {
             console.log(err.data.message);
@@ -160,6 +175,8 @@ const ReceivingTable = (props) => {
       })
     );
   };
+
+  watch("supplier_id");
 
   return (
     <>
@@ -311,9 +328,9 @@ const ReceivingTable = (props) => {
             <Divider />
           </Stack>
 
-          <Divider orientation="vertical" variant="middle" flexItem />
+          <Divider orientation="vertical" variant="middle" flexItem sx={{ ml: "10px" }} />
 
-          <Stack gap={2} overflowY="auto" pt={isSmallScreen ? 2 : 0} width={isSmallScreen ? "100%" : "inherit"}>
+          <Stack gap={2} pl={2} pt={isSmallScreen ? 2 : 0} width={isSmallScreen ? "100%" : "inherit"}>
             <Typography className="assetReceiving__title" fontFamily="Anton, Impact, Roboto">
               Add Request Information
             </Typography>
@@ -339,48 +356,69 @@ const ReceivingTable = (props) => {
                 error={!!errors?.rr_number}
                 helperText={errors?.rr_number?.message}
               />
-              <CustomTextField
-                control={control}
+              <CustomAutoComplete
+                autoComplete
                 name="supplier_id"
-                label="Supplier"
-                color="secondary"
-                type="text"
+                control={control}
+                loading={isSupplierLoading}
+                options={supplierData}
                 size="small"
-                error={!!errors?.supplier_id}
-                helperText={errors?.supplier_id?.message}
+                getOptionLabel={(option) => option.supplier_code + " - " + option.supplier_name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderInput={(params) => (
+                  <TextField
+                    color="secondary"
+                    {...params}
+                    label="Supplier"
+                    error={!!errors?.supplier_id}
+                    helperText={errors?.supplier_id?.message}
+                  />
+                )}
               />
-              <CustomTextField
+
+              <CustomDatePicker
                 control={control}
                 name="delivery_date"
                 label="Delivery Date"
-                color="secondary"
-                type="text"
                 size="small"
+                views={["year", "month", "day"]}
+                openTo="year"
                 error={!!errors?.delivery_date}
                 helperText={errors?.delivery_date?.message}
+                maxDate={new Date()}
+                reduceAnimations
               />
-              <CustomTextField
+              <CustomNumberField
                 control={control}
                 name="quantity_delivered"
                 label="Quantity Delivered"
                 color="secondary"
-                type="text"
+                type="number"
                 size="small"
+                isAllowed={(values) => {
+                  const { floatValue } = values;
+                  return floatValue >= 1;
+                }}
                 error={!!errors?.quantity_delivered}
                 helperText={errors?.quantity_delivered?.message}
               />
-              <CustomTextField
+              <CustomNumberField
+                autoComplete="off"
                 control={control}
                 name="unit_price"
                 label="Unit Price"
+                type="number"
                 color="secondary"
-                type="text"
                 size="small"
+                isAllowed={(values) => {
+                  const { floatValue } = values;
+                  return floatValue >= 1;
+                }}
                 error={!!errors?.unit_price}
                 helperText={errors?.unit_price?.message}
               />
 
-              <LoadingButton variant="contained" size="small">
+              <LoadingButton type="submit" variant="contained" size="small">
                 Receive
               </LoadingButton>
             </Box>

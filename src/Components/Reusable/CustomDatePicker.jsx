@@ -3,15 +3,7 @@ import moment from "moment";
 import { Controller } from "react-hook-form";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-const CustomDatePicker = ({
-  name,
-  control,
-  onChange: onValueChange,
-  error,
-  helperText,
-  fullWidth,
-  ...datepicker
-}) => {
+const CustomDatePicker = ({ name, control, onChange: onValueChange, error, helperText, fullWidth, ...datepicker }) => {
   return (
     <Controller
       name={name}
@@ -36,6 +28,7 @@ const CustomDatePicker = ({
                 error: error,
                 helperText: helperText,
                 sx: {
+                  minWidth: "180px",
                   "& .Mui-focused.MuiFormLabel-root": {
                     color: "secondary.main",
                   },
