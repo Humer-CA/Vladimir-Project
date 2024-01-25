@@ -23,13 +23,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import {
-  DataArrayTwoTone,
-  Help,
-  Print,
-  ResetTv,
-  Search,
-} from "@mui/icons-material";
+import { DataArrayTwoTone, Help, Print, ResetTv, Search } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LoadingButton } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -56,11 +50,8 @@ import CustomTextField from "../../../../Components/Reusable/CustomTextField";
 import { openToast } from "../../../../Redux/StateManagement/toastSlice";
 import NoRecordsFound from "../../../../Layout/NoRecordsFound";
 import { useGetIpApiQuery } from "../../../../Redux/Query/IpAddressSetup";
-import {
-  closeConfirm,
-  onLoading,
-  openConfirm,
-} from "../../../../Redux/StateManagement/confirmSlice";
+import { closeConfirm, onLoading, openConfirm } from "../../../../Redux/StateManagement/confirmSlice";
+import CustomTablePagination from "../../../../Components/Reusable/CustomTablePagination";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -140,7 +131,7 @@ const PrintFixedAsset = () => {
 
   const perPageHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -168,16 +159,9 @@ const PrintFixedAsset = () => {
   const { data: ip } = useGetIpApiQuery();
   // console.log(ip);
 
-  const [
-    printAsset,
-    {
-      data: printData,
-      isLoading,
-      isError: isPostError,
-      isSuccess: isPostSuccess,
-      error: postError,
-    },
-  ] = usePostPrintApiMutation();
+  const [printAsset, { data: printData, isLoading, isError: isPostError, isSuccess: isPostSuccess, error: postError }] =
+    usePostPrintApiMutation();
+
   // usePostLocalPrintApiMutation();
 
   // console.log(isLocalIp);
@@ -360,11 +344,7 @@ const PrintFixedAsset = () => {
             dispatch(closeConfirm());
           } catch (err) {
             console.log(err.data.message);
-            if (
-              err?.status === 403 ||
-              err?.status === 404 ||
-              err?.status === 422
-            ) {
+            if (err?.status === 403 || err?.status === 404 || err?.status === 422) {
               dispatch(
                 openToast({
                   message: err.data?.message,
@@ -386,10 +366,6 @@ const PrintFixedAsset = () => {
       })
     );
   };
-
-  // console.log(fixedAssetData);
-
-  console.log(errors);
 
   const handleClose = () => {
     dispatch(closeDatePicker());
@@ -541,16 +517,8 @@ const PrintFixedAsset = () => {
             />
           </Stack>
 
-          <Stack
-            flexDirection="row"
-            gap={isSmallScreen ? 1 : 2}
-            flexWrap={isSmallScreen ? "wrap" : null}
-          >
-            <Stack
-              flexDirection="row"
-              gap={1}
-              width={isSmallScreen ? "100%" : null}
-            >
+          <Stack flexDirection="row" gap={isSmallScreen ? 1 : 2} flexWrap={isSmallScreen ? "wrap" : null}>
+            <Stack flexDirection="row" gap={1} width={isSmallScreen ? "100%" : null}>
               <CustomDatePicker
                 control={control}
                 name="startDate"
@@ -576,9 +544,7 @@ const PrintFixedAsset = () => {
                 fullWidth
                 disableFuture
                 reduceAnimations
-                disabled={
-                  watch("startDate") === null || watch("startDate") === ""
-                }
+                disabled={watch("startDate") === null || watch("startDate") === ""}
               />
             </Stack>
 
@@ -627,10 +593,7 @@ const PrintFixedAsset = () => {
                     },
                   }}
                 >
-                  <TableCell
-                    align="center"
-                    sx={{ backgroundColor: "secondary.main" }}
-                  >
+                  <TableCell align="center" sx={{ backgroundColor: "secondary.main" }}>
                     <FormControlLabel
                       sx={{ margin: "auto", align: "center" }}
                       control={
@@ -639,9 +602,7 @@ const PrintFixedAsset = () => {
                           checked={
                             !!fixedAssetData?.data
                               .map((mapItem) => mapItem.vladimir_tag_number)
-                              .every((item) =>
-                                watch("tagNumber").includes(item)
-                              )
+                              .every((item) => watch("tagNumber").includes(item))
                           }
                           onChange={(e) => {
                             tagNumberAllHandler(e.target.checked);
@@ -655,9 +616,7 @@ const PrintFixedAsset = () => {
                   <TableCell>
                     <TableSortLabel
                       active={orderBy === `vladimir_tag_number`}
-                      direction={
-                        orderBy === `vladimir_tag_number` ? order : `asc`
-                      }
+                      direction={orderBy === `vladimir_tag_number` ? order : `asc`}
                       onClick={() => onSort(`vladimir_tag_number`)}
                     >
                       Vladimir Tag #
@@ -676,11 +635,7 @@ const PrintFixedAsset = () => {
                   >
                     <TableSortLabel
                       active={orderBy === `asset_status.asset_status_name`}
-                      direction={
-                        orderBy === `asset_status.asset_status_name`
-                          ? order
-                          : `asc`
-                      }
+                      direction={orderBy === `asset_status.asset_status_name` ? order : `asc`}
                       onClick={() => onSort(`asset_status.asset_status_name`)}
                     >
                       Asset Status
@@ -710,106 +665,85 @@ const PrintFixedAsset = () => {
                 ) : (
                   <>
                     {fixedAssetSuccess &&
-                      [...fixedAssetData.data]
-                        .sort(comparator(order, orderBy))
-                        .map((data) => {
-                          return (
-                            <TableRow
-                              key={data.id}
+                      [...fixedAssetData.data].sort(comparator(order, orderBy)).map((data) => {
+                        return (
+                          <TableRow
+                            key={data.id}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                              overflow: "auto",
+                            }}
+                          >
+                            <TableCell align="center">
+                              <FormControlLabel
+                                value={data.vladimir_tag_number}
+                                sx={{ margin: "auto" }}
+                                disabled={data.action === "view"}
+                                control={
+                                  <Checkbox
+                                    {...register("tagNumber")}
+                                    checked={watch("tagNumber").includes(data.vladimir_tag_number)}
+                                  />
+                                }
+                              />
+                            </TableCell>
+
+                            <TableCell>
+                              <Typography noWrap variant="h6" fontSize="16px" color="secondary" fontWeight="bold">
+                                {data.vladimir_tag_number}
+                              </Typography>
+                              <Typography noWrap fontSize="13px" color="gray">
+                                {data.asset_description}
+                              </Typography>
+
+                              <Typography noWrap fontSize="12px" color="primary" fontWeight="bold">
+                                {data.type_of_request.type_of_request_name.toUpperCase()}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell>
+                              <Typography noWrap fontSize="12px" color="gray">
+                                {data.company.company_code}
+                                {" - "} {data.company.company_name}
+                              </Typography>
+                              <Typography noWrap fontSize="12px" color="gray">
+                                {data.department.department_code}
+                                {" - "}
+                                {data.department.department_name}
+                              </Typography>
+                              <Typography noWrap fontSize="12px" color="gray">
+                                {data.location.location_code} {" - "}
+                                {data.location.location_name}
+                              </Typography>
+                              <Typography noWrap fontSize="12px" color="gray">
+                                {data.account_title.account_title_code}
+                                {" - "}
+                                {data.account_title.account_title_name}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell
                               sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                                overflow: "auto",
+                                textAlign: "center",
+                                pr: "35px",
                               }}
                             >
-                              <TableCell align="center">
-                                <FormControlLabel
-                                  value={data.vladimir_tag_number}
-                                  sx={{ margin: "auto" }}
-                                  disabled={data.action === "view"}
-                                  control={
-                                    <Checkbox
-                                      {...register("tagNumber")}
-                                      checked={watch("tagNumber").includes(
-                                        data.vladimir_tag_number
-                                      )}
-                                    />
-                                  }
-                                />
-                              </TableCell>
+                              <FaStatusChange
+                                faStatus={data.asset_status.asset_status_name}
+                                data={data.asset_status.asset_status_name}
+                              />
+                            </TableCell>
 
-                              <TableCell>
-                                <Typography
-                                  noWrap
-                                  variant="h6"
-                                  fontSize="16px"
-                                  color="secondary"
-                                  fontWeight="bold"
-                                >
-                                  {data.vladimir_tag_number}
-                                </Typography>
-                                <Typography noWrap fontSize="13px" color="gray">
-                                  {data.asset_description}
-                                </Typography>
-
-                                <Typography
-                                  noWrap
-                                  fontSize="12px"
-                                  color="primary"
-                                  fontWeight="bold"
-                                >
-                                  {data.type_of_request.type_of_request_name.toUpperCase()}
-                                </Typography>
-                              </TableCell>
-
-                              <TableCell>
-                                <Typography noWrap fontSize="12px" color="gray">
-                                  {data.company.company_code}
-                                  {" - "} {data.company.company_name}
-                                </Typography>
-                                <Typography noWrap fontSize="12px" color="gray">
-                                  {data.department.department_code}
-                                  {" - "}
-                                  {data.department.department_name}
-                                </Typography>
-                                <Typography noWrap fontSize="12px" color="gray">
-                                  {data.location.location_code} {" - "}
-                                  {data.location.location_name}
-                                </Typography>
-                                <Typography noWrap fontSize="12px" color="gray">
-                                  {data.account_title.account_title_code}
-                                  {" - "}
-                                  {data.account_title.account_title_name}
-                                </Typography>
-                              </TableCell>
-
-                              <TableCell
-                                sx={{
-                                  textAlign: "center",
-                                  pr: "35px",
-                                }}
-                              >
-                                <FaStatusChange
-                                  faStatus={data.asset_status.asset_status_name}
-                                  data={data.asset_status.asset_status_name}
-                                />
-                              </TableCell>
-
-                              <TableCell align="center">
-                                <Typography
-                                  noWrap
-                                  fontSize="13px"
-                                  paddingRight="15px"
-                                >
-                                  {moment(data.created_at).format(
-                                    "MMM-DD-YYYY"
-                                  )}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
+                            <TableCell align="center">
+                              <Typography noWrap fontSize="13px" paddingRight="15px">
+                                {moment(data.created_at).format("MMM-DD-YYYY")}
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                   </>
                 )}
               </TableBody>
@@ -817,19 +751,12 @@ const PrintFixedAsset = () => {
           </TableContainer>
 
           <Box className="mcontainer__pagination">
-            <TablePagination
-              rowsPerPageOptions={[
-                5,
-                10,
-                15,
-                { label: "All", value: parseInt(fixedAssetData?.total) },
-              ]}
+            {/* <TablePagination
+              rowsPerPageOptions={[5, 10, 15, { label: "All", value: parseInt(fixedAssetData?.total) }]}
               component="div"
               count={fixedAssetSuccess ? fixedAssetData?.total : 0}
               page={fixedAssetSuccess ? fixedAssetData?.current_page - 1 : 0}
-              rowsPerPage={
-                fixedAssetSuccess ? parseInt(fixedAssetData?.per_page) : 5
-              }
+              rowsPerPage={fixedAssetSuccess ? parseInt(fixedAssetData?.per_page) : 5}
               onPageChange={(_, page) => {
                 pageHandler(_, page);
                 setValue("tagNumber", []);
@@ -838,23 +765,21 @@ const PrintFixedAsset = () => {
                 limitHandler(e);
                 setValue("tagNumber", []);
               }}
+            /> */}
+            <CustomTablePagination
+              total={fixedAssetData?.total}
+              success={fixedAssetSuccess}
+              current_page={fixedAssetData?.current_page}
+              per_page={fixedAssetData?.per_page}
+              onPageChange={pageHandler}
+              onRowsPerPageChange={perPageHandler}
             />
           </Box>
         </Box>
 
-        <Stack
-          flexDirection="row"
-          width="100%"
-          justifyContent="space-between"
-          flexWrap="wrap"
-          alignItems="center"
-        >
+        <Stack flexDirection="row" width="100%" justifyContent="space-between" flexWrap="wrap" alignItems="center">
           <Box sx={{ pl: "5px" }}>
-            <Typography
-              fontFamily="Anton, Impact, Roboto"
-              fontSize="18px"
-              color="secondary.main"
-            >
+            <Typography fontFamily="Anton, Impact, Roboto" fontSize="18px" color="secondary.main">
               Selected : {watch("tagNumber").length}
             </Typography>
           </Box>
@@ -866,26 +791,19 @@ const PrintFixedAsset = () => {
               startIcon={
                 isLoading ? null : (
                   // <Print color={disabledItems() ? "lightgray" : "primary"} />
-                  <Print
-                    color={watch("tagNumber").length === 0 ? "gray" : "primary"}
-                  />
+                  <Print color={watch("tagNumber").length === 0 ? "gray" : "primary"} />
                 )
               }
               disabled={watch("tagNumber").length === 0}
               type="submit"
               color="secondary"
               onClick={onPrintHandler}
-            // disabled={disabledItems()}
+              // disabled={disabledItems()}
             >
               Print
             </LoadingButton>
 
-            <Button
-              variant="outlined"
-              size="small"
-              color="secondary"
-              onClick={handleClose}
-            >
+            <Button variant="outlined" size="small" color="secondary" onClick={handleClose}>
               Close
             </Button>
           </Stack>
