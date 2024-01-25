@@ -4,12 +4,7 @@ import { Controller } from "react-hook-form";
 import { TextField } from "@mui/material";
 import { NumericFormat } from "react-number-format";
 
-const CustomPatternfield = ({
-  name,
-  control,
-  keepPrefix = false,
-  ...numberfield
-}) => {
+const CustomPatternfield = ({ name, control, keepPrefix = false, ...numberfield }) => {
   return (
     <Controller
       name={name}

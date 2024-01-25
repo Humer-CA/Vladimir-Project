@@ -4,7 +4,7 @@ import AttachmentIcon from "../../Img/SVG/SVG/Attachment.svg";
 import AttachmentActive from "../../Img/SVG/SVG/AttachmentActive.svg";
 
 const CustomTextField = (props) => {
-  const { name, control, onChange, errors, label, inputRef } = props;
+  const { name, control, onChange, errors, label, inputRef, disabled } = props;
 
   return (
     <Controller
@@ -35,6 +35,7 @@ const CustomTextField = (props) => {
               autoComplete="off"
               color="secondary"
               value={value?.name || "No file chosen"}
+              disabled={disabled}
               onClick={() => {
                 inputRef.current.click();
               }}
@@ -53,7 +54,6 @@ const CustomTextField = (props) => {
                   borderRadius: "12px",
                   color: "#636363",
                 },
-
                 ".MuiInputLabel-root.Mui-disabled": {
                   backgroundColor: "transparent",
                 },
