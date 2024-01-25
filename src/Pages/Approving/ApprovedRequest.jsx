@@ -108,7 +108,7 @@ const PendingRequest = (props) => {
 
   // console.log(approvalData);
   const handleViewRequisition = (data) => {
-    navigate(`/request-monitoring/${data.transaction_number}`, {
+    navigate(`/approving/${data.transaction_number}`, {
       state: { ...data },
     });
   };
@@ -116,9 +116,7 @@ const PendingRequest = (props) => {
   return (
     <Stack sx={{ height: "calc(100vh - 255px)" }}>
       {approvalLoading && <MasterlistSkeleton category={true} onAdd={true} />}
-
       {approvalError && <ErrorFetching refetch={refetch} category={approvalData} error={errorData} />}
-
       {approvalData && !approvalError && (
         <Box className="mcontainer__wrapper">
           <MasterlistToolbar
