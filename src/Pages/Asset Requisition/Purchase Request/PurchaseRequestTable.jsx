@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
 import Moment from "moment";
-import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
-import ActionMenu from "../../Components/Reusable/ActionMenu";
-import ErrorFetching from "../ErrorFetching";
-import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
-import NoRecordsFound from "../../Layout/NoRecordsFound";
-import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
+import MasterlistToolbar from "../../../Components/Reusable/MasterlistToolbar";
+import ActionMenu from "../../../Components/Reusable/ActionMenu";
+import ErrorFetching from "../../ErrorFetching";
+import MasterlistSkeleton from "../../Skeleton/MasterlistSkeleton";
+import NoRecordsFound from "../../../Layout/NoRecordsFound";
+import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
 
 // RTK
 import { useDispatch, useSelector } from "react-redux";
-import { openToast } from "../../Redux/StateManagement/toastSlice";
-import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
+import { openToast } from "../../../Redux/StateManagement/toastSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../../Redux/StateManagement/confirmSlice";
 import {
   useGetByTransactionApiQuery,
   useGetRequisitionApiQuery,
   usePatchRequisitionStatusApiMutation,
   useVoidRequisitionApiMutation,
-} from "../../Redux/Query/Request/Requisition";
+} from "../../../Redux/Query/Request/Requisition";
 
 // MUI
 import {
@@ -40,12 +40,12 @@ import {
 } from "@mui/material";
 import { Help, LibraryAdd, Report, ReportProblem, Visibility } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
-import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
-import RequestTimeline from "./RequestTimeline";
+import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanStateSlice";
+import RequestTimeline from "../RequestTimeline";
 import {
   useGetPurchaseRequestApiQuery,
   useGetPurchaseRequestWithPrApiQuery,
-} from "../../Redux/Query/Request/PurchaseRequest";
+} from "../../../Redux/Query/Request/PurchaseRequest";
 
 const PurchaseRequestTable = (props) => {
   const { withPr } = props;
@@ -54,7 +54,7 @@ const PurchaseRequestTable = (props) => {
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
 
-  //   const [transactionIdwasd, setTransactionIdData] = useState();
+  //   const [transactionIdData, setTransactionIdData] = useState();
 
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width: 500px)");
@@ -119,7 +119,7 @@ const PurchaseRequestTable = (props) => {
 
   const handleViewData = (data) => {
     navigate(`/asset-requisition/purchase-request/${data.transaction_number}`, {
-      state: { ...data },
+      state: { ...data, withPr },
     });
   };
 
@@ -200,7 +200,7 @@ const PurchaseRequestTable = (props) => {
 
                   <TableBody>
                     {purchaseRequestData?.data?.length === 0 ? (
-                      <NoRecordsFound />
+                      <NoRecordsFound category />
                     ) : (
                       <>
                         {purchaseRequestSuccess &&

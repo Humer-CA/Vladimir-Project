@@ -50,7 +50,7 @@ import FormSettings from "./Pages/Settings/FormSettings";
 
 import Requisition from "./Pages/Asset Requisition/Requisition";
 import AddRequisition from "./Pages/Asset Requisition/Add Requisition/AddRequisition";
-import PurchaseRequest from "./Pages/Asset Requisition/PurchaseRequest";
+import PurchaseRequest from "./Pages/Asset Requisition/Purchase Request/PurchaseRequest";
 import ViewRequest from "./Pages/Asset Requisition/ViewRequest";
 import RequestMonitoring from "./Pages/Asset Requisition/RequestMonitoring";
 
@@ -63,6 +63,8 @@ import ViewRequestReceiving from "./Pages/Asset Requisition/Receiving of Asset/V
 import PageNotFound from "./Pages/PageNotFound";
 import Confirmation from "./Components/Reusable/Confirmation";
 import AssetMovement from "./Pages/Asset Movement";
+import ViewRequestPr from "./Pages/Asset Requisition/Purchase Request/ViewRequestPr";
+import ViewApproveRequest from "./Pages/Approving/ViewApproveRequest";
 
 const router = createBrowserRouter([
   {
@@ -231,14 +233,7 @@ const router = createBrowserRouter([
                 path: "requisition",
                 element: <Requisition />,
               },
-              {
-                path: "purchase-request",
-                element: <PurchaseRequest />,
-              },
-              {
-                path: "purchase-request/:transaction_number",
-                element: <ViewRequest />,
-              },
+
               {
                 path: "requisition/add-requisition",
                 element: <AddRequisition />,
@@ -246,6 +241,14 @@ const router = createBrowserRouter([
               {
                 path: "requisition/add-requisition/:transaction_number",
                 element: <AddRequisition />,
+              },
+              {
+                path: "purchase-request",
+                element: <PurchaseRequest />,
+              },
+              {
+                path: "purchase-request/:transaction_number",
+                element: <ViewRequestPr />,
               },
               {
                 path: "requisition-receiving",
@@ -298,7 +301,7 @@ const router = createBrowserRouter([
 
           {
             path: "approving/:transaction_number",
-            element: <ViewRequest />,
+            element: <ViewApproveRequest />,
           },
 
           {

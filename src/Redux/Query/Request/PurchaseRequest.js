@@ -35,6 +35,11 @@ export const purchaseRequestApi = createApi({
       providesTags: ["PurchaseRequest"],
     }),
 
+    getItemPerPrApi: builder.query({
+      query: (params) => `adding-pr/${params?.transaction_number}?per_page=${params.per_page}&page=${params.page}`,
+      providesTags: ["PurchaseRequest"],
+    }),
+
     addPurchaseRequestApi: builder.mutation({
       query: (data) => ({
         url: `/adding-pr/${data?.transaction_number}`,
@@ -59,6 +64,7 @@ export const {
   useGetPurchaseRequestApiQuery,
   useGetPurchaseRequestWithPrApiQuery,
   useGetPurchaseRequestAllApiQuery,
+  useGetItemPerPrApiQuery,
   useLazyGetPurchaseRequestAllApiQuery,
   useLazyGetPurchaseRequestApiQuery,
   useAddPurchaseRequestApiMutation,
