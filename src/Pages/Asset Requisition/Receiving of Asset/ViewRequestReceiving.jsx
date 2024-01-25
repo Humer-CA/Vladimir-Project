@@ -99,9 +99,8 @@ const ViewRequestReceiving = () => {
     // console.log(page + 1);
     setPage(page + 1);
   };
-
   const handleTableData = (data) => {
-    transactionData?.received ? null : dispatch(openDialog());
+    transactionData?.received || data?.remaining === 0 ? null : dispatch(openDialog());
   };
 
   const onRemoveHandler = async (id) => {
@@ -392,7 +391,7 @@ const ViewRequestReceiving = () => {
               {/* Buttons */}
               <Stack flexDirection="row" justifyContent="space-between" alignItems={"center"}>
                 <Typography fontFamily="Anton, Impact, Roboto" fontSize="18px" color="secondary.main">
-                  Transactions : {transactionData?.length} request
+                  Transactions : {receivingData?.data?.length} request
                 </Typography>
 
                 <CustomTablePagination
@@ -416,7 +415,7 @@ const ViewRequestReceiving = () => {
                 margin: 0,
                 gap: "5px",
                 minWidth: "250px",
-                maxWidth: "650px",
+                maxWidth: "750px",
                 borderRadius: "10px",
                 width: "90%",
               },

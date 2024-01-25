@@ -151,6 +151,7 @@ const ReceivingTable = (props) => {
 
             dispatch(closeDialog());
             dispatch(closeConfirm());
+            navigate(-1);
           } catch (err) {
             console.log(err.data.message);
             if (err?.status === 403 || err?.status === 404 || err?.status === 422) {
@@ -309,7 +310,6 @@ const ReceivingTable = (props) => {
                   </Typography>
                   <Typography
                     fontSize={14}
-                    noWrap
                   >{`(${newData?.account_title?.account_title_code}) - ${newData?.account_title?.account_title_name}`}</Typography>
                 </Stack>
 
@@ -402,20 +402,23 @@ const ReceivingTable = (props) => {
                 error={!!errors?.quantity_delivered}
                 helperText={errors?.quantity_delivered?.message}
               />
+
               <CustomNumberField
                 autoComplete="off"
                 control={control}
                 name="unit_price"
                 label="Unit Price"
-                type="number"
                 color="secondary"
                 size="small"
+                error={!!errors?.unit_price}
+                helperText={errors?.unit_price?.message}
+                prefix="₱"
                 isAllowed={(values) => {
                   const { floatValue } = values;
                   return floatValue >= 1;
                 }}
-                error={!!errors?.unit_price}
-                helperText={errors?.unit_price?.message}
+                thousandSeparator
+                fullWidth
               />
 
               <LoadingButton type="submit" variant="contained" size="small">

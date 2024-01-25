@@ -20,7 +20,7 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material";
-import { ArrowBackIosRounded, RemoveCircle, Report } from "@mui/icons-material";
+import { ArrowBackIosRounded, InsertDriveFile, RemoveCircle, Report } from "@mui/icons-material";
 
 // RTK
 import { useDispatch, useSelector } from "react-redux";
@@ -34,6 +34,7 @@ import {
 } from "../../../Redux/Query/Request/AssetReceiving/AssetReceiving";
 import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
 import { useGetItemPerPrApiQuery } from "../../../Redux/Query/Request/PurchaseRequest";
+import AddPr from "./AddPr";
 
 const ViewRequestPr = () => {
   const { state: transactionData } = useLocation();
@@ -61,8 +62,8 @@ const ViewRequestPr = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  console.log("purchaseRequestData:", purchaseRequestData);
-  console.log("transactionData:", transactionData);
+  // console.log("purchaseRequestData:", purchaseRequestData);
+  // console.log("transactionData:", transactionData);
 
   // Table Sorting --------------------------------
   const [order, setOrder] = useState("desc");
@@ -181,6 +182,23 @@ const ViewRequestPr = () => {
             <Typography color="secondary.main">Back</Typography>
           </Button>
 
+          {!transactionData?.withPr && (
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              startIcon={<InsertDriveFile color="secondary" />}
+              onClick={() => {
+                dispatch(openDialog());
+              }}
+              sx={{ position: "absolute", right: 10, height: "30px" }}
+            >
+              <Typography fontWeight={400} fontSize={14}>
+                Add PR
+              </Typography>
+            </Button>
+          )}
+
           <Box className="mcontainer__wrapper" p={2} pb={0}>
             {/* TABLE */}
             <Box className="request__table">
@@ -205,7 +223,7 @@ const ViewRequestPr = () => {
                     >
                       <TableCell className="tbl-cell">Ref. No.</TableCell>
                       <TableCell className="tbl-cell">Type of Request</TableCell>
-                      {withPr && <TableCell className="tbl-cell">PR Number</TableCell>}
+                      {transactionData?.withPr && <TableCell className="tbl-cell">PR Number</TableCell>}
                       <TableCell className="tbl-cell">Attachment Type</TableCell>
                       <TableCell className="tbl-cell">Chart of Accounts</TableCell>
                       <TableCell className="tbl-cell">Accountability</TableCell>
@@ -234,7 +252,7 @@ const ViewRequestPr = () => {
                           >
                             <TableCell className="tbl-cell tr-cen-pad45 text-weight">{data.reference_number}</TableCell>
                             <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
-                            {withPr && <TableCell className="tbl-cell">{data.pr_number}</TableCell>}
+                            {transactionData?.withPr && <TableCell className="tbl-cell">{data.pr_number}</TableCell>}
                             <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
                             <TableCell className="tbl-cell">
                               <Typography fontSize={10} color="gray">
@@ -364,7 +382,7 @@ const ViewRequestPr = () => {
               },
             }}
           >
-            <AddReceivingInfo data={purchaseRequestData} />
+            <AddPr data={purchaseRequestData} />
           </Dialog>
         </Box>
       )}

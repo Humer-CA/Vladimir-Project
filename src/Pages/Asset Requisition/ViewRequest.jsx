@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../Style/Request/request.scss";
-import AddPr from "./AddEdit/AddPr";
+import AddPr from "./Purchase Request/AddPr";
 import { LoadingData } from "../../Components/LottieFiles/LottieComponents";
 
 import {

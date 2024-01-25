@@ -30,7 +30,7 @@ const schema = yup.object().shape({
 });
 
 const AddPr = (props) => {
-  const { transactionData } = props;
+  const { data: transactionData } = props;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -38,7 +38,6 @@ const AddPr = (props) => {
     postPr,
     { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = useAddPurchaseRequestApiMutation();
-
   const {
     handleSubmit,
     control,
@@ -53,10 +52,9 @@ const AddPr = (props) => {
       id: "",
       pr_number: "",
       business_unit_id: null,
-      transaction_number: transactionData?.transaction_number,
+      transaction_number: transactionData?.data?.transaction_number,
     },
   });
-
   const { data: companyData = [], isLoading: isCompanyLoading } = useGetCompanyAllApiQuery();
 
   useEffect(() => {
@@ -71,7 +69,7 @@ const AddPr = (props) => {
         }) ||
         dispatch(
           openToast({
-            message: postError?.data?.errors.detail,
+            message: postError?.data?.errors.detail || postError?.data?.errors.pr_number[0],
 
             duration: 5000,
             variant: "error",
@@ -105,12 +103,15 @@ const AddPr = (props) => {
   const onSubmitHandler = (formData) => {
     // console.log(formData)
     const newFormData = {
-      transaction_number: transactionData?.transaction_number,
+      transaction_number: transactionData?.data[0]?.transaction_number,
       pr_number: formData?.pr_number,
       business_unit_id: formData?.business_unit_id?.id,
     };
     postPr(newFormData);
+    // console.log("formData", newFormData);
   };
+
+  console.log(transactionData?.data[0]?.transaction_number);
 
   const handleCloseDialog = () => {
     dispatch(closeDialog());

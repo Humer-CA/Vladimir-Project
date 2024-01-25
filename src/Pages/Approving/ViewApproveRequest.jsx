@@ -73,11 +73,9 @@ const ViewApproveRequest = (props) => {
     error: errorData,
     refetch: isApproveRefetch,
   } = useGetApprovalIdApiQuery(
-    { page: page, per_page: perPage, id: transactionData?.id },
+    { page: page, per_page: perPage, id: transactionData?.asset_approval_id },
     { refetchOnMountOrArgChange: true }
   );
-
-  console.log(transactionData);
 
   const {
     data: nextDataApi,
@@ -258,6 +256,9 @@ const ViewApproveRequest = (props) => {
     // console.log(page + 1);
     setPage(page + 1);
   };
+
+  // console.log(transactionData);
+  // console.log(transactionData?.asset_approval_id);
 
   return (
     <>
