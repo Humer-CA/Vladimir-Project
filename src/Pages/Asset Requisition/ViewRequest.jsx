@@ -83,7 +83,7 @@ const ViewRequest = (props) => {
     { page: page, per_page: perPage, transaction_number: transactionData?.transaction_number },
     { refetchOnMountOrArgChange: true }
   );
-
+  console.log(transactionDataApi);
   const {
     data: nextDataApi,
     isLoading: isNextDataLoading,
