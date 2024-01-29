@@ -39,8 +39,8 @@ import UserManagement from "./Pages/UserManagement";
 import UserAccounts from "./Pages/UserManagement/UserAccounts";
 import RoleManagement from "./Pages/UserManagement/RoleManagement";
 
-import FixedAsset from "./Pages/Masterlist/FixedAsset";
-import FixedAssetView from "./Pages/Masterlist/AddEdit/FixedAssetComponents/FixedAssetView";
+import FixedAsset from "./Pages/FixedAssets/FixedAsset";
+import FixedAssetView from "./Pages/FixedAssets/FixedAssetView";
 import FaStatusCategory from "./Pages/Masterlist/Status/StatusCategory";
 import IpSetup from "./Components/IpSetup";
 
@@ -65,6 +65,8 @@ import Confirmation from "./Components/Reusable/Confirmation";
 import AssetMovement from "./Pages/Asset Movement";
 import ViewRequestPr from "./Pages/Asset Requisition/Purchase Request/ViewRequestPr";
 import ViewApproveRequest from "./Pages/Approving/ViewApproveRequest";
+import ViewRequestReleasing from "./Pages/Asset Requisition/Releasing of Asset/ViewRequestReleasing";
+import ReleasingOfAsset from "./Pages/Asset Requisition/Releasing of Asset/ReleasingOfAsset";
 
 const router = createBrowserRouter([
   {
@@ -257,6 +259,14 @@ const router = createBrowserRouter([
               {
                 path: "requisition-receiving/:transaction_number",
                 element: <ViewRequestReceiving />,
+              },
+              {
+                path: "requisition-releasing",
+                element: <ReleasingOfAsset />,
+              },
+              {
+                path: "requisition-releasing/:transaction_number",
+                element: <ViewRequestReleasing />,
               },
             ],
           },

@@ -75,6 +75,8 @@ import {
   TransferWithinAStation,
   RemoveFromQueue,
   RuleFolder,
+  OpenInBrowserOutlined,
+  Output,
 } from "@mui/icons-material";
 
 const Sidebar = () => {
@@ -339,9 +341,16 @@ const Sidebar = () => {
         },
         {
           label: "Receiving of Asset",
-          icon: CallReceived,
+          icon: OpenInBrowserOutlined,
           path: "/asset-requisition/requisition-receiving",
           permission: "requisition-receiving",
+          setter: closeCollapse,
+        },
+        {
+          label: "Releasing of Asset",
+          icon: Output,
+          path: "/asset-requisition/requisition-releasing",
+          permission: "requisition-releasing",
           setter: closeCollapse,
         },
       ],
