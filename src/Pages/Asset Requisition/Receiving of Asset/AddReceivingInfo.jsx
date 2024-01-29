@@ -12,7 +12,7 @@ import { Box, Button, Dialog, Divider, IconButton, Stack, TextField, Typography,
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useAddAssetReceivingApiMutation } from "../../../Redux/Query/Request/AssetReceiving/AssetReceiving";
+import { useAddAssetReceivingApiMutation } from "../../../Redux/Query/Request/AssetReceiving";
 import CustomTextField from "../../../Components/Reusable/CustomTextField";
 import { LoadingButton } from "@mui/lab";
 import { Close, Info } from "@mui/icons-material";

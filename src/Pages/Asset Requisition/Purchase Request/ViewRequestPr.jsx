@@ -31,7 +31,7 @@ import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanS
 import {
   useGetItemPerTransactionApiQuery,
   useRemoveAssetReceivingApiMutation,
-} from "../../../Redux/Query/Request/AssetReceiving/AssetReceiving";
+} from "../../../Redux/Query/Request/AssetReceiving";
 import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
 import { useGetItemPerPrApiQuery } from "../../../Redux/Query/Request/PurchaseRequest";
 import AddPr from "./AddPr";

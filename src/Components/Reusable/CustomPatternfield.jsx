@@ -4,7 +4,7 @@ import { Controller } from "react-hook-form";
 import { TextField } from "@mui/material";
 import { PatternFormat } from "react-number-format";
 
-const CustomPatternfield = ({ name, control, keepPrefix = false, ...patternfield }) => {
+const CustomPatternField = ({ name, control, keepPrefix = false, ...patternfield }) => {
   return (
     <Controller
       name={name}
@@ -43,4 +43,4 @@ const CustomPatternfield = ({ name, control, keepPrefix = false, ...patternfield
   );
 };
 
-export default CustomPatternfield;
+export default CustomPatternField;

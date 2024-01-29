@@ -31,7 +31,7 @@ import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanS
 import {
   useGetItemPerTransactionApiQuery,
   useRemoveAssetReceivingApiMutation,
-} from "../../../Redux/Query/Request/AssetReceiving/AssetReceiving";
+} from "../../../Redux/Query/Request/AssetReceiving";
 import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
 
 const ViewRequestReceiving = () => {

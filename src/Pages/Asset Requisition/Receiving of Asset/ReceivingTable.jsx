@@ -41,10 +41,7 @@ import {
 import { Help, LibraryAdd, Report, ReportProblem, Visibility } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanStateSlice";
-import {
-  useGetAssetReceivingApiQuery,
-  useGetAssetReceivedApiQuery,
-} from "../../../Redux/Query/Request/AssetReceiving/AssetReceiving";
+import { useGetAssetReceivingApiQuery, useGetAssetReceivedApiQuery } from "../../../Redux/Query/Request/AssetReceiving";
 
 const ReceivingTable = (props) => {
   const { received } = props;

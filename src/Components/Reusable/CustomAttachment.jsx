@@ -3,7 +3,7 @@ import { Controller } from "react-hook-form";
 import AttachmentIcon from "../../Img/SVG/SVG/Attachment.svg";
 import AttachmentActive from "../../Img/SVG/SVG/AttachmentActive.svg";
 
-const CustomTextField = (props) => {
+const CustomAttachment = (props) => {
   const { name, control, onChange, errors, label, inputRef, disabled } = props;
 
   return (
@@ -72,4 +72,4 @@ const CustomTextField = (props) => {
   );
 };
 
-export default CustomTextField;
+export default CustomAttachment;

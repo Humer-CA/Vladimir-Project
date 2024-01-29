@@ -1,12 +1,7 @@
 import { Controller } from "react-hook-form";
 import { Autocomplete as MuiAutocomplete, TextField } from "@mui/material";
 
-const Autocomplete = ({
-  name,
-  control,
-  onChange: onValueChange,
-  ...autocomplete
-}) => {
+const CustomAutoComplete = ({ name, control, onChange: onValueChange, ...autocomplete }) => {
   return (
     <Controller
       name={name}
@@ -43,4 +38,4 @@ const Autocomplete = ({
   );
 };
 
-export default Autocomplete;
+export default CustomAutoComplete;

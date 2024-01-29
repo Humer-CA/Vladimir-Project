@@ -31,12 +31,7 @@ import {
   createFilterOptions,
   useMediaQuery,
 } from "@mui/material";
-import {
-  AddToPhotos,
-  ArrowBackIosRounded,
-  Create,
-  Remove,
-} from "@mui/icons-material";
+import { AddToPhotos, ArrowBackIosRounded, Create, Remove } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
 // RTK
@@ -55,24 +50,16 @@ import { useGetTypeOfRequestAllApiQuery } from "../../../Redux/Query/Masterlist/
 import { useNavigate } from "react-router-dom";
 import NoRecordsFound from "../../../Layout/NoRecordsFound";
 import { useGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUnit";
-import CustomPatternfield from "../../../Components/Reusable/CustomNumberField";
+import CustomNumberField from "../../../Components/Reusable/CustomNumberField";
 import ActionMenu from "../../../Components/Reusable/ActionMenu";
 import { useGetRequestContainerAllApiQuery } from "../../../Redux/Query/Request/RequestContainer";
 
 const schema = yup.object().shape({
   id: yup.string(),
 
-  type_of_request_id: yup
-    .object()
-    .required()
-    .label("Type of Request")
-    .typeError("Type of Request is a required field"),
+  type_of_request_id: yup.object().required().label("Type of Request").typeError("Type of Request is a required field"),
 
-  attachment_type: yup
-    .string()
-    .required()
-    .label("Attachment Type")
-    .typeError("Attachment Type is a required field"),
+  attachment_type: yup.string().required().label("Attachment Type").typeError("Attachment Type is a required field"),
 
   // company_id: yup
   //   .string()
@@ -82,46 +69,22 @@ const schema = yup.object().shape({
   //   .required()
   //   .label("Company"),
 
-  subunit_id: yup
-    .object()
-    .required()
-    .label("Subunit")
-    .typeError("Subunit is a required field"),
+  subunit_id: yup.object().required().label("Subunit").typeError("Subunit is a required field"),
 
-  department_id: yup
-    .object()
-    .required()
-    .label("Department")
-    .typeError("Department is a required field"),
+  department_id: yup.object().required().label("Department").typeError("Department is a required field"),
 
-  location_id: yup
-    .object()
-    .required()
-    .label("Location")
-    .typeError("Location is a required field"),
+  location_id: yup.object().required().label("Location").typeError("Location is a required field"),
 
-  account_title_id: yup
-    .object()
-    .required()
-    .label("Account Title")
-    .typeError("Account Title is a required field"),
+  account_title_id: yup.object().required().label("Account Title").typeError("Account Title is a required field"),
 
-  accountability: yup
-    .string()
-    .typeError("Accountability is a required field")
-    .required()
-    .label("Accountability"),
+  accountability: yup.string().typeError("Accountability is a required field").required().label("Accountability"),
 
   accountable: yup
     .object()
     .nullable()
     .when("accountability", {
       is: (value) => value === "Personal Issued",
-      then: (yup) =>
-        yup
-          .label("Accountable")
-          .required()
-          .typeError("Accountable is a required field"),
+      then: (yup) => yup.label("Accountable").required().typeError("Accountable is a required field"),
     }),
 
   asset_description: yup.string().required().label("Asset Description"),
@@ -138,7 +101,7 @@ const schema = yup.object().shape({
   other_attachment: yup.mixed().label("Other Attachment"),
 });
 
-const AddRequisition = (props) => {
+const AddContainer = (props) => {
   const { data, onUpdateResetHandler } = props;
   const [requestList, setRequestList] = useState([]);
 
@@ -154,13 +117,7 @@ const AddRequisition = (props) => {
 
   const [
     postRequisition,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostRequisitionApiMutation();
 
   const [
@@ -261,16 +218,12 @@ const AddRequisition = (props) => {
   });
 
   useEffect(() => {
-    const errorData =
-      (isPostError || isUpdateError) &&
-      (postError?.status === 422 || updateError?.status === 422);
+    const errorData = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
 
     if (errorData) {
       const errors = (postError?.data || updateError?.data)?.errors || {};
 
-      Object.entries(errors).forEach(([name, [message]]) =>
-        setError(name, { type: "validate", message })
-      );
+      Object.entries(errors).forEach(([name, [message]]) => setError(name, { type: "validate", message }));
     }
 
     const showToast = () => {
@@ -492,22 +445,14 @@ const AddRequisition = (props) => {
         <Box className="request mcontainer__wrapper" p={2}>
           {/* FORM */}
           <Box>
-            <Typography
-              color="secondary.main"
-              sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}
-            >
+            <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
               ASSET
               {/* {data.status ? "Edit Requisition" : "Add Requisition"} */}
             </Typography>
 
             <Divider sx={{}} />
 
-            <Box
-              id="requestForm"
-              className="request__form"
-              component="form"
-              onSubmit={handleSubmit(addRequstHandler)}
-            >
+            <Box id="requestForm" className="request__form" component="form" onSubmit={handleSubmit(addRequstHandler)}>
               <Stack gap={2}>
                 <Box sx={BoxStyle}>
                   <Typography sx={sxSubtitle}>Request Information</Typography>
@@ -520,9 +465,7 @@ const AddRequisition = (props) => {
                     loading={isTypeOfRequestLoading}
                     size="small"
                     getOptionLabel={(option) => option.type_of_request_name}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
                     renderInput={(params) => (
                       <TextField
                         color="secondary"
@@ -572,9 +515,7 @@ const AddRequisition = (props) => {
                     size="small"
                     disabled={requestList.length !== 0}
                     getOptionLabel={(option) => option.department_name}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
                     renderInput={(params) => (
                       <TextField
                         color="secondary"
@@ -593,16 +534,11 @@ const AddRequisition = (props) => {
                     name="subunit_id"
                     control={control}
                     disabled={requestList.length !== 0}
-                    options={subUnitData?.filter(
-                      (item) =>
-                        item?.department?.id === watch("department_id")?.id
-                    )}
+                    options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
                     loading={isSubUnitLoading}
                     size="small"
                     getOptionLabel={(option) => option.subunit_name}
-                    isOptionEqualToValue={(option, value) =>
-                      option.id === value.id
-                    }
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
                     renderInput={(params) => (
                       <TextField
                         color="secondary"
@@ -646,20 +582,13 @@ const AddRequisition = (props) => {
                     disabled={requestList.length !== 0}
                     options={locationData?.filter((item) => {
                       return item.departments.some((department) => {
-                        return (
-                          department?.sync_id ===
-                          watch("department_id")?.sync_id
-                        );
+                        return department?.sync_id === watch("department_id")?.sync_id;
                       });
                     })}
                     loading={isLocationLoading}
                     size="small"
-                    getOptionLabel={(option) =>
-                      option.location_code + " - " + option.location_name
-                    }
-                    isOptionEqualToValue={(option, value) =>
-                      option.location_id === value.location_id
-                    }
+                    getOptionLabel={(option) => option.location_code + " - " + option.location_name}
+                    isOptionEqualToValue={(option, value) => option.location_id === value.location_id}
                     renderInput={(params) => (
                       <TextField
                         color="secondary"
@@ -678,14 +607,8 @@ const AddRequisition = (props) => {
                     options={accountTitleData}
                     loading={isAccountTitleLoading}
                     size="small"
-                    getOptionLabel={(option) =>
-                      option.account_title_code +
-                      " - " +
-                      option.account_title_name
-                    }
-                    isOptionEqualToValue={(option, value) =>
-                      option.account_title_code === value.account_title_code
-                    }
+                    getOptionLabel={(option) => option.account_title_code + " - " + option.account_title_name}
+                    isOptionEqualToValue={(option, value) => option.account_title_code === value.account_title_code}
                     renderInput={(params) => (
                       <TextField
                         color="secondary"
@@ -726,13 +649,11 @@ const AddRequisition = (props) => {
                       options={sedarData}
                       loading={isSedarLoading}
                       getOptionLabel={
-                        (option) =>
-                          option.general_info?.full_id_number_full_name
+                        (option) => option.general_info?.full_id_number_full_name
                         // `(${option.general_info?.full_id_number}) - ${option.general_info?.full_name}`
                       }
                       isOptionEqualToValue={(option, value) =>
-                        option.general_info?.full_id_number ===
-                        value.general_info?.full_id_number
+                        option.general_info?.full_id_number === value.general_info?.full_id_number
                       }
                       renderInput={(params) => (
                         <TextField
@@ -806,7 +727,7 @@ const AddRequisition = (props) => {
                     }}
                   />
 
-                  <CustomPatternfield
+                  <CustomNumberField
                     control={control}
                     color="secondary"
                     name="cellphone_number"
@@ -846,25 +767,13 @@ const AddRequisition = (props) => {
                     />
 
                     {watch("letter_of_request") !== "" && (
-                      <RemoveFile
-                        title="Letter of Request"
-                        value="letter_of_request"
-                      />
+                      <RemoveFile title="Letter of Request" value="letter_of_request" />
                     )}
                   </Stack>
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
-                    <CustomAttachment
-                      control={control}
-                      name="quotation"
-                      label="Quotation"
-                      inputRef={QuotationRef}
-                    />
-                    {watch("quotation") !== "" ? (
-                      <RemoveFile title="Quotation" value="quotation" />
-                    ) : (
-                      ""
-                    )}
+                    <CustomAttachment control={control} name="quotation" label="Quotation" inputRef={QuotationRef} />
+                    {watch("quotation") !== "" ? <RemoveFile title="Quotation" value="quotation" /> : ""}
                   </Stack>
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
@@ -874,9 +783,7 @@ const AddRequisition = (props) => {
                       label="Specification (Form)"
                       inputRef={SpecificationRef}
                     />
-                    {watch("specification") !== "" && (
-                      <RemoveFile title="Specification" value="specification" />
-                    )}
+                    {watch("specification") !== "" && <RemoveFile title="Specification" value="specification" />}
                   </Stack>
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
@@ -886,9 +793,7 @@ const AddRequisition = (props) => {
                       label="Tool of Trade"
                       inputRef={ToolOfTradeRef}
                     />
-                    {watch("tool_of_trade") !== "" && (
-                      <RemoveFile title="Tool of Trade" value="tool_of_trade" />
-                    )}
+                    {watch("tool_of_trade") !== "" && <RemoveFile title="Tool of Trade" value="tool_of_trade" />}
                   </Stack>
 
                   <Stack flexDirection="row" gap={1} alignItems="center">
@@ -899,10 +804,7 @@ const AddRequisition = (props) => {
                       inputRef={OthersRef}
                     />
                     {watch("other_attachment") !== "" && (
-                      <RemoveFile
-                        title="Other Attachments"
-                        value="other_attachment"
-                      />
+                      <RemoveFile title="Other Attachments" value="other_attachment" />
                     )}
                   </Stack>
                 </Box>
@@ -911,14 +813,7 @@ const AddRequisition = (props) => {
 
             <Divider sx={{ pb: 1, mb: 1 }} />
 
-            <LoadingButton
-              form="requestForm"
-              variant="contained"
-              type="submit"
-              size="small"
-              fullWidth
-              sx={{ gap: 1 }}
-            >
+            <LoadingButton form="requestForm" variant="contained" type="submit" size="small" fullWidth sx={{ gap: 1 }}>
               <AddToPhotos /> <Typography variant="p">ADD</Typography>
             </LoadingButton>
           </Box>
@@ -927,18 +822,12 @@ const AddRequisition = (props) => {
 
           {/* TABLE */}
           <Box className="request__table">
-            <Typography
-              color="secondary.main"
-              sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}
-            >
+            <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
               CURRENT ASSET
               {/* {data.status ? "Edit Requisition" : "Add Requisition"} */}
             </Typography>
 
-            <TableContainer
-              className="mcontainer__th-body  mcontainer__wrapper"
-              sx={{ height: "calc(100vh - 290px)" }}
-            >
+            <TableContainer className="mcontainer__th-body  mcontainer__wrapper" sx={{ height: "calc(100vh - 290px)" }}>
               <Table className="mcontainer__table " stickyHeader>
                 <TableHead>
                   <TableRow
@@ -956,9 +845,7 @@ const AddRequisition = (props) => {
                     <TableCell className="tbl-cell">
                       <TableSortLabel
                         active={orderBy === `type_of_request_name`}
-                        direction={
-                          orderBy === `type_of_request_name` ? order : `asc`
-                        }
+                        direction={orderBy === `type_of_request_name` ? order : `asc`}
                         onClick={() => onSort(`type_of_request_name`)}
                       >
                         Type of Request
@@ -1017,17 +904,13 @@ const AddRequisition = (props) => {
                               },
                             }}
                           >
-                            <TableCell className="tbl-cell tr-cen-pad45 text-weight">
-                              {index + 1}
-                            </TableCell>
+                            <TableCell className="tbl-cell tr-cen-pad45 text-weight">{index + 1}</TableCell>
 
                             <TableCell className="tbl-cell tr-cen-pad45">
                               {data.type_of_request_id?.type_of_request_name}
                             </TableCell>
 
-                            <TableCell className="tbl-cell tr-cen-pad45">
-                              {data.attachment_type}
-                            </TableCell>
+                            <TableCell className="tbl-cell tr-cen-pad45">{data.attachment_type}</TableCell>
 
                             <TableCell className="tbl-cell">
                               <Typography fontSize={10} color="gray">
@@ -1054,15 +937,8 @@ const AddRequisition = (props) => {
                             <TableCell className="tbl-cell">
                               {data.accountability === "Personal Issued" ? (
                                 <>
-                                  <Box>
-                                    {
-                                      data?.accountable?.general_info
-                                        ?.full_id_number
-                                    }
-                                  </Box>
-                                  <Box>
-                                    {data?.accountable?.general_info?.full_name}
-                                  </Box>
+                                  <Box>{data?.accountable?.general_info?.full_id_number}</Box>
+                                  <Box>{data?.accountable?.general_info?.full_name}</Box>
                                 </>
                               ) : (
                                 "Common"
@@ -1070,11 +946,7 @@ const AddRequisition = (props) => {
                             </TableCell>
 
                             <TableCell className="tbl-cell">
-                              <Typography
-                                fontWeight={600}
-                                fontSize="14px"
-                                color="secondary.main"
-                              >
+                              <Typography fontWeight={600} fontSize="14px" color="secondary.main">
                                 {data.asset_description}
                               </Typography>
                               <Typography fontSize="12px" color="text.light">
@@ -1082,20 +954,14 @@ const AddRequisition = (props) => {
                               </Typography>
                             </TableCell>
 
+                            <TableCell className="tbl-cell">{data.quantity}</TableCell>
+
                             <TableCell className="tbl-cell">
-                              {data.quantity}
+                              {data.cellphone_number === null ? "-" : data.cellphone_number}
                             </TableCell>
 
                             <TableCell className="tbl-cell">
-                              {data.cellphone_number === null
-                                ? "-"
-                                : data.cellphone_number}
-                            </TableCell>
-
-                            <TableCell className="tbl-cell">
-                              {data.remarks === ""
-                                ? "No Remarks"
-                                : data.remarks}
+                              {data.remarks === "" ? "No Remarks" : data.remarks}
                             </TableCell>
 
                             <TableCell className="tbl-cell">
@@ -1162,34 +1028,20 @@ const AddRequisition = (props) => {
               </Table>
             </TableContainer>
 
-            <Stack
-              flexDirection="row"
-              justifyContent="flex-end"
-              gap={2}
-              sx={{ pt: "10px" }}
-            >
+            <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
               <LoadingButton
                 onClick={onSubmitHandler}
                 variant="contained"
                 size="small"
                 color="secondary"
-                startIcon={
-                  <Create
-                    color={requestList.length === 0 ? "gray" : "primary"}
-                  />
-                }
+                startIcon={<Create color={requestList.length === 0 ? "gray" : "primary"} />}
                 disabled={requestList.length === 0 ? true : false}
                 loading={isUpdateLoading || isPostLoading}
               >
                 <Typography fontSize="14px">Create</Typography>
               </LoadingButton>
 
-              <Button
-                variant="outlined"
-                size="small"
-                color="secondary"
-                onClick={() => navigate(-1)}
-              >
+              <Button variant="outlined" size="small" color="secondary" onClick={() => navigate(-1)}>
                 Cancel
               </Button>
             </Stack>
@@ -1200,4 +1052,4 @@ const AddRequisition = (props) => {
   );
 };
 
-export default AddRequisition;
+export default AddContainer;

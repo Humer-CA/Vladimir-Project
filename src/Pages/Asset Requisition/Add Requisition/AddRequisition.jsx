@@ -81,7 +81,7 @@ import {
 import axios from "axios";
 import { closeConfirm, onLoading, openConfirm } from "../../../Redux/StateManagement/confirmSlice";
 import { usePostRequisitionSmsApiMutation } from "../../../Redux/Query/Request/RequisitionSms";
-import CustomPatternfield from "../../../Components/Reusable/CustomPatternfield";
+import CustomPatternField from "../../../Components/Reusable/CustomPatternField";
 import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
 
 const schema = yup.object().shape({
@@ -1291,7 +1291,7 @@ const AddRequisition = (props) => {
                     //   return floatValue >= 1;
                     // }}
                   />
-                  <CustomPatternfield
+                  <CustomPatternField
                     control={control}
                     color="secondary"
                     name="cellphone_number"
