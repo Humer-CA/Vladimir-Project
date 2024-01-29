@@ -9,13 +9,10 @@ import * as yup from "yup";
 import { Box, Button, Stack, Typography } from "@mui/material";
 
 import { useDispatch } from "react-redux";
-import {
-  usePostSubCapexApiMutation,
-  useUpdateSubCapexApiMutation,
-} from "../../../Redux/Query/Masterlist/Capex";
+import { usePostSubCapexApiMutation, useUpdateSubCapexApiMutation } from "../../../Redux/Query/Masterlist/Capex";
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
 import { LoadingButton } from "@mui/lab";
-import CustomPatternfield from "../../../Components/Reusable/CustomNumberField";
+import CustomNumberField from "../../../Components/Reusable/CustomNumberField";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -25,19 +22,12 @@ const schema = yup.object().shape({
 });
 
 const AddSubCapex = (props) => {
-  const { data, capex, capexId, onUpdateResetHandler, setSubCapexDialog } =
-    props;
+  const { data, capex, capexId, onUpdateResetHandler, setSubCapexDialog } = props;
   const dispatch = useDispatch();
 
   const [
     postSubCapex,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostSubCapexApiMutation();
 
   const [
@@ -88,13 +78,9 @@ const AddSubCapex = (props) => {
   }, [isPostSuccess, isUpdateSuccess]);
 
   useEffect(() => {
-    const hasError =
-      (isPostError || isUpdateError) &&
-      (postError?.status === 422 || updateError?.status === 422);
+    const hasError = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
     const errors = (postError?.data || updateError?.data)?.errors || {};
-    Object.entries(errors).forEach(([name, [message]]) =>
-      setError(name, { type: "validate", message })
-    );
+    Object.entries(errors).forEach(([name, [message]]) => setError(name, { type: "validate", message }));
 
     const showToast = () => {
       dispatch(
@@ -146,18 +132,11 @@ const AddSubCapex = (props) => {
 
   return (
     <Box className="add-masterlist">
-      <Typography
-        color="secondary.main"
-        sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}
-      >
+      <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
         {data.status ? "Edit Sub Capex" : "Add Sub Capex"}
       </Typography>
 
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmitHandler)}
-        className="add-masterlist__content"
-      >
+      <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} className="add-masterlist__content">
         <Stack flexDirection="row" gap={1}>
           <CustomTextField
             control={control}

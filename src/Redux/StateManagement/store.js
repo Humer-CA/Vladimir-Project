@@ -74,7 +74,8 @@ import { purchaseRequestApi } from "../Query/Request/PurchaseRequest";
 import { approvalApi } from "../Query/Approving/Approval";
 import { requisitionSmsApi } from "../Query/Request/RequisitionSms";
 
-import { assetReceivingApi } from "../Query/Request/AssetReceiving/AssetReceiving";
+import { assetReceivingApi } from "../Query/Request/AssetReceiving";
+import { assetReleasingApi } from "../Query/Request/AssetReleasing";
 
 export const store = configureStore({
   reducer: {
@@ -153,6 +154,7 @@ export const store = configureStore({
     [approvalApi.reducerPath]: approvalApi.reducer,
 
     [assetReceivingApi.reducerPath]: assetReceivingApi.reducer,
+    [assetReleasingApi.reducerPath]: assetReleasingApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -214,6 +216,7 @@ export const store = configureStore({
       approvalApi.middleware,
 
       assetReceivingApi.middleware,
+      assetReleasingApi.middleware,
     ]),
 });
 

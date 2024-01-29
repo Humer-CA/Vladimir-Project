@@ -33,7 +33,7 @@ import { Help, ReportProblem, Visibility } from "@mui/icons-material";
 import { useGetApprovalApiQuery, usePatchApprovalStatusApiMutation } from "../../Redux/Query/Approving/Approval";
 import { useNavigate } from "react-router-dom";
 
-const PendingRequest = (props) => {
+const ApprovedRequest = (props) => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("Approved");
   const [perPage, setPerPage] = useState(5);
@@ -327,4 +327,4 @@ const PendingRequest = (props) => {
   );
 };
 
-export default PendingRequest;
+export default ApprovedRequest;

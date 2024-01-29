@@ -74,8 +74,6 @@ const AddRole = (props) => {
       access_permission: [],
     },
   });
-  // console.log(watch("access_permission").length);
-  // console.log(postError);
   console.log(watch("access_permission"));
 
   useEffect(() => {
@@ -570,6 +568,18 @@ const AddRole = (props) => {
               <Checkbox
                 {...register("access_permission")}
                 checked={watch("access_permission")?.includes("requisition-receiving")}
+              />
+            }
+          />
+
+          <FormControlLabel
+            disabled={data.action === "view"}
+            label="Releasing"
+            value="requisition-releasing"
+            control={
+              <Checkbox
+                {...register("access_permission")}
+                checked={watch("access_permission")?.includes("requisition-releasing")}
               />
             }
           />

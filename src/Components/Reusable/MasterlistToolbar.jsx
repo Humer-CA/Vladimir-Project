@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../Style/Masterlist/masterlistToolbar.scss";
-import ScanFixedAsset from "../../Pages/Masterlist/AddEdit/FixedAssetComponents/ScanFixedAsset";
+import ScanFixedAsset from "../../Pages/FixedAssets/ScanFixedAsset";
 import { Link } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
