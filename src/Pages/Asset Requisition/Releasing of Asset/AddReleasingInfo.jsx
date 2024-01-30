@@ -36,7 +36,7 @@ const AddReleasingInfo = (props) => {
     watch,
     reset,
     setError,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -227,8 +227,6 @@ const AddReleasingInfo = (props) => {
     );
   };
 
-  console.log(errors);
-
   return (
     <Box className="mcontainer" component="form" onSubmit={handleSubmit(onSubmitHandler)}>
       <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "1.6rem", textAlign: "center" }}>
@@ -303,7 +301,7 @@ const AddReleasingInfo = (props) => {
         />
 
         <Stack flexDirection="row" alignSelf="flex-end" gap={2}>
-          <LoadingButton variant="contained" loading={isPostLoading} size="small" type="submit">
+          <LoadingButton variant="contained" loading={isPostLoading} size="small" type="submit" disabled={!isDirty}>
             Release
           </LoadingButton>
 

@@ -71,16 +71,7 @@ import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanS
 import AddReleasingInfo from "./AddReleasingInfo";
 
 const ViewRequestReleasing = (props) => {
-  const [search, setSearch] = useState(null);
-  const [viewDepre, setViewDepre] = useState(false);
-  const [statusChange, setStatusChange] = useState(false);
-  const [currentDate, setCurrentDate] = useState(new Date());
-
   const { state: data } = useLocation();
-  const { tag_number } = useParams();
-
-  const permissions = useSelector((state) => state.userLogin?.user.role.access_permission);
-
   const isSmallScreen = useMediaQuery("(max-width: 350px)");
 
   const navigate = useNavigate();
@@ -104,29 +95,7 @@ const ViewRequestReleasing = (props) => {
     }
   );
 
-  // useEffect(() => {
-  //   setSearch(releasingData?.data?.vladimir_tag_number);
-  // }, [releasingData]);
-
-  // useEffect(() => {
-  //   if (isPostError && postError?.status === 422) {
-  //     dispatch(
-  //       openToast({
-  //         message: postError?.data?.message,
-  //         duration: 5000,
-  //         variant: "error",
-  //       })
-  //     );
-  //   } else if (isPostError && postError?.status !== 422) {
-  //     dispatch(
-  //       openToast({
-  //         message: "Something went wrong. Please try again.",
-  //         duration: 5000,
-  //         variant: "error",
-  //       })
-  //     );
-  //   }
-  // }, [isPostError]);
+  console.log(releasingData);
 
   const handleReleasing = () => {
     dispatch(openDialog());
@@ -205,7 +174,7 @@ const ViewRequestReleasing = (props) => {
                 alignSelf: "flex-end",
               }}
             >
-              {data?.is_released === 0 && (
+              {releasingData?.is_released === 0 && (
                 <Button
                   variant="contained"
                   size="small"
