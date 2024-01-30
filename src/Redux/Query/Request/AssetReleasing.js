@@ -48,6 +48,7 @@ export const {
   useGetAssetReleasingQuery,
   useGetAssetReleasingAllApiQuery,
   useLazyGetAssetReleasingAllApiQuery,
+  useGetByWarehouseNumberApiQuery,
   useLazyGetAssetReleasingQuery,
   useAddAssetReleasingMutation,
 } = assetReleasingApi;

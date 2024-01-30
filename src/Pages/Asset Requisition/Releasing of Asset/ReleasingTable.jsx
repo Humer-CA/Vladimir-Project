@@ -25,6 +25,7 @@ import {
   TableRow,
   TableSortLabel,
   Tooltip,
+  Typography,
   useMediaQuery,
 } from "@mui/material";
 import { Help, LibraryAdd, Report, ReportProblem, Visibility } from "@mui/icons-material";
@@ -34,7 +35,7 @@ import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanS
 import { useGetAssetReleasingQuery } from "../../../Redux/Query/Request/AssetReleasing";
 
 const ReleasingTable = (props) => {
-  const { released } = props;
+  const { withVtn } = props;
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
   const [perPage, setPerPage] = useState(5);
@@ -99,13 +100,11 @@ const ReleasingTable = (props) => {
     { refetchOnMountOrArgChange: true }
   );
 
-  console.log(releasingData);
-
   const dispatch = useDispatch();
 
   const handleViewData = (data) => {
-    navigate(`/asset-requisition/requisition-releasing/${data.transaction_number}`, {
-      state: { ...data, released },
+    navigate(`/asset-requisition/requisition-releasing/${data.warehouse_number?.warehouse_number}`, {
+      state: { ...data, withVtn },
     });
   };
 
@@ -143,27 +142,27 @@ const ReleasingTable = (props) => {
                           Warehouse No.
                         </TableSortLabel>
                       </TableCell>
-
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `warehouse_number`}
                           direction={orderBy === `warehouse_number` ? order : `asc`}
                           onClick={() => onSort(`warehouse_number`)}
                         >
-                          Vladimir Tag Number
+                          Type of Request
                         </TableSortLabel>
                       </TableCell>
-
-                      <TableCell className="tbl-cell">
-                        <TableSortLabel
-                          active={orderBy === `warehouse_number`}
-                          direction={orderBy === `warehouse_number` ? order : `asc`}
-                          onClick={() => onSort(`warehouse_number`)}
-                        >
-                          Oracle No.
-                        </TableSortLabel>
-                      </TableCell>
-
+                      {withVtn && (
+                        <TableCell className="tbl-cell">
+                          <TableSortLabel
+                            active={orderBy === `vladimir_tag_number`}
+                            direction={orderBy === `vladimir_tag_number` ? order : `asc`}
+                            onClick={() => onSort(`vladimir_tag_number`)}
+                          >
+                            Vladimir Tag Number
+                          </TableSortLabel>
+                        </TableCell>
+                      )}
+                      <TableCell className="tbl-cell">Oracle No.</TableCell>
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `warehouse_number`}
@@ -173,42 +172,15 @@ const ReleasingTable = (props) => {
                           Requestor
                         </TableSortLabel>
                       </TableCell>
-
-                      {released && (
-                        <TableCell className="tbl-cell">
-                          <TableSortLabel
-                            active={orderBy === `pr_number`}
-                            direction={orderBy === `pr_number` ? order : `asc`}
-                            onClick={() => onSort(`pr_number`)}
-                          >
-                            PR Number
-                          </TableSortLabel>
-                        </TableCell>
-                      )}
-
+                      <TableCell className="tbl-cell">Chart of Accounts</TableCell>
+                      <TableCell className="tbl-cell">Accountability</TableCell>
                       <TableCell className="tbl-cell">
-                        <TableSortLabel>Requestor</TableSortLabel>
-                      </TableCell>
-
-                      <TableCell className="tbl-cell text-center">
-                        <TableSortLabel
-                          active={orderBy === `item_count`}
-                          direction={orderBy === `item_count` ? order : `asc`}
-                          onClick={() => onSort(`item_count`)}
-                        >
-                          No. of Items
-                        </TableSortLabel>
-                      </TableCell>
-
-                      <TableCell className="tbl-cell text-center">View Information</TableCell>
-
-                      <TableCell className="tbl-cell text-center">
                         <TableSortLabel
                           active={orderBy === `created_at`}
                           direction={orderBy === `created_at` ? order : `asc`}
                           onClick={() => onSort(`created_at`)}
                         >
-                          Date Approved
+                          Date Created
                         </TableSortLabel>
                       </TableCell>
                     </TableRow>
@@ -223,26 +195,62 @@ const ReleasingTable = (props) => {
                           [...releasingData?.data]?.sort(comparator(order, orderBy))?.map((data) => (
                             <TableRow
                               key={data.id}
+                              hover
+                              onClick={() => handleViewData(data)}
                               sx={{
                                 "&:last-child td, &:last-child th": {
                                   borderBottom: 0,
                                 },
+                                cursor: "pointer",
                               }}
                             >
-                              <TableCell className="tbl-cell text-weight">{data.transaction_number}</TableCell>
-                              {released && <TableCell className="tbl-cell ">{data.pr_number}</TableCell>}
+                              <TableCell className="tbl-cell">{data.warehouse_number?.warehouse_number}</TableCell>
+                              <TableCell className="tbl-cell">
+                                <Typography fontSize={12} fontWeight={600} color="primary.main">
+                                  {data.type_of_request?.type_of_request_name}
+                                </Typography>
+                                <Typography fontSize={14} fontWeight={600}>
+                                  {data.asset_description}
+                                </Typography>
+                                <Typography fontSize={14}>{data.asset_specification}</Typography>
+                              </TableCell>
+                              {withVtn && (
+                                <TableCell className="tbl-cell text-weight">{data.vladimir_tag_number}</TableCell>
+                              )}
+                              <TableCell className="tbl-cell">
+                                <Typography fontSize={12} color="text.light">
+                                  PR - {data.pr_number}
+                                </Typography>
+                                <Typography fontSize={12} color="text.light">
+                                  PO - {data.po_number}
+                                </Typography>
+                                <Typography fontSize={12} color="text.light">
+                                  RR - {data.rr_number}
+                                </Typography>
+                              </TableCell>
                               <TableCell className="tbl-cell ">
                                 {`(${data.requestor?.employee_id}) - ${data.requestor?.firstname} ${data.requestor?.lastname}`}
                               </TableCell>
-                              <TableCell className="tbl-cell tr-cen-pad45">{data.item_count}</TableCell>
-                              <TableCell className="tbl-cell text-center">
-                                <Tooltip placement="top" title="View Request Information" arrow>
-                                  <IconButton onClick={() => handleViewData(data)}>
-                                    <Visibility />
-                                  </IconButton>
-                                </Tooltip>
+                              <TableCell className="tbl-cell">
+                                <Typography fontSize={10} color="gray">
+                                  ({data.company?.company_code}) - {data.company?.company_name}
+                                </Typography>
+                                <Typography fontSize={10} color="gray">
+                                  ({data.department?.department_code}) - {data.department?.department_name}
+                                </Typography>
+                                <Typography fontSize={10} color="gray">
+                                  ({data.location?.location_code}) - {data.location?.location_name}
+                                </Typography>
+                                <Typography fontSize={10} color="gray">
+                                  ({data.account_title?.account_title_code}) - {data.account_title?.account_title_name}
+                                </Typography>
                               </TableCell>
-
+                              <TableCell className="tbl-cell">
+                                <Typography fontSize={14} fontWeight={600}>
+                                  {data.accountability}
+                                </Typography>
+                                <Typography fontSize={12}>{data.accountable}</Typography>
+                              </TableCell>
                               <TableCell className="tbl-cell tr-cen-pad45">
                                 {Moment(data.created_at).format("MMM DD, YYYY")}
                               </TableCell>

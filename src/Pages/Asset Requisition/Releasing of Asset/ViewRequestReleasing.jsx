@@ -45,6 +45,7 @@ import {
   DescriptionRounded,
   ExpandMore,
   Help,
+  Output,
   PriceChange,
   Print,
   ReportProblem,
@@ -65,6 +66,9 @@ import { useForm } from "react-hook-form";
 import { useArchiveAdditionalCostApiMutation } from "../../../Redux/Query/FixedAsset/AdditionalCost";
 import useScanDetection from "use-scan-detection-react18";
 import { useGetIpApiQuery } from "../../../Redux/Query/IpAddressSetup";
+import { useGetByWarehouseNumberApiQuery } from "../../../Redux/Query/Request/AssetReleasing";
+import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanStateSlice";
+import AddReleasingInfo from "./AddReleasingInfo";
 
 const ViewRequestReleasing = (props) => {
   const [search, setSearch] = useState(null);
@@ -73,7 +77,6 @@ const ViewRequestReleasing = (props) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const { state: data } = useLocation();
-  // const { status } = data;
   const { tag_number } = useParams();
 
   const permissions = useSelector((state) => state.userLogin?.user.role.access_permission);
@@ -83,401 +86,62 @@ const ViewRequestReleasing = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const drawer = useSelector((state) => state.booleanState.drawer);
+  const dialog = useSelector((state) => state.booleanState.dialog);
 
   const {
-    data: dataApi,
-    isLoading: dataApiLoading,
-    isSuccess: dataApiSuccess,
-    isFetching: dataApiFetching,
-    isError: dataApiError,
+    data: releasingData,
+    isLoading: releasingLoading,
+    isSuccess: releasingSuccess,
+    isFetching: releasingDataFetching,
+    isError: isPostError,
+    error: postError,
 
-    refetch: dataApiRefetch,
-  } = useGetFixedAssetIdApiQuery(data, {
-    refetchOnMountOrArgChange: true,
-  });
-
-  useEffect(() => {
-    setSearch(dataApi?.data?.vladimir_tag_number);
-  }, [dataApi]);
-
-  useEffect(() => {
-    if (isPostError && postError?.status === 422) {
-      dispatch(
-        openToast({
-          message: postError?.data?.message,
-          duration: 5000,
-          variant: "error",
-        })
-      );
-    } else if (isPostError && postError?.status !== 422) {
-      dispatch(
-        openToast({
-          message: "Something went wrong. Please try again.",
-          duration: 5000,
-          variant: "error",
-        })
-      );
+    refetch: releasingDataRefetch,
+  } = useGetByWarehouseNumberApiQuery(
+    { warehouse_number: data?.warehouse_number?.warehouse_number },
+    {
+      refetchOnMountOrArgChange: true,
     }
-  }, [isPostError]);
+  );
 
-  // const onPrintHandler = () => {
-  //   printAsset({
-  //     search: search,
-  //     startDate: "",
-  //     endDate: "",
-  //   });
-  // };
+  console.log("releasingData", releasingData?.division?.division_name);
+  console.log(isPostError);
 
-  const onPrintHandler = () => {
-    dispatch(
-      openConfirm({
-        icon: Help,
-        iconColor: "info",
-        message: (
-          <Box>
-            <Typography>Are you sure you want to</Typography>
-            <Typography
-              sx={{
-                display: "inline-block",
-                color: "secondary.main",
-                fontWeight: "bold",
-                fontFamily: "Raleway",
-              }}
-            >
-              PRINT
-            </Typography>
-            this Barcode?
-          </Box>
-        ),
-        onConfirm: async () => {
-          try {
-            dispatch(onLoading());
-            const result = await printAsset({
-              search: search,
-              startDate: "",
-              endDate: "",
-              ip: ip.data,
-              tagNumber: [data.vladimir_tag_number],
-            }).unwrap();
+  // useEffect(() => {
+  //   setSearch(releasingData?.data?.vladimir_tag_number);
+  // }, [releasingData]);
 
-            // console.log(result);
+  // useEffect(() => {
+  //   if (isPostError && postError?.status === 422) {
+  //     dispatch(
+  //       openToast({
+  //         message: postError?.data?.message,
+  //         duration: 5000,
+  //         variant: "error",
+  //       })
+  //     );
+  //   } else if (isPostError && postError?.status !== 422) {
+  //     dispatch(
+  //       openToast({
+  //         message: "Something went wrong. Please try again.",
+  //         duration: 5000,
+  //         variant: "error",
+  //       })
+  //     );
+  //   }
+  // }, [isPostError]);
 
-            dispatch(
-              openToast({
-                message: result.message,
-                duration: 5000,
-              })
-            );
-            dispatch(closeConfirm());
-          } catch (err) {
-            console.log(err.data.message);
-            if (err?.status === 403 || err?.status === 404 || err?.status === 422) {
-              dispatch(
-                openToast({
-                  message: err.data?.message,
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            } else if (err?.status !== 422) {
-              dispatch(
-                openToast({
-                  message: "Something went wrong. Please try again.",
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            }
-          }
-        },
-      })
-    );
+  const handleReleasing = () => {
+    dispatch(openDialog());
   };
-
-  useEffect(() => {
-    if (isPostSuccess) {
-      dispatch(
-        openToast({
-          message: postData?.message,
-          duration: 5000,
-        })
-      );
-    }
-  }, [isPostSuccess]);
-
-  const onUpdateHandler = (props) => {
-    const {
-      id,
-      fixed_asset,
-      is_additional_cost,
-      type_of_request,
-      capex,
-      sub_capex,
-      is_old_asset,
-      tag_number,
-      tag_number_old,
-      division,
-      major_category,
-      minor_category,
-      company,
-      department,
-      location,
-      account_title,
-      asset_description,
-      asset_specification,
-      acquisition_date,
-      accountability,
-      accountable,
-      cellphone_number,
-      brand,
-      care_of,
-      voucher,
-      voucher_date,
-      receipt,
-      quantity,
-      asset_status,
-      movement_status,
-      cycle_count_status,
-      depreciation_method,
-      est_useful_life,
-      release_date,
-      depreciation_status,
-      acquisition_cost,
-      months_depreciated,
-      scrap_value,
-      depreciable_basis,
-      accumulated_cost,
-      start_depreciation,
-      end_depreciation,
-      depreciation_per_year,
-      depreciation_per_month,
-      remaining_book_value,
-
-      print_count,
-    } = props;
-
-    setUpdateFixedAsset({
-      status: true,
-      id: id,
-
-      fixed_asset,
-      is_additional_cost,
-      type_of_request,
-      capex,
-      sub_capex,
-
-      is_old_asset: is_old_asset,
-      tag_number: tag_number,
-      tag_number_old: tag_number_old,
-
-      division,
-      major_category,
-      minor_category,
-      company,
-      department,
-      location,
-      account_title,
-
-      asset_description: asset_description,
-      asset_specification: asset_specification,
-      acquisition_date,
-      accountability: accountability,
-      accountable: accountable,
-      cellphone_number,
-      brand,
-      care_of: care_of,
-      voucher: voucher,
-      voucher_date,
-      receipt,
-      quantity: quantity,
-      asset_status,
-      movement_status,
-      cycle_count_status,
-
-      depreciation_method: depreciation_method,
-      est_useful_life: est_useful_life,
-      release_date,
-      depreciation_status,
-
-      acquisition_cost,
-      months_depreciated,
-      scrap_value: scrap_value,
-      depreciable_basis: depreciable_basis,
-      accumulated_cost: accumulated_cost,
-      start_depreciation: start_depreciation,
-      end_depreciation: end_depreciation,
-      depreciation_per_year: depreciation_per_year,
-      depreciation_per_month: depreciation_per_month,
-      remaining_book_value: remaining_book_value,
-
-      print_count,
-    });
-  };
-
-  // const onArchiveRestoreHandler = async (id) => {
-  //   dispatch(
-  //     openConfirm({
-  //       icon: status === "active" ? ReportProblem : Help,
-  //       iconColor: status === "active" ? "alert" : "info",
-  //       message: (
-  //         <Box>
-  //           <Typography>Are you sure you want to</Typography>
-  //           <Typography
-  //             sx={{
-  //               display: "inline-block",
-  //               color: "secondary.main",
-  //               fontWeight: "bold",
-  //               fontFamily: "Raleway",
-  //             }}
-  //           >
-  //             {status === "active" ? "ARCHIVE" : "ACTIVATE"}
-  //           </Typography>
-  //           this data?
-  //         </Box>
-  //       ),
-  //       remarks: true,
-  //       onConfirm: async (formData) => {
-  //         try {
-  //           dispatch(onLoading());
-  //           const result = await (
-  //             patchFixedAssetStatusApi || patchAdditionalCostStatusApi
-  //           )({
-  //             id: id,
-  //             status: status === "active" ? false : true,
-  //             remarks: formData.remarks,
-  //           }).unwrap();
-  //           // console.log(result);
-
-  //           dispatch(
-  //             openToast({
-  //               message: result.message,
-  //               duration: 5000,
-  //             })
-  //           );
-  //           dispatch(closeConfirm());
-  //         } catch (err) {
-  //           console.log(err);
-  //           if (err?.status === 422) {
-  //             dispatch(
-  //               openToast({
-  //                 message: err.data?.errors,
-  //                 duration: 5000,
-  //                 variant: "error",
-  //               })
-  //             );
-  //           } else if (err?.status !== 422) {
-  //             dispatch(
-  //               openToast({
-  //                 message: "Something went wrong. Please try again.",
-  //                 duration: 5000,
-  //                 variant: "error",
-  //               })
-  //             );
-  //           }
-  //         }
-  //       },
-  //     })
-  //   );
-  // };
-
-  const onUpdateResetHandler = () => {
-    setUpdateFixedAsset({
-      status: false,
-      id: "",
-      tag_number: "",
-      tag_number_old: "",
-      capex: "",
-      project_name: "",
-
-      division_id: null,
-      division_name: "",
-      major_category_id: null,
-      major_category_name: "",
-      minor_category_id: null,
-      minor_category_name: "",
-      company_id: null,
-      department_id: null,
-      location_id: null,
-      account_title_id: null,
-
-      type_of_request_id: "",
-      type_of_request_name: "",
-      asset_description: "",
-      asset_specification: "",
-      accountability: null,
-      accountable: "",
-      cellphone_number: null,
-      brand: "",
-      care_of: "",
-      voucher: "",
-      voucher_date: null,
-      receipt: "",
-      quantity: "",
-      asset_status_id: "",
-
-      depreciation_method: null,
-      est_useful_life: "",
-      acquisition_date: null,
-      acquisition_cost: "",
-      months_depreciated: "",
-      scrap_value: "",
-      depreciable_basis: "",
-      accumulated_cost: "",
-      start_depreciation: "",
-      end_depreciation: null,
-      depreciation_per_year: "",
-      depreciation_per_month: "",
-      remaining_book_value: "",
-
-      print_count: null,
-    });
-  };
-
-  const handleDepreciation = () => {
-    const newDate = {
-      ...data,
-      date: moment(new Date(currentDate)).format("YYYY-MM"),
-    };
-    postCalcDepreApi(newDate);
-    // console.log(newDate);
-    setViewDepre(true);
-  };
-
-  const handleTableData = (data) => {
-    navigate(`/fixed-assets/${data.vladimir_tag_number}`, {
-      // state: { ...data, status },
-      state: { ...data },
-    });
-  };
-
-  useScanDetection({
-    onComplete: (code) => {
-      handleTableData({
-        vladimir_tag_number: code,
-      });
-      // console.log(code);
-    },
-    averageWaitTime: 16,
-    minLength: 11,
-  });
-
-  const onBackHandler = () => {
-    // navigate("/fixed-assets");
-    dataApi.data?.is_additional_cost === 0 ? navigate("/fixed-assets") : navigate(-1);
-  };
-
-  // console.log(dataApi.data?.depreciation_status?.depreciation_status_name);
-
-  // console.log(dataApi);
 
   return (
     <>
-      {dataApiLoading && <FixedAssetViewSkeleton onAdd={true} onImport={true} onPrint={true} />}
+      {releasingLoading && <FixedAssetViewSkeleton onAdd={true} onImport={true} onPrint={true} />}
 
-      {dataApiError && <ErrorFetchFA refetch={dataApiRefetch} />}
+      {isPostError && <ErrorFetchFA refetch={releasingDataRefetch} error={postError} />}
 
-      {dataApi && !dataApiError && (
+      {releasingData && !isPostError && (
         <Box className="tableCard">
           <Box
             sx={{
@@ -493,7 +157,7 @@ const ViewRequestReleasing = (props) => {
                 alignItems: "flex-start",
               }}
             >
-              <IconButton sx={{ mt: "5px" }} size="small" onClick={onBackHandler}>
+              <IconButton sx={{ mt: "5px" }} size="small" onClick={() => navigate(-1)}>
                 <ArrowBackIosRounded size="small" />
               </IconButton>
 
@@ -529,9 +193,8 @@ const ViewRequestReleasing = (props) => {
                     }}
                     color="secondary.main"
                   >
-                    #{dataApi?.data?.vladimir_tag_number}
+                    {data?.withVtn ? `#${releasingData?.vladimir_tag_number}` : "-"}
                   </Typography>
-                  <FaStatusChange faStatus={dataApi?.data?.asset_status?.asset_status_name} />
                 </Box>
               </Box>
             </Box>
@@ -550,55 +213,40 @@ const ViewRequestReleasing = (props) => {
                   variant="contained"
                   size="small"
                   color="secondary"
-                  onClick={() => handleDepreciation()}
-                  startIcon={
-                    isSmallScreen ? null : (
-                      <PriceChange
-                        color={
-                          dataApi.data?.depreciation_status?.depreciation_status_name !== "For Depreciation" &&
-                          dataApi.data?.est_useful_life === "0.0"
-                            ? "lightgray"
-                            : "primary"
-                        }
-                      />
-                    )
-                  }
-                  disabled={
-                    dataApi.data?.depreciation_status?.depreciation_status_name !== "For Depreciation" &&
-                    dataApi.data?.est_useful_life === "0.0"
-                  }
+                  onClick={() => handleReleasing()}
+                  startIcon={isSmallScreen ? null : <Output color="primary" />}
                 >
-                  {isSmallScreen ? <PriceChange color={"primary"} /> : "Depreciation"}
+                  {isSmallScreen ? <Output color={"primary"} /> : "Release"}
                 </Button>
               }
 
-              {permissions?.split(", ").includes("print-fa") &&
-                dataApi.data?.is_additional_cost === 0 &&
-                dataApi.data?.type_of_request?.type_of_request_name !== "Capex" && (
-                  <LoadingButton
-                    variant="contained"
-                    size="small"
-                    // loading={isPrintLoading}
-                    startIcon={isSmallScreen ? null : <Print />}
-                    onClick={onPrintHandler}
-                    sx={{ mx: "10px" }}
-                  >
-                    {isSmallScreen ? <Print /> : dataApi.data?.print_count >= 1 ? "Re-print" : "Print"}
-                  </LoadingButton>
-                )}
+              {/* {permissions?.split(", ").includes("print-fa") &&
+                  releasingData?.is_additional_cost === 0 &&
+                  releasingData?.type_of_request?.type_of_request_name !== "Capex" && (
+                    <LoadingButton
+                      variant="contained"
+                      size="small"
+                      // loading={isPrintLoading}
+                      startIcon={isSmallScreen ? null : <Print />}
+                      onClick={onPrintHandler}
+                      sx={{ mx: "10px" }}
+                    >
+                      {isSmallScreen ? <Print /> : releasingData?.print_count >= 1 ? "Re-print" : "Print"}
+                    </LoadingButton>
+                  )} */}
 
-              <ActionMenu
-                // faStatus={dataApi?.data?.asset_status?.asset_status_name}
-                data={dataApi?.data}
-                // status={status}
-                // onArchiveRestoreHandler={onArchiveRestoreHandler}
-                setStatusChange={setStatusChange}
-                onUpdateHandler={onUpdateHandler}
-              />
+              {/* <ActionMenu
+                  // faStatus={dataApi?.data?.asset_status?.asset_status_name}
+                  data={releasingData}
+                  // status={status}
+                  // onArchiveRestoreHandler={onArchiveRestoreHandler}
+                  setStatusChange={setStatusChange}
+                  onUpdateHandler={onUpdateHandler}
+                /> */}
             </Box>
           </Box>
 
-          {dataApi.data?.is_additional_cost === 1 && (
+          {releasingData.is_additional_cost === 1 && (
             <Chip
               variant="contained"
               size="small"
@@ -633,23 +281,23 @@ const ViewRequestReleasing = (props) => {
                   <Box className="tableCard__propertiesCapex">
                     Type of Request:
                     <Typography className="tableCard__infoCapex" fontSize="14px">
-                      {dataApi?.data?.type_of_request?.type_of_request_name}
+                      {releasingData?.type_of_request?.type_of_request_name}
                     </Typography>
                   </Box>
 
-                  {dataApi?.data?.sub_capex?.sub_capex !== "-" && (
+                  {releasingData?.sub_capex?.sub_capex !== "-" && (
                     <>
                       <Box className="tableCard__propertiesCapex">
                         Capex:
                         <Typography className="tableCard__infoCapex" fontSize="14px">
-                          {dataApi?.data?.sub_capex?.sub_capex}
+                          {releasingData?.sub_capex?.sub_capex}
                         </Typography>
                       </Box>
 
                       <Box className="tableCard__propertiesCapex">
                         Project Name:
                         <Typography className="tableCard__infoCapex" fontSize="14px">
-                          {dataApi?.data?.sub_capex?.sub_project}
+                          {releasingData?.sub_capex?.sub_project}
                         </Typography>
                       </Box>
                     </>
@@ -657,7 +305,7 @@ const ViewRequestReleasing = (props) => {
                 </Box>
               </Card>
 
-              <Card className="tableCard__cardCapex" sx={{ bgcolor: "white", py: "10.5px" }}>
+              {/* <Card className="tableCard__cardCapex" sx={{ bgcolor: "white", py: "10.5px" }}>
                 <Box>
                   <Typography
                     color="secondary.main"
@@ -672,18 +320,18 @@ const ViewRequestReleasing = (props) => {
                   <Box className="tableCard__properties">
                     Tag Number:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.tag_number}
+                      {releasingData?. tag_number}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Old Tag Number:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.tag_number_old}
+                      {releasingData?. tag_number_old}
                     </Typography>
                   </Box>
                 </Box>
-              </Card>
+              </Card> */}
 
               <Card className="tableCard__cardCapex" sx={{ bgcolor: "white", py: "10.5px" }}>
                 <Box color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1rem" }}>
@@ -693,21 +341,21 @@ const ViewRequestReleasing = (props) => {
                   <Box className="tableCard__properties">
                     Division:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.division.division_name}
+                      {releasingData?.division.division_name}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Major Category:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.major_category.major_category_name}
+                      {releasingData?.major_category.major_category_name}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Minor Category:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.minor_category.minor_category_name}
+                      {releasingData?.minor_category.minor_category_name}
                     </Typography>
                   </Box>
                 </Box>
@@ -728,28 +376,28 @@ const ViewRequestReleasing = (props) => {
                   <Box className="tableCard__properties">
                     Company:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.company.company_name}
+                      {releasingData?.company.company_name}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Department:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.department.department_name}
+                      {releasingData?.department.department_name}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Location:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.location.location_name}
+                      {releasingData?.location.location_name}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Account Title:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.account_title.account_title_name}
+                      {releasingData?.account_title.account_title_name}
                     </Typography>
                   </Box>
                 </AccordionDetails>
@@ -771,30 +419,30 @@ const ViewRequestReleasing = (props) => {
                   <Box className="tableCard__properties">
                     Asset Description:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.asset_description}
+                      {releasingData?.asset_description}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Asset Specification:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.asset_specification}
+                      {releasingData?.asset_specification}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Accountability:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.accountability}
+                      {releasingData?.accountability}
                     </Typography>
                   </Box>
 
-                  {dataApi?.data?.accountability === "Common" ? null : (
+                  {releasingData?.accountability === "Common" ? null : (
                     <>
                       <Box className="tableCard__properties">
                         Accountable:
                         <Typography className="tableCard__info" fontSize="14px">
-                          {dataApi?.data?.accountable}
+                          {releasingData?.accountable}
                         </Typography>
                       </Box>
                     </>
@@ -803,77 +451,77 @@ const ViewRequestReleasing = (props) => {
                   <Box className="tableCard__properties">
                     Acquisition Date:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.acquisition_date}
+                      {releasingData?.acquisition_date}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Cellphone Number:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.cellphone_number}
+                      {releasingData?.cellphone_number}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Brand:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.brand}
+                      {releasingData?.brand}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Care of:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.care_of}
+                      {releasingData?.care_of}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Voucher:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.voucher}
+                      {releasingData?.voucher}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Voucher Date:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.voucher_date}
+                      {releasingData?.voucher_date}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Receipt:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.receipt}
+                      {releasingData?.receipt}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Quantity:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.quantity}
+                      {releasingData?.quantity}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Asset Status:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.asset_status?.asset_status_name}
+                      {releasingData?.asset_status?.asset_status_name}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Asset Movement Status:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.movement_status?.movement_status_name}
+                      {releasingData?.movement_status?.movement_status_name}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Cycle Count Status:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.cycle_count_status?.cycle_count_status_name}
+                      {releasingData?.cycle_count_status?.cycle_count_status_name}
                     </Typography>
                   </Box>
                 </AccordionDetails>
@@ -892,41 +540,41 @@ const ViewRequestReleasing = (props) => {
                   <Box className="tableCard__properties">
                     Depreciation Status:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.depreciation_status?.depreciation_status_name}
+                      {releasingData?.depreciation_status?.depreciation_status_name}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Acquisition Cost:
                     <Typography className="tableCard__info" fontSize="14px">
-                      ₱{dataApi?.data?.acquisition_cost.toLocaleString()}
+                      ₱{releasingData?.acquisition_cost.toLocaleString()}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Release Date:
                     <Typography className="tableCard__info" fontSize="14px">
-                      {dataApi?.data?.release_date}
+                      {releasingData?.release_date}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Scrap Value:
                     <Typography className="tableCard__info" fontSize="14px">
-                      ₱{dataApi?.data?.scrap_value.toLocaleString()}
+                      ₱{releasingData?.scrap_value.toLocaleString()}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Depreciable Basis:
                     <Typography className="tableCard__info" fontSize="14px">
-                      ₱{dataApi?.data?.depreciable_basis.toLocaleString()}
+                      ₱{releasingData?.depreciable_basis.toLocaleString()}
                     </Typography>
                   </Box>
                 </AccordionDetails>
               </Accordion>
 
-              {dataApi.data?.is_additional_cost === 0 ? (
+              {releasingData.is_additional_cost === 0 ? (
                 <Accordion
                 // expanded={expanded}
                 // onChange={() => setExpanded(!expanded)}
@@ -942,7 +590,7 @@ const ViewRequestReleasing = (props) => {
 
                   <Divider />
 
-                  {dataApi?.data?.additional_cost?.length === 0 ? (
+                  {releasingData?.additional_cost?.length === 0 ? (
                     <AccordionDetails>
                       <Stack flexDirection="row" alignItems="center" justifyContent="center" gap="5px">
                         <img src={NoDataFile} alt="" width="35px" />
@@ -963,7 +611,7 @@ const ViewRequestReleasing = (props) => {
                       <TableContainer>
                         <Table>
                           <TableBody>
-                            {dataApi.data.additional_cost?.map((mapData, index) => {
+                            {releasingData.data.additional_cost?.map((mapData, index) => {
                               return (
                                 <TableRow
                                   key={index}
@@ -1033,7 +681,7 @@ const ViewRequestReleasing = (props) => {
                               Main Cost :
                             </Typography>
                             <Typography color="secondary.light">
-                              ₱{dataApi?.data?.acquisition_cost.toLocaleString()}
+                              ₱{releasingData?.acquisition_cost.toLocaleString()}
                             </Typography>
                           </Stack>
                           {`+`}
@@ -1042,7 +690,7 @@ const ViewRequestReleasing = (props) => {
                               Total Additional Cost :
                             </Typography>
                             <Typography color="secondary.light">
-                              ₱{dataApi?.data?.total_adcost.toLocaleString()}
+                              ₱{releasingData?.total_adcost.toLocaleString()}
                             </Typography>
                           </Stack>
                         </Stack>
@@ -1064,7 +712,7 @@ const ViewRequestReleasing = (props) => {
                             TOTAL COST :
                           </Typography>
                           <Typography fontWeight="bold" color="secondary.main">
-                            ₱{dataApi?.data?.total_cost.toLocaleString()}
+                            ₱{releasingData?.total_cost.toLocaleString()}
                           </Typography>
                         </Stack>
                       </TableContainer>
@@ -1100,8 +748,8 @@ const ViewRequestReleasing = (props) => {
                             },
                           }}
                           onClick={() => {
-                            handleTableData(dataApi?.data?.main);
-                            // console.log(dataApi?.data?.main);
+                            handleTableData(releasingData?.main);
+                            // console.log(releasingData?. main);
                           }}
                         >
                           <TableCell width={80} align="center">
@@ -1110,17 +758,17 @@ const ViewRequestReleasing = (props) => {
 
                           <TableCell width="550px" sx={{ minWidth: "200px" }} align="left">
                             <Typography fontSize="14px" fontWeight="bold" noWrap align="left">
-                              {dataApi?.data?.main?.asset_description}
+                              {releasingData?.main?.asset_description}
                             </Typography>
 
                             <Typography fontSize="10px" color="text.light">
-                              {dataApi?.data?.main?.asset_specification}
+                              {releasingData?.main?.asset_specification}
                             </Typography>
                           </TableCell>
 
                           <TableCell>
                             <Typography fontSize="12px" fontWeight="bold">
-                              {dataApi?.data?.acquisition_cost}
+                              {releasingData?.acquisition_cost}
                             </Typography>
                             <Typography fontSize="10px" color="gray" noWrap>
                               Acquisition Cost
@@ -1129,7 +777,7 @@ const ViewRequestReleasing = (props) => {
 
                           <TableCell>
                             <Typography fontSize="12px" fontWeight="bold">
-                              {dataApi?.data?.type_of_request?.type_of_request_name}
+                              {releasingData?.type_of_request?.type_of_request_name}
                             </Typography>
                             <Typography fontSize="10px" color="gray" noWrap>
                               Asset Classification
@@ -1138,8 +786,8 @@ const ViewRequestReleasing = (props) => {
 
                           <TableCell>
                             <FaStatusChange
-                              faStatus={dataApi?.data?.asset_status.asset_status_name}
-                              data={dataApi?.data?.asset_status.asset_status_name}
+                              faStatus={releasingData?.asset_status.asset_status_name}
+                              data={releasingData?.asset_status.asset_status_name}
                             />
                           </TableCell>
                         </TableRow>
@@ -1154,58 +802,22 @@ const ViewRequestReleasing = (props) => {
       )}
 
       <Dialog
-        open={viewDepre}
+        open={dialog}
+        onClose={() => dispatch(closeDialog())}
         PaperProps={{
           sx: {
             borderRadius: "10px",
             margin: "0",
             maxWidth: "90%",
             padding: "20px",
-            // overflow: "hidden",
+            overflow: "hidden",
             bgcolor: "background.light",
+            width: "400px",
           },
         }}
       >
-        <Depreciation calcDepreApi={calcDepreApi} setViewDepre={setViewDepre} />
+        <AddReleasingInfo />
       </Dialog>
-
-      {/* <Dialog
-        open={statusChange}
-        PaperProps={{
-          sx: {
-            borderRadius: "10px",
-            margin: "0",
-            maxWidth: "90%",
-            padding: "20px",
-            // overflow: "hidden",
-            bgcolor: "background.light",
-          },
-        }}
-      >
-        <Box>Restore</Box>
-      </Dialog> */}
-
-      <Drawer
-        open={drawer}
-        anchor="right"
-        PaperProps={{
-          sx: { borderRadius: "10px", padding: "20px" },
-        }}
-      >
-        {dataApi?.data?.is_additional_cost === 1 ? (
-          <AddCost
-            data={updateFixedAsset}
-            dataApiRefetch={dataApiRefetch}
-            onUpdateResetHandler={onUpdateResetHandler}
-          />
-        ) : (
-          <AddFixedAsset
-            data={updateFixedAsset}
-            dataApiRefetch={dataApiRefetch}
-            onUpdateResetHandler={onUpdateResetHandler}
-          />
-        )}
-      </Drawer>
     </>
   );
 };
