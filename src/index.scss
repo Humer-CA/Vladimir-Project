@@ -366,3 +366,8 @@ input::file-selector-button {
 .tableWhiteText :hover :active {
   color: white;
 }
+
+.signCanvas {
+  border: 1px solid $secondaryText;
+  border-radius: 10px;
+}
