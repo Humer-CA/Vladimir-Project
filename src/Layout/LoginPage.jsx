@@ -114,13 +114,11 @@ const LoginPage = () => {
       } else {
         Login(`/${route}`);
         reset();
-        checkOverflow();
       }
 
       setloading(false);
     } catch (err) {
       setloading(false);
-
       if (err.request.status === 0) {
         dispatch(
           openToast({

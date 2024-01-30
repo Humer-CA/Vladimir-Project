@@ -39,16 +39,10 @@ const ErrorFetching = (props) => {
             mx: isSmallScreen ? "20px" : 0,
           }}
         >
-          {error.status === 401
-            ? "Session Expired, Please Login"
-            : "Something went wrong!"}
+          {error.status === 401 ? "Session Expired, Please Login" : "Something went wrong!"}
         </Typography>
 
-        <Button
-          variant="contained"
-          onClick={handleClick}
-          sx={{ fontWeight: "bold", mt: "10px" }}
-        >
+        <Button variant="contained" onClick={handleClick} sx={{ fontWeight: "bold", mt: "10px" }}>
           {error.status === 401 ? "Login" : "Try again!"}
         </Button>
       </Box>

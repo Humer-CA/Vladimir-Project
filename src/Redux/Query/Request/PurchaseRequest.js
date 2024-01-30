@@ -53,7 +53,6 @@ export const purchaseRequestApi = createApi({
       query: (body) => ({
         url: `/remove-pr/${body?.transaction_number}`,
         method: "PUT",
-        body: console.log(body),
       }),
       invalidatesTags: ["PurchaseRequest"],
     }),

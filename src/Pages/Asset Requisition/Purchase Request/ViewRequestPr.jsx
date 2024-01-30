@@ -20,7 +20,7 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material";
-import { ArrowBackIosRounded, InsertDriveFile, RemoveCircle, Report } from "@mui/icons-material";
+import { ArrowBackIosRounded, InsertDriveFile, RemoveCircle, RemoveShoppingCart, Report } from "@mui/icons-material";
 
 // RTK
 import { useDispatch, useSelector } from "react-redux";
@@ -33,7 +33,10 @@ import {
   useRemoveAssetReceivingApiMutation,
 } from "../../../Redux/Query/Request/AssetReceiving";
 import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
-import { useGetItemPerPrApiQuery } from "../../../Redux/Query/Request/PurchaseRequest";
+import {
+  useGetItemPerPrApiQuery,
+  useRemovePurchaseRequestApiMutation,
+} from "../../../Redux/Query/Request/PurchaseRequest";
 import AddPr from "./AddPr";
 
 const ViewRequestPr = () => {
@@ -61,6 +64,8 @@ const ViewRequestPr = () => {
     },
     { refetchOnMountOrArgChange: true }
   );
+
+  const [removePrNumber] = useRemovePurchaseRequestApiMutation();
 
   // console.log("purchaseRequestData:", purchaseRequestData);
   // console.log("transactionData:", transactionData);
@@ -100,49 +105,47 @@ const ViewRequestPr = () => {
     setPage(page + 1);
   };
 
-  const handleTableData = (data) => {
-    transactionData?.received ? null : dispatch(openDialog());
-  };
-
-  const onRemoveHandler = async (id) => {
+  const onRemovePrHandler = (id) => {
     dispatch(
       openConfirm({
         icon: Report,
         iconColor: "warning",
         message: (
-          <Box>
-            <Typography> Are you sure you want to</Typography>
-            <Typography
-              sx={{
-                display: "inline-block",
-                color: "secondary.main",
-                fontWeight: "bold",
-              }}
-            >
-              REMOVE
-            </Typography>{" "}
-            this Data?
-          </Box>
+          <Stack gap={2}>
+            <Box>
+              <Typography> Are you sure you want to</Typography>
+              <Typography
+                sx={{
+                  display: "inline-block",
+                  color: "secondary.main",
+                  fontWeight: "bold",
+                  fontFamily: "Raleway",
+                }}
+              >
+                REMOVE
+              </Typography>{" "}
+              the PR Number?
+            </Box>
+          </Stack>
         ),
 
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            let result = await removePo(id).unwrap();
+            const result = await removePrNumber(id).unwrap();
             dispatch(
               openToast({
                 message: result.message,
                 duration: 5000,
               })
             );
-
-            dispatch(closeConfirm());
+            navigate(-1);
           } catch (err) {
-            console.error(err);
             if (err?.status === 422) {
               dispatch(
                 openToast({
-                  message: err.data.errors?.detail,
+                  // message: err.data.message,
+                  message: err?.data?.errors?.detail,
                   duration: 5000,
                   variant: "error",
                 })
@@ -195,6 +198,20 @@ const ViewRequestPr = () => {
             >
               <Typography fontWeight={400} fontSize={14}>
                 Add PR
+              </Typography>
+            </Button>
+          )}
+          {transactionData?.withPr && (
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              startIcon={<RemoveShoppingCart color="secondary" />}
+              onClick={() => onRemovePrHandler(transactionData)}
+              sx={{ position: "absolute", right: 10, height: "30px" }}
+            >
+              <Typography fontWeight={500} fontSize={14}>
+                Remove PR
               </Typography>
             </Button>
           )}

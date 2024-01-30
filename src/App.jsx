@@ -265,7 +265,7 @@ const router = createBrowserRouter([
                 element: <ReleasingOfAsset />,
               },
               {
-                path: "requisition-releasing/:transaction_number",
+                path: "requisition-releasing/:warehouse_number",
                 element: <ViewRequestReleasing />,
               },
             ],

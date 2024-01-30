@@ -571,7 +571,7 @@ const FixedAssetView = (props) => {
     <>
       {dataApiLoading && <FixedAssetViewSkeleton onAdd={true} onImport={true} onPrint={true} />}
 
-      {dataApiError && <ErrorFetchFA refetch={dataApiRefetch} />}
+      {dataApiError && <ErrorFetchFA refetch={dataApiRefetch} error={postError} />}
 
       {dataApi && !dataApiError && (
         <Box className="tableCard">
