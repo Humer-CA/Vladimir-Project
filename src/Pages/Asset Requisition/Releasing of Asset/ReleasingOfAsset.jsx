@@ -30,7 +30,7 @@ const ReleasingOfAsset = () => {
           </TabPanel>
 
           <TabPanel sx={{ p: 0 }} value="2" index="2">
-            <ReleasingTable withVtn />
+            <ReleasingTable released />
           </TabPanel>
         </TabContext>
       </Box>

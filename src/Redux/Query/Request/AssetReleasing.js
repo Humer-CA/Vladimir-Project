@@ -33,7 +33,7 @@ export const assetReleasingApi = createApi({
       providesTags: ["AssetReleasing"],
     }),
 
-    addAssetReleasing: builder.mutation({
+    putAssetReleasing: builder.mutation({
       query: (data) => ({
         url: `/release-assets`,
         method: "PUT",
@@ -50,5 +50,5 @@ export const {
   useLazyGetAssetReleasingAllApiQuery,
   useGetByWarehouseNumberApiQuery,
   useLazyGetAssetReleasingQuery,
-  useAddAssetReleasingMutation,
+  usePutAssetReleasingMutation,
 } = assetReleasingApi;

@@ -104,9 +104,6 @@ const ViewRequestReleasing = (props) => {
     }
   );
 
-  console.log("releasingData", releasingData?.division?.division_name);
-  console.log(isPostError);
-
   // useEffect(() => {
   //   setSearch(releasingData?.data?.vladimir_tag_number);
   // }, [releasingData]);
@@ -193,7 +190,7 @@ const ViewRequestReleasing = (props) => {
                     }}
                     color="secondary.main"
                   >
-                    {data?.withVtn ? `#${releasingData?.vladimir_tag_number}` : "-"}
+                    #{releasingData?.vladimir_tag_number}
                   </Typography>
                 </Box>
               </Box>
@@ -208,7 +205,7 @@ const ViewRequestReleasing = (props) => {
                 alignSelf: "flex-end",
               }}
             >
-              {
+              {data?.is_released === 0 && (
                 <Button
                   variant="contained"
                   size="small"
@@ -218,7 +215,7 @@ const ViewRequestReleasing = (props) => {
                 >
                   {isSmallScreen ? <Output color={"primary"} /> : "Release"}
                 </Button>
-              }
+              )}
 
               {/* {permissions?.split(", ").includes("print-fa") &&
                   releasingData?.is_additional_cost === 0 &&
@@ -811,12 +808,11 @@ const ViewRequestReleasing = (props) => {
             maxWidth: "90%",
             padding: "20px",
             overflow: "hidden",
-            bgcolor: "background.light",
             width: "400px",
           },
         }}
       >
-        <AddReleasingInfo />
+        <AddReleasingInfo data={releasingData} refetch={releasingDataRefetch} />
       </Dialog>
     </>
   );

@@ -35,12 +35,11 @@ import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanS
 import { useGetAssetReleasingQuery } from "../../../Redux/Query/Request/AssetReleasing";
 
 const ReleasingTable = (props) => {
-  const { withVtn } = props;
+  const { released } = props;
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
-  const [release, setRelease] = useState(1);
 
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width: 500px)");
@@ -95,16 +94,18 @@ const ReleasingTable = (props) => {
       per_page: perPage,
       status: status,
       search: search,
-      released: release,
+      released: released ? 1 : 0,
     },
     { refetchOnMountOrArgChange: true }
   );
+
+  console.log(releasingData?.data[0]);
 
   const dispatch = useDispatch();
 
   const handleViewData = (data) => {
     navigate(`/asset-requisition/requisition-releasing/${data.warehouse_number?.warehouse_number}`, {
-      state: { ...data, withVtn },
+      state: { ...data },
     });
   };
 
@@ -151,28 +152,41 @@ const ReleasingTable = (props) => {
                           Type of Request
                         </TableSortLabel>
                       </TableCell>
-                      {withVtn && (
-                        <TableCell className="tbl-cell">
-                          <TableSortLabel
-                            active={orderBy === `vladimir_tag_number`}
-                            direction={orderBy === `vladimir_tag_number` ? order : `asc`}
-                            onClick={() => onSort(`vladimir_tag_number`)}
-                          >
-                            Vladimir Tag Number
-                          </TableSortLabel>
-                        </TableCell>
-                      )}
-                      <TableCell className="tbl-cell">Oracle No.</TableCell>
                       <TableCell className="tbl-cell">
                         <TableSortLabel
-                          active={orderBy === `warehouse_number`}
-                          direction={orderBy === `warehouse_number` ? order : `asc`}
-                          onClick={() => onSort(`warehouse_number`)}
+                          active={orderBy === `vladimir_tag_number`}
+                          direction={orderBy === `vladimir_tag_number` ? order : `asc`}
+                          onClick={() => onSort(`vladimir_tag_number`)}
+                        >
+                          Vladimir Tag Number
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell className="tbl-cell">Oracle No.</TableCell>
+
+                      <TableCell className="tbl-cell">Chart of Accounts</TableCell>
+
+                      <TableCell className="tbl-cell">
+                        <TableSortLabel
+                          active={orderBy === `requestor`}
+                          direction={orderBy === `requestor` ? order : `asc`}
+                          onClick={() => onSort(`requestor`)}
                         >
                           Requestor
                         </TableSortLabel>
                       </TableCell>
-                      <TableCell className="tbl-cell">Chart of Accounts</TableCell>
+
+                      {released && (
+                        <TableCell className="tbl-cell">
+                          <TableSortLabel
+                            active={orderBy === `received_by`}
+                            direction={orderBy === `received_by` ? order : `asc`}
+                            onClick={() => onSort(`received_by`)}
+                          >
+                            Received By
+                          </TableSortLabel>
+                        </TableCell>
+                      )}
+
                       <TableCell className="tbl-cell">Accountability</TableCell>
                       <TableCell className="tbl-cell">
                         <TableSortLabel
@@ -214,9 +228,7 @@ const ReleasingTable = (props) => {
                                 </Typography>
                                 <Typography fontSize={14}>{data.asset_specification}</Typography>
                               </TableCell>
-                              {withVtn && (
-                                <TableCell className="tbl-cell text-weight">{data.vladimir_tag_number}</TableCell>
-                              )}
+                              <TableCell className="tbl-cell text-weight">{data.vladimir_tag_number}</TableCell>
                               <TableCell className="tbl-cell">
                                 <Typography fontSize={12} color="text.light">
                                   PR - {data.pr_number}
@@ -228,9 +240,7 @@ const ReleasingTable = (props) => {
                                   RR - {data.rr_number}
                                 </Typography>
                               </TableCell>
-                              <TableCell className="tbl-cell ">
-                                {`(${data.requestor?.employee_id}) - ${data.requestor?.firstname} ${data.requestor?.lastname}`}
-                              </TableCell>
+
                               <TableCell className="tbl-cell">
                                 <Typography fontSize={10} color="gray">
                                   ({data.company?.company_code}) - {data.company?.company_name}
@@ -245,6 +255,13 @@ const ReleasingTable = (props) => {
                                   ({data.account_title?.account_title_code}) - {data.account_title?.account_title_name}
                                 </Typography>
                               </TableCell>
+
+                              <TableCell className="tbl-cell ">
+                                {`(${data.requestor?.employee_id}) - ${data.requestor?.firstname} ${data.requestor?.lastname}`}
+                              </TableCell>
+
+                              {released && <TableCell className="tbl-cell ">{data.received_by}</TableCell>}
+
                               <TableCell className="tbl-cell">
                                 <Typography fontSize={14} fontWeight={600}>
                                   {data.accountability}
