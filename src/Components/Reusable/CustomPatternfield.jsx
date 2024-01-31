@@ -25,6 +25,8 @@ const CustomPatternField = ({ name, control, keepPrefix = false, ...patternfield
 
               onChange(data.value);
             }}
+            size="small"
+            color="secondary"
             sx={{
               ".MuiInputBase-root": { borderRadius: "12px" },
               ".MuiInputLabel-root.Mui-disabled": {

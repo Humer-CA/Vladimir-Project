@@ -19,6 +19,7 @@ const CustomNumberField = ({ name, control, keepPrefix = false, ...numberfield }
             customInput={TextField}
             value={value}
             size="small"
+            color="secondary"
             onValueChange={(data) => {
               if (!data.value) return onChange(null);
 

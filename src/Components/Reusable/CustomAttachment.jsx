@@ -17,6 +17,7 @@ const CustomAttachment = (props) => {
           <>
             <MuiTextField
               type="file"
+              disabled={disabled}
               inputRef={inputRef}
               onChange={(e) => {
                 console.log(e.target.files[0]);

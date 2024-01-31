@@ -17,6 +17,8 @@ const CustomAutoComplete = ({ name, control, onChange: onValueChange, ...autocom
               if (onValueChange) return setValue(onValueChange(e, value));
               setValue(value);
             }}
+            size="small"
+            color="secondary"
             sx={{
               ".MuiInputBase-root": {
                 borderRadius: "12px",

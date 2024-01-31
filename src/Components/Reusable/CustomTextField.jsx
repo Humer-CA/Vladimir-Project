@@ -20,10 +20,11 @@ const CustomTextField = (props) => {
           <>
             <MuiTextField
               {...textfield}
-              size="small"
               autoComplete="off"
               inputRef={ref}
               value={value}
+              size="small"
+              color="secondary"
               onChange={(e) => {
                 const inputValue = e.target.value;
 
