@@ -126,8 +126,6 @@ const schema = yup.object().shape({
 });
 
 const AddRequisition = (props) => {
-  const { data } = props;
-  const attachmentType = ["Budgeted", "Unbudgeted"];
   const [updateRequest, setUpdateRequest] = useState({
     id: null,
     type_of_request_id: null,
@@ -158,8 +156,9 @@ const AddRequisition = (props) => {
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [updateToggle, setUpdateToggle] = useState(true);
+  const [disable, setDisable] = useState(true);
 
-  const { state: transactionData } = useLocation();
+  const { state: transactionData, enableForm } = useLocation();
 
   const isFullWidth = useMediaQuery("(max-width: 600px)");
   const dispatch = useDispatch();
@@ -171,6 +170,8 @@ const AddRequisition = (props) => {
   const SpecificationRef = useRef(null);
   const ToolOfTradeRef = useRef(null);
   const OthersRef = useRef(null);
+
+  const attachmentType = ["Budgeted", "Unbudgeted"];
 
   const [
     postRequisition,
@@ -250,7 +251,6 @@ const AddRequisition = (props) => {
     isError: isSedarError,
   } = useGetSedarUsersApiQuery();
 
-  // CONTAINER
   const {
     data: addRequestAllApi = [],
     isLoading: isRequestLoading,
@@ -325,6 +325,8 @@ const AddRequisition = (props) => {
     },
   });
 
+  // console.log(transactionDataApi);
+
   useEffect(() => {
     const errorData = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
 
@@ -364,31 +366,36 @@ const AddRequisition = (props) => {
   }, [isPostSuccess, isUpdateSuccess]);
 
   useEffect(() => {
-    if (transactionDataApi)
-      transactionDataApi?.map((transaction) => {
-        setValue("type_of_request_id", transaction?.type_of_request);
-        setValue("attachment_type", transaction?.attachment_type);
-        setValue("department_id", transaction?.department);
-        setValue("company_id", transaction?.company);
-        setValue("subunit_id", transaction?.subunit);
-        setValue("location_id", transaction?.location);
-        setValue("account_title_id", transaction?.account_title);
-        setValue("acquisition_details", transaction?.acquisition_details);
-      });
-    // setShowEdit(true)
-  }, [transactionDataApi]);
+    enableForm && setDisable(false);
+  }, []);
+
+  // useEffect(() => {
+  //   if (transactionDataApi)
+  //     transactionDataApi?.map((transaction) => {
+  //       setValue("type_of_request_id", transaction?.type_of_request);
+  //       setValue("attachment_type", transaction?.attachment_type);
+  //       setValue("department_id", transaction?.department);
+  //       setValue("company_id", transaction?.company);
+  //       setValue("subunit_id", transaction?.subunit);
+  //       setValue("location_id", transaction?.location);
+  //       setValue("account_title_id", transaction?.account_title);
+  //       setValue("acquisition_details", transaction?.acquisition_details);
+  //     });
+  //   // setShowEdit(true)
+  // }, [transactionDataApi]);
 
   useEffect(() => {
     if (updateRequest.id) {
       setValue("type_of_request_id", updateRequest?.type_of_request);
       setValue("attachment_type", updateRequest?.attachment_type);
       setValue("department_id", updateRequest?.department);
-      setValue("company_id", updateRequest?.company);
+      setValue("company_id", updateRequest?.company?.id);
       setValue("subunit_id", updateRequest?.subunit);
       setValue("location_id", updateRequest?.location);
       setValue("account_title_id", updateRequest?.account_title);
       setValue("accountability", updateRequest?.accountability);
       setValue("accountable", updateRequest?.accountable);
+      setValue("acquisition_details", updateRequest?.acquisition_details);
       // ASSET INFO
       setValue("asset_description", updateRequest?.asset_description);
       setValue("asset_specification", updateRequest?.asset_specification);
@@ -434,96 +441,20 @@ const AddRequisition = (props) => {
     setOrderBy(property);
   };
 
-  const onSubmitHandler = () => {
-    dispatch(
-      openConfirm({
-        icon: Info,
-        iconColor: "info",
-        message: (
-          <Box>
-            <Typography> Are you sure you want to</Typography>
-            <Typography
-              sx={{
-                display: "inline-block",
-                color: "secondary.main",
-                fontWeight: "bold",
-              }}
-            >
-              {transactionDataApi.length === 0
-                ? "CREATE"
-                : transactionDataApi[0]?.can_resubmit === 0
-                ? "SUBMIT"
-                : "RESUBMIT"}
-            </Typography>{" "}
-            this Data?
-          </Box>
-        ),
-
-        onConfirm: () => {
-          dispatch(onLoading());
-          if (transactionDataApi[0]?.can_resubmit === 0) {
-            dispatch(
-              openToast({
-                message: "Successfully Submitted",
-                duration: 5000,
-              })
-            );
-            navigate(-1);
-            deleteAllRequest();
-          } else if (transactionDataApi[0]?.can_resubmit === 1) {
-            resubmitRequest({
-              transaction_number: transactionData?.transaction_number,
-              ...transactionDataApi,
-            });
-            navigate(-1);
-            dispatch(
-              openToast({
-                message: "Successfully Resubmitted",
-                duration: 5000,
-              })
-            );
-            return;
-          }
-
-          const smsData = {
-            system_name: "Vladimir",
-            message: "You have a pending approval",
-            mobile_number: "+639913117181",
-          };
-
-          postRequisition(addRequestAllApi);
-          postRequestSms(smsData);
-          deleteAllRequest();
-          reset({
-            letter_of_request: null,
-            quotation: null,
-            specification_form: null,
-            tool_of_trade: null,
-            other_attachments: null,
-          });
-        },
-      })
-    );
-  };
-
   const handleCloseDrawer = () => {
     dispatch(closeDrawer());
   };
 
-  const filterOptions = createFilterOptions({
-    limit: 100,
-    matchFrom: "any",
-  });
-
-  // CONTAINER
+  //  * CONTAINER
   // Adding of Request
   const addRequestHandler = (formData) => {
+    console.log(formData);
     const data = {
       type_of_request_id: formData?.type_of_request_id?.id?.toString(),
       attachment_type: formData?.attachment_type?.toString(),
 
       department_id: formData?.department_id.id?.toString(),
-      company_id: formData?.department_id?.company?.company_id?.toString(),
+      company_id: updateRequest ? formData?.company_id : formData?.department_id?.company?.company_id,
       subunit_id: formData.subunit_id.id?.toString(),
       location_id: formData?.location_id.id?.toString(),
       account_title_id: formData?.account_title_id.id?.toString(),
@@ -598,6 +529,7 @@ const AddRequisition = (props) => {
       // //     : formData.other_attachments
       // //   : formData.other_attachments),
     };
+
     const payload = new FormData();
     Object.entries(data).forEach((item) => {
       const [name, value] = item;
@@ -656,7 +588,10 @@ const AddRequisition = (props) => {
         setIsLoading(false);
         dispatch(
           openToast({
-            message: err?.response?.data?.errors?.detail || err?.response?.data?.errors[0]?.detail,
+            message:
+              err?.response?.data?.errors?.detail ||
+              err?.response?.data?.errors[0]?.detail ||
+              err?.response?.data?.message,
             duration: 5000,
             variant: "error",
           })
@@ -664,6 +599,7 @@ const AddRequisition = (props) => {
       })
       .finally(() => {
         setIsLoading(false);
+        reset();
         // reset({
         //   department_id: formData?.department_id,
         //   subunit_id: formData?.subunit_id,
@@ -678,6 +614,74 @@ const AddRequisition = (props) => {
       });
 
     // postRequest(payload);
+  };
+
+  const onSubmitHandler = () => {
+    dispatch(
+      openConfirm({
+        icon: Info,
+        iconColor: "info",
+        message: (
+          <Box>
+            <Typography> Are you sure you want to</Typography>
+            <Typography
+              sx={{
+                display: "inline-block",
+                color: "secondary.main",
+                fontWeight: "bold",
+              }}
+            >
+              {transactionDataApi.length === 0 ? "CREATE" : "RESUBMIT"}
+            </Typography>{" "}
+            this Data?
+          </Box>
+        ),
+
+        onConfirm: () => {
+          dispatch(onLoading());
+          if (transactionDataApi[0]?.can_resubmit === 0) {
+            dispatch(
+              openToast({
+                message: "Successfully Submitted",
+                duration: 5000,
+              })
+            );
+            navigate(-1);
+            deleteAllRequest();
+          } else if (transactionDataApi[0]?.can_resubmit === 1) {
+            resubmitRequest({
+              transaction_number: transactionData?.transaction_number,
+              ...transactionDataApi,
+            });
+            navigate(-1);
+            dispatch(
+              openToast({
+                message: "Successfully Resubmitted",
+                duration: 5000,
+              })
+            );
+            return;
+          }
+
+          const smsData = {
+            system_name: "Vladimir",
+            message: "You have a pending approval",
+            mobile_number: "+639913117181",
+          };
+
+          postRequisition(addRequestAllApi);
+          postRequestSms(smsData);
+          deleteAllRequest();
+          reset({
+            letter_of_request: null,
+            quotation: null,
+            specification_form: null,
+            tool_of_trade: null,
+            other_attachments: null,
+          });
+        },
+      })
+    );
   };
 
   const onDeleteHandler = async (id) => {
@@ -823,7 +827,6 @@ const AddRequisition = (props) => {
     return (
       <Stack flexDirection="row" gap={1} alignItems="center">
         <TextField
-          disabled
           type="text"
           size="small"
           label={label}
@@ -860,21 +863,6 @@ const AddRequisition = (props) => {
         />
       </Stack>
     );
-  };
-
-  const sxSubtitle = {
-    fontWeight: "bold",
-    color: "secondary.main",
-    fontFamily: "Anton",
-    fontSize: "16px",
-  };
-
-  const BoxStyle = {
-    display: "flex",
-    flexDirection: "column",
-    gap: "15px",
-    width: "100%",
-    pb: "10px",
   };
 
   const onUpdateHandler = (props) => {
@@ -960,6 +948,7 @@ const AddRequisition = (props) => {
     });
   };
 
+  // * Page / Limit
   const perPageHandler = (e) => {
     setPage(1);
     setPerPage(parseInt(e.target.value));
@@ -968,10 +957,27 @@ const AddRequisition = (props) => {
   const pageHandler = (_, page) => {
     // console.log(page + 1);
     setPage(page + 1);
+
+    const filterOptions = createFilterOptions({
+      limit: 100,
+      matchFrom: "any",
+    });
   };
 
-  // console.log("TransactionData", transactionData);
-  console.log(transactionDataApi[0]?.can_edit);
+  const sxSubtitle = {
+    fontWeight: "bold",
+    color: "secondary.main",
+    fontFamily: "Anton",
+    fontSize: "16px",
+  };
+
+  const BoxStyle = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+    width: "100%",
+    pb: "10px",
+  };
 
   return (
     <>
@@ -1011,14 +1017,14 @@ const AddRequisition = (props) => {
                     options={typeOfRequestData}
                     loading={isTypeOfRequestLoading}
                     // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    disabled={transactionDataApi[0]?.can_edit === 0}
-                    size="small"
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
+                    disabled={updateRequest && disable}
                     getOptionLabel={(option) => option.type_of_request_name}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     renderInput={(params) => (
                       <TextField
-                        color="secondary"
                         {...params}
+                        color="secondary"
                         label="Type of Request"
                         error={!!errors?.type_of_request_id}
                         helperText={errors?.type_of_request_id?.message}
@@ -1031,12 +1037,13 @@ const AddRequisition = (props) => {
                     name="attachment_type"
                     options={attachmentType}
                     // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    disabled={transactionDataApi[0]?.can_edit === 0}
-                    size="small"
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
+
+                    disabled={updateRequest && disable}
                     renderInput={(params) => (
                       <TextField
-                        color="secondary"
                         {...params}
+                        color="secondary"
                         label="Attachment Type"
                         error={!!errors?.attachment_type}
                         helperText={errors?.attachment_type?.message}
@@ -1057,15 +1064,15 @@ const AddRequisition = (props) => {
                     control={control}
                     options={departmentData}
                     loading={isDepartmentLoading}
-                    size="small"
+                    disabled={updateRequest && disable}
                     // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    disabled={transactionDataApi[0]?.can_edit === 0}
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
                     getOptionLabel={(option) => option.department_name}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     renderInput={(params) => (
                       <TextField
-                        color="secondary"
                         {...params}
+                        color="secondary"
                         label="Department"
                         error={!!errors?.department_id?.message}
                         helperText={errors?.department_id?.message}
@@ -1084,16 +1091,16 @@ const AddRequisition = (props) => {
                     name="subunit_id"
                     control={control}
                     // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    disabled={transactionDataApi[0]?.can_edit === 0}
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
                     options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
                     loading={isSubUnitLoading}
-                    size="small"
+                    disabled={updateRequest && disable}
                     getOptionLabel={(option) => option.subunit_name}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     renderInput={(params) => (
                       <TextField
-                        color="secondary"
                         {...params}
+                        color="secondary"
                         label="Subunit"
                         error={!!errors?.subunit_id}
                         helperText={errors?.subunit_id?.message}
@@ -1107,7 +1114,7 @@ const AddRequisition = (props) => {
                     control={control}
                     options={companyData}
                     loading={isCompanyLoading}
-                    size="small"
+                    
                     getOptionLabel={(option) =>
                       option.company_code + " - " + option.company_name
                     }
@@ -1131,20 +1138,20 @@ const AddRequisition = (props) => {
                     name="location_id"
                     control={control}
                     // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    disabled={transactionDataApi[0]?.can_edit === 0}
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
                     options={locationData?.filter((item) => {
                       return item.departments.some((department) => {
                         return department?.sync_id === watch("department_id")?.sync_id;
                       });
                     })}
                     loading={isLocationLoading}
-                    size="small"
+                    disabled={updateRequest && disable}
                     getOptionLabel={(option) => option.location_code + " - " + option.location_name}
                     isOptionEqualToValue={(option, value) => option.location_id === value.location_id}
                     renderInput={(params) => (
                       <TextField
-                        color="secondary"
                         {...params}
+                        color="secondary"
                         label="Location"
                         error={!!errors?.location_id}
                         helperText={errors?.location_id?.message}
@@ -1156,16 +1163,16 @@ const AddRequisition = (props) => {
                     name="account_title_id"
                     control={control}
                     // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    disabled={transactionDataApi[0]?.can_edit === 0}
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
                     options={accountTitleData}
                     loading={isAccountTitleLoading}
-                    size="small"
+                    disabled={updateRequest && disable}
                     getOptionLabel={(option) => option.account_title_code + " - " + option.account_title_name}
                     isOptionEqualToValue={(option, value) => option.account_title_code === value.account_title_code}
                     renderInput={(params) => (
                       <TextField
-                        color="secondary"
                         {...params}
+                        color="secondary"
                         label="Account Title  "
                         error={!!errors?.account_title_id}
                         helperText={errors?.account_title_id?.message}
@@ -1178,13 +1185,13 @@ const AddRequisition = (props) => {
                     name="accountability"
                     control={control}
                     options={["Personal Issued", "Common"]}
-                    disabled={transactionDataApi[0]?.can_edit === 0}
-                    size="small"
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
+                    disabled={updateRequest && disable}
                     isOptionEqualToValue={(option, value) => option === value}
                     renderInput={(params) => (
                       <TextField
-                        color="secondary"
                         {...params}
+                        color="secondary"
                         label="Accountability  "
                         error={!!errors?.accountability}
                         helperText={errors?.accountability?.message}
@@ -1196,10 +1203,10 @@ const AddRequisition = (props) => {
                     <CustomAutoComplete
                       name="accountable"
                       control={control}
-                      size="small"
+                      disabled={updateRequest && disable}
                       includeInputInList
                       disablePortal
-                      disabled={transactionDataApi[0]?.can_edit === 0}
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
                       filterOptions={filterOptions}
                       options={sedarData}
                       loading={isSedarLoading}
@@ -1210,8 +1217,8 @@ const AddRequisition = (props) => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Accountable"
                           color="secondary"
+                          label="Accountable"
                           error={!!errors?.accountable?.message}
                           helperText={errors?.accountable?.message}
                         />
@@ -1223,10 +1230,9 @@ const AddRequisition = (props) => {
                     name="acquisition_details"
                     label="Acquisition Details"
                     type="text"
-                    color="secondary"
-                    size="small"
+                    disabled={updateRequest && disable}
                     // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    disabled={transactionDataApi[0]?.can_edit === 0}
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
                     error={!!errors?.acquisition_details}
                     helperText={errors?.acquisition_details?.message}
                     fullWidth
@@ -1243,49 +1249,46 @@ const AddRequisition = (props) => {
                     name="asset_description"
                     label="Asset Description"
                     type="text"
-                    color="secondary"
-                    size="small"
+                    disabled={updateRequest && disable}
                     error={!!errors?.asset_description}
                     helperText={errors?.asset_description?.message}
                     fullWidth
                     multiline
-                    disabled={transactionDataApi[0]?.can_edit === 0}
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
                   />
                   <CustomTextField
                     control={control}
                     name="asset_specification"
                     label="Asset Specification"
                     type="text"
-                    color="secondary"
-                    size="small"
+                    disabled={updateRequest && disable}
                     error={!!errors?.asset_specification}
                     helperText={errors?.asset_specification?.message}
                     fullWidth
                     multiline
-                    disabled={transactionDataApi[0]?.can_edit === 0}
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
                   />
                   <CustomTextField
                     control={control}
                     name="brand"
                     label="Brand"
                     type="text"
-                    color="secondary"
-                    size="small"
+                    disabled={updateRequest && disable}
                     error={!!errors?.brand}
                     helperText={errors?.brand?.message}
                     fullWidth
-                    disabled={transactionDataApi[0]?.can_edit === 0}
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
                   />
                   <CustomNumberField
                     control={control}
                     name="quantity"
                     label="Quantity"
                     type="number"
-                    color="secondary"
+                    disabled={updateRequest && disable}
                     error={!!errors?.quantity}
                     helperText={errors?.quantity?.message}
                     fullWidth
-                    disabled={transactionDataApi[0]?.can_edit === 0}
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
                     // isAllowed={(values) => {
                     //   const { floatValue } = values;
                     //   return floatValue >= 1;
@@ -1293,29 +1296,27 @@ const AddRequisition = (props) => {
                   />
                   <CustomPatternField
                     control={control}
-                    color="secondary"
                     name="cellphone_number"
                     label="Cellphone # (optional)"
                     type="text"
-                    size="small"
+                    disabled={updateRequest && disable}
                     error={!!errors?.cellphone_number}
                     helperText={errors?.cellphone_number?.message}
                     format="(09##) - ### - ####"
                     // allowEmptyFormatting
                     valueIsNumericString
                     fullWidth
-                    disabled={transactionDataApi[0]?.can_edit === 0}
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
                   />
                   <CustomTextField
                     control={control}
                     name="additional_info"
                     label="Additional Info. (Optional)"
                     type="text"
-                    color="secondary"
-                    size="small"
+                    disabled={updateRequest && disable}
                     fullWidth
                     multiline
-                    disabled={transactionDataApi[0]?.can_edit === 0}
+                    // disabled={transactionDataApi[0]?.can_edit === 0}
                   />
                 </Box>
 
@@ -1338,8 +1339,9 @@ const AddRequisition = (props) => {
                         control={control}
                         name="letter_of_request"
                         label="Letter of Request"
+                        disabled={updateRequest && disable}
                         inputRef={LetterOfRequestRef}
-                        disabled={transactionDataApi[0]?.can_edit === 0}
+                        // disabled={transactionDataApi[0]?.can_edit === 0}
                       />
                     )}
 
@@ -1359,8 +1361,9 @@ const AddRequisition = (props) => {
                         control={control}
                         name="quotation"
                         label="Quotation"
+                        disabled={updateRequest && disable}
                         inputRef={QuotationRef}
-                        disabled={transactionDataApi[0]?.can_edit === 0}
+                        // disabled={transactionDataApi[0]?.can_edit === 0}
                       />
                     )}
                     {watch("quotation") !== null && <RemoveFile title="Quotation" value="quotation" />}
@@ -1377,9 +1380,10 @@ const AddRequisition = (props) => {
                         control={control}
                         name="specification_form"
                         label="Specification (Form)"
+                        disabled={updateRequest && disable}
                         inputRef={SpecificationRef}
                         updateData={updateRequest}
-                        disabled={transactionDataApi[0]?.can_edit === 0}
+                        // disabled={transactionDataApi[0]?.can_edit === 0}
                       />
                     )}
                     {watch("specification_form") !== null && (
@@ -1398,8 +1402,9 @@ const AddRequisition = (props) => {
                         control={control}
                         name="tool_of_trade"
                         label="Tool of Trade"
+                        disabled={updateRequest && disable}
                         inputRef={ToolOfTradeRef}
-                        disabled={transactionDataApi[0]?.can_edit === 0}
+                        // disabled={transactionDataApi[0]?.can_edit === 0}
                       />
                     )}
                     {watch("tool_of_trade") !== null && <RemoveFile title="Tool of Trade" value="tool_of_trade" />}
@@ -1416,8 +1421,9 @@ const AddRequisition = (props) => {
                         control={control}
                         name="other_attachments"
                         label="Other Attachments"
+                        disabled={updateRequest && disable}
                         inputRef={OthersRef}
-                        disabled={transactionDataApi[0]?.can_edit === 0}
+                        // disabled={transactionDataApi[0]?.can_edit === 0}
                       />
                     )}
                     {watch("other_attachments") !== null && (
@@ -1445,6 +1451,7 @@ const AddRequisition = (props) => {
             </LoadingButton>
             <Divider orientation="vertical" />
           </Box>
+
           {/* TABLE */}
           <Box className="request__table">
             <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
@@ -1480,8 +1487,8 @@ const AddRequisition = (props) => {
                   </TableRow>
                 </TableHead>
 
-                <TableBody sx={{ height: "calc" }}>
-                  {isRequestLoading || isTransactionLoading ? (
+                <TableBody>
+                  {(updateRequest && isTransactionLoading) || isRequestLoading ? (
                     <LoadingData />
                   ) : (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.data?.length === 0) ? (
                     <NoRecordsFound request />
@@ -1594,6 +1601,7 @@ const AddRequisition = (props) => {
                           <TableCell className="tbl-cell">
                             <ActionMenu
                               hideArchive
+                              setDisable={setDisable}
                               status={data?.status}
                               data={data}
                               editRequest={
@@ -1675,9 +1683,11 @@ const AddRequisition = (props) => {
                     )
                   }
                   disabled={
-                    isRequestLoading ||
-                    isTransactionLoading ||
-                    (transactionData ? transactionDataApi.length === 0 : addRequestAllApi?.data?.length === 0)
+                    updateRequest
+                      ? updateRequest && disable
+                      : isRequestLoading ||
+                        isTransactionLoading ||
+                        (transactionData ? transactionDataApi.length === 0 : addRequestAllApi?.data?.length === 0)
                       ? true
                       : false
                   }

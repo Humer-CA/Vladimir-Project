@@ -48,6 +48,7 @@ const Requisition = () => {
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState([]);
+  const enableForm = true;
 
   const [transactionIdData, setTransactionIdData] = useState();
 
@@ -194,7 +195,7 @@ const Requisition = () => {
   };
 
   const handleAddRequisition = () => {
-    navigate(`add-requisition`);
+    navigate(`add-requisition`, { state: { enableForm } });
   };
 
   const handleEditRequisition = (data) => {
