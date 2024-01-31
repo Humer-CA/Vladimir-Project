@@ -48,6 +48,7 @@ const ActionMenu = (props) => {
     onDeleteReferenceHandler,
     // setShowEdit
     setUpdateToggle,
+    setDisable,
   } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -122,7 +123,7 @@ const ActionMenu = (props) => {
     onUpdateHandler(data);
     setUpdateToggle(false);
     handleClose();
-    // setShowEdit(true);
+    setDisable(false);
   };
 
   const handleEditNav = () => {

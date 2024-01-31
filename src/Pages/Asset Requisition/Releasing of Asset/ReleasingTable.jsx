@@ -15,6 +15,10 @@ import { openConfirm, closeConfirm, onLoading } from "../../../Redux/StateManage
 // MUI
 import {
   Box,
+  Button,
+  Checkbox,
+  Dialog,
+  FormControlLabel,
   IconButton,
   Stack,
   Table,
@@ -34,15 +38,43 @@ import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanS
 
 import { useGetAssetReleasingQuery } from "../../../Redux/Query/Request/AssetReleasing";
 
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import AddReleasingInfo from "./AddReleasingInfo";
+
+const schema = yup.object().shape({
+  warehouse_number_id: yup.array(),
+});
+
 const ReleasingTable = (props) => {
   const { released } = props;
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
+  const [wNumber, setWNumber] = useState([]);
 
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery("(max-width: 500px)");
+
+  const dialog = useSelector((state) => state.booleanState.dialog);
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    watch,
+    reset,
+    setError,
+    register,
+    setValue,
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      warehouse_number_id: [],
+    },
+  });
 
   //* Table Sorting -------------------------------------------------------
   const [order, setOrder] = useState("desc");
@@ -99,14 +131,29 @@ const ReleasingTable = (props) => {
     { refetchOnMountOrArgChange: true }
   );
 
-  console.log(releasingData?.data[0]);
-
   const dispatch = useDispatch();
 
+  const handleReleasing = () => {
+    setWNumber({
+      warehouse_number_id: watch("warehouse_number_id"),
+    });
+    dispatch(openDialog());
+  };
   const handleViewData = (data) => {
     navigate(`/asset-requisition/requisition-releasing/${data.warehouse_number?.warehouse_number}`, {
       state: { ...data },
     });
+  };
+
+  const warehouseNumberAllHandler = (checked) => {
+    if (checked) {
+      setValue(
+        "warehouse_number_id",
+        releasingData.data.map((item) => item.warehouse_number?.warehouse_number)
+      );
+    } else {
+      reset({ warehouse_number_id: [] });
+    }
   };
 
   const onSetPage = () => {
@@ -121,7 +168,14 @@ const ReleasingTable = (props) => {
         <>
           <Box className="mcontainer__wrapper">
             <MasterlistToolbar onStatusChange={setStatus} onSearchChange={setSearch} onSetPage={setPage} hideArchive />
-
+            <Button
+              variant="contained"
+              onClick={() => handleReleasing()}
+              size="small"
+              sx={{ position: "absolute", right: 0, top: -40 }}
+            >
+              Release
+            </Button>
             <Box>
               <TableContainer className="mcontainer__th-body-category">
                 <Table className="mcontainer__table" stickyHeader>
@@ -134,6 +188,28 @@ const ReleasingTable = (props) => {
                         },
                       }}
                     >
+                      {!released && (
+                        <TableCell align="center">
+                          <FormControlLabel
+                            sx={{ margin: "auto", align: "center" }}
+                            control={
+                              <Checkbox
+                                value=""
+                                size="small"
+                                checked={
+                                  !!releasingData?.data
+                                    ?.map((mapItem) => mapItem?.warehouse_number?.warehouse_number)
+                                    ?.every((item) => watch("warehouse_number_id").includes(item))
+                                }
+                                onChange={(e) => {
+                                  warehouseNumberAllHandler(e.target.checked);
+                                  // console.log(e.target.checked);
+                                }}
+                              />
+                            }
+                          />
+                        </TableCell>
+                      )}
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `warehouse_number`}
@@ -210,7 +286,7 @@ const ReleasingTable = (props) => {
                             <TableRow
                               key={data.id}
                               hover
-                              onClick={() => handleViewData(data)}
+                              // onClick={() => handleViewData(data)}
                               sx={{
                                 "&:last-child td, &:last-child th": {
                                   borderBottom: 0,
@@ -218,8 +294,28 @@ const ReleasingTable = (props) => {
                                 cursor: "pointer",
                               }}
                             >
-                              <TableCell className="tbl-cell">{data.warehouse_number?.warehouse_number}</TableCell>
-                              <TableCell className="tbl-cell">
+                              {!released && (
+                                <TableCell align="center">
+                                  <FormControlLabel
+                                    value={data.warehouse_number?.warehouse_number}
+                                    sx={{ margin: "auto" }}
+                                    disabled={data.action === "view"}
+                                    control={
+                                      <Checkbox
+                                        size="small"
+                                        {...register("warehouse_number_id")}
+                                        checked={watch("warehouse_number_id").includes(
+                                          data.warehouse_number?.warehouse_number
+                                        )}
+                                      />
+                                    }
+                                  />
+                                </TableCell>
+                              )}
+                              <TableCell onClick={() => handleViewData(data)} className="tbl-cell">
+                                {data.warehouse_number?.warehouse_number}
+                              </TableCell>
+                              <TableCell onClick={() => handleViewData(data)} className="tbl-cell">
                                 <Typography fontSize={12} fontWeight={600} color="primary.main">
                                   {data.type_of_request?.type_of_request_name}
                                 </Typography>
@@ -228,8 +324,11 @@ const ReleasingTable = (props) => {
                                 </Typography>
                                 <Typography fontSize={14}>{data.asset_specification}</Typography>
                               </TableCell>
-                              <TableCell className="tbl-cell text-weight">{data.vladimir_tag_number}</TableCell>
-                              <TableCell className="tbl-cell">
+
+                              <TableCell onClick={() => handleViewData(data)} className="tbl-cell text-weight">
+                                {data.vladimir_tag_number}
+                              </TableCell>
+                              <TableCell onClick={() => handleViewData(data)} className="tbl-cell">
                                 <Typography fontSize={12} color="text.light">
                                   PR - {data.pr_number}
                                 </Typography>
@@ -241,7 +340,7 @@ const ReleasingTable = (props) => {
                                 </Typography>
                               </TableCell>
 
-                              <TableCell className="tbl-cell">
+                              <TableCell onClick={() => handleViewData(data)} className="tbl-cell">
                                 <Typography fontSize={10} color="gray">
                                   ({data.company?.company_code}) - {data.company?.company_name}
                                 </Typography>
@@ -256,19 +355,23 @@ const ReleasingTable = (props) => {
                                 </Typography>
                               </TableCell>
 
-                              <TableCell className="tbl-cell ">
+                              <TableCell onClick={() => handleViewData(data)} className="tbl-cell ">
                                 {`(${data.requestor?.employee_id}) - ${data.requestor?.firstname} ${data.requestor?.lastname}`}
                               </TableCell>
 
-                              {released && <TableCell className="tbl-cell ">{data.received_by}</TableCell>}
+                              {released && (
+                                <TableCell onClick={() => handleViewData(data)} className="tbl-cell ">
+                                  {data.received_by}
+                                </TableCell>
+                              )}
 
-                              <TableCell className="tbl-cell">
+                              <TableCell onClick={() => handleViewData(data)} className="tbl-cell">
                                 <Typography fontSize={14} fontWeight={600}>
                                   {data.accountability}
                                 </Typography>
                                 <Typography fontSize={12}>{data.accountable}</Typography>
                               </TableCell>
-                              <TableCell className="tbl-cell tr-cen-pad45">
+                              <TableCell onClick={() => handleViewData(data)} className="tbl-cell tr-cen-pad45">
                                 {Moment(data.created_at).format("MMM DD, YYYY")}
                               </TableCell>
                             </TableRow>
@@ -290,6 +393,23 @@ const ReleasingTable = (props) => {
           </Box>
         </>
       )}
+
+      <Dialog
+        open={dialog}
+        onClose={() => dispatch(closeDialog())}
+        PaperProps={{
+          sx: {
+            borderRadius: "10px",
+            margin: "0",
+            maxWidth: "90%",
+            padding: "20px",
+            overflow: "hidden",
+            width: "400px",
+          },
+        }}
+      >
+        <AddReleasingInfo data={releasingData} warehouseNumber={wNumber} />
+      </Dialog>
     </Stack>
   );
 };

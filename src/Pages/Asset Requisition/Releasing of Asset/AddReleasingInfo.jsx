@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  Autocomplete,
   Box,
   Button,
   Dialog,
@@ -39,7 +40,7 @@ const schema = yup.object().shape({
 });
 
 const AddReleasingInfo = (props) => {
-  const { data, refetch } = props;
+  const { data, refetch, warehouseNumber } = props;
   const [signature, setSignature] = useState();
   const [trimmedDataURL, setTrimmedDataURL] = useState(null);
 
@@ -51,7 +52,9 @@ const AddReleasingInfo = (props) => {
     handleSubmit,
     control,
     watch,
+    register,
     reset,
+    setValue,
     setError,
     formState: { errors, isDirty },
   } = useForm({
@@ -103,7 +106,7 @@ const AddReleasingInfo = (props) => {
     if (isPostSuccess) {
       reset();
       handleCloseDialog();
-      refetch();
+      // refetch();
       dispatch(
         openToast({
           message: postData?.message,
@@ -112,6 +115,12 @@ const AddReleasingInfo = (props) => {
       );
     }
   }, [isPostSuccess]);
+
+  useEffect(() => {
+    setValue("warehouse_number_id", warehouseNumber?.warehouse_number_id);
+  }, [warehouseNumber]);
+
+  console.log(watch("warehouse_number_id"));
 
   const handleCloseDialog = () => {
     dispatch(closeDialog());
@@ -125,68 +134,66 @@ const AddReleasingInfo = (props) => {
   const onSubmitHandler = (formData) => {
     const newFormData = {
       ...formData,
-      warehouse_number_id: [data?.warehouse_number?.id],
+      warehouse_number_id: warehouseNumber ? formData?.warehouse_number_id : [data?.warehouse_number?.id],
       accountable: formData?.accountable?.general_info?.full_id_number_full_name?.toString(),
       received_by: formData?.received_by?.general_info?.full_id_number_full_name?.toString(),
       signature: signature,
     };
 
-    console.log(newFormData);
+    dispatch(
+      openConfirm({
+        icon: Info,
+        iconColor: "info",
+        message: (
+          <Box>
+            <Typography> Are you sure you want to</Typography>
+            <Typography
+              sx={{
+                display: "inline-block",
+                color: "secondary.main",
+                fontWeight: "bold",
+              }}
+            >
+              RELEASE
+            </Typography>{" "}
+            this Item?
+          </Box>
+        ),
 
-    // dispatch(
-    //   openConfirm({
-    //     icon: Info,
-    //     iconColor: "info",
-    //     message: (
-    //       <Box>
-    //         <Typography> Are you sure you want to</Typography>
-    //         <Typography
-    //           sx={{
-    //             display: "inline-block",
-    //             color: "secondary.main",
-    //             fontWeight: "bold",
-    //           }}
-    //         >
-    //           RELEASE
-    //         </Typography>{" "}
-    //         this Item?
-    //       </Box>
-    //     ),
-
-    //     onConfirm: async () => {
-    //       try {
-    //         dispatch(onLoading());
-    //         let result = await releaseItems(newFormData).unwrap();
-    //         // console.log(result);
-    //         dispatch(
-    //           openToast({
-    //             message: result.message,
-    //             duration: 5000,
-    //           })
-    //         );
-    //         dispatch(closeConfirm());
-    //       } catch (err) {
-    //         if (err?.status === 422) {
-    //           dispatch(
-    //             openToast({
-    //               message: err.data.message,
-    //               duration: 5000,
-    //               variant: "error",
-    //             })
-    //           );
-    //         } else if (err?.status !== 422) {
-    //           dispatch(
-    //             openToast({
-    //               message: "Something went wrong. Please try again.",
-    //               duration: 5000,
-    //               variant: "error",
-    //             })
-    //           );
-    //         }
-    //       }
-    //     },
-    //   })
-    // );
+        onConfirm: async () => {
+          try {
+            dispatch(onLoading());
+            let result = await releaseItems(newFormData).unwrap();
+            // console.log(result);
+            dispatch(
+              openToast({
+                message: result.message,
+                duration: 5000,
+              })
+            );
+            dispatch(closeConfirm());
+          } catch (err) {
+            if (err?.status === 422) {
+              dispatch(
+                openToast({
+                  message: err.data.message,
+                  duration: 5000,
+                  variant: "error",
+                })
+              );
+            } else if (err?.status !== 422) {
+              dispatch(
+                openToast({
+                  message: "Something went wrong. Please try again.",
+                  duration: 5000,
+                  variant: "error",
+                })
+              );
+            }
+          }
+        },
+      })
+    );
   };
 
   const handleSaveSignature = () => {
@@ -209,7 +216,32 @@ const AddReleasingInfo = (props) => {
       <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "1.6rem", textAlign: "center" }}>
         Releasing
       </Typography>
-      <Stack gap={2} pt={2}>
+      <Stack gap={2}>
+        {warehouseNumber && (
+          <Autocomplete
+            {...register}
+            readOnly
+            required
+            multiple
+            name="warehouse_number_id"
+            options={warehouseNumber?.warehouse_number_id}
+            value={warehouseNumber?.warehouse_number_id}
+            size="small"
+            renderInput={(params) => (
+              <TextField
+                label={watch("warehouse_number_id") ? "Warehouse Number" : "No Data"}
+                color="secondary"
+                sx={{
+                  ".MuiInputBase-root ": { borderRadius: "10px" },
+                  pointer: "default",
+                }}
+                {...params}
+                // label={`${name}`}
+              />
+            )}
+          />
+        )}
+
         <CustomAutoComplete
           autoComplete
           name="accountability"
