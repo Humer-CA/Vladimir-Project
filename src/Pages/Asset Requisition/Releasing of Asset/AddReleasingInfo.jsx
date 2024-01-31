@@ -1,17 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Stack, TextField, Typography, createFilterOptions } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Box,
+  Button,
+  Dialog,
+  IconButton,
+  Stack,
+  TextField,
+  Tooltip,
+  Typography,
+  createFilterOptions,
+} from "@mui/material";
 import CustomAutoComplete from "../../../Components/Reusable/CustomAutoComplete";
+import SignatureCanvas from "react-signature-canvas";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useGetSedarUsersApiQuery } from "../../../Redux/Query/SedarUserApi";
 import { LoadingButton } from "@mui/lab";
-import { closeDialog } from "../../../Redux/StateManagement/booleanStateSlice";
-import { useDispatch } from "react-redux";
+import { closeDialog, closeDialog1, openDialog1 } from "../../../Redux/StateManagement/booleanStateSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { usePutAssetReleasingMutation } from "../../../Redux/Query/Request/AssetReleasing";
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
-import { Info } from "@mui/icons-material";
+import { Info, Refresh, Save } from "@mui/icons-material";
 import { closeConfirm, onLoading, openConfirm } from "../../../Redux/StateManagement/confirmSlice";
 
 const schema = yup.object().shape({
@@ -29,6 +40,12 @@ const schema = yup.object().shape({
 
 const AddReleasingInfo = (props) => {
   const { data, refetch } = props;
+  const [signature, setSignature] = useState();
+  const [trimmedDataURL, setTrimmedDataURL] = useState(null);
+
+  const signatureRef = useRef();
+
+  const dialog = useSelector((state) => state.booleanState?.dialogMultiple?.dialog1);
 
   const {
     handleSubmit,
@@ -105,126 +122,86 @@ const AddReleasingInfo = (props) => {
     matchFrom: "any",
   });
 
-  const onVoidReferenceHandler = async (id) => {
-    dispatch(
-      openConfirm({
-        icon: Report,
-        iconColor: "warning",
-        message: (
-          <Box>
-            <Typography> Are you sure you want to</Typography>
-            <Typography
-              sx={{
-                display: "inline-block",
-                color: "secondary.main",
-                fontWeight: "bold",
-              }}
-            >
-              DELETE
-            </Typography>{" "}
-            this Item?
-          </Box>
-        ),
-
-        onConfirm: async () => {
-          try {
-            dispatch(onLoading());
-            let result = await deleteRequestContainer(id).unwrap();
-            // console.log(result);
-            dispatch(
-              openToast({
-                message: result.message,
-                duration: 5000,
-              })
-            );
-            dispatch(closeConfirm());
-          } catch (err) {
-            console.log(err);
-            if (err?.status === 422) {
-              dispatch(
-                openToast({
-                  message: err.data.message,
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            } else if (err?.status !== 422) {
-              dispatch(
-                openToast({
-                  message: "Something went wrong. Please try again.",
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            }
-          }
-        },
-      })
-    );
-  };
-
   const onSubmitHandler = (formData) => {
     const newFormData = {
       ...formData,
       warehouse_number_id: [data?.warehouse_number?.id],
       accountable: formData?.accountable?.general_info?.full_id_number_full_name?.toString(),
       received_by: formData?.received_by?.general_info?.full_id_number_full_name?.toString(),
+      signature: signature,
     };
 
-    dispatch(
-      openConfirm({
-        icon: Info,
-        iconColor: "info",
-        message: (
-          <Box>
-            <Typography> Are you sure you want to</Typography>
-            <Typography
-              sx={{
-                display: "inline-block",
-                color: "secondary.main",
-                fontWeight: "bold",
-              }}
-            >
-              RELEASE
-            </Typography>{" "}
-            this Item?
-          </Box>
-        ),
+    console.log(newFormData);
 
-        onConfirm: async () => {
-          try {
-            dispatch(onLoading());
-            let result = await releaseItems(newFormData).unwrap();
-            // console.log(result);
-            dispatch(
-              openToast({
-                message: result.message,
-                duration: 5000,
-              })
-            );
-            dispatch(closeConfirm());
-          } catch (err) {
-            if (err?.status === 422) {
-              dispatch(
-                openToast({
-                  message: err.data.message,
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            } else if (err?.status !== 422) {
-              dispatch(
-                openToast({
-                  message: "Something went wrong. Please try again.",
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            }
-          }
-        },
-      })
-    );
+    // dispatch(
+    //   openConfirm({
+    //     icon: Info,
+    //     iconColor: "info",
+    //     message: (
+    //       <Box>
+    //         <Typography> Are you sure you want to</Typography>
+    //         <Typography
+    //           sx={{
+    //             display: "inline-block",
+    //             color: "secondary.main",
+    //             fontWeight: "bold",
+    //           }}
+    //         >
+    //           RELEASE
+    //         </Typography>{" "}
+    //         this Item?
+    //       </Box>
+    //     ),
+
+    //     onConfirm: async () => {
+    //       try {
+    //         dispatch(onLoading());
+    //         let result = await releaseItems(newFormData).unwrap();
+    //         // console.log(result);
+    //         dispatch(
+    //           openToast({
+    //             message: result.message,
+    //             duration: 5000,
+    //           })
+    //         );
+    //         dispatch(closeConfirm());
+    //       } catch (err) {
+    //         if (err?.status === 422) {
+    //           dispatch(
+    //             openToast({
+    //               message: err.data.message,
+    //               duration: 5000,
+    //               variant: "error",
+    //             })
+    //           );
+    //         } else if (err?.status !== 422) {
+    //           dispatch(
+    //             openToast({
+    //               message: "Something went wrong. Please try again.",
+    //               duration: 5000,
+    //               variant: "error",
+    //             })
+    //           );
+    //         }
+    //       }
+    //     },
+    //   })
+    // );
+  };
+
+  const handleSaveSignature = () => {
+    const signatureDataURL = signatureRef.current.toDataURL();
+    setSignature(signatureDataURL);
+    setTrimmedDataURL(signatureRef.current.getTrimmedCanvas().toDataURL("image/png"));
+    handleCloseSignature();
+  };
+
+  const handleClearSignature = () => {
+    signatureRef.current.clear();
+  };
+
+  const handleCloseSignature = () => {
+    dispatch(closeDialog1());
   };
 
   return (
@@ -232,7 +209,6 @@ const AddReleasingInfo = (props) => {
       <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "1.6rem", textAlign: "center" }}>
         Releasing
       </Typography>
-
       <Stack gap={2} pt={2}>
         <CustomAutoComplete
           autoComplete
@@ -300,6 +276,16 @@ const AddReleasingInfo = (props) => {
           )}
         />
 
+        <Stack>
+          {trimmedDataURL ? (
+            <Box sx={{ border: "1px solid gray", borderRadius: "10px", p: 2 }}>
+              <img src={trimmedDataURL} alt="Trimmed Signature" height="100px" width="100%" />
+            </Box>
+          ) : null}
+          {/* {signature ? <></>} */}
+          <Button onClick={() => dispatch(openDialog1())}>{signature ? "Change Sign" : "Add Signature"}</Button>
+        </Stack>
+
         <Stack flexDirection="row" alignSelf="flex-end" gap={2}>
           <LoadingButton variant="contained" loading={isPostLoading} size="small" type="submit" disabled={!isDirty}>
             Release
@@ -310,6 +296,30 @@ const AddReleasingInfo = (props) => {
           </Button>
         </Stack>
       </Stack>
+
+      <Dialog open={dialog} onClose={handleCloseSignature}>
+        <Box p={2}>
+          <Typography fontFamily="Anton, Impact, Roboto" fontSize={20} color="secondary.main" p={1}>
+            ADD SIGNATURE
+          </Typography>
+          <Stack gap={2} position="relative">
+            <SignatureCanvas ref={signatureRef} canvasProps={{ width: 400, height: 200, className: "signCanvas" }} />
+            <Stack flexDirection="row" alignSelf="flex-end" gap={2}>
+              <IconButton onClick={() => handleClearSignature()} sx={{ position: "absolute", top: 10, left: 10 }}>
+                <Tooltip title="Clear" placement="right" arrow>
+                  <Refresh />
+                </Tooltip>
+              </IconButton>
+              <Button variant="contained" startIcon={<Save />} size="small" onClick={() => handleSaveSignature()}>
+                Save
+              </Button>
+              <Button variant="outlined" size="small" color="secondary" onClick={handleCloseSignature}>
+                Close
+              </Button>
+            </Stack>
+          </Stack>
+        </Box>
+      </Dialog>
     </Box>
   );
 };
