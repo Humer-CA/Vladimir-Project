@@ -158,7 +158,7 @@ const AddRequisition = (props) => {
   const [updateToggle, setUpdateToggle] = useState(true);
   const [disable, setDisable] = useState(true);
 
-  const { state: transactionData, enableForm } = useLocation();
+  const { state: transactionData } = useLocation();
 
   const isFullWidth = useMediaQuery("(max-width: 600px)");
   const dispatch = useDispatch();
@@ -268,16 +268,6 @@ const AddRequisition = (props) => {
     { refetchOnMountOrArgChange: true }
   );
 
-  // const {
-  //   data: transactionDataApiPage,
-  //   isLoading: isTransactionPageLoading,
-  //   isLoading: isTransactionPageSuccess,
-  //   refetch: isTransactionPageRefetch,
-  // } = useGetByTransactionPageApiQuery(
-  //   { page: page, per_page: perPage, transaction_number: transactionData?.transaction_number },
-  //   { refetchOnMountOrArgChange: true }
-  // );
-
   const [postRequest, { data: postRequestData }] = usePostRequestContainerApiMutation();
   const [upDateRequest, { data: updateRequestData }] = useUpdateRequestContainerApiMutation();
   const [deleteRequest, { data: deleteRequestData }] = useDeleteRequestContainerApiMutation();
@@ -327,26 +317,48 @@ const AddRequisition = (props) => {
 
   // console.log(transactionDataApi);
 
+  // useEffect(() => {
+  //   const errorData = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
+
+  //   if (errorData) {
+  //     const errors = (postError?.data || updateError?.data)?.errors || {};
+  //     Object.entries(errors).forEach(([name, [message]]) => setError(name, { type: "validate", message }));
+  //   }
+
+  //   const showToast = () => {
+  //     dispatch(
+  //       openToast({
+  //         message: "Something went wrong. Please try again.",
+  //         duration: 5000,
+  //         variant: "error",
+  //       })
+  //     );
+  //   };
+
+  //   errorData && showToast();
+  // }, [isPostError, isUpdateError]);
+
   useEffect(() => {
-    const errorData = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
-
-    if (errorData) {
-      const errors = (postError?.data || updateError?.data)?.errors || {};
-      Object.entries(errors).forEach(([name, [message]]) => setError(name, { type: "validate", message }));
+    if (isPostError) {
+      if (postError?.status === 422) {
+        dispatch(
+          openToast({
+            message: postError?.data?.errors.detail || postError?.data?.errors.pr_number[0],
+            duration: 5000,
+            variant: "error",
+          })
+        );
+      } else {
+        dispatch(
+          openToast({
+            message: "Something went wrong. Please try again.",
+            duration: 5000,
+            variant: "error",
+          })
+        );
+      }
     }
-
-    const showToast = () => {
-      dispatch(
-        openToast({
-          message: "Something went wrong. Please try again.",
-          duration: 5000,
-          variant: "error",
-        })
-      );
-    };
-
-    errorData && showToast();
-  }, [isPostError, isUpdateError]);
+  }, [isPostError]);
 
   useEffect(() => {
     if (isPostSuccess || isUpdateSuccess) {
@@ -366,7 +378,7 @@ const AddRequisition = (props) => {
   }, [isPostSuccess, isUpdateSuccess]);
 
   useEffect(() => {
-    enableForm && setDisable(false);
+    !transactionData && setDisable(false);
   }, []);
 
   // useEffect(() => {
@@ -566,6 +578,8 @@ const AddRequisition = (props) => {
         );
       })
       .then(() => {
+        setDisable(true);
+        isTransactionRefetch();
         dispatch(requestContainerApi.util.invalidateTags(["RequestContainer"]));
         // reset({
         //   type_of_request_id: formData?.type_of_request_id,
@@ -637,48 +651,71 @@ const AddRequisition = (props) => {
           </Box>
         ),
 
-        onConfirm: () => {
-          dispatch(onLoading());
-          if (transactionDataApi[0]?.can_resubmit === 0) {
-            dispatch(
-              openToast({
-                message: "Successfully Submitted",
-                duration: 5000,
-              })
-            );
-            navigate(-1);
-            deleteAllRequest();
-          } else if (transactionDataApi[0]?.can_resubmit === 1) {
-            resubmitRequest({
-              transaction_number: transactionData?.transaction_number,
-              ...transactionDataApi,
-            });
-            navigate(-1);
-            dispatch(
-              openToast({
-                message: "Successfully Resubmitted",
-                duration: 5000,
-              })
-            );
-            return;
+        onConfirm: async () => {
+          try {
+            dispatch(onLoading());
+            if (transactionDataApi[0]?.can_resubmit === 0) {
+              dispatch(
+                openToast({
+                  message: "Successfully Submitted",
+                  duration: 5000,
+                })
+              );
+              navigate(-1);
+              deleteAllRequest();
+            } else if (transactionDataApi[0]?.can_resubmit === 1) {
+              resubmitRequest({
+                transaction_number: transactionData?.transaction_number,
+                ...transactionDataApi,
+              });
+              navigate(-1);
+              dispatch(
+                openToast({
+                  message: "Successfully Resubmitted",
+                  duration: 5000,
+                })
+              );
+              return;
+            } else {
+              const smsData = {
+                system_name: "Vladimir",
+                message: "You have a pending approval",
+                mobile_number: "+639913117181",
+              };
+
+              postRequisition(addRequestAllApi);
+              postRequestSms(smsData);
+              deleteAllRequest();
+              reset({
+                letter_of_request: null,
+                quotation: null,
+                specification_form: null,
+                tool_of_trade: null,
+                other_attachments: null,
+              });
+            }
+          } catch (err) {
+            console.log(err);
+            if (err?.status === 422) {
+              dispatch(
+                openToast({
+                  message: err.data.message || err?.errors?.details,
+                  duration: 5000,
+                  variant: "error",
+                })
+              );
+            } else if (err?.status !== 422) {
+              console.log(err);
+
+              dispatch(
+                openToast({
+                  message: "Something went wrong. Please try again.",
+                  duration: 5000,
+                  variant: "error",
+                })
+              );
+            }
           }
-
-          const smsData = {
-            system_name: "Vladimir",
-            message: "You have a pending approval",
-            mobile_number: "+639913117181",
-          };
-
-          postRequisition(addRequestAllApi);
-          postRequestSms(smsData);
-          deleteAllRequest();
-          reset({
-            letter_of_request: null,
-            quotation: null,
-            specification_form: null,
-            tool_of_trade: null,
-            other_attachments: null,
-          });
         },
       })
     );
@@ -1665,26 +1702,14 @@ const AddRequisition = (props) => {
                   color="secondary"
                   startIcon={
                     transactionData ? (
-                      <SaveAlt
-                        color={
-                          (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.data?.length === 0)
-                            ? "gray"
-                            : "primary"
-                        }
-                      />
+                      <SaveAlt color={transactionData && !disable ? "primary" : "gray"} />
                     ) : (
-                      <Create
-                        color={
-                          (transactionData ? transactionDataApi === 0 : addRequestAllApi?.data?.length === 0)
-                            ? "gray"
-                            : "primary"
-                        }
-                      />
+                      <Create color={addRequestAllApi?.data?.length === 0 ? "primary" : "gray"} />
                     )
                   }
                   disabled={
                     updateRequest
-                      ? updateRequest && disable
+                      ? disable
                       : isRequestLoading ||
                         isTransactionLoading ||
                         (transactionData ? transactionDataApi.length === 0 : addRequestAllApi?.data?.length === 0)

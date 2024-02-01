@@ -195,7 +195,7 @@ const Requisition = () => {
   };
 
   const handleAddRequisition = () => {
-    navigate(`add-requisition`, { state: { enableForm } });
+    navigate(`add-requisition`);
   };
 
   const handleEditRequisition = (data) => {
