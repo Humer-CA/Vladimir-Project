@@ -19,6 +19,7 @@ import {
   openDrawer1,
   openExport,
   openScan,
+  openPrint,
 } from "../../Redux/StateManagement/booleanStateSlice";
 
 import { LoadingButton } from "@mui/lab";
@@ -79,6 +80,8 @@ const MasterlistToolbar = (props) => {
     requestFilter,
     setFilter,
     filter,
+    faFilter,
+    setFaFilter,
     showPr,
     hideSearch,
   } = props;
@@ -94,8 +97,11 @@ const MasterlistToolbar = (props) => {
   const [anchorElRequestFilter, setAnchorElRequestFilter] = useState(null);
   const openRequestFilter = Boolean(anchorElRequestFilter);
 
+  const [anchorElFaFilter, setAnchorElFaFilter] = useState(null);
+  const openFaFilter = Boolean(anchorElFaFilter);
+
   const handleClose = () => {
-    setAnchorEl(null) || setAnchorElImport(null) || setAnchorElRequestFilter(null);
+    setAnchorEl(null) || setAnchorElImport(null) || setAnchorElRequestFilter(null) || setAnchorElFaFilter(null);
   };
 
   // const scanFile = useSelector((state) => state.scanFile);
@@ -137,8 +143,8 @@ const MasterlistToolbar = (props) => {
     onSyncHandler();
   };
 
-  const handleOpenDatePicker = () => {
-    dispatch(openDatePicker());
+  const handlePrintFa = () => {
+    dispatch(openPrint());
   };
 
   const handleOpenDrawer = (e) => {
@@ -159,6 +165,10 @@ const MasterlistToolbar = (props) => {
 
   const handleOpenRequestFilter = (e) => {
     setAnchorElRequestFilter(e.currentTarget);
+  };
+
+  const handleOpenFaFilter = (e) => {
+    setAnchorElFaFilter(e.currentTarget);
   };
 
   const handleOpenAddCost = (e) => {
@@ -193,6 +203,15 @@ const MasterlistToolbar = (props) => {
       setFilter(filter.filter((filter) => filter !== value));
     } else {
       setFilter([...filter, value]);
+    }
+  };
+
+  const handleFaFilterChange = (value) => {
+    // console.log(value)
+    if (faFilter.includes(value)) {
+      setFaFilter(faFilter.filter((filter) => filter !== value));
+    } else {
+      setFaFilter([...faFilter, value]);
     }
   };
 
@@ -253,7 +272,7 @@ const MasterlistToolbar = (props) => {
               component={Link}
               variant="outlined"
               to={path}
-              onClick={handleOpenDatePicker}
+              onClick={handlePrintFa}
               startIcon={isSmallScreen ? null : <Print color="secondary" />}
               size="small"
               color="secondary"
@@ -414,11 +433,47 @@ const MasterlistToolbar = (props) => {
           )}*/}
 
           {faStatus && (
-            <Tooltip title="Filter" TransitionComponent={Zoom} placement="top" arrow>
-              <IconButton>
-                <FilterList />
-              </IconButton>
-            </Tooltip>
+            <>
+              <Tooltip title="Filter" TransitionComponent={Zoom} placement="top" arrow>
+                <IconButton onClick={handleOpenFaFilter}>
+                  <FilterList />
+                </IconButton>
+              </Tooltip>
+
+              {Boolean(faFilter) && (
+                <Menu
+                  anchorEl={anchorElFaFilter}
+                  open={openFaFilter}
+                  onClose={handleClose}
+                  TransitionComponent={Fade}
+                  disablePortal
+                  transformOrigin={{ horizontal: "left", vertical: "top" }}
+                  anchorOrigin={{ horizontal: "right", vertical: "top" }}
+                >
+                  <FormGroup>
+                    <Stack flexDirection="row" alignItems="center" p="10px" gap="10px">
+                      <FilterAlt color="primary" />
+                      <Typography fontFamily="Anton, Impact" fontSize="20px" color="secondary">
+                        FILTER
+                      </Typography>
+                    </Stack>
+                    <Divider />
+                    <MenuItem dense>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            size="small"
+                            onChange={() => handleFaFilterChange("isRequest")}
+                            // checked={fafilter.includes("isRequest")}
+                          />
+                        }
+                        label="Request"
+                      />
+                    </MenuItem>
+                  </FormGroup>
+                </Menu>
+              )}
+            </>
           )}
 
           {!hideSearch && (

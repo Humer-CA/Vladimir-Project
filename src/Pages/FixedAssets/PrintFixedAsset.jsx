@@ -8,8 +8,12 @@ import {
   Button,
   Checkbox,
   Divider,
+  Fade,
   FormControlLabel,
+  FormGroup,
   IconButton,
+  Menu,
+  MenuItem,
   Stack,
   Table,
   TableBody,
@@ -23,7 +27,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { DataArrayTwoTone, Filter, Help, Print, ResetTv, Search } from "@mui/icons-material";
+import { DataArrayTwoTone, Filter, FilterAlt, FilterList, Help, Print, ResetTv, Search } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LoadingButton } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -35,7 +39,7 @@ import * as yup from "yup";
 
 import { useDispatch } from "react-redux";
 
-import { closeDatePicker } from "../../Redux/StateManagement/booleanStateSlice";
+import { closeDatePicker, closePrint } from "../../Redux/StateManagement/booleanStateSlice";
 import {
   useGetFixedAssetApiQuery,
   useGetPrintViewingApiQuery,
@@ -77,14 +81,19 @@ const PrintFixedAsset = () => {
   const [perPage, setPerPage] = useState(5);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [isRequest, setIsRequest] = useState(0);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("active");
   const [filter, setFilter] = useState([]);
+  const [faFilter, setFaFilter] = useState(false);
 
-  // const [filteredDate, setFilteredDate] = useState({
-  //   startDate: "",
-  //   endDate: "",
-  // });
+  const [anchorElFaFilter, setAnchorElFaFilter] = useState(null);
+  const openFaFilter = Boolean(anchorElFaFilter);
+
+  const handleOpenFaFilter = (e) => {
+    setAnchorElFaFilter(e.currentTarget);
+    setFaFilter(true);
+  };
 
   const dispatch = useDispatch();
 
@@ -200,6 +209,7 @@ const PrintFixedAsset = () => {
       search: search,
       startDate: startDate,
       endDate: endDate,
+      isRequest: isRequest,
     },
     { refetchOnMountOrArgChange: true }
   );
@@ -285,21 +295,21 @@ const PrintFixedAsset = () => {
   // }, [page, perPage]);
 
   // const onPrintHandler = (formData) => {
-  //   // const newFormData = {
-  //   //   ...formData,
-  //   //   tagNumber: formData.tagNumber === null ? "" : formData.tagNumber,
-  //   //   startDate:
-  //   //     formData.startDate === null
-  //   //       ? ""
-  //   //       : moment(new Date(formData.startDate)).format("YYYY-MM-DD"),
-  //   //   endDate:
-  //   //     formData.endDate === null
-  //   //       ? ""
-  //   //       : moment(new Date(formData.endDate)).format("YYYY-MM-DD"),
-  //   // };
-  //   // printAsset({ ip: ip.data, ...newFormData });
-  //   // printAsset({ ip: ip.data, formData });
-  //   // console.log({ ip: ip.data, formData });
+  // const newFormData = {
+  //   ...formData,
+  //   tagNumber: formData.tagNumber === null ? "" : formData.tagNumber,
+  //   startDate:
+  //     formData.startDate === null
+  //       ? ""
+  //       : moment(new Date(formData.startDate)).format("YYYY-MM-DD"),
+  //   endDate:
+  //     formData.endDate === null
+  //       ? ""
+  //       : moment(new Date(formData.endDate)).format("YYYY-MM-DD"),
+  // };
+  // printAsset({ ip: ip.data, ...newFormData });
+  // printAsset({ ip: ip.data, formData });
+  // console.log({ ip: ip.data, formData });
 
   //   printAsset({ ip: ip.data, tagNumber: formData?.tagNumber });
   //   console.log(formData.tagNumber);
@@ -370,7 +380,11 @@ const PrintFixedAsset = () => {
   };
 
   const handleClose = () => {
-    dispatch(closeDatePicker());
+    dispatch(closePrint());
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorElFaFilter(null);
   };
 
   const searchHandler = (e) => {
@@ -457,7 +471,7 @@ const PrintFixedAsset = () => {
           width="100%"
           gap={1}
         >
-          <Stack sx={{ width: isSmallScreen ? "100%" : "350px" }}>
+          <Stack flexDirection="row" width="100%">
             <CustomTextField
               control={control}
               name="search"
@@ -467,9 +481,6 @@ const PrintFixedAsset = () => {
               onKeyDown={searchHandler}
               fullWidth={isSmallScreen ? true : false}
             />
-            <IconButton>
-              <Filter />
-            </IconButton>
           </Stack>
 
           <Stack

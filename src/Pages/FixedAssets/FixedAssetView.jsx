@@ -565,7 +565,7 @@ const FixedAssetView = (props) => {
 
   // console.log(dataApi.data?.depreciation_status?.depreciation_status_name);
 
-  // console.log(dataApi);
+  console.log(dataApi?.data);
 
   return (
     <>
@@ -995,7 +995,10 @@ const FixedAssetView = (props) => {
                   <Box className="tableCard__properties">
                     Acquisition Cost:
                     <Typography className="tableCard__info" fontSize="14px">
-                      ₱{dataApi?.data?.acquisition_cost.toLocaleString()}
+                      ₱
+                      {dataApi?.data?.acquisition_cost === (0 || null)
+                        ? 0
+                        : dataApi?.data?.acquisition_cost.toLocaleString()}
                     </Typography>
                   </Box>
 
@@ -1009,14 +1012,17 @@ const FixedAssetView = (props) => {
                   <Box className="tableCard__properties">
                     Scrap Value:
                     <Typography className="tableCard__info" fontSize="14px">
-                      ₱{dataApi?.data?.scrap_value.toLocaleString()}
+                      ₱{dataApi?.data?.scrap_value === (0 || null) ? 0 : dataApi?.data?.scrap_value.toLocaleString()}
                     </Typography>
                   </Box>
 
                   <Box className="tableCard__properties">
                     Depreciable Basis:
                     <Typography className="tableCard__info" fontSize="14px">
-                      ₱{dataApi?.data?.depreciable_basis.toLocaleString()}
+                      ₱
+                      {dataApi?.data?.depreciable_basis === (0 || null)
+                        ? 0
+                        : dataApi?.data?.depreciable_basis.toLocaleString()}
                     </Typography>
                   </Box>
                 </AccordionDetails>
@@ -1088,7 +1094,11 @@ const FixedAssetView = (props) => {
 
                                   <TableCell>
                                     <Typography fontSize="12px" fontWeight="bold" noWrap>
-                                      {`₱${mapData?.acquisition_cost.toLocaleString()}`}
+                                      {`₱${
+                                        mapData?.data?.acquisition_cost === (0 || null)
+                                          ? 0
+                                          : mapData?.acquisition_cost.toLocaleString()
+                                      }`}
                                     </Typography>
                                     <Typography fontSize="10px" color="gray" noWrap>
                                       Acquisition Cost
@@ -1129,7 +1139,10 @@ const FixedAssetView = (props) => {
                               Main Cost :
                             </Typography>
                             <Typography color="secondary.light">
-                              ₱{dataApi?.data?.acquisition_cost.toLocaleString()}
+                              ₱
+                              {dataApi?.data?.acquisition_cost === (0 || null)
+                                ? 0
+                                : dataApi?.data?.acquisition_cost.toLocaleString()}
                             </Typography>
                           </Stack>
                           {`+`}
@@ -1138,7 +1151,10 @@ const FixedAssetView = (props) => {
                               Total Additional Cost :
                             </Typography>
                             <Typography color="secondary.light">
-                              ₱{dataApi?.data?.total_adcost.toLocaleString()}
+                              ₱
+                              {dataApi?.data?.total_adcost === (0 || null)
+                                ? 0
+                                : dataApi?.data?.total_adcost.toLocaleString()}
                             </Typography>
                           </Stack>
                         </Stack>
@@ -1160,7 +1176,8 @@ const FixedAssetView = (props) => {
                             TOTAL COST :
                           </Typography>
                           <Typography fontWeight="bold" color="secondary.main">
-                            ₱{dataApi?.data?.total_cost.toLocaleString()}
+                            ₱
+                            {dataApi?.data?.total_cost === (0 || null) ? 0 : dataApi?.data?.total_cost.toLocaleString()}
                           </Typography>
                         </Stack>
                       </TableContainer>

@@ -39,6 +39,7 @@ import {
   closeExport,
   closeDatePicker,
   closeDrawer1,
+  closePrint,
 } from "../../Redux/StateManagement/booleanStateSlice";
 
 // MUI
@@ -73,6 +74,7 @@ const FixedAsset = (props) => {
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("active");
+  const [faFilter, setFaFilter] = useState([]);
   // const [scanAsset, setScanAsset] = useState(false);
   // const [faStatus, setFaStatus] = useState("");
   const [updateFixedAsset, setUpdateFixedAsset] = useState({
@@ -125,7 +127,7 @@ const FixedAsset = (props) => {
 
   const add = useSelector((state) => state.booleanState.add);
   const importFile = useSelector((state) => state.booleanState.importFile);
-  const datePicker = useSelector((state) => state.booleanState.datePicker);
+  const print = useSelector((state) => state.booleanState.print);
   const exportFile = useSelector((state) => state.booleanState.exportFile);
   const scanFile = useSelector((state) => state.booleanState.scanFile);
 
@@ -181,6 +183,7 @@ const FixedAsset = (props) => {
       per_page: perPage,
       status: status,
       search: search,
+      faFilter: faFilter,
     },
     { refetchOnMountOrArgChange: true }
   );
@@ -283,6 +286,8 @@ const FixedAsset = (props) => {
             onImport={() => {}}
             onPrint={() => {}}
             faStatus
+            faFilter
+            setFaFilter
             scanAsset
             openScan
             hideArchive
@@ -382,7 +387,7 @@ const FixedAsset = (props) => {
                           return (
                             <TableRow
                               key={index}
-                              hover={true}
+                              hover
                               onClick={() => handleTableData(data)}
                               sx={{
                                 "&:last-child td, &:last-child th": {
@@ -574,8 +579,8 @@ const FixedAsset = (props) => {
       </Dialog>
 
       <Dialog
-        open={datePicker}
-        onClose={() => dispatch(closeDatePicker())}
+        open={print}
+        onClose={() => dispatch(closePrint())}
         PaperProps={{
           sx: {
             borderRadius: "10px",
