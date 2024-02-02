@@ -23,7 +23,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { DataArrayTwoTone, Help, Print, ResetTv, Search } from "@mui/icons-material";
+import { DataArrayTwoTone, Filter, Help, Print, ResetTv, Search } from "@mui/icons-material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LoadingButton } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -79,6 +79,7 @@ const PrintFixedAsset = () => {
   const [endDate, setEndDate] = useState(null);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("active");
+  const [filter, setFilter] = useState([]);
 
   // const [filteredDate, setFilteredDate] = useState({
   //   startDate: "",
@@ -87,6 +88,7 @@ const PrintFixedAsset = () => {
 
   const dispatch = useDispatch();
 
+  const isSmallerScreen = useMediaQuery("(max-width: 600px)");
   const isSmallScreen = useMediaQuery("(max-width: 850px)");
 
   // Table Sorting --------------------------------
@@ -395,38 +397,6 @@ const PrintFixedAsset = () => {
     } else {
       setEndDate(moment(watch("endDate")).format("YYYY-MM-DD"));
     }
-
-    // const handleSearchClick = () => {
-    //   filteredDate.startDate === null
-    //     ? setFilteredDate({
-    //         ...filteredDate,
-    //         startDate: "",
-    //       })
-    //     : null;
-    //   filteredDate.endDate === null
-    //     ? setFilteredDate({
-    //         ...filteredDate,
-    //         endDate: "",
-    //       })
-    //     : null;
-
-    //   if (filteredDate.startDate === "" && filteredDate.endDate === "") {
-    //     setStartDate("");
-    //     setEndDate("");
-    //     return;
-    //   } else if (filteredDate.startDate === "" && filteredDate.endDate) {
-    //     setStartDate("");
-    //     setEndDate(moment(filteredDate.endDate).format("YYYY-MM-DD"));
-    //     return;
-    //   } else if (filteredDate.startDate && filteredDate.endDate === "") {
-    //     setStartDate(moment(filteredDate.startDate).format("YYYY-MM-DD"));
-    //     setEndDate("");
-    //     return;
-    //   } else if (filteredDate.startDate && filteredDate.endDate) {
-    //     setStartDate(moment(filteredDate.startDate).format("YYYY-MM-DD"));
-    //     setEndDate(moment(filteredDate.endDate).format("YYYY-MM-DD"));
-    //   }
-    // };
   };
 
   const tagNumberAllHandler = (checked) => {
@@ -440,31 +410,14 @@ const PrintFixedAsset = () => {
     }
   };
 
-  // const textFieldSx = {
-  //   textField: {
-  //     size: "small",
-  //     fullWidth: isSmallScreen ? true : false,
-
-  //     sx: {
-  //       width: isSmallScreen ? "100%" : "170px",
-  //       "& .Mui-focused.MuiFormLabel-root": {
-  //         color: "secondary.main",
-  //       },
-  //       "& .MuiOutlinedInput-notchedOutline": {
-  //         borderRadius: "10px",
-  //       },
-
-  //       "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-  //         borderColor: "#344955!important",
-  //       },
-
-  //       ".Mui-disabled": {
-  //         backgroundColor: "white",
-  //         borderRadius: "12px",
-  //       },
-  //     },
-  //   },
-  // };
+  const handleFilterChange = (value) => {
+    // console.log(value)
+    if (filter.includes(value)) {
+      setFilter(filter.filter((filter) => filter !== value));
+    } else {
+      setFilter([...filter, value]);
+    }
+  };
 
   return (
     <>
@@ -511,14 +464,26 @@ const PrintFixedAsset = () => {
               label="Search"
               type="text"
               color="secondary"
-              size="small"
               onKeyDown={searchHandler}
               fullWidth={isSmallScreen ? true : false}
             />
+            <IconButton>
+              <Filter />
+            </IconButton>
           </Stack>
 
-          <Stack flexDirection="row" gap={isSmallScreen ? 1 : 2} flexWrap={isSmallScreen ? "wrap" : null}>
-            <Stack flexDirection="row" gap={1} width={isSmallScreen ? "100%" : null}>
+          <Stack
+            flexDirection="row"
+            gap={isSmallScreen ? 1 : 2}
+            justifyContent="center"
+            flexWrap={isSmallScreen ? "wrap" : null}
+          >
+            <Stack
+              flexDirection="row"
+              gap={1}
+              width={isSmallScreen ? "100%" : null}
+              flexWrap={isSmallerScreen ? "wrap" : "noWrap"}
+            >
               <CustomDatePicker
                 control={control}
                 name="startDate"
@@ -555,6 +520,7 @@ const PrintFixedAsset = () => {
               sx={{
                 backgroundColor: "primary",
                 width: isSmallScreen && "100%",
+                maxWidth: "100%",
               }}
             >
               {isSmallScreen ? (
@@ -577,7 +543,7 @@ const PrintFixedAsset = () => {
         >
           <TableContainer
             sx={{
-              height: isSmallScreen ? "320px" : "400px",
+              height: isSmallScreen ? "35vh" : "45vh",
               borderRadius: "10px",
             }}
           >
@@ -593,12 +559,13 @@ const PrintFixedAsset = () => {
                     },
                   }}
                 >
-                  <TableCell align="center" sx={{ backgroundColor: "secondary.main" }}>
+                  <TableCell align="center" sx={{ backgroundColor: "secondary.main", p: 0 }}>
                     <FormControlLabel
                       sx={{ margin: "auto", align: "center" }}
                       control={
                         <Checkbox
                           value=""
+                          size="small"
                           checked={
                             !!fixedAssetData?.data
                               .map((mapItem) => mapItem.vladimir_tag_number)
@@ -683,6 +650,7 @@ const PrintFixedAsset = () => {
                                 disabled={data.action === "view"}
                                 control={
                                   <Checkbox
+                                    size="small"
                                     {...register("tagNumber")}
                                     checked={watch("tagNumber").includes(data.vladimir_tag_number)}
                                   />
