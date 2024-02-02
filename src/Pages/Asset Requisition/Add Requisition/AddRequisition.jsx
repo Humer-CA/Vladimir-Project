@@ -40,6 +40,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import {
+  AddAlert,
   AddToPhotos,
   ArrowBackIosRounded,
   Create,
@@ -49,6 +50,7 @@ import {
   Save,
   SaveAlt,
   Update,
+  Warning,
 } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
@@ -315,29 +317,6 @@ const AddRequisition = (props) => {
     },
   });
 
-  // console.log(transactionDataApi);
-
-  // useEffect(() => {
-  //   const errorData = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
-
-  //   if (errorData) {
-  //     const errors = (postError?.data || updateError?.data)?.errors || {};
-  //     Object.entries(errors).forEach(([name, [message]]) => setError(name, { type: "validate", message }));
-  //   }
-
-  //   const showToast = () => {
-  //     dispatch(
-  //       openToast({
-  //         message: "Something went wrong. Please try again.",
-  //         duration: 5000,
-  //         variant: "error",
-  //       })
-  //     );
-  //   };
-
-  //   errorData && showToast();
-  // }, [isPostError, isUpdateError]);
-
   useEffect(() => {
     if (isPostError) {
       if (postError?.status === 422) {
@@ -360,22 +339,22 @@ const AddRequisition = (props) => {
     }
   }, [isPostError]);
 
-  useEffect(() => {
-    if (isPostSuccess || isUpdateSuccess) {
-      reset();
-      handleCloseDrawer();
-      dispatch(
-        openToast({
-          message: postData?.message || updateData?.message,
-          duration: 5000,
-        })
-      );
+  // useEffect(() => {
+  //   if (isPostSuccess || isUpdateSuccess) {
+  //     reset();
+  //     handleCloseDrawer();
+  //     dispatch(
+  //       openToast({
+  //         message: postData?.message || updateData?.message,
+  //         duration: 5000,
+  //       })
+  //     );
 
-      // setTimeout(() => {
-      //   onUpdateResetHandler();
-      // }, 500);
-    }
-  }, [isPostSuccess, isUpdateSuccess]);
+  //     // setTimeout(() => {
+  //     //   onUpdateResetHandler();
+  //     // }, 500);
+  //   }
+  // }, [isPostSuccess, isUpdateSuccess]);
 
   useEffect(() => {
     !transactionData && setDisable(false);
@@ -460,13 +439,12 @@ const AddRequisition = (props) => {
   //  * CONTAINER
   // Adding of Request
   const addRequestHandler = (formData) => {
-    console.log(formData);
     const data = {
       type_of_request_id: formData?.type_of_request_id?.id?.toString(),
       attachment_type: formData?.attachment_type?.toString(),
 
       department_id: formData?.department_id.id?.toString(),
-      company_id: updateRequest ? formData?.company_id : formData?.department_id?.company?.company_id,
+      company_id: updateRequest ? formData?.company_id : formData?.company_id?.company?.company_id.toString(),
       subunit_id: formData.subunit_id.id?.toString(),
       location_id: formData?.location_id.id?.toString(),
       account_title_id: formData?.account_title_id.id?.toString(),
@@ -542,6 +520,8 @@ const AddRequisition = (props) => {
       // //   : formData.other_attachments),
     };
 
+    console.log("data", data);
+
     const payload = new FormData();
     Object.entries(data).forEach((item) => {
       const [name, value] = item;
@@ -550,85 +530,122 @@ const AddRequisition = (props) => {
     });
 
     const token = localStorage.getItem("token");
-    setIsLoading(true);
 
-    axios
-      .post(
-        `${process.env.VLADIMIR_BASE_URL}/${
-          transactionData ? `update-request/${updateRequest?.reference_number}` : "request-container"
-        }`,
-        payload,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            // Authorization: `Bearer 583|KavZ7vEXyUY7FiHQGIMcTImftzyRnZorxbtn4S9a`,
-            Authorization: `Bearer ${token}`,
+    const submitData = () => {
+      setIsLoading(true);
+      axios
+        .post(
+          `${process.env.VLADIMIR_BASE_URL}/${
+            transactionData ? `update-request/${updateRequest?.reference_number}` : "request-container"
+          }`,
+          payload,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              // Authorization: `Bearer 583|KavZ7vEXyUY7FiHQGIMcTImftzyRnZorxbtn4S9a`,
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((result) => {
+          dispatch(
+            openToast({
+              message: result?.data?.message || result?.data?.message,
+              duration: 5000,
+            })
+          );
+        })
+        .then(() => {
+          transactionData ? setDisable(true) : setDisable(false);
+          setUpdateToggle(true);
+          isTransactionRefetch();
+          dispatch(requestContainerApi.util.invalidateTags(["RequestContainer"]));
+          reset();
+          // reset({
+          //   type_of_request_id: formData?.type_of_request_id,
+          //   attachment_type: formData?.attachment_type,
+          //   department_id: formData?.department_id,
+          //   subunit_id: formData?.subunit_id,
+          //   location_id: formData?.location_id,
+          //   account_title_id: formData?.account_title_id,
+          //   acquisition_details: formData?.acquisition_details,
+          //   letter_of_request: null,
+          //   quotation: null,
+          //   specification_form: null,
+          //   tool_of_trade: null,
+          //   other_attachments: null,
+          // });
+          // setShowEdit(false)
+        })
+        .catch((err) => {
+          // console.log(err);
+          setIsLoading(false);
+          dispatch(
+            openToast({
+              message:
+                err?.response?.data?.errors?.detail ||
+                err?.response?.data?.errors[0]?.detail ||
+                err?.response?.data?.message,
+              duration: 5000,
+              variant: "error",
+            })
+          );
+        })
+        .finally(() => {
+          setIsLoading(false);
+
+          // reset({
+          //   department_id: formData?.department_id,
+          //   subunit_id: formData?.subunit_id,
+          //   location_id: formData?.location_id,
+          //   account_title_id: formData?.account_title_id,
+          //   letter_of_request: null,
+          //   quotation: null,
+          //   specification_form: null,
+          //   tool_of_trade: null,
+          //   other_attachments: null,
+          // });
+        });
+    };
+    if (
+      watch("department_id")?.id != transactionDataApi.every((item) => item?.department?.id) ||
+      watch("subunit_id")?.id != transactionDataApi.every((item) => item?.subunit?.id) ||
+      watch("location_id")?.id != transactionDataApi.every((item) => item?.location?.id)
+    ) {
+      dispatch(
+        openConfirm({
+          icon: Warning,
+          iconColor: "alert",
+          message: (
+            <Box>
+              <Typography> Are you sure you want to</Typography>
+              <Typography
+                sx={{
+                  display: "inline-block",
+                  color: "secondary.main",
+                  fontWeight: "bold",
+                }}
+              >
+                CHANGE THE DEPARTMENT?
+              </Typography>
+              <Typography>it will apply to all Items</Typography>
+            </Box>
+          ),
+
+          onConfirm: () => {
+            dispatch(onLoading());
+            submitData();
+            dispatch(closeConfirm());
           },
-        }
-      )
-      .then((result) => {
-        // console.log(result);
-        // const data = result.json();
-        // return data;
-        dispatch(
-          openToast({
-            message: result?.data?.message || result?.data?.message,
-            duration: 5000,
-          })
-        );
-      })
-      .then(() => {
-        setDisable(true);
-        isTransactionRefetch();
-        dispatch(requestContainerApi.util.invalidateTags(["RequestContainer"]));
-        // reset({
-        //   type_of_request_id: formData?.type_of_request_id,
-        //   attachment_type: formData?.attachment_type,
-        //   department_id: formData?.department_id,
-        //   subunit_id: formData?.subunit_id,
-        //   location_id: formData?.location_id,
-        //   account_title_id: formData?.account_title_id,
-        //   acquisition_details: formData?.acquisition_details,
-        //   letter_of_request: null,
-        //   quotation: null,
-        //   specification_form: null,
-        //   tool_of_trade: null,
-        //   other_attachments: null,
-        // });
-        // setShowEdit(false)
-      })
-      .catch((err) => {
-        console.log(err);
-        setIsLoading(false);
-        dispatch(
-          openToast({
-            message:
-              err?.response?.data?.errors?.detail ||
-              err?.response?.data?.errors[0]?.detail ||
-              err?.response?.data?.message,
-            duration: 5000,
-            variant: "error",
-          })
-        );
-      })
-      .finally(() => {
-        setIsLoading(false);
-        reset();
-        // reset({
-        //   department_id: formData?.department_id,
-        //   subunit_id: formData?.subunit_id,
-        //   location_id: formData?.location_id,
-        //   account_title_id: formData?.account_title_id,
-        //   letter_of_request: null,
-        //   quotation: null,
-        //   specification_form: null,
-        //   tool_of_trade: null,
-        //   other_attachments: null,
-        // });
-      });
-
-    // postRequest(payload);
+        })
+      );
+    } else {
+      submitData();
+    }
   };
+
+  // console.log("subunit", transactionDataApi?.subunit?.id);
+  // console.log("location", transactionDataApi?.location?.id);
 
   const onSubmitHandler = () => {
     dispatch(
@@ -654,10 +671,12 @@ const AddRequisition = (props) => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
+            const res = await resubmitRequest(...transactionDataApi).unwrap();
+            console.log(res?.message);
             if (transactionDataApi[0]?.can_resubmit === 0) {
               dispatch(
                 openToast({
-                  message: "Successfully Submitted",
+                  message: res?.message,
                   duration: 5000,
                 })
               );
@@ -671,7 +690,7 @@ const AddRequisition = (props) => {
               navigate(-1);
               dispatch(
                 openToast({
-                  message: "Successfully Resubmitted",
+                  message: res?.message,
                   duration: 5000,
                 })
               );
@@ -699,7 +718,7 @@ const AddRequisition = (props) => {
             if (err?.status === 422) {
               dispatch(
                 openToast({
-                  message: err.data.message || err?.errors?.details,
+                  message: err?.data?.errors?.detail || err.data.message,
                   duration: 5000,
                   variant: "error",
                 })
@@ -994,12 +1013,12 @@ const AddRequisition = (props) => {
   const pageHandler = (_, page) => {
     // console.log(page + 1);
     setPage(page + 1);
-
-    const filterOptions = createFilterOptions({
-      limit: 100,
-      matchFrom: "any",
-    });
   };
+
+  const filterOptions = createFilterOptions({
+    limit: 100,
+    matchFrom: "any",
+  });
 
   const sxSubtitle = {
     fontWeight: "bold",
@@ -1117,8 +1136,18 @@ const AddRequisition = (props) => {
                     )}
                     fullWidth
                     onChange={(_, value) => {
+                      const Company = departmentData.map((mapitem) => mapitem?.company);
+                      const companyValue = Company.find((item) => item?.company_id === value.company.company_id);
+
+                      if (value) {
+                        setValue("company_id", companyValue?.company_id);
+                      } else {
+                        setValue("company_id", null);
+                      }
+
                       setValue("subunit_id", null);
                       setValue("location_id", null);
+
                       return value;
                     }}
                   />
@@ -1195,7 +1224,7 @@ const AddRequisition = (props) => {
                       />
                     )}
                   />
-
+                  {console.log("updateRequest", updateRequest)}
                   <CustomAutoComplete
                     name="account_title_id"
                     control={control}
@@ -1240,10 +1269,9 @@ const AddRequisition = (props) => {
                     <CustomAutoComplete
                       name="accountable"
                       control={control}
-                      disabled={updateRequest && disable}
                       includeInputInList
                       disablePortal
-                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                      disabled={transactionDataApi[0]?.can_edit === 0}
                       filterOptions={filterOptions}
                       options={sedarData}
                       loading={isSedarLoading}
@@ -1479,7 +1507,7 @@ const AddRequisition = (props) => {
               variant="contained"
               type="submit"
               size="small"
-              disabled={transactionData === null ? !isDirty : updateToggle}
+              disabled={!transactionData ? !isDirty : updateToggle}
               fullWidth
               sx={{ gap: 1 }}
             >
@@ -1692,46 +1720,41 @@ const AddRequisition = (props) => {
                 {transactionData ? "Transactions" : "Added"} :{" "}
                 {transactionData ? transactionDataApi?.length : addRequestAllApi?.data?.length} request
               </Typography>
-
               <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
                 {/* {transactionData && transactionDataApi[0]?.can_edit === 1 && ( */}
-                <LoadingButton
-                  onClick={onSubmitHandler}
-                  variant="contained"
-                  size="small"
-                  color="secondary"
-                  startIcon={
-                    transactionData ? (
-                      <SaveAlt color={transactionData && !disable ? "primary" : "gray"} />
-                    ) : (
-                      <Create color={addRequestAllApi?.data?.length === 0 ? "primary" : "gray"} />
-                    )
-                  }
-                  disabled={
-                    updateRequest
-                      ? disable
-                      : isRequestLoading ||
-                        isTransactionLoading ||
-                        (transactionData ? transactionDataApi.length === 0 : addRequestAllApi?.data?.length === 0)
-                      ? true
-                      : false
-                  }
-                  loading={isPostLoading || isUpdateLoading}
-                >
-                  {transactionDataApi.length === 0 ? "Create" : "Resubmit"}
-                </LoadingButton>
-
-                {/* <Button
-                  variant="outlined"
-                  size="small"
-                  color="secondary"
-                  onClick={() => {
-                    navigate(-1);
-                    deleteAllRequest();
-                  }}
-                >
-                  Cancel
-                </Button> */}
+                {transactionDataApi[0]?.can_edit === 1 ? (
+                  <LoadingButton
+                    onClick={onSubmitHandler}
+                    variant="contained"
+                    size="small"
+                    color="secondary"
+                    startIcon={<SaveAlt color={"primary"} />}
+                    disabled={
+                      updateRequest
+                        ? isTransactionLoading
+                          ? disable
+                          : null
+                        : transactionDataApi.length === 0
+                        ? true
+                        : false
+                    }
+                    loading={isPostLoading || isUpdateLoading}
+                  >
+                    Resubmit
+                  </LoadingButton>
+                ) : (
+                  <LoadingButton
+                    onClick={onSubmitHandler}
+                    variant="contained"
+                    size="small"
+                    color="secondary"
+                    startIcon={<Create color={"primary"} />}
+                    disabled={isRequestLoading || addRequestAllApi?.data?.length === 0}
+                    loading={isPostLoading || isUpdateLoading}
+                  >
+                    Create
+                  </LoadingButton>
+                )}
               </Stack>
             </Stack>
           </Box>
