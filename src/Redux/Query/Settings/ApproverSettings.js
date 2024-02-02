@@ -26,7 +26,7 @@ export const approverSettingsApi = createApi({
 
     getApproverSettingsAllApi: builder.query({
       query: () => `approver-setting?pagination=none`,
-      transformResponse: (response) => response.data,
+      // transformResponse: (response) => response.data,
       providesTags: ["ApproverSettings"],
     }),
 
