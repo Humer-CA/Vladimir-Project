@@ -10,6 +10,7 @@ const initialState = {
   importFile: false,
   exportFile: false,
   scanFile: false,
+  print: false,
 };
 
 export const booleanStateSlice = createSlice({
@@ -81,12 +82,20 @@ export const booleanStateSlice = createSlice({
       state.exportFile = false;
     },
 
-    // Scan
+    // Print
     openScan: (state, action) => {
       state.scanFile = true;
     },
     closeScan: (state, action) => {
       state.scanFile = false;
+    },
+
+    // Print
+    openPrint: (state, action) => {
+      state.print = true;
+    },
+    closePrint: (state, action) => {
+      state.print = false;
     },
   },
 });
@@ -110,5 +119,7 @@ export const {
   closeExport,
   openScan,
   closeScan,
+  openPrint,
+  closePrint,
 } = booleanStateSlice.actions;
 export default booleanStateSlice.reducer;
