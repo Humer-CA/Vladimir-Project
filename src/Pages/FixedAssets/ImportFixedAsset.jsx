@@ -98,7 +98,7 @@ const ImportFixedAsset = () => {
   };
 
   const saveExcel = () => {
-    handleDownloadExcel("fixed-asset-sample-file");
+    handleDownloadExcel({ file: "fixed-asset-sample-file", name: "Fixed Asset Sample File" });
   };
 
   return (

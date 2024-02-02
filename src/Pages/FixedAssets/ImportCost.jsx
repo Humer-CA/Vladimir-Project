@@ -98,7 +98,7 @@ const ImportCost = () => {
   };
 
   const saveExcel = () => {
-    handleDownloadExcel("additional-cost-sample-file");
+    handleDownloadExcel({ file: "additional-cost-sample-file", name: "Additional Cost Sample File" });
   };
 
   return (
