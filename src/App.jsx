@@ -49,7 +49,7 @@ import ApproverSettings from "./Pages/Settings/ApproverSettings";
 import FormSettings from "./Pages/Settings/FormSettings";
 
 import Requisition from "./Pages/Asset Requisition/Requisition";
-import AddRequisition from "./Pages/Asset Requisition/Add Requisition/AddRequisition";
+import AddRequisition from "./Pages/Asset Requisition/Add Requisition/AddRequest";
 import PurchaseRequest from "./Pages/Asset Requisition/Purchase Request/PurchaseRequest";
 import ViewRequest from "./Pages/Asset Requisition/ViewRequest";
 import RequestMonitoring from "./Pages/Asset Requisition/RequestMonitoring";

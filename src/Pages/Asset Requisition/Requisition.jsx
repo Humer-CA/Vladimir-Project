@@ -6,7 +6,7 @@ import ErrorFetching from "../ErrorFetching";
 import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 import NoRecordsFound from "../../Layout/NoRecordsFound";
 import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
-import AddRequisition from "./Add Requisition/AddRequisition";
+import AddRequisition from "./Add Requisition/AddRequest";
 
 // RTK
 import { useDispatch, useSelector } from "react-redux";
