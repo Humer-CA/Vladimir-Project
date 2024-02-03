@@ -1,5 +1,4 @@
-export const handleDownloadExcel = async ({ file, name }) => {
-  console.log(file);
+export const useDownloadExcel = async ({ file, name }) => {
   try {
     const response = await fetch(`${process.env.VLADIMIR_BASE_URL}/${file}`, {
       method: "GET",
