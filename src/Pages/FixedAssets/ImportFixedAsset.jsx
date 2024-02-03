@@ -17,7 +17,7 @@ import { openToast } from "../../Redux/StateManagement/toastSlice";
 import { ImportingData } from "../../Components/LottieFiles/LottieComponents";
 import { closeImport } from "../../Redux/StateManagement/booleanStateSlice";
 import ErrorsFoundImport from "../ErrorsFoundImport";
-import { handleDownloadExcel } from "../../Hooks/DownloadFile";
+import { useDownloadExcel } from "../../Hooks/useDownloadExcel";
 
 const fileTypes = ["CSV", "XLSX"];
 
@@ -98,7 +98,7 @@ const ImportFixedAsset = () => {
   };
 
   const saveExcel = () => {
-    handleDownloadExcel({ file: "fixed-asset-sample-file", name: "Fixed Asset Sample File" });
+    useDownloadExcel({ file: "fixed-asset-sample-file", name: "Fixed Asset Sample File" });
   };
 
   return (

@@ -30,7 +30,7 @@ import { openToast } from "../../../Redux/StateManagement/toastSlice";
 import { ImportingData } from "../../../Components/LottieFiles/LottieComponents";
 import { closeImport } from "../../../Redux/StateManagement/booleanStateSlice";
 import ErrorsFoundImport from "../../ErrorsFoundImport";
-import { handleDownloadExcel } from "../../../Hooks/DownloadFile";
+import { useDownloadExcel } from "../../../Hooks/useDownloadExcel";
 
 const fileTypes = ["CSV", "XLSX"];
 
@@ -76,29 +76,21 @@ const ImportCapex = (props) => {
 
   const [
     postImport,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostImportApiMutation();
 
   useEffect(() => {
     if (isPostError && postError?.status === 422) {
-      const errorArray = Object.entries(postError.data.errors).map(
-        ([key, value]) => {
-          const [row, column] = key.split(".");
-          const [message] = value;
+      const errorArray = Object.entries(postError.data.errors).map(([key, value]) => {
+        const [row, column] = key.split(".");
+        const [message] = value;
 
-          return {
-            row,
-            column,
-            message,
-          };
-        }
-      );
+        return {
+          row,
+          column,
+          message,
+        };
+      });
       setImportError(errorArray);
       // console.log(importError);
 
@@ -154,7 +146,7 @@ const ImportCapex = (props) => {
   };
 
   const saveExcel = () => {
-    handleDownloadExcel("capex-sample-file");
+    useDownloadExcel("capex-sample-file");
   };
 
   return (
@@ -176,10 +168,7 @@ const ImportCapex = (props) => {
         </IconButton>
 
         <Box>
-          <Typography
-            color="secondary.main"
-            sx={{ fontFamily: "Anton", fontSize: "1.4rem" }}
-          >
+          <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.4rem" }}>
             IMPORT CAPEX
           </Typography>
 
@@ -200,17 +189,10 @@ const ImportCapex = (props) => {
         </Box>
 
         {isPostError ? (
-          <ErrorsFoundImport
-            importError={importError}
-            isPostError={isPostError}
-          />
+          <ErrorsFoundImport importError={importError} isPostError={isPostError} />
         ) : (
           <Box sx={{ pb: "20px" }}>
-            <FileUploader
-              handleChange={handleChange}
-              name="file"
-              types={fileTypes}
-            >
+            <FileUploader handleChange={handleChange} name="file" types={fileTypes}>
               <Box className="importBoxContainer">
                 {isPostLoading ? (
                   <ImportingData />
@@ -249,11 +231,7 @@ const ImportCapex = (props) => {
                   startIcon={<SystemUpdateAltRounded color="text" />}
                   htmlFor="importInputFile"
                 >
-                  <Typography
-                    fontFamily={"Raleway"}
-                    fontSize={12}
-                    fontWeight={"bold"}
-                  >
+                  <Typography fontFamily={"Raleway"} fontSize={12} fontWeight={"bold"}>
                     Import
                   </Typography>
                 </LoadingButton>

@@ -17,7 +17,7 @@ import { openToast } from "../../Redux/StateManagement/toastSlice";
 import { ImportingData } from "../../Components/LottieFiles/LottieComponents";
 import { closeDrawer1 } from "../../Redux/StateManagement/booleanStateSlice";
 import ErrorsFoundImport from "../ErrorsFoundImport";
-import { handleDownloadExcel } from "../../Hooks/DownloadFile";
+import { useDownloadExcel } from "../../Hooks/useDownloadExcel";
 
 const fileTypes = ["CSV", "XLSX"];
 
@@ -98,7 +98,7 @@ const ImportCost = () => {
   };
 
   const saveExcel = () => {
-    handleDownloadExcel({ file: "additional-cost-sample-file", name: "Additional Cost Sample File" });
+    useDownloadExcel({ file: "additional-cost-sample-file", name: "Additional Cost Sample File" });
   };
 
   return (
