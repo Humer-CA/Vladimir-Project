@@ -77,6 +77,8 @@ import { requisitionSmsApi } from "../Query/Request/RequisitionSms";
 import { assetReceivingApi } from "../Query/Request/AssetReceiving";
 import { assetReleasingApi } from "../Query/Request/AssetReleasing";
 
+import { notificationApi } from "../Query/Notification";
+
 export const store = configureStore({
   reducer: {
     sidebar: sidebarReducer,
@@ -155,6 +157,8 @@ export const store = configureStore({
 
     [assetReceivingApi.reducerPath]: assetReceivingApi.reducer,
     [assetReleasingApi.reducerPath]: assetReleasingApi.reducer,
+
+    [notificationApi.reducerPath]: notificationApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -217,6 +221,8 @@ export const store = configureStore({
 
       assetReceivingApi.middleware,
       assetReleasingApi.middleware,
+
+      notificationApi.middleware,
     ]),
 });
 

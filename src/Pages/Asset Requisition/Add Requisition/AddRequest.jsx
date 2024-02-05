@@ -520,8 +520,6 @@ const AddRequisition = (props) => {
       // //   : formData.other_attachments),
     };
 
-    console.log("data", data);
-
     const payload = new FormData();
     Object.entries(data).forEach((item) => {
       const [name, value] = item;
@@ -1224,7 +1222,6 @@ const AddRequisition = (props) => {
                       />
                     )}
                   />
-                  {console.log("updateRequest", updateRequest)}
                   <CustomAutoComplete
                     name="account_title_id"
                     control={control}

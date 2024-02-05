@@ -78,6 +78,7 @@ import {
   OpenInBrowserOutlined,
   Output,
 } from "@mui/icons-material";
+import { useGetNotificationApiQuery } from "../Redux/Query/Notification";
 
 const Sidebar = () => {
   const [state, setState] = useState(true);
@@ -117,6 +118,8 @@ const Sidebar = () => {
     setAssetMovementCollapse(false);
     setReportCollapse(false);
   };
+
+  const { data: notifData } = useGetNotificationApiQuery();
 
   const MENU_LIST = [
     {
@@ -283,6 +286,7 @@ const Sidebar = () => {
       icon: InventoryRounded,
       path: "/fixed-assets",
       permission: "fixed-assets",
+      notification: notifData?.toTagCount,
       setter: closeCollapse,
     },
 
@@ -324,6 +328,7 @@ const Sidebar = () => {
       icon: FactCheckRounded,
       path: "/asset-requisition",
       permission: "asset-requisition",
+      notification: notifData?.toPr || notifData?.toReceive || notifData?.toRelease,
       children: [
         {
           label: "Requisition",
@@ -337,6 +342,7 @@ const Sidebar = () => {
           icon: ShoppingBasket,
           path: "/asset-requisition/purchase-request",
           permission: "purchase-request",
+          notification: notifData?.toPr,
           setter: closeCollapse,
         },
         {
@@ -344,6 +350,7 @@ const Sidebar = () => {
           icon: OpenInBrowserOutlined,
           path: "/asset-requisition/requisition-receiving",
           permission: "requisition-receiving",
+          notification: notifData?.toReceive,
           setter: closeCollapse,
         },
         {
@@ -351,6 +358,7 @@ const Sidebar = () => {
           icon: Output,
           path: "/asset-requisition/requisition-releasing",
           permission: "requisition-releasing",
+          notification: notifData?.toRelease,
           setter: closeCollapse,
         },
       ],
@@ -420,6 +428,7 @@ const Sidebar = () => {
       icon: DomainVerification,
       path: "/approving",
       permission: "approving",
+      notification: notifData?.toApproveCount,
       setter: closeCollapse,
     },
 
@@ -606,9 +615,13 @@ const Sidebar = () => {
                       onClick={item?.setter}
                     >
                       <ListItemIcon sx={{ py: 1, minWidth: "35px" }}>
-                        <Badge color="error" badgeContent={0} variant="dot">
+                        {item?.notification ? (
+                          <Badge color="error" badgeContent={item?.notification} variant="dot">
+                            <SvgIcon component={item.icon} />
+                          </Badge>
+                        ) : (
                           <SvgIcon component={item.icon} />
-                        </Badge>
+                        )}
                       </ListItemIcon>
                       {collapse && <ListItemText primary={item.label} />}
                       {collapse && Boolean(item.children?.length) && (
@@ -642,7 +655,9 @@ const Sidebar = () => {
                                 dense
                               >
                                 <ListItemIcon sx={{ pl: 2, py: 0.5 }}>
-                                  <SvgIcon component={childItem.icon} />
+                                  <Badge badgeContent={childItem.notification} color="error">
+                                    <SvgIcon component={childItem.icon} />
+                                  </Badge>
                                 </ListItemIcon>
                                 <ListItemText primary={childItem.label} />
                               </ListItemButton>
