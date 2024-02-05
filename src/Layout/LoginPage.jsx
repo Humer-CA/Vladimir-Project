@@ -61,7 +61,6 @@ const LoginPage = () => {
 
       localStorage.setItem("token", res.data.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.data.user));
-      // console.log(res.data.data.user);
       const { access_permission } = res.data.data.user.role;
 
       // const masterlistArray = [

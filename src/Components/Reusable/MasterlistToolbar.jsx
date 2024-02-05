@@ -55,6 +55,8 @@ import {
   LibraryAdd,
   PostAdd,
   Print,
+  PrintOutlined,
+  PrintRounded,
   QrCodeScannerRounded,
   Sync,
   SystemUpdateAltRounded,
@@ -314,7 +316,7 @@ const MasterlistToolbar = (props) => {
             >
               <MenuItem onClick={handleOpenPrintFa} dense>
                 <ListItemIcon>
-                  <PostAdd />
+                  <PrintOutlined />
                 </ListItemIcon>
                 <ListItemText>Print Fixed Asset</ListItemText>
               </MenuItem>
@@ -323,7 +325,7 @@ const MasterlistToolbar = (props) => {
 
               <MenuItem onClick={handleOpenPrintRequest} dense>
                 <ListItemIcon>
-                  <AddCard />
+                  <PrintRounded />
                 </ListItemIcon>
                 <ListItemText>Print Request</ListItemText>
               </MenuItem>
