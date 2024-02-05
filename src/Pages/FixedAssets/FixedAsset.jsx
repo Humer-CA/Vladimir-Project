@@ -75,6 +75,7 @@ const FixedAsset = (props) => {
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("active");
   const [faFilter, setFaFilter] = useState([]);
+  const [isRequest, setIsRequest] = useState(0);
   // const [scanAsset, setScanAsset] = useState(false);
   // const [faStatus, setFaStatus] = useState("");
   const [updateFixedAsset, setUpdateFixedAsset] = useState({
@@ -188,8 +189,6 @@ const FixedAsset = (props) => {
     { refetchOnMountOrArgChange: true }
   );
 
-  // console.log(fixedAssetData);
-
   const dispatch = useDispatch();
 
   const onUpdateResetHandler = () => {
@@ -269,11 +268,8 @@ const FixedAsset = (props) => {
       <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "2rem" }}>
         Fixed Assets
       </Typography>
-
       {fixedAssetLoading && <MasterlistSkeleton onAdd={true} onImport={true} onPrint={true} />}
-
       {fixedAssetError && <ErrorFetching refetch={fixedAssetRefetch} error={errorData} />}
-
       {fixedAssetData && !fixedAssetError && (
         <Box className="mcontainer__wrapper">
           <MasterlistToolbar
@@ -284,13 +280,15 @@ const FixedAsset = (props) => {
             onSetPage={setPage}
             onAdd={() => {}}
             onImport={() => {}}
-            onPrint={() => {}}
+            onPrint
             faStatus
             faFilter
             setFaFilter
             scanAsset
             openScan
             hideArchive
+            isRequest
+            setIsRequest={setIsRequest}
           />
 
           <Box>
@@ -513,7 +511,6 @@ const FixedAsset = (props) => {
           </Box>
         </Box>
       )}
-
       {/* Add FA */}
       <Drawer
         open={drawer}
@@ -529,7 +526,6 @@ const FixedAsset = (props) => {
       >
         <AddFixedAsset status={status} data={updateFixedAsset} onUpdateResetHandler={onUpdateResetHandler} />
       </Drawer>
-
       {/* Add Cost */}
       <Drawer
         open={add}
@@ -545,7 +541,6 @@ const FixedAsset = (props) => {
       >
         <AddCost status={status} data={updateFixedAsset} onUpdateResetHandler={onUpdateResetHandler} />
       </Drawer>
-
       <Dialog
         open={importFile}
         onClose={() => dispatch(closeImport())}
@@ -561,7 +556,6 @@ const FixedAsset = (props) => {
       >
         <ImportFixedAsset />
       </Dialog>
-
       <Dialog
         open={drawer1}
         onClose={() => dispatch(closeDrawer1())}
@@ -577,7 +571,6 @@ const FixedAsset = (props) => {
       >
         <ImportCost />
       </Dialog>
-
       <Dialog
         open={print}
         onClose={() => dispatch(closePrint())}
@@ -593,7 +586,7 @@ const FixedAsset = (props) => {
           },
         }}
       >
-        <PrintFixedAsset />
+        <PrintFixedAsset isRequest={isRequest} />
       </Dialog>
 
       <Dialog
@@ -611,7 +604,6 @@ const FixedAsset = (props) => {
       >
         <ExportFixedAsset />
       </Dialog>
-
       <Dialog
         open={scanFile}
         onClose={() => dispatch(closeScan())}

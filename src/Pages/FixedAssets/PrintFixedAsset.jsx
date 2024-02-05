@@ -76,24 +76,18 @@ const schema = yup.object().shape({
   endDate: yup.date().nullable(),
 });
 
-const PrintFixedAsset = () => {
+const PrintFixedAsset = (props) => {
+  const { isRequest } = props;
+  console.log(isRequest);
+
   const [search, setSearch] = useState("");
   const [perPage, setPerPage] = useState(5);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [isRequest, setIsRequest] = useState(0);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("active");
   const [filter, setFilter] = useState([]);
   const [faFilter, setFaFilter] = useState(false);
-
-  const [anchorElFaFilter, setAnchorElFaFilter] = useState(null);
-  const openFaFilter = Boolean(anchorElFaFilter);
-
-  const handleOpenFaFilter = (e) => {
-    setAnchorElFaFilter(e.currentTarget);
-    setFaFilter(true);
-  };
 
   const dispatch = useDispatch();
 
@@ -209,7 +203,7 @@ const PrintFixedAsset = () => {
       search: search,
       startDate: startDate,
       endDate: endDate,
-      isRequest: isRequest,
+      isRequest: isRequest ? 1 : 0,
     },
     { refetchOnMountOrArgChange: true }
   );
@@ -456,7 +450,7 @@ const PrintFixedAsset = () => {
               fontFamily: "Anton",
             }}
           >
-            Print Assets
+            {isRequest ? "Print Request" : "Print Assets"}
           </Typography>
         </Stack>
         <Divider width="100%" sx={{ boxShadow: "1px solid black" }} />

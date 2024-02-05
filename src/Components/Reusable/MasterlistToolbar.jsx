@@ -84,6 +84,8 @@ const MasterlistToolbar = (props) => {
     setFaFilter,
     showPr,
     hideSearch,
+    isRequest,
+    setIsRequest,
   } = props;
 
   const dispatch = useDispatch();
@@ -91,8 +93,11 @@ const MasterlistToolbar = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const openAddFa = Boolean(anchorEl);
 
-  const [anchorElImport, setAnchorElImport] = useState(null);
-  const openImportFa = Boolean(anchorElImport);
+  const [anchorElImportFa, setAnchorElImportFa] = useState(null);
+  const openImportFa = Boolean(anchorElImportFa);
+
+  const [anchorElPrintFa, setAnchorElPrintFa] = useState(null);
+  const openPrintFa = Boolean(anchorElPrintFa);
 
   const [anchorElRequestFilter, setAnchorElRequestFilter] = useState(null);
   const openRequestFilter = Boolean(anchorElRequestFilter);
@@ -101,7 +106,11 @@ const MasterlistToolbar = (props) => {
   const openFaFilter = Boolean(anchorElFaFilter);
 
   const handleClose = () => {
-    setAnchorEl(null) || setAnchorElImport(null) || setAnchorElRequestFilter(null) || setAnchorElFaFilter(null);
+    setAnchorEl(null) ||
+      setAnchorElImportFa(null) ||
+      setAnchorElPrintFa(null) ||
+      setAnchorElRequestFilter(null) ||
+      setAnchorElFaFilter(null);
   };
 
   // const scanFile = useSelector((state) => state.scanFile);
@@ -143,10 +152,6 @@ const MasterlistToolbar = (props) => {
     onSyncHandler();
   };
 
-  const handlePrintFa = () => {
-    dispatch(openPrint());
-  };
-
   const handleOpenDrawer = (e) => {
     if (!faStatus) {
       dispatch(openDrawer());
@@ -180,17 +185,33 @@ const MasterlistToolbar = (props) => {
     if (!faStatus) {
       dispatch(openImport());
     }
-    setAnchorElImport(e.currentTarget);
+    setAnchorElImportFa(e.currentTarget);
   };
 
   const handleOpenImportFA = (e) => {
     dispatch(openImport());
-    setAnchorElImport(!e.currentTarget);
+    setAnchorElImportFa(!e.currentTarget);
   };
 
   const handleOpenImportCost = (e) => {
     dispatch(openDrawer1());
-    setAnchorElImport(!e.currentTarget);
+    setAnchorElImportFa(!e.currentTarget);
+  };
+
+  const handleOpenPrint = (e) => {
+    setAnchorElPrintFa(e.currentTarget);
+  };
+
+  const handleOpenPrintFa = (e) => {
+    setIsRequest(0);
+    dispatch(openPrint());
+    setAnchorElPrintFa(!e.currentTarget);
+  };
+
+  const handleOpenPrintRequest = (e) => {
+    setIsRequest(1);
+    dispatch(openPrint());
+    setAnchorElPrintFa(!e.currentTarget);
   };
 
   const handleScan = () => {
@@ -206,14 +227,14 @@ const MasterlistToolbar = (props) => {
     }
   };
 
-  const handleFaFilterChange = (value) => {
-    // console.log(value)
-    if (faFilter.includes(value)) {
-      setFaFilter(faFilter.filter((filter) => filter !== value));
-    } else {
-      setFaFilter([...faFilter, value]);
-    }
-  };
+  // const handleFaFilterChange = (value) => {
+  //   // console.log(value)
+  //   if (faFilter.includes(value)) {
+  //     setFaFilter(faFilter.filter((filter) => filter !== value));
+  //   } else {
+  //     setFaFilter([...faFilter, value]);
+  //   }
+  // };
 
   return (
     <Box className="masterlist-toolbar">
@@ -272,7 +293,7 @@ const MasterlistToolbar = (props) => {
               component={Link}
               variant="outlined"
               to={path}
-              onClick={handlePrintFa}
+              onClick={handleOpenPrint}
               startIcon={isSmallScreen ? null : <Print color="secondary" />}
               size="small"
               color="secondary"
@@ -280,6 +301,33 @@ const MasterlistToolbar = (props) => {
             >
               {isSmallScreen ? <Print color="secondary" sx={{ fontSize: "20px" }} /> : "Print"}
             </Button>
+          )}
+          {onPrint && (
+            <Menu
+              anchorEl={anchorElPrintFa}
+              open={openPrintFa}
+              onClose={handleClose}
+              TransitionComponent={Fade}
+              disablePortal
+              transformOrigin={{ horizontal: "right", vertical: "top" }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            >
+              <MenuItem onClick={handleOpenPrintFa} dense>
+                <ListItemIcon>
+                  <PostAdd />
+                </ListItemIcon>
+                <ListItemText>Print Fixed Asset</ListItemText>
+              </MenuItem>
+
+              <Divider sx={{ mx: 2 }} />
+
+              <MenuItem onClick={handleOpenPrintRequest} dense>
+                <ListItemIcon>
+                  <AddCard />
+                </ListItemIcon>
+                <ListItemText>Print Request</ListItemText>
+              </MenuItem>
+            </Menu>
           )}
 
           {Boolean(onImport) && (
@@ -296,10 +344,9 @@ const MasterlistToolbar = (props) => {
               {isSmallScreen ? <SystemUpdateAltRounded color="primary" sx={{ fontSize: "20px" }} /> : "Import"}
             </LoadingButton>
           )}
-
           {faStatus && (
             <Menu
-              anchorEl={anchorElImport}
+              anchorEl={anchorElImportFa}
               open={openImportFa}
               onClose={handleClose}
               TransitionComponent={Fade}
@@ -338,21 +385,6 @@ const MasterlistToolbar = (props) => {
               {isSmallScreen ? <LibraryAdd color="black" sx={{ fontSize: "20px" }} /> : "Add"}
             </Button>
           )}
-
-          {showPr && (
-            <Button
-              component={Link}
-              to={path}
-              onClick={handleOpenDrawer || handleOpenDialog}
-              variant="contained"
-              startIcon={isSmallScreen ? null : <LibraryAdd />}
-              size="small"
-              sx={isSmallScreen ? { minWidth: "50px", px: 0 } : null}
-            >
-              {isSmallScreen ? <LibraryAdd color="black" sx={{ fontSize: "20px" }} /> : "Add"}
-            </Button>
-          )}
-
           {faStatus && (
             <Menu
               anchorEl={anchorEl}
@@ -380,7 +412,6 @@ const MasterlistToolbar = (props) => {
               </MenuItem>
             </Menu>
           )}
-
           {Boolean(onSync) && (
             <LoadingButton
               component={Link}
@@ -394,6 +425,20 @@ const MasterlistToolbar = (props) => {
             >
               {isSmallScreen ? <Sync sx={{ color: "primary.main" }} /> : "Sync Data"}
             </LoadingButton>
+          )}
+
+          {showPr && (
+            <Button
+              component={Link}
+              to={path}
+              onClick={handleOpenDrawer || handleOpenDialog}
+              variant="contained"
+              startIcon={isSmallScreen ? null : <LibraryAdd />}
+              size="small"
+              sx={isSmallScreen ? { minWidth: "50px", px: 0 } : null}
+            >
+              {isSmallScreen ? <LibraryAdd color="black" sx={{ fontSize: "20px" }} /> : "Add"}
+            </Button>
           )}
         </Box>
 
@@ -463,11 +508,11 @@ const MasterlistToolbar = (props) => {
                         control={
                           <Checkbox
                             size="small"
-                            onChange={() => handleFaFilterChange("isRequest")}
+                            // onChange={() => handleFaFilterChange("isRequest")}
                             // checked={fafilter.includes("isRequest")}
                           />
                         }
-                        label="Request"
+                        label="Request (TBA)"
                       />
                     </MenuItem>
                   </FormGroup>
@@ -506,7 +551,6 @@ const MasterlistToolbar = (props) => {
               </IconButton>
             </Tooltip>
           )}
-
           {Boolean(requestFilter) && (
             <Menu
               anchorEl={anchorElRequestFilter}

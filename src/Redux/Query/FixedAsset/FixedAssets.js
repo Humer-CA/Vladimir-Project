@@ -138,7 +138,12 @@ export const fixedAssetApi = createApi({
 
     getPrintViewingApi: builder.query({
       query: (params) => {
-        const queryParams = [`search=${params.search}`, `per_page=${params.per_page}`, `page=${params.page}`];
+        const queryParams = [
+          `search=${params.search}`,
+          `per_page=${params.per_page}`,
+          `page=${params.page}`,
+          `isRequest=${params.isRequest}`,
+        ];
 
         if (params.startDate) {
           queryParams.push(`startDate=${params.startDate}`);
