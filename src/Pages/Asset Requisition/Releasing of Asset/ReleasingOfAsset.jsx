@@ -1,11 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TabContext, TabPanel } from "@mui/lab";
-import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
+import { Badge, Box, Button, Tab, Tabs, Typography } from "@mui/material";
 
 import ReleasingTable from "./ReleasingTable";
+import { useGetNotificationApiQuery } from "../../../Redux/Query/Notification";
 
 const ReleasingOfAsset = () => {
   const [value, setValue] = useState("1");
+
+  const { data: notifData, refetch } = useGetNotificationApiQuery();
+
+  useEffect(() => {
+    refetch();
+  }, [notifData]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -20,7 +27,15 @@ const ReleasingOfAsset = () => {
       <Box>
         <TabContext value={value}>
           <Tabs onChange={handleChange} value={value}>
-            <Tab label="For Releasing" value="1" className={value === "1" ? "tab__background" : null} />
+            <Tab
+              label={
+                <Badge color="error" badgeContent={notifData?.toRelease}>
+                  For Releasing
+                </Badge>
+              }
+              value="1"
+              className={value === "1" ? "tab__background" : null}
+            />
 
             <Tab label="Released" value="2" className={value === "2" ? "tab__background" : null} />
           </Tabs>

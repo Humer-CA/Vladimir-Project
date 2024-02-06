@@ -111,7 +111,7 @@ const AddPr = (props) => {
     // console.log("formData", newFormData);
   };
 
-  console.log(transactionData?.data[0]?.transaction_number);
+  // console.log(transactionData?.data[0]?.transaction_number);
 
   const handleCloseDialog = () => {
     dispatch(closeDialog());

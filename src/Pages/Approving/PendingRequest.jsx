@@ -39,7 +39,9 @@ import {
 import { openDrawer } from "../../Redux/StateManagement/booleanStateSlice";
 import { useNavigate } from "react-router-dom";
 
-const PendingRequest = () => {
+import { notificationApi } from "../../Redux/Query/Notification";
+
+const PendingRequest = (props) => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("For Approval");
   const [perPage, setPerPage] = useState(5);
@@ -158,6 +160,8 @@ const PendingRequest = () => {
             );
 
             dispatch(closeConfirm());
+            // notifRefetch();
+            dispatch(notificationApi.util.invalidateTags(["Notif"]));
           } catch (err) {
             if (err?.status === 422) {
               dispatch(

@@ -520,6 +520,8 @@ const AddRequisition = (props) => {
       // //   : formData.other_attachments),
     };
 
+    // console.log("data", data);
+
     const payload = new FormData();
     Object.entries(data).forEach((item) => {
       const [name, value] = item;
@@ -605,10 +607,12 @@ const AddRequisition = (props) => {
           // });
         });
     };
+
     if (
-      watch("department_id")?.id != transactionDataApi.every((item) => item?.department?.id) ||
-      watch("subunit_id")?.id != transactionDataApi.every((item) => item?.subunit?.id) ||
-      watch("location_id")?.id != transactionDataApi.every((item) => item?.location?.id)
+      addRequestAllApi?.data.length !== 0 &&
+      (watch("department_id")?.id != transactionDataApi.every((item) => item?.department?.id) ||
+        watch("subunit_id")?.id != transactionDataApi.every((item) => item?.subunit?.id) ||
+        watch("location_id")?.id != transactionDataApi.every((item) => item?.location?.id))
     ) {
       dispatch(
         openConfirm({
@@ -669,39 +673,25 @@ const AddRequisition = (props) => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            const res = await resubmitRequest(...transactionDataApi).unwrap();
-            console.log(res?.message);
-            if (transactionDataApi[0]?.can_resubmit === 0) {
-              dispatch(
-                openToast({
-                  message: res?.message,
-                  duration: 5000,
-                })
-              );
-              navigate(-1);
-              deleteAllRequest();
-            } else if (transactionDataApi[0]?.can_resubmit === 1) {
-              resubmitRequest({
-                transaction_number: transactionData?.transaction_number,
-                ...transactionDataApi,
-              });
-              navigate(-1);
-              dispatch(
-                openToast({
-                  message: res?.message,
-                  duration: 5000,
-                })
-              );
-              return;
-            } else {
-              const smsData = {
-                system_name: "Vladimir",
-                message: "You have a pending approval",
-                mobile_number: "+639913117181",
-              };
+            if (transactionData) {
+              if (transactionDataApi[0]?.can_resubmit === 0) {
+                const res = await resubmitRequest(...transactionDataApi).unwrap();
+                console.log(res?.message);
 
-              postRequisition(addRequestAllApi);
-              postRequestSms(smsData);
+                navigate(-1);
+                deleteAllRequest();
+              } else if (transactionDataApi[0]?.can_resubmit === 1) {
+                resubmitRequest({
+                  transaction_number: transactionData?.transaction_number,
+                  ...transactionDataApi,
+                });
+                navigate(-1);
+
+                return;
+              }
+            } else {
+              const res = await postRequisition(addRequestAllApi).unwrap();
+              console.log(res?.message);
               deleteAllRequest();
               reset({
                 letter_of_request: null,
@@ -710,7 +700,22 @@ const AddRequisition = (props) => {
                 tool_of_trade: null,
                 other_attachments: null,
               });
+
+              dispatch(
+                openToast({
+                  message: res?.message,
+                  duration: 5000,
+                })
+              );
             }
+
+            const smsData = {
+              system_name: "Vladimir",
+              message: "You have a pending approval",
+              mobile_number: "+639913117181",
+            };
+
+            postRequestSms(smsData);
           } catch (err) {
             console.log(err);
             if (err?.status === 422) {
@@ -722,7 +727,7 @@ const AddRequisition = (props) => {
                 })
               );
             } else if (err?.status !== 422) {
-              console.log(err);
+              console.error(err);
 
               dispatch(
                 openToast({
@@ -1032,6 +1037,8 @@ const AddRequisition = (props) => {
     width: "100%",
     pb: "10px",
   };
+
+  console.log(transactionData);
 
   return (
     <>
@@ -1584,7 +1591,6 @@ const AddRequisition = (props) => {
                               {`(${data.account_title?.account_title_code}) - ${data.account_title?.account_title_name}`}
                             </Typography>
                           </TableCell>
-
                           <TableCell className="tbl-cell">
                             {data.accountability === "Personal Issued" ? (
                               <>
@@ -1595,7 +1601,6 @@ const AddRequisition = (props) => {
                               "Common"
                             )}
                           </TableCell>
-
                           <TableCell className="tbl-cell">
                             <Typography fontWeight={600} fontSize="14px" color="secondary.main">
                               {data.asset_description}
@@ -1604,15 +1609,11 @@ const AddRequisition = (props) => {
                               {data.asset_specification}
                             </Typography>
                           </TableCell>
-
                           <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
-
                           <TableCell className="tbl-cell">
                             {data.cellphone_number === null ? "-" : data.cellphone_number}
                           </TableCell>
-
                           <TableCell className="tbl-cell">{data.additional_info}</TableCell>
-
                           <TableCell className="tbl-cell">
                             {data?.attachments?.letter_of_request && (
                               <Stack flexDirection="row" gap={1}>
@@ -1659,7 +1660,6 @@ const AddRequisition = (props) => {
                               </Stack>
                             )}
                           </TableCell>
-
                           <TableCell className="tbl-cell">
                             <ActionMenu
                               hideArchive

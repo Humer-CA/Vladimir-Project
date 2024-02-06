@@ -119,7 +119,11 @@ const Sidebar = () => {
     setReportCollapse(false);
   };
 
-  const { data: notifData } = useGetNotificationApiQuery();
+  const { data: notifData, refetch } = useGetNotificationApiQuery({ refetchOnMountOrArgChange: true });
+
+  useEffect(() => {
+    refetch();
+  }, [notifData]);
 
   const MENU_LIST = [
     {
@@ -342,7 +346,7 @@ const Sidebar = () => {
           icon: ShoppingBasket,
           path: "/asset-requisition/purchase-request",
           permission: "purchase-request",
-          notification: notifData?.toPr,
+          notification: notifData?.toPR,
           setter: closeCollapse,
         },
         {

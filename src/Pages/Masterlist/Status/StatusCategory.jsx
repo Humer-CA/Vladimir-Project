@@ -21,14 +21,11 @@ const FaStatusCategory = () => {
 
   return (
     <Box className="mcontainer">
-      <Typography
-        className="mcontainer__title"
-        sx={{ fontFamily: "Anton, Roboto, Helvetica", fontSize: "1.6rem" }}
-      >
+      <Typography className="mcontainer__title" sx={{ fontFamily: "Anton, Roboto, Helvetica", fontSize: "1.6rem" }}>
         Status Category
       </Typography>
 
-      <Stack sx={{ height: "100vh" }}>
+      <Stack sx={{ height: "100dvh" || "100vh" }}>
         <Select
           size="small"
           value={value}

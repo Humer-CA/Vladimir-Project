@@ -117,6 +117,8 @@ const ReceivingTable = (props) => {
       delivery_date: moment(new Date(formData.delivery_date)).format("YYYY-MM-DD"),
     };
 
+    console.log(newFormData);
+
     dispatch(
       openConfirm({
         icon: Info,
@@ -397,7 +399,7 @@ const ReceivingTable = (props) => {
                 size="small"
                 isAllowed={(values) => {
                   const { floatValue } = values;
-                  return floatValue >= 1;
+                  return floatValue >= 1 && floatValue <= newData?.remaining;
                 }}
                 error={!!errors?.quantity_delivered}
                 helperText={errors?.quantity_delivered?.message}
