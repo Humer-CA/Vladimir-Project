@@ -9,6 +9,7 @@
     background: index.$secondary;
     color: index.$background;
     height: 50vh;
+    height: 50svh;
     border-bottom-left-radius: 50% 38%;
     border-bottom-right-radius: 50% 38%;
   }
@@ -21,5 +22,6 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
+    height: 100svh;
   }
 }
