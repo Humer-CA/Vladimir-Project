@@ -45,6 +45,13 @@ export const approvalApi = createApi({
     getNextRequest: builder.query({
       query: () => `/next-request`,
     }),
+
+    dlAttachment: builder.query({
+      query: (params) => ({
+        url: `/dl?attachment=${params.attachment}&id=${params.id}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -55,4 +62,5 @@ export const {
   usePatchApprovalStatusApiMutation,
   useGetNextRequestQuery,
   useLazyGetNextRequestQuery,
+  useLazyDlAttachmentQuery,
 } = approvalApi;

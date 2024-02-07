@@ -14,6 +14,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Tooltip,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -39,6 +40,7 @@ import { closeConfirm, onLoading, openConfirm } from "../../Redux/StateManagemen
 import {
   useGetApprovalIdApiQuery,
   useGetNextRequestQuery,
+  useLazyDlAttachmentQuery,
   useLazyGetNextRequestQuery,
   usePatchApprovalStatusApiMutation,
 } from "../../Redux/Query/Approving/Approval";
@@ -47,12 +49,14 @@ import MasterlistToolbar from "../../Components/Reusable/MasterlistToolbar";
 import { closeDialog, openDialog, closeDialog1, openDialog1 } from "../../Redux/StateManagement/booleanStateSlice";
 import { useRemovePurchaseRequestApiMutation } from "../../Redux/Query/Request/PurchaseRequest";
 import ErrorFetching from "../ErrorFetching";
+import { useDownloadAttachment } from "../../Hooks/useDownloadAttachment";
 
 const ViewApproveRequest = (props) => {
   const { approving } = props;
   const { state: transactionData } = useLocation();
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
+  const [attachment, setAttachment] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -82,6 +86,8 @@ const ViewApproveRequest = (props) => {
     isLoading: isNextDataLoading,
     refetch: isNextDataRefetch,
   } = useGetNextRequestQuery({ refetchOnMountOrArgChange: true });
+
+  const [downloadAttachment] = useLazyDlAttachmentQuery({ attachment: attachment, id: approveRequestData?.id });
 
   // Table Sorting --------------------------------
   const [order, setOrder] = useState("desc");
@@ -243,6 +249,10 @@ const ViewApproveRequest = (props) => {
     );
   };
 
+  const handleDownloadAttachment = (value) => {
+    useDownloadAttachment({ attachment: value?.value, id: value?.id });
+  };
+
   const handleCloseDialog = () => {
     dispatch(closeDialog()) || dispatch(closeDialog1());
   };
@@ -255,6 +265,13 @@ const ViewApproveRequest = (props) => {
   const pageHandler = (_, page) => {
     // console.log(page + 1);
     setPage(page + 1);
+  };
+
+  const attachmentSx = {
+    textDecoration: "underline",
+    cursor: "pointer",
+    color: "primary.main",
+    fontSize: "12px",
   };
 
   // console.log(transactionData);
@@ -383,7 +400,16 @@ const ViewApproveRequest = (props) => {
                                   <Typography fontSize={12} fontWeight={600}>
                                     Letter of Request:
                                   </Typography>
-                                  {data?.attachments?.letter_of_request?.file_name}
+                                  <Tooltip title="Download Letter of Request">
+                                    <Typography
+                                      sx={attachmentSx}
+                                      onClick={() =>
+                                        handleDownloadAttachment({ value: "letter_of_request", id: data?.id })
+                                      }
+                                    >
+                                      {data?.attachments?.letter_of_request?.file_name}
+                                    </Typography>
+                                  </Tooltip>
                                 </Stack>
                               )}
                               {data?.attachments?.quotation && (
@@ -391,7 +417,14 @@ const ViewApproveRequest = (props) => {
                                   <Typography fontSize={12} fontWeight={600}>
                                     Quotation:
                                   </Typography>
-                                  {data?.attachments?.quotation?.file_name}
+                                  <Tooltip title="Download Quotation">
+                                    <Typography
+                                      sx={attachmentSx}
+                                      onClick={() => handleDownloadAttachment({ value: "quotation", id: data?.id })}
+                                    >
+                                      {data?.attachments?.quotation?.file_name}
+                                    </Typography>
+                                  </Tooltip>
                                 </Stack>
                               )}
                               {data?.attachments?.specification_form && (
@@ -399,7 +432,16 @@ const ViewApproveRequest = (props) => {
                                   <Typography fontSize={12} fontWeight={600}>
                                     Specification:
                                   </Typography>
-                                  {data?.attachments?.specification_form?.file_name}
+                                  <Tooltip title="Download Specification">
+                                    <Typography
+                                      sx={attachmentSx}
+                                      onClick={() =>
+                                        handleDownloadAttachment({ value: "specification_form", id: data?.id })
+                                      }
+                                    >
+                                      {data?.attachments?.specification_form?.file_name}
+                                    </Typography>
+                                  </Tooltip>
                                 </Stack>
                               )}
                               {data?.attachments?.tool_of_trade && (
@@ -407,7 +449,14 @@ const ViewApproveRequest = (props) => {
                                   <Typography fontSize={12} fontWeight={600}>
                                     Tool of Trade:
                                   </Typography>
-                                  {data?.attachments?.tool_of_trade?.file_name}
+                                  <Tooltip title="Download Tool of Trade">
+                                    <Typography
+                                      sx={attachmentSx}
+                                      onClick={() => handleDownloadAttachment({ value: "tool_of_trade", id: data?.id })}
+                                    >
+                                      {data?.attachments?.tool_of_trade?.file_name}
+                                    </Typography>
+                                  </Tooltip>
                                 </Stack>
                               )}
                               {data?.attachments?.other_attachments && (
@@ -415,7 +464,16 @@ const ViewApproveRequest = (props) => {
                                   <Typography fontSize={12} fontWeight={600}>
                                     Other Attachment:
                                   </Typography>
-                                  {data?.attachments?.other_attachments?.file_name}
+                                  <Tooltip title="Download Other Attachments">
+                                    <Typography
+                                      sx={attachmentSx}
+                                      onClick={() =>
+                                        handleDownloadAttachment({ value: "other_attachments", id: data?.id })
+                                      }
+                                    >
+                                      {data?.attachments?.other_attachments?.file_name}
+                                    </Typography>
+                                  </Tooltip>
                                 </Stack>
                               )}
                             </TableCell>
