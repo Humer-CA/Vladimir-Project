@@ -123,7 +123,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     refetch();
-  }, [notifData]);
+  }, []);
 
   const MENU_LIST = [
     {
