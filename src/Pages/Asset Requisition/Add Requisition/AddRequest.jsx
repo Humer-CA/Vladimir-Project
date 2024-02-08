@@ -609,52 +609,56 @@ const AddRequisition = (props) => {
         });
     };
 
-    if (
-      // transactionData &&
-      addRequestAllApi?.data.length === 0
-    ) {
+    const addConfirmation = () => {
+      return dispatch(
+        openConfirm({
+          icon: Warning,
+          iconColor: "alert",
+          message: (
+            <Box>
+              <Typography> Are you sure you want to</Typography>
+              <Typography
+                sx={{
+                  display: "inline-block",
+                  color: "secondary.main",
+                  fontWeight: "bold",
+                }}
+              >
+                CHANGE THE{" "}
+                {watch("department_id")?.id != transactionDataApi.every((item) => item?.department?.id)
+                  ? "DEPARTMENT"
+                  : watch("subunit_id")?.id != transactionDataApi.every((item) => item?.subunit?.id)
+                  ? "SUBUNIT"
+                  : "LOCATION"}
+                ?
+              </Typography>
+              <Typography>it will apply to all Items</Typography>
+            </Box>
+          ),
+
+          onConfirm: () => {
+            dispatch(onLoading());
+            submitData();
+            dispatch(closeConfirm());
+          },
+        })
+      );
+    };
+    const validation = () => {
       watch("department_id")?.id !=
         (transactionDataApi || addRequestAllApi?.data).every((item) => item?.department?.id) &&
         watch("subunit_id")?.id != (transactionDataApi || addRequestAllApi?.data).every((item) => item?.subunit?.id) &&
         watch("location_id")?.id != (transactionDataApi || addRequestAllApi?.data).every((item) => item?.location?.id);
-      {
-        dispatch(
-          openConfirm({
-            icon: Warning,
-            iconColor: "alert",
-            message: (
-              <Box>
-                <Typography> Are you sure you want to</Typography>
-                <Typography
-                  sx={{
-                    display: "inline-block",
-                    color: "secondary.main",
-                    fontWeight: "bold",
-                  }}
-                >
-                  CHANGE THE{" "}
-                  {watch("department_id")?.id != transactionDataApi.every((item) => item?.department?.id)
-                    ? "DEPARTMENT"
-                    : watch("subunit_id")?.id != transactionDataApi.every((item) => item?.subunit?.id)
-                    ? "SUBUNIT"
-                    : "LOCATION"}
-                  ?
-                </Typography>
-                <Typography>it will apply to all Items</Typography>
-              </Box>
-            ),
+    };
 
-            onConfirm: () => {
-              dispatch(onLoading());
-              submitData();
-              dispatch(closeConfirm());
-            },
-          })
-        );
-      }
-    } else {
-      submitData();
-    }
+    // if (transactionData
+    //   addRequestAllApi?.data.length === 0
+    // ) {
+    //   {
+    //   }
+    // } else {
+    //   submitData();
+    // }
   };
 
   console.log("watch", watch("department_id")?.id);
