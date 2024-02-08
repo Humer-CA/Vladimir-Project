@@ -112,6 +112,7 @@ const schema = yup.object().shape({
       is: (value) => value === "Personal Issued",
       then: (yup) => yup.label("Accountable").required().typeError("Accountable is a required field"),
     }),
+  acquisition_details: yup.string().required().label("Acquisition Details"),
 
   asset_description: yup.string().required().label("Asset Description"),
   asset_specification: yup.string().required().label("Asset Specification"),
@@ -609,43 +610,65 @@ const AddRequisition = (props) => {
     };
 
     if (
-      addRequestAllApi?.data.length !== 0 &&
-      (watch("department_id")?.id != transactionDataApi.every((item) => item?.department?.id) ||
-        watch("subunit_id")?.id != transactionDataApi.every((item) => item?.subunit?.id) ||
-        watch("location_id")?.id != transactionDataApi.every((item) => item?.location?.id))
+      // transactionData &&
+      addRequestAllApi?.data.length === 0
     ) {
-      dispatch(
-        openConfirm({
-          icon: Warning,
-          iconColor: "alert",
-          message: (
-            <Box>
-              <Typography> Are you sure you want to</Typography>
-              <Typography
-                sx={{
-                  display: "inline-block",
-                  color: "secondary.main",
-                  fontWeight: "bold",
-                }}
-              >
-                CHANGE THE DEPARTMENT?
-              </Typography>
-              <Typography>it will apply to all Items</Typography>
-            </Box>
-          ),
+      watch("department_id")?.id !=
+        (transactionDataApi || addRequestAllApi?.data).every((item) => item?.department?.id) &&
+        watch("subunit_id")?.id != (transactionDataApi || addRequestAllApi?.data).every((item) => item?.subunit?.id) &&
+        watch("location_id")?.id != (transactionDataApi || addRequestAllApi?.data).every((item) => item?.location?.id);
+      {
+        dispatch(
+          openConfirm({
+            icon: Warning,
+            iconColor: "alert",
+            message: (
+              <Box>
+                <Typography> Are you sure you want to</Typography>
+                <Typography
+                  sx={{
+                    display: "inline-block",
+                    color: "secondary.main",
+                    fontWeight: "bold",
+                  }}
+                >
+                  CHANGE THE{" "}
+                  {watch("department_id")?.id != transactionDataApi.every((item) => item?.department?.id)
+                    ? "DEPARTMENT"
+                    : watch("subunit_id")?.id != transactionDataApi.every((item) => item?.subunit?.id)
+                    ? "SUBUNIT"
+                    : "LOCATION"}
+                  ?
+                </Typography>
+                <Typography>it will apply to all Items</Typography>
+              </Box>
+            ),
 
-          onConfirm: () => {
-            dispatch(onLoading());
-            submitData();
-            dispatch(closeConfirm());
-          },
-        })
-      );
+            onConfirm: () => {
+              dispatch(onLoading());
+              submitData();
+              dispatch(closeConfirm());
+            },
+          })
+        );
+      }
     } else {
       submitData();
     }
   };
 
+  console.log("watch", watch("department_id")?.id);
+  // console.log(
+  //   "addRequestAllApi",
+  //   addRequestAllApi?.data.every((item) => console.log(item?.department?.id))
+  // );
+  // console.log("combined", watch("department_id")?.id) !=
+  //   addRequestAllApi?.data.every((item) => console.log(item?.department?.id));
+
+  // console.log("combined", watch("department_id")?.id) !=
+  //   addRequestAllApi?.data.every((item) => console.log(item?.department?.id));
+
+  // console.log(addRequestAllApi?.data);
   // console.log("subunit", transactionDataApi?.subunit?.id);
   // console.log("location", transactionDataApi?.location?.id);
 
@@ -1038,7 +1061,7 @@ const AddRequisition = (props) => {
     pb: "10px",
   };
 
-  console.log(transactionData);
+  // console.log(transactionData);
 
   return (
     <>
@@ -1583,6 +1606,9 @@ const AddRequisition = (props) => {
                             </Typography>
                             <Typography fontSize={10} color="gray">
                               {`(${data.department?.department_code}) - ${data.department?.department_name}`}
+                            </Typography>
+                            <Typography fontSize={10} color="gray">
+                              {`(${data.subunit?.subunit_code}) - ${data.subunit?.subunit_name}`}
                             </Typography>
                             <Typography fontSize={10} color="gray">
                               {`(${data.location?.location_code}) - ${data.location?.location_name}`}

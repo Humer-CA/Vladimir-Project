@@ -346,6 +346,10 @@ const ViewRequestReceiving = () => {
                                 <Typography
                                   fontSize={12}
                                   noWrap
+                                >{`(${data.subunit?.subunit_code}) - ${data.subunit?.subunit_name}`}</Typography>
+                                <Typography
+                                  fontSize={12}
+                                  noWrap
                                 >{`(${data.location?.location_code}) - ${data.location?.location_name}`}</Typography>
                                 <Typography
                                   fontSize={12}

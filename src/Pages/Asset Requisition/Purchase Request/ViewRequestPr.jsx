@@ -279,6 +279,9 @@ const ViewRequestPr = () => {
                                 {`(${data.department?.department_code}) - ${data.department?.department_name}`}
                               </Typography>
                               <Typography fontSize={10} color="gray">
+                                {`(${data.subunit?.subunit_code}) - ${data.subunit?.subunit_name}`}
+                              </Typography>
+                              <Typography fontSize={10} color="gray">
                                 {`(${data.location?.location_code}) - ${data.location?.location_name}`}
                               </Typography>
                               <Typography fontSize={10} color="gray">
