@@ -651,14 +651,15 @@ const AddRequisition = (props) => {
         watch("location_id")?.id != (transactionDataApi || addRequestAllApi?.data).every((item) => item?.location?.id);
     };
 
-    // if (transactionData
-    //   addRequestAllApi?.data.length === 0
-    // ) {
-    //   {
-    //   }
-    // } else {
-    //   submitData();
-    // }
+    transactionData
+      ? validation
+        ? addConfirmation
+        : submitData()
+      : addRequestAllApi?.data.length === 0
+      ? submitData()
+      : validation
+      ? submitData()
+      : null;
   };
 
   console.log("watch", watch("department_id")?.id);
