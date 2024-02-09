@@ -78,7 +78,6 @@ const schema = yup.object().shape({
 
 const PrintFixedAsset = (props) => {
   const { isRequest } = props;
-  console.log(isRequest);
 
   const [search, setSearch] = useState("");
   const [perPage, setPerPage] = useState(5);
@@ -337,7 +336,7 @@ const PrintFixedAsset = (props) => {
               ip: ip.data,
               tagNumber: formData?.tagNumber,
             }).unwrap();
-            console.log(formData.tagNumber);
+            // console.log(formData.tagNumber);
 
             // console.log(result);
 

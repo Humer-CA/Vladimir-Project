@@ -85,6 +85,7 @@ import { closeConfirm, onLoading, openConfirm } from "../../../Redux/StateManage
 import { usePostRequisitionSmsApiMutation } from "../../../Redux/Query/Request/RequisitionSms";
 import CustomPatternField from "../../../Components/Reusable/CustomPatternField";
 import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
+import ErrorFetching from "../../ErrorFetching";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -258,6 +259,8 @@ const AddRequisition = (props) => {
     data: addRequestAllApi = [],
     isLoading: isRequestLoading,
     isSuccess: isRequestSuccess,
+    isError: isRequestError,
+    error: errorRequest,
     refetch: isRequestRefetch,
   } = useGetRequestContainerAllApiQuery({ page: page, per_page: perPage }, { refetchOnMountOrArgChange: true });
 
@@ -265,6 +268,8 @@ const AddRequisition = (props) => {
     data: transactionDataApi = [],
     isLoading: isTransactionLoading,
     isLoading: isTransactionSuccess,
+    isError: isTransactionError,
+    error: errorTransaction,
     refetch: isTransactionRefetch,
   } = useGetByTransactionApiQuery(
     { transaction_number: transactionData?.transaction_number },
@@ -1070,144 +1075,152 @@ const AddRequisition = (props) => {
 
   return (
     <>
-      <Box className="mcontainer" sx={{ height: "calc(100vh - 380px)" }}>
-        <Button
-          variant="text"
-          color="secondary"
-          size="small"
-          startIcon={<ArrowBackIosRounded color="secondary" />}
-          onClick={() => {
-            navigate(-1);
-            deleteAllRequest();
-          }}
-          disableRipple
-          sx={{ width: "90px", ml: "-15px", mt: "-5px", pb: "10px", "&:hover": { backgroundColor: "transparent" } }}
-        >
-          <Typography color="secondary.main">Back</Typography>
-        </Button>
+      {isTransactionError || isRequestError ? (
+        <ErrorFetching refetch={isRequestRefetch || isTransactionRefetch} error={errorRequest || errorTransaction} />
+      ) : (
+        <Box className="mcontainer" sx={{ height: "calc(100vh - 380px)" }}>
+          <Button
+            variant="text"
+            color="secondary"
+            size="small"
+            startIcon={<ArrowBackIosRounded color="secondary" />}
+            onClick={() => {
+              navigate(-1);
+              deleteAllRequest();
+            }}
+            disableRipple
+            sx={{ width: "90px", ml: "-15px", mt: "-5px", pb: "10px", "&:hover": { backgroundColor: "transparent" } }}
+          >
+            <Typography color="secondary.main">Back</Typography>
+          </Button>
 
-        <Box className="request mcontainer__wrapper" p={2}>
-          {/* FORM */}
-          <Box>
-            <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
-              ASSET
-            </Typography>
+          <Box className="request mcontainer__wrapper" p={2}>
+            {/* FORM */}
+            <Box>
+              <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
+                ASSET
+              </Typography>
 
-            <Divider />
+              <Divider />
 
-            <Box id="requestForm" className="request__form" component="form" onSubmit={handleSubmit(addRequestHandler)}>
-              <Stack gap={2}>
-                <Box sx={BoxStyle}>
-                  <Typography sx={sxSubtitle}>Request Information</Typography>
+              <Box
+                id="requestForm"
+                className="request__form"
+                component="form"
+                onSubmit={handleSubmit(addRequestHandler)}
+              >
+                <Stack gap={2}>
+                  <Box sx={BoxStyle}>
+                    <Typography sx={sxSubtitle}>Request Information</Typography>
 
-                  <CustomAutoComplete
-                    control={control}
-                    name="type_of_request_id"
-                    options={typeOfRequestData}
-                    loading={isTypeOfRequestLoading}
-                    // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                    disabled={updateRequest && disable}
-                    getOptionLabel={(option) => option.type_of_request_name}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        color="secondary"
-                        label="Type of Request"
-                        error={!!errors?.type_of_request_id}
-                        helperText={errors?.type_of_request_id?.message}
-                      />
-                    )}
-                  />
+                    <CustomAutoComplete
+                      control={control}
+                      name="type_of_request_id"
+                      options={typeOfRequestData}
+                      loading={isTypeOfRequestLoading}
+                      // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                      disabled={updateRequest && disable}
+                      getOptionLabel={(option) => option.type_of_request_name}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          color="secondary"
+                          label="Type of Request"
+                          error={!!errors?.type_of_request_id}
+                          helperText={errors?.type_of_request_id?.message}
+                        />
+                      )}
+                    />
 
-                  <CustomAutoComplete
-                    control={control}
-                    name="attachment_type"
-                    options={attachmentType}
-                    // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
+                    <CustomAutoComplete
+                      control={control}
+                      name="attachment_type"
+                      options={attachmentType}
+                      // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
 
-                    disabled={updateRequest && disable}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        color="secondary"
-                        label="Attachment Type"
-                        error={!!errors?.attachment_type}
-                        helperText={errors?.attachment_type?.message}
-                      />
-                    )}
-                  />
-                </Box>
+                      disabled={updateRequest && disable}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          color="secondary"
+                          label="Attachment Type"
+                          error={!!errors?.attachment_type}
+                          helperText={errors?.attachment_type?.message}
+                        />
+                      )}
+                    />
+                  </Box>
 
-                <Divider />
+                  <Divider />
 
-                <Box sx={BoxStyle}>
-                  <Typography sx={sxSubtitle}>Charging Information</Typography>
+                  <Box sx={BoxStyle}>
+                    <Typography sx={sxSubtitle}>Charging Information</Typography>
 
-                  {/* OLD Departments */}
-                  <CustomAutoComplete
-                    autoComplete
-                    name="department_id"
-                    control={control}
-                    options={departmentData}
-                    loading={isDepartmentLoading}
-                    disabled={updateRequest && disable}
-                    // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                    getOptionLabel={(option) => option.department_name}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        color="secondary"
-                        label="Department"
-                        error={!!errors?.department_id?.message}
-                        helperText={errors?.department_id?.message}
-                      />
-                    )}
-                    fullWidth
-                    onChange={(_, value) => {
-                      const Company = departmentData.map((mapitem) => mapitem?.company);
-                      const companyValue = Company.find((item) => item?.company_id === value.company.company_id);
+                    {/* OLD Departments */}
+                    <CustomAutoComplete
+                      autoComplete
+                      name="department_id"
+                      control={control}
+                      options={departmentData}
+                      loading={isDepartmentLoading}
+                      disabled={updateRequest && disable}
+                      // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                      getOptionLabel={(option) => option.department_name}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          color="secondary"
+                          label="Department"
+                          error={!!errors?.department_id?.message}
+                          helperText={errors?.department_id?.message}
+                        />
+                      )}
+                      fullWidth
+                      onChange={(_, value) => {
+                        const Company = departmentData?.map((mapitem) => mapitem?.company);
+                        const companyValue = Company.find((item) => item?.company_id === value.company.company_id);
 
-                      if (value) {
-                        setValue("company_id", companyValue?.company_id);
-                      } else {
-                        setValue("company_id", null);
-                      }
+                        if (value) {
+                          setValue("company_id", companyValue?.company_id);
+                        } else {
+                          setValue("company_id", null);
+                        }
 
-                      setValue("subunit_id", null);
-                      setValue("location_id", null);
+                        setValue("subunit_id", null);
+                        setValue("location_id", null);
 
-                      return value;
-                    }}
-                  />
+                        return value;
+                      }}
+                    />
 
-                  <CustomAutoComplete
-                    autoComplete
-                    name="subunit_id"
-                    control={control}
-                    // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                    options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
-                    loading={isSubUnitLoading}
-                    disabled={updateRequest && disable}
-                    getOptionLabel={(option) => option.subunit_name}
-                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        color="secondary"
-                        label="Subunit"
-                        error={!!errors?.subunit_id}
-                        helperText={errors?.subunit_id?.message}
-                      />
-                    )}
-                  />
+                    <CustomAutoComplete
+                      autoComplete
+                      name="subunit_id"
+                      control={control}
+                      // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                      options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
+                      loading={isSubUnitLoading}
+                      disabled={updateRequest && disable}
+                      getOptionLabel={(option) => option.subunit_name}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          color="secondary"
+                          label="Subunit"
+                          error={!!errors?.subunit_id}
+                          helperText={errors?.subunit_id?.message}
+                        />
+                      )}
+                    />
 
-                  {/* <CustomAutoComplete
+                    {/* <CustomAutoComplete
                     autoComplete
                     name="company_id"
                     control={control}
@@ -1232,506 +1245,505 @@ const AddRequisition = (props) => {
                     // disabled
                   /> */}
 
-                  <CustomAutoComplete
-                    autoComplete
-                    name="location_id"
-                    control={control}
-                    // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                    options={locationData?.filter((item) => {
-                      return item.departments.some((department) => {
-                        return department?.sync_id === watch("department_id")?.sync_id;
-                      });
-                    })}
-                    loading={isLocationLoading}
-                    disabled={updateRequest && disable}
-                    getOptionLabel={(option) => option.location_code + " - " + option.location_name}
-                    isOptionEqualToValue={(option, value) => option.location_id === value.location_id}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        color="secondary"
-                        label="Location"
-                        error={!!errors?.location_id}
-                        helperText={errors?.location_id?.message}
-                      />
-                    )}
-                  />
-                  <CustomAutoComplete
-                    name="account_title_id"
-                    control={control}
-                    // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                    options={accountTitleData}
-                    loading={isAccountTitleLoading}
-                    disabled={updateRequest && disable}
-                    getOptionLabel={(option) => option.account_title_code + " - " + option.account_title_name}
-                    isOptionEqualToValue={(option, value) => option.account_title_code === value.account_title_code}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        color="secondary"
-                        label="Account Title  "
-                        error={!!errors?.account_title_id}
-                        helperText={errors?.account_title_id?.message}
-                      />
-                    )}
-                  />
-
-                  <CustomAutoComplete
-                    autoComplete
-                    name="accountability"
-                    control={control}
-                    options={["Personal Issued", "Common"]}
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                    disabled={updateRequest && disable}
-                    isOptionEqualToValue={(option, value) => option === value}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        color="secondary"
-                        label="Accountability  "
-                        error={!!errors?.accountability}
-                        helperText={errors?.accountability?.message}
-                      />
-                    )}
-                  />
-
-                  {watch("accountability") === "Personal Issued" && (
                     <CustomAutoComplete
-                      name="accountable"
+                      autoComplete
+                      name="location_id"
                       control={control}
-                      includeInputInList
-                      disablePortal
-                      disabled={transactionDataApi[0]?.can_edit === 0}
-                      filterOptions={filterOptions}
-                      options={sedarData}
-                      loading={isSedarLoading}
-                      getOptionLabel={(option) => option.general_info?.full_id_number_full_name}
-                      isOptionEqualToValue={(option, value) =>
-                        option.general_info?.full_id_number === value.general_info?.full_id_number
-                      }
+                      // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                      options={locationData?.filter((item) => {
+                        return item.departments.some((department) => {
+                          return department?.sync_id === watch("department_id")?.sync_id;
+                        });
+                      })}
+                      loading={isLocationLoading}
+                      disabled={updateRequest && disable}
+                      getOptionLabel={(option) => option.location_code + " - " + option.location_name}
+                      isOptionEqualToValue={(option, value) => option.location_id === value.location_id}
                       renderInput={(params) => (
                         <TextField
                           {...params}
                           color="secondary"
-                          label="Accountable"
-                          error={!!errors?.accountable?.message}
-                          helperText={errors?.accountable?.message}
+                          label="Location"
+                          error={!!errors?.location_id}
+                          helperText={errors?.location_id?.message}
                         />
                       )}
                     />
-                  )}
-                  <CustomTextField
-                    control={control}
-                    name="acquisition_details"
-                    label="Acquisition Details"
-                    type="text"
-                    disabled={updateRequest && disable}
-                    // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                    error={!!errors?.acquisition_details}
-                    helperText={errors?.acquisition_details?.message}
-                    fullWidth
-                    multiline
-                  />
-                </Box>
+                    <CustomAutoComplete
+                      name="account_title_id"
+                      control={control}
+                      // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                      options={accountTitleData}
+                      loading={isAccountTitleLoading}
+                      disabled={updateRequest && disable}
+                      getOptionLabel={(option) => option.account_title_code + " - " + option.account_title_name}
+                      isOptionEqualToValue={(option, value) => option.account_title_code === value.account_title_code}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          color="secondary"
+                          label="Account Title  "
+                          error={!!errors?.account_title_id}
+                          helperText={errors?.account_title_id?.message}
+                        />
+                      )}
+                    />
 
-                <Divider />
+                    <CustomAutoComplete
+                      autoComplete
+                      name="accountability"
+                      control={control}
+                      options={["Personal Issued", "Common"]}
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                      disabled={updateRequest && disable}
+                      isOptionEqualToValue={(option, value) => option === value}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          color="secondary"
+                          label="Accountability  "
+                          error={!!errors?.accountability}
+                          helperText={errors?.accountability?.message}
+                        />
+                      )}
+                    />
 
-                <Box sx={BoxStyle}>
-                  <Typography sx={sxSubtitle}>Asset Information</Typography>
-                  <CustomTextField
-                    control={control}
-                    name="asset_description"
-                    label="Asset Description"
-                    type="text"
-                    disabled={updateRequest && disable}
-                    error={!!errors?.asset_description}
-                    helperText={errors?.asset_description?.message}
-                    fullWidth
-                    multiline
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                  />
-                  <CustomTextField
-                    control={control}
-                    name="asset_specification"
-                    label="Asset Specification"
-                    type="text"
-                    disabled={updateRequest && disable}
-                    error={!!errors?.asset_specification}
-                    helperText={errors?.asset_specification?.message}
-                    fullWidth
-                    multiline
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                  />
-                  <CustomTextField
-                    control={control}
-                    name="brand"
-                    label="Brand"
-                    type="text"
-                    disabled={updateRequest && disable}
-                    error={!!errors?.brand}
-                    helperText={errors?.brand?.message}
-                    fullWidth
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                  />
-                  <CustomNumberField
-                    control={control}
-                    name="quantity"
-                    label="Quantity"
-                    type="number"
-                    disabled={updateRequest && disable}
-                    error={!!errors?.quantity}
-                    helperText={errors?.quantity?.message}
-                    fullWidth
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                    // isAllowed={(values) => {
-                    //   const { floatValue } = values;
-                    //   return floatValue >= 1;
-                    // }}
-                  />
-                  <CustomPatternField
-                    control={control}
-                    name="cellphone_number"
-                    label="Cellphone # (optional)"
-                    type="text"
-                    disabled={updateRequest && disable}
-                    error={!!errors?.cellphone_number}
-                    helperText={errors?.cellphone_number?.message}
-                    format="(09##) - ### - ####"
-                    // allowEmptyFormatting
-                    valueIsNumericString
-                    fullWidth
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                  />
-                  <CustomTextField
-                    control={control}
-                    name="additional_info"
-                    label="Additional Info. (Optional)"
-                    type="text"
-                    disabled={updateRequest && disable}
-                    fullWidth
-                    multiline
-                    // disabled={transactionDataApi[0]?.can_edit === 0}
-                  />
-                </Box>
-
-                <Divider />
-
-                <Box sx={BoxStyle}>
-                  <Typography sx={sxSubtitle}>Attachments</Typography>
-                  <Stack flexDirection="row" gap={1} alignItems="center">
-                    {watch("letter_of_request") !== null ? (
-                      <UpdateField
-                        label={"Letter of Request"}
-                        value={
-                          transactionDataApi.length
-                            ? watch("letter_of_request")?.name || updateRequest?.letter_of_request?.file_name
-                            : watch("letter_of_request")?.name
+                    {watch("accountability") === "Personal Issued" && (
+                      <CustomAutoComplete
+                        name="accountable"
+                        control={control}
+                        includeInputInList
+                        disablePortal
+                        disabled={transactionDataApi[0]?.can_edit === 0}
+                        filterOptions={filterOptions}
+                        options={sedarData}
+                        loading={isSedarLoading}
+                        getOptionLabel={(option) => option.general_info?.full_id_number_full_name}
+                        isOptionEqualToValue={(option, value) =>
+                          option.general_info?.full_id_number === value.general_info?.full_id_number
                         }
-                      />
-                    ) : (
-                      <CustomAttachment
-                        control={control}
-                        name="letter_of_request"
-                        label="Letter of Request"
-                        disabled={updateRequest && disable}
-                        inputRef={LetterOfRequestRef}
-                        // disabled={transactionDataApi[0]?.can_edit === 0}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            color="secondary"
+                            label="Accountable"
+                            error={!!errors?.accountable?.message}
+                            helperText={errors?.accountable?.message}
+                          />
+                        )}
                       />
                     )}
+                    <CustomTextField
+                      control={control}
+                      name="acquisition_details"
+                      label="Acquisition Details"
+                      type="text"
+                      disabled={updateRequest && disable}
+                      // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                      error={!!errors?.acquisition_details}
+                      helperText={errors?.acquisition_details?.message}
+                      fullWidth
+                      multiline
+                    />
+                  </Box>
 
-                    {watch("letter_of_request") !== null && (
-                      <RemoveFile title="Letter of Request" value="letter_of_request" />
-                    )}
-                  </Stack>
+                  <Divider />
 
-                  <Stack flexDirection="row" gap={1} alignItems="center">
-                    {watch("quotation") !== null ? (
-                      <UpdateField
-                        label={"Quotation"}
-                        value={watch("quotation")?.name || updateRequest?.quotation?.file_name}
-                      />
-                    ) : (
-                      <CustomAttachment
-                        control={control}
-                        name="quotation"
-                        label="Quotation"
-                        disabled={updateRequest && disable}
-                        inputRef={QuotationRef}
-                        // disabled={transactionDataApi[0]?.can_edit === 0}
-                      />
-                    )}
-                    {watch("quotation") !== null && <RemoveFile title="Quotation" value="quotation" />}
-                  </Stack>
+                  <Box sx={BoxStyle}>
+                    <Typography sx={sxSubtitle}>Asset Information</Typography>
+                    <CustomTextField
+                      control={control}
+                      name="asset_description"
+                      label="Asset Description"
+                      type="text"
+                      disabled={updateRequest && disable}
+                      error={!!errors?.asset_description}
+                      helperText={errors?.asset_description?.message}
+                      fullWidth
+                      multiline
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                    />
+                    <CustomTextField
+                      control={control}
+                      name="asset_specification"
+                      label="Asset Specification"
+                      type="text"
+                      disabled={updateRequest && disable}
+                      error={!!errors?.asset_specification}
+                      helperText={errors?.asset_specification?.message}
+                      fullWidth
+                      multiline
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                    />
+                    <CustomTextField
+                      control={control}
+                      name="brand"
+                      label="Brand"
+                      type="text"
+                      disabled={updateRequest && disable}
+                      error={!!errors?.brand}
+                      helperText={errors?.brand?.message}
+                      fullWidth
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                    />
+                    <CustomNumberField
+                      control={control}
+                      name="quantity"
+                      label="Quantity"
+                      type="number"
+                      disabled={updateRequest && disable}
+                      error={!!errors?.quantity}
+                      helperText={errors?.quantity?.message}
+                      fullWidth
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                      // isAllowed={(values) => {
+                      //   const { floatValue } = values;
+                      //   return floatValue >= 1;
+                      // }}
+                    />
+                    <CustomPatternField
+                      control={control}
+                      name="cellphone_number"
+                      label="Cellphone # (optional)"
+                      type="text"
+                      disabled={updateRequest && disable}
+                      error={!!errors?.cellphone_number}
+                      helperText={errors?.cellphone_number?.message}
+                      format="(09##) - ### - ####"
+                      // allowEmptyFormatting
+                      valueIsNumericString
+                      fullWidth
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                    />
+                    <CustomTextField
+                      control={control}
+                      name="additional_info"
+                      label="Additional Info. (Optional)"
+                      type="text"
+                      disabled={updateRequest && disable}
+                      fullWidth
+                      multiline
+                      // disabled={transactionDataApi[0]?.can_edit === 0}
+                    />
+                  </Box>
 
-                  <Stack flexDirection="row" gap={1} alignItems="center">
-                    {watch("specification_form") !== null ? (
-                      <UpdateField
-                        label={"Specification Form"}
-                        value={watch("specification_form")?.name || updateRequest?.specification_form?.file_name}
-                      />
-                    ) : (
-                      <CustomAttachment
-                        control={control}
-                        name="specification_form"
-                        label="Specification (Form)"
-                        disabled={updateRequest && disable}
-                        inputRef={SpecificationRef}
-                        updateData={updateRequest}
-                        // disabled={transactionDataApi[0]?.can_edit === 0}
-                      />
-                    )}
-                    {watch("specification_form") !== null && (
-                      <RemoveFile title="Specification" value="specification_form" />
-                    )}
-                  </Stack>
+                  <Divider />
 
-                  <Stack flexDirection="row" gap={1} alignItems="center">
-                    {watch("tool_of_trade") !== null ? (
-                      <UpdateField
-                        label={"Tool of Trade"}
-                        value={watch("tool_of_trade")?.name || updateRequest?.tool_of_trade?.file_name}
-                      />
-                    ) : (
-                      <CustomAttachment
-                        control={control}
-                        name="tool_of_trade"
-                        label="Tool of Trade"
-                        disabled={updateRequest && disable}
-                        inputRef={ToolOfTradeRef}
-                        // disabled={transactionDataApi[0]?.can_edit === 0}
-                      />
-                    )}
-                    {watch("tool_of_trade") !== null && <RemoveFile title="Tool of Trade" value="tool_of_trade" />}
-                  </Stack>
+                  <Box sx={BoxStyle}>
+                    <Typography sx={sxSubtitle}>Attachments</Typography>
+                    <Stack flexDirection="row" gap={1} alignItems="center">
+                      {watch("letter_of_request") !== null ? (
+                        <UpdateField
+                          label={"Letter of Request"}
+                          value={
+                            transactionDataApi.length
+                              ? watch("letter_of_request")?.name || updateRequest?.letter_of_request?.file_name
+                              : watch("letter_of_request")?.name
+                          }
+                        />
+                      ) : (
+                        <CustomAttachment
+                          control={control}
+                          name="letter_of_request"
+                          label="Letter of Request"
+                          disabled={updateRequest && disable}
+                          inputRef={LetterOfRequestRef}
+                          // disabled={transactionDataApi[0]?.can_edit === 0}
+                        />
+                      )}
 
-                  <Stack flexDirection="row" gap={1} alignItems="center">
-                    {watch("other_attachments") !== null ? (
-                      <UpdateField
-                        label={"Other Attachments"}
-                        value={watch("other_attachments")?.name || updateRequest?.other_attachments?.file_name}
-                      />
-                    ) : (
-                      <CustomAttachment
-                        control={control}
-                        name="other_attachments"
-                        label="Other Attachments"
-                        disabled={updateRequest && disable}
-                        inputRef={OthersRef}
-                        // disabled={transactionDataApi[0]?.can_edit === 0}
-                      />
-                    )}
-                    {watch("other_attachments") !== null && (
-                      <RemoveFile title="Other Attachments" value="other_attachments" />
-                    )}
-                  </Stack>
-                </Box>
-              </Stack>
+                      {watch("letter_of_request") !== null && (
+                        <RemoveFile title="Letter of Request" value="letter_of_request" />
+                      )}
+                    </Stack>
+
+                    <Stack flexDirection="row" gap={1} alignItems="center">
+                      {watch("quotation") !== null ? (
+                        <UpdateField
+                          label={"Quotation"}
+                          value={watch("quotation")?.name || updateRequest?.quotation?.file_name}
+                        />
+                      ) : (
+                        <CustomAttachment
+                          control={control}
+                          name="quotation"
+                          label="Quotation"
+                          disabled={updateRequest && disable}
+                          inputRef={QuotationRef}
+                          // disabled={transactionDataApi[0]?.can_edit === 0}
+                        />
+                      )}
+                      {watch("quotation") !== null && <RemoveFile title="Quotation" value="quotation" />}
+                    </Stack>
+
+                    <Stack flexDirection="row" gap={1} alignItems="center">
+                      {watch("specification_form") !== null ? (
+                        <UpdateField
+                          label={"Specification Form"}
+                          value={watch("specification_form")?.name || updateRequest?.specification_form?.file_name}
+                        />
+                      ) : (
+                        <CustomAttachment
+                          control={control}
+                          name="specification_form"
+                          label="Specification (Form)"
+                          disabled={updateRequest && disable}
+                          inputRef={SpecificationRef}
+                          updateData={updateRequest}
+                          // disabled={transactionDataApi[0]?.can_edit === 0}
+                        />
+                      )}
+                      {watch("specification_form") !== null && (
+                        <RemoveFile title="Specification" value="specification_form" />
+                      )}
+                    </Stack>
+
+                    <Stack flexDirection="row" gap={1} alignItems="center">
+                      {watch("tool_of_trade") !== null ? (
+                        <UpdateField
+                          label={"Tool of Trade"}
+                          value={watch("tool_of_trade")?.name || updateRequest?.tool_of_trade?.file_name}
+                        />
+                      ) : (
+                        <CustomAttachment
+                          control={control}
+                          name="tool_of_trade"
+                          label="Tool of Trade"
+                          disabled={updateRequest && disable}
+                          inputRef={ToolOfTradeRef}
+                          // disabled={transactionDataApi[0]?.can_edit === 0}
+                        />
+                      )}
+                      {watch("tool_of_trade") !== null && <RemoveFile title="Tool of Trade" value="tool_of_trade" />}
+                    </Stack>
+
+                    <Stack flexDirection="row" gap={1} alignItems="center">
+                      {watch("other_attachments") !== null ? (
+                        <UpdateField
+                          label={"Other Attachments"}
+                          value={watch("other_attachments")?.name || updateRequest?.other_attachments?.file_name}
+                        />
+                      ) : (
+                        <CustomAttachment
+                          control={control}
+                          name="other_attachments"
+                          label="Other Attachments"
+                          disabled={updateRequest && disable}
+                          inputRef={OthersRef}
+                          // disabled={transactionDataApi[0]?.can_edit === 0}
+                        />
+                      )}
+                      {watch("other_attachments") !== null && (
+                        <RemoveFile title="Other Attachments" value="other_attachments" />
+                      )}
+                    </Stack>
+                  </Box>
+                </Stack>
+              </Box>
+
+              <Divider sx={{ pb: 1, mb: 1 }} />
+
+              <LoadingButton
+                loading={isLoading}
+                form="requestForm"
+                variant="contained"
+                type="submit"
+                size="small"
+                disabled={!transactionData ? !isDirty : updateToggle}
+                fullWidth
+                sx={{ gap: 1 }}
+              >
+                {transactionData ? <Update /> : <AddToPhotos />}{" "}
+                <Typography variant="p">{transactionData ? "UPDATE" : "ADD"}</Typography>
+              </LoadingButton>
+              <Divider orientation="vertical" />
             </Box>
+            {/* TABLE */}
 
-            <Divider sx={{ pb: 1, mb: 1 }} />
+            <Box className="request__table">
+              <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
+                {`${transactionData ? "TRANSACTION NO." : "CURRENT ASSET"}`}{" "}
+                {transactionData && transactionData?.transaction_number}
+              </Typography>
 
-            <LoadingButton
-              loading={isLoading}
-              form="requestForm"
-              variant="contained"
-              type="submit"
-              size="small"
-              disabled={!transactionData ? !isDirty : updateToggle}
-              fullWidth
-              sx={{ gap: 1 }}
-            >
-              {transactionData ? <Update /> : <AddToPhotos />}{" "}
-              <Typography variant="p">{transactionData ? "UPDATE" : "ADD"}</Typography>
-            </LoadingButton>
-            <Divider orientation="vertical" />
-          </Box>
+              <TableContainer
+                className="mcontainer__th-body  mcontainer__wrapper"
+                sx={{ height: "calc(100vh - 290px)", pt: 0 }}
+              >
+                <Table className="mcontainer__table " stickyHeader>
+                  <TableHead>
+                    <TableRow
+                      sx={{
+                        "& > *": {
+                          fontWeight: "bold!important",
+                          whiteSpace: "nowrap",
+                        },
+                      }}
+                    >
+                      <TableCell className="tbl-cell">{transactionData ? "Ref No." : "Index"}</TableCell>
+                      <TableCell className="tbl-cell">Type of Request</TableCell>
+                      <TableCell className="tbl-cell">Attachment Type</TableCell>
+                      <TableCell className="tbl-cell">Chart of Accounts</TableCell>
+                      <TableCell className="tbl-cell">Accountability</TableCell>
+                      <TableCell className="tbl-cell">Asset Information</TableCell>
+                      <TableCell className="tbl-cell text-center">Quantity</TableCell>
+                      <TableCell className="tbl-cell">Cellphone #</TableCell>
+                      <TableCell className="tbl-cell">Additional Info.</TableCell>
+                      <TableCell className="tbl-cell">Attachments</TableCell>
+                      <TableCell className="tbl-cell">Action</TableCell>
+                    </TableRow>
+                  </TableHead>
 
-          {/* TABLE */}
-          <Box className="request__table">
-            <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
-              {`${transactionData ? "TRANSACTION NO." : "CURRENT ASSET"}`}{" "}
-              {transactionData && transactionData?.transaction_number}
-            </Typography>
+                  <TableBody>
+                    {(updateRequest && isTransactionLoading) || isRequestLoading ? (
+                      <LoadingData />
+                    ) : (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.data?.length === 0) ? (
+                      <NoRecordsFound request />
+                    ) : (
+                      <>
+                        {(transactionData ? transactionDataApi : addRequestAllApi?.data)?.map((data, index) => (
+                          <TableRow
+                            key={index}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell tr-cen-pad45 text-weight">
+                              {transactionData ? data?.reference_number : index + 1}
+                            </TableCell>
+                            <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
+                            <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
+                            <TableCell className="tbl-cell">
+                              <Typography fontSize={10} color="gray">
+                                {`(${data.company?.company_code}) - ${data.company?.company_name}`}
+                              </Typography>
+                              <Typography fontSize={10} color="gray">
+                                {`(${data.department?.department_code}) - ${data.department?.department_name}`}
+                              </Typography>
+                              <Typography fontSize={10} color="gray">
+                                {`(${data.subunit?.subunit_code}) - ${data.subunit?.subunit_name}`}
+                              </Typography>
+                              <Typography fontSize={10} color="gray">
+                                {`(${data.location?.location_code}) - ${data.location?.location_name}`}
+                              </Typography>
+                              <Typography fontSize={10} color="gray">
+                                {`(${data.account_title?.account_title_code}) - ${data.account_title?.account_title_name}`}
+                              </Typography>
+                            </TableCell>
+                            <TableCell className="tbl-cell">
+                              {data.accountability === "Personal Issued" ? (
+                                <>
+                                  <Box>{data?.accountable?.general_info?.full_id_number}</Box>
+                                  <Box>{data?.accountable?.general_info?.full_name}</Box>
+                                </>
+                              ) : (
+                                "Common"
+                              )}
+                            </TableCell>
+                            <TableCell className="tbl-cell">
+                              <Typography fontWeight={600} fontSize="14px" color="secondary.main">
+                                {data.asset_description}
+                              </Typography>
+                              <Typography fontSize="12px" color="text.light">
+                                {data.asset_specification}
+                              </Typography>
+                            </TableCell>
+                            <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
+                            <TableCell className="tbl-cell">
+                              {data.cellphone_number === null ? "-" : data.cellphone_number}
+                            </TableCell>
+                            <TableCell className="tbl-cell">{data.additional_info}</TableCell>
+                            <TableCell className="tbl-cell">
+                              {data?.attachments?.letter_of_request && (
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize={12} fontWeight={600}>
+                                    Letter of Request:
+                                  </Typography>
+                                  {data?.attachments?.letter_of_request?.file_name}
+                                </Stack>
+                              )}
 
-            <TableContainer
-              className="mcontainer__th-body  mcontainer__wrapper"
-              sx={{ height: "calc(100vh - 290px)", pt: 0 }}
-            >
-              <Table className="mcontainer__table " stickyHeader>
-                <TableHead>
-                  <TableRow
-                    sx={{
-                      "& > *": {
-                        fontWeight: "bold!important",
-                        whiteSpace: "nowrap",
-                      },
-                    }}
-                  >
-                    <TableCell className="tbl-cell">{transactionData ? "Ref No." : "Index"}</TableCell>
-                    <TableCell className="tbl-cell">Type of Request</TableCell>
-                    <TableCell className="tbl-cell">Attachment Type</TableCell>
-                    <TableCell className="tbl-cell">Chart of Accounts</TableCell>
-                    <TableCell className="tbl-cell">Accountability</TableCell>
-                    <TableCell className="tbl-cell">Asset Information</TableCell>
-                    <TableCell className="tbl-cell text-center">Quantity</TableCell>
-                    <TableCell className="tbl-cell">Cellphone #</TableCell>
-                    <TableCell className="tbl-cell">Additional Info.</TableCell>
-                    <TableCell className="tbl-cell">Attachments</TableCell>
-                    <TableCell className="tbl-cell">Action</TableCell>
-                  </TableRow>
-                </TableHead>
+                              {data?.attachments?.quotation && (
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize={12} fontWeight={600}>
+                                    Quotation:
+                                  </Typography>
+                                  {data?.attachments?.quotation?.file_name}
+                                </Stack>
+                              )}
 
-                <TableBody>
-                  {(updateRequest && isTransactionLoading) || isRequestLoading ? (
-                    <LoadingData />
-                  ) : (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.data?.length === 0) ? (
-                    <NoRecordsFound request />
-                  ) : (
-                    <>
-                      {(transactionData ? transactionDataApi : addRequestAllApi?.data).map((data, index) => (
-                        <TableRow
-                          key={index}
-                          sx={{
-                            "&:last-child td, &:last-child th": {
-                              borderBottom: 0,
-                            },
-                          }}
-                        >
-                          <TableCell className="tbl-cell tr-cen-pad45 text-weight">
-                            {transactionData ? data?.reference_number : index + 1}
-                          </TableCell>
-                          <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
-                          <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
-                          <TableCell className="tbl-cell">
-                            <Typography fontSize={10} color="gray">
-                              {`(${data.company?.company_code}) - ${data.company?.company_name}`}
-                            </Typography>
-                            <Typography fontSize={10} color="gray">
-                              {`(${data.department?.department_code}) - ${data.department?.department_name}`}
-                            </Typography>
-                            <Typography fontSize={10} color="gray">
-                              {`(${data.subunit?.subunit_code}) - ${data.subunit?.subunit_name}`}
-                            </Typography>
-                            <Typography fontSize={10} color="gray">
-                              {`(${data.location?.location_code}) - ${data.location?.location_name}`}
-                            </Typography>
-                            <Typography fontSize={10} color="gray">
-                              {`(${data.account_title?.account_title_code}) - ${data.account_title?.account_title_name}`}
-                            </Typography>
-                          </TableCell>
-                          <TableCell className="tbl-cell">
-                            {data.accountability === "Personal Issued" ? (
-                              <>
-                                <Box>{data?.accountable?.general_info?.full_id_number}</Box>
-                                <Box>{data?.accountable?.general_info?.full_name}</Box>
-                              </>
-                            ) : (
-                              "Common"
-                            )}
-                          </TableCell>
-                          <TableCell className="tbl-cell">
-                            <Typography fontWeight={600} fontSize="14px" color="secondary.main">
-                              {data.asset_description}
-                            </Typography>
-                            <Typography fontSize="12px" color="text.light">
-                              {data.asset_specification}
-                            </Typography>
-                          </TableCell>
-                          <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
-                          <TableCell className="tbl-cell">
-                            {data.cellphone_number === null ? "-" : data.cellphone_number}
-                          </TableCell>
-                          <TableCell className="tbl-cell">{data.additional_info}</TableCell>
-                          <TableCell className="tbl-cell">
-                            {data?.attachments?.letter_of_request && (
-                              <Stack flexDirection="row" gap={1}>
-                                <Typography fontSize={12} fontWeight={600}>
-                                  Letter of Request:
-                                </Typography>
-                                {data?.attachments?.letter_of_request?.file_name}
-                              </Stack>
-                            )}
+                              {data?.attachments?.specification_form && (
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize={12} fontWeight={600}>
+                                    Specification:
+                                  </Typography>
+                                  {data?.attachments?.specification_form?.file_name}
+                                </Stack>
+                              )}
 
-                            {data?.attachments?.quotation && (
-                              <Stack flexDirection="row" gap={1}>
-                                <Typography fontSize={12} fontWeight={600}>
-                                  Quotation:
-                                </Typography>
-                                {data?.attachments?.quotation?.file_name}
-                              </Stack>
-                            )}
+                              {data?.attachments?.tool_of_trade && (
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize={12} fontWeight={600}>
+                                    Tool of Trade:
+                                  </Typography>
+                                  {data?.attachments?.tool_of_trade?.file_name}
+                                </Stack>
+                              )}
 
-                            {data?.attachments?.specification_form && (
-                              <Stack flexDirection="row" gap={1}>
-                                <Typography fontSize={12} fontWeight={600}>
-                                  Specification:
-                                </Typography>
-                                {data?.attachments?.specification_form?.file_name}
-                              </Stack>
-                            )}
+                              {data?.attachments?.other_attachments && (
+                                <Stack flexDirection="row" gap={1}>
+                                  <Typography fontSize={12} fontWeight={600}>
+                                    Other Attachment:
+                                  </Typography>
+                                  {data?.attachments?.other_attachments?.file_name}
+                                </Stack>
+                              )}
+                            </TableCell>
+                            <TableCell className="tbl-cell">
+                              <ActionMenu
+                                hideArchive
+                                setDisable={setDisable}
+                                status={data?.status}
+                                data={data}
+                                editRequest={
+                                  transactionDataApi[0]?.can_edit === 1 || transactionData?.status === "Return"
+                                    ? true
+                                    : false
+                                }
+                                onDeleteHandler={!transactionData && onDeleteHandler}
+                                onDeleteReferenceHandler={
+                                  transactionData &&
+                                  transactionData.item_count !== 1 &&
+                                  transactionDataApi.length !== 1 &&
+                                  onVoidReferenceHandler
 
-                            {data?.attachments?.tool_of_trade && (
-                              <Stack flexDirection="row" gap={1}>
-                                <Typography fontSize={12} fontWeight={600}>
-                                  Tool of Trade:
-                                </Typography>
-                                {data?.attachments?.tool_of_trade?.file_name}
-                              </Stack>
-                            )}
-
-                            {data?.attachments?.other_attachments && (
-                              <Stack flexDirection="row" gap={1}>
-                                <Typography fontSize={12} fontWeight={600}>
-                                  Other Attachment:
-                                </Typography>
-                                {data?.attachments?.other_attachments?.file_name}
-                              </Stack>
-                            )}
-                          </TableCell>
-                          <TableCell className="tbl-cell">
-                            <ActionMenu
-                              hideArchive
-                              setDisable={setDisable}
-                              status={data?.status}
-                              data={data}
-                              editRequest={
-                                transactionDataApi[0]?.can_edit === 1 || transactionData?.status === "Return"
-                                  ? true
-                                  : false
-                              }
-                              onDeleteHandler={!transactionData && onDeleteHandler}
-                              onDeleteReferenceHandler={
-                                transactionData &&
-                                transactionData.item_count !== 1 &&
-                                transactionDataApi.length !== 1 &&
-                                onVoidReferenceHandler
-
-                                // // transactionData
-                                // //   ? transactionData?.item_count !== 1
-                                // //     ? transactionDataApi.length !== 1
-                                // //       ? onVoidReferenceHandler
-                                // //       : false
-                                // //     : false
-                                // //   : false
-                              }
-                              onUpdateHandler={onUpdateHandler}
-                              onUpdateResetHandler={onUpdateResetHandler}
-                              setUpdateToggle={setUpdateToggle}
-                              // setShowEdit={setShowEdit}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            {/* {(isTransactionSuccess || isRequestSuccess) && (
+                                  // // transactionData
+                                  // //   ? transactionData?.item_count !== 1
+                                  // //     ? transactionDataApi.length !== 1
+                                  // //       ? onVoidReferenceHandler
+                                  // //       : false
+                                  // //     : false
+                                  // //   : false
+                                }
+                                onUpdateHandler={onUpdateHandler}
+                                onUpdateResetHandler={onUpdateResetHandler}
+                                setUpdateToggle={setUpdateToggle}
+                                // setShowEdit={setShowEdit}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              {/* {(isTransactionSuccess || isRequestSuccess) && (
               <CustomTablePagination
                 total={(transactionDataApiPage || addRequestAllApi)?.total}
                 success={isTransactionSuccess || isRequestSuccess}
@@ -1741,53 +1753,58 @@ const AddRequisition = (props) => {
                 onRowsPerPageChange={perPageHandler}
               />
             )} */}
-
-            {/* Buttons */}
-            <Stack flexDirection="row" justifyContent="space-between" alignItems={"center"}>
-              <Typography fontFamily="Anton, Impact, Roboto" fontSize="18px" color="secondary.main" sx={{ pt: "10px" }}>
-                {transactionData ? "Transactions" : "Added"} :{" "}
-                {transactionData ? transactionDataApi?.length : addRequestAllApi?.data?.length} request
-              </Typography>
-              <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
-                {/* {transactionData && transactionDataApi[0]?.can_edit === 1 && ( */}
-                {transactionDataApi[0]?.can_edit === 1 ? (
-                  <LoadingButton
-                    onClick={onSubmitHandler}
-                    variant="contained"
-                    size="small"
-                    color="secondary"
-                    startIcon={<SaveAlt color={"primary"} />}
-                    disabled={
-                      updateRequest
-                        ? isTransactionLoading
-                          ? disable
-                          : null
-                        : transactionDataApi.length === 0
-                        ? true
-                        : false
-                    }
-                    loading={isPostLoading || isUpdateLoading}
-                  >
-                    Resubmit
-                  </LoadingButton>
-                ) : (
-                  <LoadingButton
-                    onClick={onSubmitHandler}
-                    variant="contained"
-                    size="small"
-                    color="secondary"
-                    startIcon={<Create color={"primary"} />}
-                    disabled={isRequestLoading || addRequestAllApi?.data?.length === 0}
-                    loading={isPostLoading || isUpdateLoading}
-                  >
-                    Create
-                  </LoadingButton>
-                )}
+              {/* Buttons */}
+              <Stack flexDirection="row" justifyContent="space-between" alignItems={"center"}>
+                <Typography
+                  fontFamily="Anton, Impact, Roboto"
+                  fontSize="18px"
+                  color="secondary.main"
+                  sx={{ pt: "10px" }}
+                >
+                  {transactionData ? "Transactions" : "Added"} :{" "}
+                  {transactionData ? transactionDataApi?.length : addRequestAllApi?.data?.length} request
+                </Typography>
+                <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
+                  {/* {transactionData && transactionDataApi[0]?.can_edit === 1 && ( */}
+                  {transactionDataApi[0]?.can_edit === 1 ? (
+                    <LoadingButton
+                      onClick={onSubmitHandler}
+                      variant="contained"
+                      size="small"
+                      color="secondary"
+                      startIcon={<SaveAlt color={"primary"} />}
+                      disabled={
+                        updateRequest
+                          ? isTransactionLoading
+                            ? disable
+                            : null
+                          : transactionDataApi.length === 0
+                          ? true
+                          : false
+                      }
+                      loading={isPostLoading || isUpdateLoading}
+                    >
+                      Resubmit
+                    </LoadingButton>
+                  ) : (
+                    <LoadingButton
+                      onClick={onSubmitHandler}
+                      variant="contained"
+                      size="small"
+                      color="secondary"
+                      startIcon={<Create color={"primary"} />}
+                      disabled={isRequestLoading || addRequestAllApi?.data?.length === 0}
+                      loading={isPostLoading || isUpdateLoading}
+                    >
+                      Create
+                    </LoadingButton>
+                  )}
+                </Stack>
               </Stack>
-            </Stack>
+            </Box>
           </Box>
         </Box>
-      </Box>
+      )}
     </>
   );
 };
