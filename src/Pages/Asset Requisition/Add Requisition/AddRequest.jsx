@@ -364,6 +364,7 @@ const AddRequisition = (props) => {
 
   useEffect(() => {
     !transactionData && setDisable(false);
+    // deleteAllRequest();
   }, []);
 
   // useEffect(() => {
@@ -566,21 +567,24 @@ const AddRequisition = (props) => {
           setUpdateToggle(true);
           isTransactionRefetch();
           dispatch(requestContainerApi.util.invalidateTags(["RequestContainer"]));
-          reset();
-          // reset({
-          //   type_of_request_id: formData?.type_of_request_id,
-          //   attachment_type: formData?.attachment_type,
-          //   department_id: formData?.department_id,
-          //   subunit_id: formData?.subunit_id,
-          //   location_id: formData?.location_id,
-          //   account_title_id: formData?.account_title_id,
-          //   acquisition_details: formData?.acquisition_details,
-          //   letter_of_request: null,
-          //   quotation: null,
-          //   specification_form: null,
-          //   tool_of_trade: null,
-          //   other_attachments: null,
-          // });
+
+          transactionData
+            ? reset()
+            : reset({
+                type_of_request_id: formData?.type_of_request_id,
+                attachment_type: formData?.attachment_type,
+                company_id: formData?.company_id,
+                department_id: formData?.department_id,
+                subunit_id: formData?.subunit_id,
+                location_id: formData?.location_id,
+                account_title_id: formData?.account_title_id,
+                acquisition_details: formData?.acquisition_details,
+                letter_of_request: null,
+                quotation: null,
+                specification_form: null,
+                tool_of_trade: null,
+                other_attachments: null,
+              });
           // setShowEdit(false)
         })
         .catch((err) => {
@@ -599,12 +603,16 @@ const AddRequisition = (props) => {
         })
         .finally(() => {
           setIsLoading(false);
-
+          // updateRequest
+          //   ? reset()
+          //   :
           // reset({
+          //   company_id: formData?.company_id,
           //   department_id: formData?.department_id,
           //   subunit_id: formData?.subunit_id,
           //   location_id: formData?.location_id,
           //   account_title_id: formData?.account_title_id,
+          //   acquisition_details: formData?.acquisition_details,
           //   letter_of_request: null,
           //   quotation: null,
           //   specification_form: null,
@@ -615,7 +623,7 @@ const AddRequisition = (props) => {
     };
 
     const addConfirmation = () => {
-      return dispatch(
+      dispatch(
         openConfirm({
           icon: Warning,
           iconColor: "alert",
@@ -649,38 +657,64 @@ const AddRequisition = (props) => {
         })
       );
     };
+
     const validation = () => {
-      watch("department_id")?.id !=
-        (transactionDataApi || addRequestAllApi?.data).every((item) => item?.department?.id) &&
-        watch("subunit_id")?.id != (transactionDataApi || addRequestAllApi?.data).every((item) => item?.subunit?.id) &&
-        watch("location_id")?.id != (transactionDataApi || addRequestAllApi?.data).every((item) => item?.location?.id);
+      if (transactionData) {
+        console.log("UPDATE trigger");
+        if (transactionDataApi.every((item) => item?.department?.id !== watch("department_id")?.id)) {
+          console.log("change the department");
+          return true;
+        }
+        if (transactionDataApi.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
+          console.log("change the subunit");
+          return true;
+        }
+        if (transactionDataApi.every((item) => item?.location?.id !== watch("location_id")?.id)) {
+          console.log("change the location");
+          return true;
+        }
+        return false;
+      } else {
+        console.log("ADD trigger");
+        if (addRequestAllApi?.data.every((item) => item?.department?.id !== watch("department_id")?.id)) {
+          console.log("change the department");
+          return true;
+        }
+        if (addRequestAllApi?.data.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
+          console.log("change the subunit");
+          return true;
+        }
+        if (addRequestAllApi?.data.every((item) => item?.location?.id !== watch("location_id")?.id)) {
+          console.log("change the location");
+          return true;
+        }
+        return false;
+      }
     };
 
-    transactionData
-      ? validation
-        ? addConfirmation
-        : submitData()
+    console.log("transactionData", transactionData);
+
+    // transactionData
+    //   ? validation()
+    //     ? addConfirmation()
+    //     : submitData()
+    //   : addRequestAllApi?.data.length === 0
+    //   ? console.log("submit update") && submitData()
+    //   : validation()
+    //   ? addConfirmation()
+    //   : console.log("submit add") && submitData();
+
+    transactionData // check if update
+      ? validation() // if update check validation
+        ? addConfirmation() // if validation is true show confirmation
+        : submitData() // else submit the update
       : addRequestAllApi?.data.length === 0
       ? submitData()
-      : validation
-      ? submitData()
-      : null;
+      : validation()
+      ? addConfirmation()
+      : submitData();
+    // : console.log("submit add") && submitData();
   };
-
-  console.log("watch", watch("department_id")?.id);
-  // console.log(
-  //   "addRequestAllApi",
-  //   addRequestAllApi?.data.every((item) => console.log(item?.department?.id))
-  // );
-  // console.log("combined", watch("department_id")?.id) !=
-  //   addRequestAllApi?.data.every((item) => console.log(item?.department?.id));
-
-  // console.log("combined", watch("department_id")?.id) !=
-  //   addRequestAllApi?.data.every((item) => console.log(item?.department?.id));
-
-  // console.log(addRequestAllApi?.data);
-  // console.log("subunit", transactionDataApi?.subunit?.id);
-  // console.log("location", transactionDataApi?.location?.id);
 
   const onSubmitHandler = () => {
     dispatch(
@@ -1075,7 +1109,7 @@ const AddRequisition = (props) => {
 
   return (
     <>
-      {isTransactionError || isRequestError ? (
+      {errorRequest && errorTransaction ? (
         <ErrorFetching refetch={isRequestRefetch || isTransactionRefetch} error={errorRequest || errorTransaction} />
       ) : (
         <Box className="mcontainer" sx={{ height: "calc(100vh - 380px)" }}>
