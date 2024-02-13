@@ -2,6 +2,7 @@ import React from "react";
 import { Box } from "@mui/system";
 
 import {
+  Badge,
   Button,
   Card,
   CardActionArea,
@@ -21,22 +22,17 @@ const Cards = (props) => {
   const isSmallScreen = useMediaQuery("(max-width: 590px)");
 
   return (
-    <Card
-      className="parentSidebar__card"
-      onClick={() => navigate(`${data.path}`)}
-    >
+    <Card className="parentSidebar__card" onClick={() => navigate(`${data.path}`)}>
       <CardActionArea component="div" className="parentSidebar__action-area">
         <CardContent className="parentSidebar__content">
           {isSmallScreen ? null : (
-            <IconButton className="parentSidebar__icon">{data.icon}</IconButton>
+            <Badge color="error" badgeContent={data?.notification}>
+              <IconButton className="parentSidebar__icon">{data.icon}</IconButton>
+            </Badge>
           )}
           <Stack flexDirection="column" gap={0.2} alignItems="flex-start">
             <Stack flexDirection="row" alignItems="center" gap={2}>
-              {isSmallScreen ? (
-                <IconButton className="parentSidebar__icon">
-                  {data.icon}
-                </IconButton>
-              ) : null}
+              {isSmallScreen ? <IconButton className="parentSidebar__icon">{data.icon}</IconButton> : null}
 
               <Stack>
                 <Typography component="div" fontWeight="bold" color="secondary">
@@ -44,22 +40,14 @@ const Cards = (props) => {
                 </Typography>
 
                 {isSmallScreen ? (
-                  <Typography
-                    variant="span"
-                    color="text.secondary"
-                    fontSize="12px"
-                  >
+                  <Typography variant="span" color="text.secondary" fontSize="12px">
                     {data.description}
                   </Typography>
                 ) : null}
               </Stack>
             </Stack>
             {isSmallScreen ? null : (
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontSize="12px"
-              >
+              <Typography variant="body2" color="text.secondary" fontSize="12px">
                 {data.description}
               </Typography>
             )}

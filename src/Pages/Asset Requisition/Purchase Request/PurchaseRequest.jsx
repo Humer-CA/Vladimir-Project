@@ -10,8 +10,6 @@ const PurchaseRequest = () => {
 
   const { data: notifData, refetch } = useGetNotificationApiQuery();
 
-  console.log(notifData);
-
   useEffect(() => {
     refetch();
   }, [notifData]);

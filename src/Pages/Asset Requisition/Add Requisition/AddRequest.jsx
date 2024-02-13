@@ -622,6 +622,55 @@ const AddRequisition = (props) => {
         });
     };
 
+    // const validation = () => {
+    //   if (transactionData) {
+    //     console.log("UPDATE trigger");
+    //     if (transactionDataApi.every((item) => item?.department?.id !== watch("department_id")?.id)) {
+    //       console.log("change the department");
+    //       return true;
+    //     }
+    //     if (transactionDataApi.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
+    //       console.log("change the subunit");
+    //       return true;
+    //     }
+    //     if (transactionDataApi.every((item) => item?.location?.id !== watch("location_id")?.id)) {
+    //       console.log("change the location");
+    //       return true;
+    //     }
+    //     return false;
+    //   } else {
+    //     console.log("ADD trigger");
+    //     if (addRequestAllApi?.data.every((item) => item?.department?.id !== watch("department_id")?.id)) {
+    //       console.log("change the department");
+    //       return true;
+    //     }
+    //     if (addRequestAllApi?.data.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
+    //       console.log("change the subunit");
+    //       return true;
+    //     }
+    //     if (addRequestAllApi?.data.every((item) => item?.location?.id !== watch("location_id")?.id)) {
+    //       console.log("change the location");
+    //       return true;
+    //     }
+    //     return false;
+    //   }
+    // };
+    const validation = () => {
+      const data = transactionData ? transactionDataApi : addRequestAllApi?.data;
+      console.log(transactionData ? "UPDATE trigger" : "ADD trigger");
+
+      const fieldsToCheck = ["department_id", "subunit_id", "location_id"];
+
+      for (const field of fieldsToCheck) {
+        if (data.every((item) => item?.[field]?.id !== watch(field)?.id)) {
+          console.log(`change the ${field}`);
+          return true || { field };
+        }
+      }
+
+      return false;
+    };
+
     const addConfirmation = () => {
       dispatch(
         openConfirm({
@@ -637,13 +686,7 @@ const AddRequisition = (props) => {
                   fontWeight: "bold",
                 }}
               >
-                CHANGE THE{" "}
-                {watch("department_id")?.id != transactionDataApi.every((item) => item?.department?.id)
-                  ? "DEPARTMENT"
-                  : watch("subunit_id")?.id != transactionDataApi.every((item) => item?.subunit?.id)
-                  ? "SUBUNIT"
-                  : "LOCATION"}
-                ?
+                CHANGE THE COA?
               </Typography>
               <Typography>it will apply to all Items</Typography>
             </Box>
@@ -657,42 +700,6 @@ const AddRequisition = (props) => {
         })
       );
     };
-
-    const validation = () => {
-      if (transactionData) {
-        console.log("UPDATE trigger");
-        if (transactionDataApi.every((item) => item?.department?.id !== watch("department_id")?.id)) {
-          console.log("change the department");
-          return true;
-        }
-        if (transactionDataApi.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
-          console.log("change the subunit");
-          return true;
-        }
-        if (transactionDataApi.every((item) => item?.location?.id !== watch("location_id")?.id)) {
-          console.log("change the location");
-          return true;
-        }
-        return false;
-      } else {
-        console.log("ADD trigger");
-        if (addRequestAllApi?.data.every((item) => item?.department?.id !== watch("department_id")?.id)) {
-          console.log("change the department");
-          return true;
-        }
-        if (addRequestAllApi?.data.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
-          console.log("change the subunit");
-          return true;
-        }
-        if (addRequestAllApi?.data.every((item) => item?.location?.id !== watch("location_id")?.id)) {
-          console.log("change the location");
-          return true;
-        }
-        return false;
-      }
-    };
-
-    console.log("transactionData", transactionData);
 
     // transactionData
     //   ? validation()
@@ -1672,7 +1679,7 @@ const AddRequisition = (props) => {
                             <TableCell className="tbl-cell">
                               {data.accountability === "Personal Issued" ? (
                                 <>
-                                  <Box>{data?.accountable?.general_info?.full_id_number}</Box>
+                                  <Box>{data?.accountable?.general_info?.full_id_number || data?.accountable}</Box>
                                   <Box>{data?.accountable?.general_info?.full_name}</Box>
                                 </>
                               ) : (
