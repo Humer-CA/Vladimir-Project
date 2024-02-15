@@ -4,6 +4,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { openSidebar } from "../Redux/StateManagement/sidebar";
 import { toggleSidebar } from "../Redux/StateManagement/sidebar";
+import { notificationApi } from "../Redux/Query/Notification";
 
 //Img
 import VladimirLogoSmally from "../Img/VladimirSmally.png";
@@ -123,6 +124,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     refetch();
+    dispatch(notificationApi.util.invalidateTags(["Notif"]));
   }, [notifData]);
 
   const MENU_LIST = [
