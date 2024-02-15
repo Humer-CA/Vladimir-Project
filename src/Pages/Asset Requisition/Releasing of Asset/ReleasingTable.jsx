@@ -32,7 +32,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { Help, LibraryAdd, Report, ReportProblem, Visibility } from "@mui/icons-material";
+import { Help, LibraryAdd, Output, Report, ReportProblem, Visibility } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanStateSlice";
 
@@ -168,14 +168,17 @@ const ReleasingTable = (props) => {
         <>
           <Box className="mcontainer__wrapper">
             <MasterlistToolbar onStatusChange={setStatus} onSearchChange={setSearch} onSetPage={setPage} hideArchive />
-            <Button
-              variant="contained"
-              onClick={() => handleReleasing()}
-              size="small"
-              sx={{ position: "absolute", right: 0, top: -40 }}
-            >
-              Release
-            </Button>
+            {!released && (
+              <Button
+                variant="contained"
+                onClick={() => handleReleasing()}
+                size="small"
+                startIcon={<Output />}
+                sx={{ position: "absolute", right: 0, top: -40 }}
+              >
+                Release
+              </Button>
+            )}
             <Box>
               <TableContainer className="mcontainer__th-body-category">
                 <Table className="mcontainer__table" stickyHeader>
