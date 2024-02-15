@@ -852,6 +852,8 @@ const AddContainer = (props) => {
                       </TableSortLabel>
                     </TableCell>
 
+                    <TableCell className="tbl-cell">Acquisition Details</TableCell>
+
                     <TableCell className="tbl-cell">
                       <TableSortLabel>Attachment Type</TableSortLabel>
                     </TableCell>
@@ -905,6 +907,10 @@ const AddContainer = (props) => {
                             }}
                           >
                             <TableCell className="tbl-cell tr-cen-pad45 text-weight">{index + 1}</TableCell>
+
+                            <TableCell className="tbl-cell tr-cen-pad45">
+                              {data.type_of_request_id?.type_of_request_name}
+                            </TableCell>
 
                             <TableCell className="tbl-cell tr-cen-pad45">
                               {data.type_of_request_id?.type_of_request_name}

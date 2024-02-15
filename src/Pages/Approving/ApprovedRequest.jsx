@@ -161,6 +161,8 @@ const ApprovedRequest = (props) => {
                       Transaction No.
                     </TableCell>
 
+                    <TableCell className="tbl-cell-category">Acquisition Details</TableCell>
+
                     <TableCell className="tbl-cell-category">
                       <TableSortLabel
                         active={orderBy === `requestor`}
@@ -241,6 +243,10 @@ const ApprovedRequest = (props) => {
 
                             <TableCell className="tbl-cell-category ">
                               {data.asset_request?.transaction_number}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell-category ">
+                              {data.asset_request?.acquisition_details}
                             </TableCell>
 
                             <TableCell className="tbl-cell-category">

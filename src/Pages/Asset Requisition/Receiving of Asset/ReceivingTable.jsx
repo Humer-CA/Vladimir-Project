@@ -150,6 +150,8 @@ const ReceivingTable = (props) => {
                         </TableSortLabel>
                       </TableCell>
 
+                      <TableCell className="tbl-cell">Aqcuisition Details</TableCell>
+
                       {received && (
                         <TableCell className="tbl-cell">
                           <TableSortLabel
@@ -205,7 +207,8 @@ const ReceivingTable = (props) => {
                                 },
                               }}
                             >
-                              <TableCell className="tbl-cell text-weight">{data.transaction_number}</TableCell>
+                              <TableCell className="tbl-cell">{data.transaction_number}</TableCell>
+                              <TableCell className="tbl-cell text-weight">{data.acquisition_details}</TableCell>
                               {received && <TableCell className="tbl-cell ">{data.pr_number}</TableCell>}
                               <TableCell className="tbl-cell ">
                                 {`(${data.requestor?.employee_id}) - ${data.requestor?.firstname} ${data.requestor?.lastname}`}
