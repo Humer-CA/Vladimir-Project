@@ -24,6 +24,7 @@ import {
 
 import { LoadingButton } from "@mui/lab";
 import {
+  Badge,
   Box,
   Button,
   Checkbox,
@@ -61,6 +62,7 @@ import {
   Sync,
   SystemUpdateAltRounded,
 } from "@mui/icons-material";
+import { useGetNotificationApiQuery } from "../../Redux/Query/Notification";
 // import BarcodeScannerComponent from "react-qr-barcode-scanner";
 
 const MasterlistToolbar = (props) => {
@@ -116,6 +118,8 @@ const MasterlistToolbar = (props) => {
   };
 
   // const scanFile = useSelector((state) => state.scanFile);
+
+  const { data: notifData, refetch } = useGetNotificationApiQuery({ refetchOnMountOrArgChange: true });
 
   const permissions = useSelector((state) => state.userLogin?.user.role.access_permission);
 
@@ -291,18 +295,21 @@ const MasterlistToolbar = (props) => {
 
         <Box className="masterlist-toolbar__addBtn">
           {Boolean(onPrint) && permissions?.split(", ").includes("print-fa") && (
-            <Button
-              component={Link}
-              variant="outlined"
-              to={path}
-              onClick={handleOpenPrint}
-              startIcon={isSmallScreen ? null : <Print color="secondary" />}
-              size="small"
-              color="secondary"
-              sx={isSmallScreen ? { minWidth: "50px", px: 0 } : null}
-            >
-              {isSmallScreen ? <Print color="secondary" sx={{ fontSize: "20px" }} /> : "Print"}
-            </Button>
+            <Badge color="error" badgeContent={notifData?.toTagCount} variant="dot">
+              {" "}
+              <Button
+                component={Link}
+                variant="outlined"
+                to={path}
+                onClick={handleOpenPrint}
+                startIcon={isSmallScreen ? null : <Print color="secondary" />}
+                size="small"
+                color="secondary"
+                sx={isSmallScreen ? { minWidth: "50px", px: 0 } : null}
+              >
+                {isSmallScreen ? <Print color="secondary" sx={{ fontSize: "20px" }} /> : "Print"}
+              </Button>
+            </Badge>
           )}
           {onPrint && (
             <Menu
@@ -325,7 +332,9 @@ const MasterlistToolbar = (props) => {
 
               <MenuItem onClick={handleOpenPrintRequest} dense>
                 <ListItemIcon>
-                  <PrintRounded />
+                  <Badge color="error" badgeContent={notifData?.toTagCount}>
+                    <PrintRounded />
+                  </Badge>
                 </ListItemIcon>
                 <ListItemText>Print Request</ListItemText>
               </MenuItem>
