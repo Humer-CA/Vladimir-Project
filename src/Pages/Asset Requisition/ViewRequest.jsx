@@ -83,12 +83,12 @@ const ViewRequest = (props) => {
     { page: page, per_page: perPage, transaction_number: transactionData?.transaction_number },
     { refetchOnMountOrArgChange: true }
   );
-  console.log(transactionDataApi);
-  const {
-    data: nextDataApi,
-    isLoading: isNextDataLoading,
-    refetch: isNextDataRefetch,
-  } = useGetNextRequestQuery({ refetchOnMountOrArgChange: true });
+
+  // const {
+  //   data: nextDataApi,
+  //   isLoading: isNextDataLoading,
+  //   refetch: isNextDataRefetch,
+  // } = useGetNextRequestQuery({ refetchOnMountOrArgChange: true });
 
   // Table Sorting --------------------------------
   const [order, setOrder] = useState("desc");
@@ -345,7 +345,7 @@ const ViewRequest = (props) => {
             <Typography color="secondary.main">Back</Typography>
           </Button>
 
-          {transactionData?.pr_number === "-" &&
+          {/* {transactionData?.pr_number === "-" &&
             location.pathname === `/asset-requisition/purchase-request/${transactionData?.transaction_number}` && (
               <Button
                 variant="contained"
@@ -361,9 +361,9 @@ const ViewRequest = (props) => {
                   Add PR
                 </Typography>
               </Button>
-            )}
+            )} */}
 
-          {(transactionData?.pr_number !== "-" || transactionData?.pr_number === null) &&
+          {/* {(transactionData?.pr_number !== "-" || transactionData?.pr_number === null) &&
             location.pathname === `/asset-requisition/purchase-request/${transactionData?.transaction_number}` && (
               <Button
                 variant="contained"
@@ -392,7 +392,7 @@ const ViewRequest = (props) => {
                 Input
               </Typography>
             </Button>
-          )}
+          )} */}
 
           <Box className="request mcontainer__wrapper" p={2} pb={0}>
             {/* TABLE */}
@@ -418,6 +418,7 @@ const ViewRequest = (props) => {
                     >
                       <TableCell className="tbl-cell">Ref. No.</TableCell>
                       <TableCell className="tbl-cell">Type of Request</TableCell>
+                      <TableCell className="tbl-cell">Acquisition Details</TableCell>
                       {transactionData?.pr_number && <TableCell className="tbl-cell">PR Number</TableCell>}
                       <TableCell className="tbl-cell">Attachment Type</TableCell>
                       <TableCell className="tbl-cell">Chart of Accounts</TableCell>
@@ -448,6 +449,7 @@ const ViewRequest = (props) => {
                           >
                             <TableCell className="tbl-cell tr-cen-pad45 text-weight">{data.reference_number}</TableCell>
                             <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
+                            <TableCell className="tbl-cell">{data.acquisition_details}</TableCell>
                             <TableCell className="tbl-cell">{data.pr_number}</TableCell>
                             <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
                             <TableCell className="tbl-cell">
@@ -559,7 +561,7 @@ const ViewRequest = (props) => {
                   Transactions : {transactionData ? transactionDataApi.length : addRequestAllApi.length} request
                 </Typography>
 
-                {location.pathname === `/approving/${transactionData?.transaction_number}` && (
+                {/* {location.pathname === `/approving/${transactionData?.transaction_number}` && (
                   <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
                     <Button
                       variant="contained"
@@ -584,7 +586,7 @@ const ViewRequest = (props) => {
                       Return
                     </Button>
                   </Stack>
-                )}
+                )} */}
               </Stack>
             </Box>
           </Box>
