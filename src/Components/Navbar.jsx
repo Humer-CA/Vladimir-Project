@@ -8,10 +8,7 @@ import IpSetup from "./IpSetup";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
-import {
-  closeChangePassword,
-  openChangePassword,
-} from "../Redux/StateManagement/changePasswordSlice";
+import { closeChangePassword, openChangePassword } from "../Redux/StateManagement/changePasswordSlice";
 import { openIpSetupDialog } from "../Redux/StateManagement/ipSetupSlice";
 
 import { removeUserDetails } from "../Redux/StateManagement/userLogin";
@@ -26,14 +23,7 @@ import {
   Router,
 } from "@mui/icons-material";
 
-import {
-  MenuRounded,
-  Help,
-  Info,
-  Settings,
-  Logout,
-  Menu as MenuIcon,
-} from "@mui/icons-material";
+import { MenuRounded, Help, Info, Settings, Logout, Menu as MenuIcon } from "@mui/icons-material";
 
 import {
   Avatar,
@@ -92,17 +82,17 @@ const Navbar = () => {
   const userLogout = useNavigate();
   const location = useLocation();
 
-  const permissions = useSelector(
-    (state) => state.userLogin?.user.role.access_permission
-  );
+  const permissions = useSelector((state) => state.userLogin?.user.role.access_permission);
 
   const pathnames = location.pathname.split("/").filter((x) => x);
 
   // Menus
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElSettings, setAnchorElSettings] = useState(null);
+
   const open = Boolean(anchorEl);
   const openSettings = Boolean(anchorElSettings);
+
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -175,11 +165,7 @@ const Navbar = () => {
             {/* Settings --------------------------------------------- */}
             <Tooltip title="Settings" TransitionComponent={Zoom} arrow>
               <Box className="navbar__iconBtn">
-                <IconButton
-                  color="secondary"
-                  variant="contained"
-                  onClick={handleOpenSettings}
-                >
+                <IconButton color="secondary" variant="contained" onClick={handleOpenSettings}>
                   <Settings />
                 </IconButton>
               </Box>
@@ -203,10 +189,7 @@ const Navbar = () => {
           </Box>
         </Box>
 
-        <Breadcrumbs
-          classaria-label="breadcrumb"
-          sx={{ ml: 3, userSelect: "none" }}
-        >
+        <Breadcrumbs classaria-label="breadcrumb" sx={{ ml: 3, userSelect: "none" }}>
           {permissions.split(", ").includes("dashboard") && (
             <LinkRouter underline="hover" color="inherit" to="/">
               Home
@@ -218,23 +201,12 @@ const Navbar = () => {
             const breadcrumbName = value.replace(/-/g, " ");
 
             return last ? (
-              <Typography
-                color="secondary"
-                sx={{ fontWeight: "bold" }}
-                key={to}
-                textTransform="capitalize"
-              >
+              <Typography color="secondary" sx={{ fontWeight: "bold" }} key={to} textTransform="capitalize">
                 {/* {breadcrumbNameMap[to]} */}
                 {breadcrumbName}
               </Typography>
             ) : (
-              <LinkRouter
-                underline="hover"
-                color="inherit"
-                textTransform="capitalize"
-                to={to}
-                key={to}
-              >
+              <LinkRouter underline="hover" color="inherit" textTransform="capitalize" to={to} key={to}>
                 {/* {breadcrumbNameMap[to]} */}
                 {breadcrumbName}
               </LinkRouter>
@@ -278,13 +250,7 @@ const Navbar = () => {
       </Menu>
 
       {/* Account --------------------------------------------- */}
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Fade}
-        disablePortal
-      >
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose} TransitionComponent={Fade} disablePortal>
         <Box className="navbar__menu-settings">
           <Avatar
             sx={{
@@ -302,8 +268,7 @@ const Navbar = () => {
             }}
             color="text.light"
           >
-            {userDetails?.user.username.charAt(0).toUpperCase() +
-              userDetails?.user.username.slice(1)}
+            {userDetails?.user.username.charAt(0).toUpperCase() + userDetails?.user.username.slice(1)}
           </Typography>
         </Box>
 

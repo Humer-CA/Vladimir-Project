@@ -129,9 +129,10 @@ const schema = yup.object().shape({
   other_attachments: yup.mixed().label("Other Attachment"),
 });
 
-const AddRequisition = (props) => {
+const AdditionalCostRequest = (props) => {
   const [updateRequest, setUpdateRequest] = useState({
     id: null,
+    is_addcost: null,
     type_of_request_id: null,
     attachment_type: null,
 
@@ -622,56 +623,55 @@ const AddRequisition = (props) => {
         });
     };
 
-    const validation = () => {
-      if (transactionData) {
-        console.log("UPDATE trigger");
-        if (transactionDataApi.every((item) => item?.department?.id !== watch("department_id")?.id)) {
-          console.log("change the department");
-          return true;
-        }
-        if (transactionDataApi.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
-          console.log("change the subunit");
-          return true;
-        }
-        if (transactionDataApi.every((item) => item?.location?.id !== watch("location_id")?.id)) {
-          console.log("change the location");
-          return true;
-        }
-        return false;
-      } else {
-        console.log("ADD trigger");
-        if (addRequestAllApi?.data.every((item) => item?.department?.id !== watch("department_id")?.id)) {
-          console.log("change the department");
-          return true;
-        }
-        if (addRequestAllApi?.data.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
-          console.log("change the subunit");
-          return true;
-        }
-        if (addRequestAllApi?.data.every((item) => item?.location?.id !== watch("location_id")?.id)) {
-          console.log("change the location");
-          return true;
-        }
-        return false;
-      }
-    };
-
-    // !GPT Validation
     // const validation = () => {
-    //   const data = transactionData ? transactionDataApi : addRequestAllApi?.data;
-    //   console.log(transactionData ? "UPDATE trigger" : "ADD trigger");
-
-    //   const fieldsToCheck = ["department_id", "subunit_id", "location_id"];
-
-    //   for (const field of fieldsToCheck) {
-    //     if (data.every((item) => item?.[field]?.id !== watch(field)?.id)) {
-    //       console.log(`change the ${field}`);
-    //       return true || { field };
+    //   if (transactionData) {
+    //     console.log("UPDATE trigger");
+    //     if (transactionDataApi.every((item) => item?.department?.id !== watch("department_id")?.id)) {
+    //       console.log("change the department");
+    //       return true;
     //     }
+    //     if (transactionDataApi.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
+    //       console.log("change the subunit");
+    //       return true;
+    //     }
+    //     if (transactionDataApi.every((item) => item?.location?.id !== watch("location_id")?.id)) {
+    //       console.log("change the location");
+    //       return true;
+    //     }
+    //     return false;
+    //   } else {
+    //     console.log("ADD trigger");
+    //     if (addRequestAllApi?.data.every((item) => item?.department?.id !== watch("department_id")?.id)) {
+    //       console.log("change the department");
+    //       return true;
+    //     }
+    //     if (addRequestAllApi?.data.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
+    //       console.log("change the subunit");
+    //       return true;
+    //     }
+    //     if (addRequestAllApi?.data.every((item) => item?.location?.id !== watch("location_id")?.id)) {
+    //       console.log("change the location");
+    //       return true;
+    //     }
+    //     return false;
     //   }
-
-    //   return false;
     // };
+
+    const validation = () => {
+      const data = transactionData ? transactionDataApi : addRequestAllApi?.data;
+      console.log(transactionData ? "UPDATE trigger" : "ADD trigger");
+
+      const fieldsToCheck = ["department_id", "subunit_id", "location_id"];
+
+      for (const field of fieldsToCheck) {
+        if (data.every((item) => item?.[field]?.id !== watch(field)?.id)) {
+          console.log(`change the ${field}`);
+          return true || { field };
+        }
+      }
+
+      return false;
+    };
 
     const addConfirmation = () => {
       dispatch(
@@ -702,16 +702,6 @@ const AddRequisition = (props) => {
         })
       );
     };
-
-    // transactionData
-    //   ? validation()
-    //     ? addConfirmation()
-    //     : submitData()
-    //   : addRequestAllApi?.data.length === 0
-    //   ? console.log("submit update") && submitData()
-    //   : validation()
-    //   ? addConfirmation()
-    //   : console.log("submit add") && submitData();
 
     transactionData // check if update
       ? validation() // if update check validation
@@ -1628,7 +1618,6 @@ const AddRequisition = (props) => {
                     >
                       <TableCell className="tbl-cell">{transactionData ? "Ref No." : "Index"}</TableCell>
                       <TableCell className="tbl-cell">Type of Request</TableCell>
-                      <TableCell className="tbl-cell">Acquisition Details</TableCell>
                       <TableCell className="tbl-cell">Attachment Type</TableCell>
                       <TableCell className="tbl-cell">Chart of Accounts</TableCell>
                       <TableCell className="tbl-cell">Accountability</TableCell>
@@ -1661,7 +1650,6 @@ const AddRequisition = (props) => {
                               {transactionData ? data?.reference_number : index + 1}
                             </TableCell>
                             <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
-                            <TableCell className="tbl-cell">{data.acquisition_details}</TableCell>
                             <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
                             <TableCell className="tbl-cell">
                               <Typography fontSize={10} color="gray">

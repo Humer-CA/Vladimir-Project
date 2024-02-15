@@ -176,7 +176,7 @@ const AddReleasingInfo = (props) => {
             if (err?.status === 422) {
               dispatch(
                 openToast({
-                  message: err.data.message,
+                  message: err.data?.errors?.signature[0] || err.data.message,
                   duration: 5000,
                   variant: "error",
                 })

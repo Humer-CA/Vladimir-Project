@@ -212,7 +212,6 @@ const ViewRequestReceiving = () => {
                           Type of Request
                         </TableSortLabel>
                       </TableCell>
-
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `pr_number`}
@@ -222,7 +221,6 @@ const ViewRequestReceiving = () => {
                           PR Number
                         </TableSortLabel>
                       </TableCell>
-
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `reference_number`}
@@ -232,7 +230,6 @@ const ViewRequestReceiving = () => {
                           Ref Number
                         </TableSortLabel>
                       </TableCell>
-
                       <TableCell className="tbl-cell">
                         <TableSortLabel
                           active={orderBy === `reference_number`}
@@ -242,9 +239,7 @@ const ViewRequestReceiving = () => {
                           Acquisition Details
                         </TableSortLabel>
                       </TableCell>
-
                       <TableCell className="tbl-cell">Asset Information</TableCell>
-
                       <TableCell className="tbl-cell">Chart of Accounts</TableCell>
 
                       {transactionData?.received && (
@@ -260,37 +255,42 @@ const ViewRequestReceiving = () => {
                       )}
 
                       {!transactionData?.received && (
-                        <>
-                          <TableCell className="tbl-cell text-center">
-                            <TableSortLabel
-                              active={orderBy === `ordered`}
-                              direction={orderBy === `ordered` ? order : `asc`}
-                              onClick={() => onSort(`ordered`)}
-                            >
-                              Ordered
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell className="tbl-cell text-center">
-                            <TableSortLabel
-                              active={orderBy === `delivered`}
-                              direction={orderBy === `delivered` ? order : `asc`}
-                              onClick={() => onSort(`delivered`)}
-                            >
-                              Delivered
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell className="tbl-cell text-center">
-                            <TableSortLabel
-                              active={orderBy === `remaining`}
-                              direction={orderBy === `remaining` ? order : `asc`}
-                              onClick={() => onSort(`remaining`)}
-                            >
-                              Remaining
-                            </TableSortLabel>
-                          </TableCell>
-                          <TableCell className="tbl-cell text-center">Action</TableCell>{" "}
-                        </>
+                        <TableCell className="tbl-cell text-center">
+                          <TableSortLabel
+                            active={orderBy === `ordered`}
+                            direction={orderBy === `ordered` ? order : `asc`}
+                            onClick={() => onSort(`ordered`)}
+                          >
+                            Ordered
+                          </TableSortLabel>
+                        </TableCell>
                       )}
+
+                      {!transactionData?.received && (
+                        <TableCell className="tbl-cell text-center">
+                          <TableSortLabel
+                            active={orderBy === `delivered`}
+                            direction={orderBy === `delivered` ? order : `asc`}
+                            onClick={() => onSort(`delivered`)}
+                          >
+                            Delivered
+                          </TableSortLabel>
+                        </TableCell>
+                      )}
+
+                      {!transactionData?.received && (
+                        <TableCell className="tbl-cell text-center">
+                          <TableSortLabel
+                            active={orderBy === `remaining`}
+                            direction={orderBy === `remaining` ? order : `asc`}
+                            onClick={() => onSort(`remaining`)}
+                          >
+                            Remaining
+                          </TableSortLabel>
+                        </TableCell>
+                      )}
+
+                      <TableCell className="tbl-cell text-center">Action</TableCell>
                     </TableRow>
                   </TableHead>
 
@@ -364,25 +364,33 @@ const ViewRequestReceiving = () => {
                               )}
 
                               {!transactionData?.received && (
-                                <>
-                                  <TableCell onClick={() => handleTableData(data)} className="tbl-cell tr-cen-pad45">
-                                    {data?.ordered}
-                                  </TableCell>
-                                  <TableCell onClick={() => handleTableData(data)} className="tbl-cell tr-cen-pad45">
-                                    {data?.delivered}
-                                  </TableCell>
-                                  <TableCell onClick={() => handleTableData(data)} className="tbl-cell tr-cen-pad45">
-                                    {data?.remaining}
-                                  </TableCell>
-                                  <TableCell className="tbl-cell text-center">
-                                    <IconButton
-                                      onClick={() => onRemoveHandler(data?.id)}
-                                      sx={{ color: "error.main", ":hover": { color: "red" } }}
-                                    >
-                                      <RemoveCircle />
-                                    </IconButton>
-                                  </TableCell>
-                                </>
+                                <TableCell onClick={() => handleTableData(data)} className="tbl-cell tr-cen-pad45">
+                                  {data?.ordered}
+                                </TableCell>
+                              )}
+
+                              {!transactionData?.received && (
+                                <TableCell onClick={() => handleTableData(data)} className="tbl-cell tr-cen-pad45">
+                                  {data?.delivered}
+                                </TableCell>
+                              )}
+
+                              {!transactionData?.received && (
+                                <TableCell onClick={() => handleTableData(data)} className="tbl-cell tr-cen-pad45">
+                                  {data?.remaining}
+                                </TableCell>
+                              )}
+
+                              {!transactionData?.received && (
+                                <TableCell className="tbl-cell text-center">
+                                  <IconButton
+                                    disabled={data?.remaining === 0}
+                                    onClick={() => onRemoveHandler(data?.id)}
+                                    sx={{ color: "error.main", ":hover": { color: "red" } }}
+                                  >
+                                    <RemoveCircle />
+                                  </IconButton>
+                                </TableCell>
                               )}
                             </TableRow>
                           ))}

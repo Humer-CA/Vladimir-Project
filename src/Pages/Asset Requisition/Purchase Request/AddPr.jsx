@@ -21,6 +21,7 @@ import {
 } from "../../../Redux/Query/Request/PurchaseRequest";
 import { useGetCompanyAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Company";
 import { useNavigate } from "react-router-dom";
+import CustomTextField from "../../../Components/Reusable/CustomTextField";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -144,11 +145,25 @@ const AddPr = (props) => {
             )}
           />
 
-          <CustomNumberField
+          {/* -----------------NumberField---------------------- */}
+          {/* <CustomNumberField
             control={control}
             name="pr_number"
             label="PR Number"
             type="text"
+            color="secondary"
+            size="small"
+            error={!!errors?.pr_number}
+            helperText={errors?.pr_number?.message}
+            fullWidth
+          /> */}
+
+          {/* -----------------NumberField---------------------- */}
+          <CustomTextField
+            control={control}
+            name="pr_number"
+            label="PR Number"
+            // type="text"
             color="secondary"
             size="small"
             error={!!errors?.pr_number}

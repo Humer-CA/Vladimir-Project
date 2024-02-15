@@ -17,10 +17,7 @@ export const ImportingData = ({ text }) => {
         overflow: "hidden",
       }}
     >
-      <Lottie
-        animationData={ImportLoading}
-        style={{ padding: 0, margin: 0, marginTop: "-40px" }}
-      />
+      <Lottie animationData={ImportLoading} style={{ padding: 0, margin: 0, marginTop: "-40px" }} />
       {text && (
         <Typography fontSize="2rem" color="white" mt={2}>
           {text ? text : ""}
@@ -33,22 +30,20 @@ export const ImportingData = ({ text }) => {
 export const LoadingData = ({ category }) => {
   return (
     <>
-      <TableRow >
-        <TableCell colSpan={999} rowSpan={999} sx={{
-          borderBottom: "none",
-          height: "calc(100vh - 360px)"
-        }}>
-
-          <Box
-            className="tblLoading"
-            sx={category ? { marginTop: "-20px!important" } : null}>
-            <Lottie
-              animationData={LoadingAnimation} style={category ? { marginTop: "-20px!important" } : null} />
+      <TableRow>
+        <TableCell
+          colSpan={999}
+          rowSpan={999}
+          sx={{
+            borderBottom: "none",
+            height: "calc(100vh - 360px)",
+          }}
+        >
+          <Box className="tblLoading" sx={category ? { marginTop: "-20px!important" } : null}>
+            <Lottie animationData={LoadingAnimation} style={category ? { marginTop: "-20px!important" } : null} />
           </Box>
-
-
         </TableCell>
-      </TableRow >
+      </TableRow>
     </>
   );
 };
