@@ -293,7 +293,47 @@ const RequestMonitoring = () => {
                                 </Tooltip>
                               </TableCell>
                               <TableCell className="tbl-cell tr-cen-pad45">
-                                {data.status !== "Returned" ? (
+                                {data.status === "Returned" ? (
+                                  <Chip
+                                    placement="top"
+                                    onClick={() => handleViewTimeline(data)}
+                                    size="small"
+                                    variant="filled"
+                                    sx={{
+                                      backgroundColor: "error.light",
+                                      color: "white",
+                                      fontSize: "0.7rem",
+                                      px: 1,
+                                      ":hover": { backgroundColor: "error.dark" },
+                                    }}
+                                    label={`${data.status}`}
+                                  />
+                                ) : data.status === "Claimed" ? (
+                                  <Tooltip
+                                    placement="top"
+                                    title={`${data?.current_approver?.firstname} 
+                                      ${data?.current_approver?.lastname}`}
+                                    arrow
+                                  >
+                                    <Chip
+                                      onClick={() => handleViewTimeline(data)}
+                                      size="small"
+                                      variant="filled"
+                                      sx={{
+                                        borderColor: "primary.main",
+                                        color: "white",
+                                        fontSize: "0.7rem",
+                                        px: 1,
+                                        cursor: "pointer",
+                                        backgroundColor: "success.dark",
+                                        ":hover": {
+                                          backgroundColor: "success.dark",
+                                        },
+                                      }}
+                                      label={`${data.status}`}
+                                    />
+                                  </Tooltip>
+                                ) : (
                                   <Tooltip
                                     placement="top"
                                     title={`${data?.current_approver?.firstname} 
@@ -318,21 +358,6 @@ const RequestMonitoring = () => {
                                       label={`${data.status}`}
                                     />
                                   </Tooltip>
-                                ) : (
-                                  <Chip
-                                    placement="top"
-                                    onClick={() => handleViewTimeline(data)}
-                                    size="small"
-                                    variant="filled"
-                                    sx={{
-                                      backgroundColor: "error.light",
-                                      color: "white",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                      ":hover": { backgroundColor: "error.dark" },
-                                    }}
-                                    label={`${data.status}`}
-                                  />
                                 )}
                               </TableCell>
                               <TableCell className="tbl-cell tr-cen-pad45">
