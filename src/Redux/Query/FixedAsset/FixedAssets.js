@@ -87,36 +87,37 @@ export const fixedAssetApi = createApi({
       }),
     }),
 
+    // * -------------- Stalwart Printing --------------------
+    // postPrintApi: builder.mutation({
+    //   query: ({ ip, ...params }) => {
+    //     if (ip === `210.5.110.212`) {
+    //       return {
+    //         url: `http://stalwart:8069/VladimirPrinting/public/index.php/api/fixed-asset/barcode`,
+    //         method: "POST",
+    //         body: params,
+    //       };
+    //     } else {
+    //       return {
+    //         url: `http://127.0.0.1:80/VladimirPrinting/public/index.php/api/fixed-asset/barcode`,
+    //         method: "POST",
+    //         body: params,
+    //       };
+    //     }
+    //   },
+    //   invalidatesTags: ["FixedAsset"],
+    // }),
+
+    // * -------------- Local Printing --------------------
     postPrintApi: builder.mutation({
-      query: ({ ip, ...params }) => {
-        if (ip === `210.5.110.212`) {
-          return {
-            url: `http://stalwart:8069/VladimirPrinting/public/index.php/api/fixed-asset/barcode`,
-            method: "POST",
-            body: params,
-          };
-        } else {
-          return {
-            url: `http://127.0.0.1:80/VladimirPrinting/public/index.php/api/fixed-asset/barcode`,
-            method: "POST",
-            body: params,
-          };
-        }
+      query: (params) => {
+        return {
+          url: `http://10.10.10.11:8000/api/fixed-asset/barcode`,
+          method: "POST",
+          body: params,
+        };
       },
       invalidatesTags: ["FixedAsset"],
     }),
-
-    // -------------- Local Printing --------------------
-    // postPrintApi: builder.mutation({
-    //     query: (params) => {
-    //         return {
-    //             url: `http://10.10.10.11:8000/api/fixed-asset/barcode`,
-    //             method: "POST",
-    //             body: params
-    //         }
-    //     },
-    //     invalidatesTags: ["FixedAsset"]
-    // }),
 
     postLocalPrintApi: builder.mutation({
       query: (params) => ({
