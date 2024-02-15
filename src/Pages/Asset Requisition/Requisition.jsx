@@ -24,7 +24,12 @@ import {
   Button,
   Chip,
   Dialog,
+  Fade,
   IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
   Table,
   TableBody,
   TableCell,
@@ -37,7 +42,16 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { Help, IosShareRounded, LibraryAdd, Report, ReportProblem, Visibility } from "@mui/icons-material";
+import {
+  Help,
+  HelpTwoTone,
+  IosShareRounded,
+  LibraryAdd,
+  Money,
+  Report,
+  ReportProblem,
+  Visibility,
+} from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
 import RequestTimeline from "./RequestTimeline";
@@ -194,8 +208,16 @@ const Requisition = () => {
     dispatch(closeDialog);
   };
 
-  const handleAddRequisition = () => {
-    navigate(`add-requisition`);
+  // * Add Button Settings
+  const [anchorElAdd, setAnchorElAdd] = useState(null);
+  const openAdd = Boolean(anchorElAdd);
+
+  const handleOpenAdd = (event) => {
+    setAnchorElAdd(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorElAdd(null);
   };
 
   const handleEditRequisition = (data) => {
@@ -226,7 +248,7 @@ const Requisition = () => {
 
             <Box className="masterlist-toolbar__addBtn" sx={{ mt: 0.25 }}>
               <Button
-                onClick={handleAddRequisition}
+                onClick={handleOpenAdd}
                 variant="contained"
                 startIcon={isSmallScreen ? null : <LibraryAdd />}
                 size="small"
@@ -234,6 +256,28 @@ const Requisition = () => {
               >
                 {isSmallScreen ? <LibraryAdd color="black" sx={{ fontSize: "20px" }} /> : "Add"}
               </Button>
+
+              <Menu
+                anchorEl={anchorElAdd}
+                open={openAdd}
+                onClose={handleClose}
+                TransitionComponent={Fade}
+                disablePortal
+              >
+                <MenuItem onClick={() => navigate(`add-requisition`)} dense>
+                  <ListItemIcon>
+                    <HelpTwoTone />
+                  </ListItemIcon>
+                  <ListItemText>Request</ListItemText>
+                </MenuItem>
+
+                <MenuItem onClick={() => navigate(`add-requisition`)} dense>
+                  <ListItemIcon>
+                    <Money />
+                  </ListItemIcon>
+                  <ListItemText>Additional Cost</ListItemText>
+                </MenuItem>
+              </Menu>
             </Box>
 
             <Box>
@@ -342,8 +386,48 @@ const Requisition = () => {
                                   </IconButton>
                                 </Tooltip>
                               </TableCell>
-                              <TableCell className="tbl-cell text-center">
-                                {data.status !== "Returned" ? (
+                              <TableCell className="tbl-cell tr-cen-pad45">
+                                {data.status === "Returned" ? (
+                                  <Chip
+                                    placement="top"
+                                    onClick={() => handleViewTimeline(data)}
+                                    size="small"
+                                    variant="filled"
+                                    sx={{
+                                      backgroundColor: "error.light",
+                                      color: "white",
+                                      fontSize: "0.7rem",
+                                      px: 1,
+                                      ":hover": { backgroundColor: "error.dark" },
+                                    }}
+                                    label={`${data.status}`}
+                                  />
+                                ) : data.status === "Claimed" ? (
+                                  <Tooltip
+                                    placement="top"
+                                    title={`${data?.current_approver?.firstname} 
+                                      ${data?.current_approver?.lastname}`}
+                                    arrow
+                                  >
+                                    <Chip
+                                      onClick={() => handleViewTimeline(data)}
+                                      size="small"
+                                      variant="filled"
+                                      sx={{
+                                        borderColor: "primary.main",
+                                        color: "white",
+                                        fontSize: "0.7rem",
+                                        px: 1,
+                                        cursor: "pointer",
+                                        backgroundColor: "success.dark",
+                                        ":hover": {
+                                          backgroundColor: "success.dark",
+                                        },
+                                      }}
+                                      label={`${data.status}`}
+                                    />
+                                  </Tooltip>
+                                ) : (
                                   <Tooltip
                                     placement="top"
                                     title={`${data?.current_approver?.firstname} 
@@ -368,23 +452,6 @@ const Requisition = () => {
                                       label={`${data.status}`}
                                     />
                                   </Tooltip>
-                                ) : (
-                                  <Chip
-                                    placement="top"
-                                    onClick={() => handleViewTimeline(data)}
-                                    size="small"
-                                    variant="filled"
-                                    sx={{
-                                      backgroundColor: "error.light",
-                                      // borderColor: "#fc3e3e34",
-                                      // color: "error.light",
-                                      color: "white",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                      ":hover": { backgroundColor: "error.dark" },
-                                    }}
-                                    label={`${data.status}`}
-                                  />
                                 )}
                               </TableCell>
                               <TableCell className="tbl-cell tr-cen-pad45">
