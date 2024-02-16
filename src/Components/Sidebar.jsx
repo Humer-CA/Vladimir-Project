@@ -120,11 +120,11 @@ const Sidebar = () => {
     setReportCollapse(false);
   };
 
-  const { data: notifData, refetch } = useGetNotificationApiQuery({ refetchOnMountOrArgChange: true });
+  const { data: notifData, refetch } = useGetNotificationApiQuery(null, { refetchOnMountOrArgChange: true });
+  // console.log("notif", notifData);
 
   useEffect(() => {
     refetch();
-    dispatch(notificationApi.util.invalidateTags(["Notif"]));
   }, [notifData]);
 
   const MENU_LIST = [

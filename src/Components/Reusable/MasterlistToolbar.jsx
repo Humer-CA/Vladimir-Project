@@ -119,7 +119,7 @@ const MasterlistToolbar = (props) => {
 
   // const scanFile = useSelector((state) => state.scanFile);
 
-  const { data: notifData, refetch } = useGetNotificationApiQuery({ refetchOnMountOrArgChange: true });
+  const { data: notifData, refetch } = useGetNotificationApiQuery(null, { refetchOnMountOrArgChange: true });
 
   const permissions = useSelector((state) => state.userLogin?.user.role.access_permission);
 

@@ -25,6 +25,7 @@ import { usePutAssetReleasingMutation } from "../../../Redux/Query/Request/Asset
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
 import { Info, Refresh, Save } from "@mui/icons-material";
 import { closeConfirm, onLoading, openConfirm } from "../../../Redux/StateManagement/confirmSlice";
+import { notificationApi } from "../../../Redux/Query/Notification";
 
 const schema = yup.object().shape({
   warehouse_number_id: yup.array(),
@@ -120,7 +121,7 @@ const AddReleasingInfo = (props) => {
     setValue("warehouse_number_id", warehouseNumber?.warehouse_number_id);
   }, [warehouseNumber]);
 
-  console.log(watch("warehouse_number_id"));
+  // console.log(watch("warehouse_number_id"));
 
   const handleCloseDialog = () => {
     dispatch(closeDialog());
@@ -171,6 +172,9 @@ const AddReleasingInfo = (props) => {
                 duration: 5000,
               })
             );
+
+            // dispatch(notificationApi.util.resetApiState());
+            dispatch(notificationApi.util.invalidateTags(["Notif"]));
             dispatch(closeConfirm());
           } catch (err) {
             if (err?.status === 422) {

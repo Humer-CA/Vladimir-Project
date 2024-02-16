@@ -15,7 +15,7 @@ const AssetRequisition = () => {
   const location = useLocation();
   const isSmallScreen = useMediaQuery("(max-width: 590px)");
   // console.log(location.pathname);
-  const { data: notifData, refetch } = useGetNotificationApiQuery({ refetchOnMountOrArgChange: true });
+  const { data: notifData, refetch } = useGetNotificationApiQuery(null, { refetchOnMountOrArgChange: true });
 
   useEffect(() => {
     refetch();

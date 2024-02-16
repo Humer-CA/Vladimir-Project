@@ -161,6 +161,7 @@ const PendingRequest = (props) => {
 
             dispatch(closeConfirm());
             // notifRefetch();
+            // dispatch(notificationApi.util.resetApiState());
             dispatch(notificationApi.util.invalidateTags(["Notif"]));
           } catch (err) {
             if (err?.status === 422) {

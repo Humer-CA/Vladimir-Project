@@ -21,6 +21,7 @@ import CustomDatePicker from "../../../Components/Reusable/CustomDatePicker";
 import CustomAutoComplete from "../../../Components/Reusable/CustomAutoComplete";
 import CustomNumberField from "../../../Components/Reusable/CustomNumberField";
 import { useGetSupplierAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Supplier";
+import { notificationApi } from "../../../Redux/Query/Notification";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -150,7 +151,8 @@ const ReceivingTable = (props) => {
                 duration: 5000,
               })
             );
-
+            // dispatch(notificationApi.util.resetApiState());
+            dispatch(notificationApi.util.invalidateTags(["Notif"]));
             dispatch(closeDialog());
             dispatch(closeConfirm());
             navigate(-1);
@@ -178,8 +180,6 @@ const ReceivingTable = (props) => {
       })
     );
   };
-
-  watch("supplier_id");
 
   return (
     <>
@@ -262,6 +262,15 @@ const ReceivingTable = (props) => {
 
                 <Stack flexDirection="row" gap={1}>
                   <Typography fontSize={14} fontWeight={600} noWrap>
+                    Quantity Remaining:
+                  </Typography>
+                  <Typography fontSize={14} noWrap>
+                    {newData?.remaining}
+                  </Typography>
+                </Stack>
+
+                <Stack flexDirection="row" gap={1}>
+                  <Typography fontSize={14} fontWeight={600} noWrap>
                     UOM:
                   </Typography>
                   <Typography fontSize={14}>EACH</Typography>
@@ -294,6 +303,16 @@ const ReceivingTable = (props) => {
                     fontSize={14}
                     noWrap
                   >{`(${newData?.department?.department_code}) - ${newData?.department?.department_name}`}</Typography>
+                </Stack>
+
+                <Stack flexDirection="row" gap={1}>
+                  <Typography fontSize={14} fontWeight={600} noWrap>
+                    Subunit :
+                  </Typography>
+                  <Typography
+                    fontSize={14}
+                    noWrap
+                  >{`(${newData?.subunit?.subunit_code}) - ${newData?.subunit?.subunit_name}`}</Typography>
                 </Stack>
 
                 <Stack flexDirection="row" gap={1}>
@@ -383,13 +402,12 @@ const ReceivingTable = (props) => {
                 name="delivery_date"
                 label="Delivery Date"
                 size="small"
-                views={["year", "month", "day"]}
-                openTo="year"
                 error={!!errors?.delivery_date}
                 helperText={errors?.delivery_date?.message}
                 maxDate={new Date()}
                 reduceAnimations
               />
+
               <CustomNumberField
                 control={control}
                 name="quantity_delivered"

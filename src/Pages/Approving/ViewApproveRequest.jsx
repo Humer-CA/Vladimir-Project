@@ -85,7 +85,7 @@ const ViewApproveRequest = (props) => {
     data: nextDataApi,
     isLoading: isNextDataLoading,
     refetch: isNextDataRefetch,
-  } = useGetNextRequestQuery({ refetchOnMountOrArgChange: true });
+  } = useGetNextRequestQuery(null, { refetchOnMountOrArgChange: true });
 
   const [downloadAttachment] = useLazyDlAttachmentQuery({ attachment: attachment, id: approveRequestData?.id });
 

@@ -67,6 +67,7 @@ import ViewRequestPr from "./Pages/Asset Requisition/Purchase Request/ViewReques
 import ViewApproveRequest from "./Pages/Approving/ViewApproveRequest";
 import ViewRequestReleasing from "./Pages/Asset Requisition/Releasing of Asset/ViewRequestReleasing";
 import ReleasingOfAsset from "./Pages/Asset Requisition/Releasing of Asset/ReleasingOfAsset";
+import AdditionalCostRequest from "./Pages/Asset Requisition/Add Requisition/AdditionalCostRequest";
 
 const router = createBrowserRouter([
   {
@@ -236,6 +237,7 @@ const router = createBrowserRouter([
                 element: <Requisition />,
               },
 
+              // Request
               {
                 path: "requisition/add-requisition",
                 element: <AddRequisition />,
@@ -244,6 +246,17 @@ const router = createBrowserRouter([
                 path: "requisition/add-requisition/:transaction_number",
                 element: <AddRequisition />,
               },
+
+              // Additional Cost
+              {
+                path: "requisition/additional-cost",
+                element: <AdditionalCostRequest />,
+              },
+              {
+                path: "requisition/additional-cost/:transaction_number",
+                element: <AdditionalCostRequest />,
+              },
+
               {
                 path: "purchase-request",
                 element: <PurchaseRequest />,
