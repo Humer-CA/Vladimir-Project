@@ -192,7 +192,8 @@ const schema = yup.object().shape({
 
   voucher: yup.string(),
   voucher_date: yup.string().nullable().label("Voucher Date").typeError("Voucher Date is a required field"),
-  receipt: yup.string(),
+  receipt: yup.string().required(),
+  po_number: yup.string().required(),
 
   quantity: yup.number().required().typeError("Quantity is a required field"),
 
@@ -1312,6 +1313,19 @@ const AddCost = (props) => {
             size="small"
             error={!!errors?.receipt}
             helperText={errors?.receipt?.message}
+            fullWidth
+          />
+
+          <CustomTextField
+            autoComplete="off"
+            control={control}
+            name="po_number"
+            label="Purchase Order #"
+            type="text"
+            color="secondary"
+            size="small"
+            error={!!errors?.po_number}
+            helperText={errors?.po_number?.message}
             fullWidth
           />
 

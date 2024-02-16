@@ -202,6 +202,8 @@ const schema = yup.object().shape({
     .required()
     .label("Asset Movement Status"),
 
+  po_number: yup.string().required().label("PO Number"),
+
   depreciation_status_id: yup
     .string()
     .transform((value) => {
@@ -422,6 +424,7 @@ const AddFixedAsset = (props) => {
       voucher: "",
       voucher_date: null,
       receipt: "",
+      po_number: null,
       quantity: 1,
       asset_status_id: null,
       cycle_count_status_id: null,
@@ -571,6 +574,7 @@ const AddFixedAsset = (props) => {
       setValue("voucher", data.voucher);
       setValue("voucher_date", data.voucher_date === "-" ? null : voucherDateFormat);
       setValue("receipt", data.receipt);
+      setValue("po_number", data.po_number);
       setValue("quantity", data.quantity);
       setValue("asset_status_id", data.asset_status);
       setValue("cycle_count_status_id", data.cycle_count_status);
@@ -579,7 +583,7 @@ const AddFixedAsset = (props) => {
       setValue("depreciation_method", data.depreciation_method);
       setValue("est_useful_life", data.est_useful_life);
       setValue("depreciation_status_id", data.depreciation_status);
-      setValue("release_date", data.voucher_date === "-" ? null : releaseDateFormat);
+      setValue("release_date", data.release_date === "-" ? null : releaseDateFormat);
       setValue("acquisition_cost", data.acquisition_cost);
       setValue("months_depreciated", data.months_depreciated);
       setValue("scrap_value", data.scrap_value);
@@ -671,7 +675,7 @@ const AddFixedAsset = (props) => {
 
   // console.log(errors);
   // console.log(watch("depreciation_method"));
-  // console.log(data);
+  console.log(data);
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} className="addFixedAsset">
@@ -1257,6 +1261,19 @@ const AddFixedAsset = (props) => {
             size="small"
             error={!!errors?.receipt}
             helperText={errors?.receipt?.message}
+            fullWidth
+          />
+
+          <CustomTextField
+            autoComplete="off"
+            control={control}
+            name="po_number"
+            label="Purchase Order #"
+            type="text"
+            color="secondary"
+            size="small"
+            error={!!errors?.po_number}
+            helperText={errors?.po_number?.message}
             fullWidth
           />
 
