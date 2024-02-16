@@ -66,6 +66,7 @@ import {
 } from "@mui/icons-material";
 import axios from "axios";
 import { closeConfirm, onLoading, openConfirm } from "../Redux/StateManagement/confirmSlice";
+import CustomTablePagination from "./Reusable/CustomTablePagination";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -696,7 +697,7 @@ const IpSetup = (props) => {
                   ) : (
                     <>
                       {isIpSuccess &&
-                        [...ipData.data.data].sort(comparator(order, orderBy)).map((data) => (
+                        [...ipData.data].sort(comparator(order, orderBy)).map((data) => (
                           <TableRow
                             key={data.id}
                             hover={true}
@@ -814,7 +815,15 @@ const IpSetup = (props) => {
             </TableContainer>
 
             <Box className="mcontainer__pagination">
-              <TablePagination
+              <CustomTablePagination
+                total={ipData?.total}
+                success={isIpSuccess}
+                current_page={ipData?.current_page}
+                per_page={ipData?.per_page}
+                onPageChange={pageHandler}
+                onRowsPerPageChange={perPageHandler}
+              />
+              {/* <TablePagination
                 sx={{ padding: "0" }}
                 rowsPerPageOptions={[
                   5,
@@ -822,7 +831,7 @@ const IpSetup = (props) => {
                   15,
                   {
                     label: "All",
-                    value: parseInt(ipData?.data?.data?.total),
+                    value: parseInt(ipData?.data?.total),
                   },
                 ]}
                 component="div"
@@ -831,7 +840,7 @@ const IpSetup = (props) => {
                 rowsPerPage={isIpSuccess ? parseInt(ipData?.data?.per_page) : 5}
                 onPageChange={pageHandler}
                 onRowsPerPageChange={perPageHandler}
-              />
+              /> */}
             </Box>
           </Box>
         </Stack>
