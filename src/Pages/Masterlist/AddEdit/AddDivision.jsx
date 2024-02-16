@@ -7,34 +7,20 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import {
-  Box,
-  Button,
-  Checkbox,
-  Chip,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Checkbox, Chip, TextField, Typography } from "@mui/material";
 import { CheckBox, CheckBoxOutlineBlank } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
 import { closeDrawer } from "../../../Redux/StateManagement/booleanStateSlice";
 import { useDispatch } from "react-redux";
-import {
-  usePostDivisionApiMutation,
-  useUpdateDivisionApiMutation,
-} from "../../../Redux/Query/Masterlist/Division";
+import { usePostDivisionApiMutation, useUpdateDivisionApiMutation } from "../../../Redux/Query/Masterlist/Division";
 import { useGetDepartmentAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Department";
 import { departmentApi } from "../../../Redux/Query/Masterlist/FistoCoa/Department";
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
 
 const schema = yup.object().shape({
   id: yup.string(),
-  sync_id: yup
-    .array()
-    .required()
-    .label("Department")
-    .typeError("Department is required"),
+  sync_id: yup.array().required().label("Department").typeError("Department is required"),
   division_name: yup.string().required().label("Division Name"),
 });
 
@@ -64,13 +50,7 @@ const AddDivision = (props) => {
 
   const [
     postDivision,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostDivisionApiMutation();
 
   const [
@@ -90,7 +70,7 @@ const AddDivision = (props) => {
     isSuccess: isDepartmentSuccess,
     isError: isDepartmentError,
     refetch: isDepartmentRefetch,
-  } = useGetDepartmentAllApiQuery({ refetchOnMountOrArgChange: true });
+  } = useGetDepartmentAllApiQuery(null, { refetchOnMountOrArgChange: true });
 
   // useEffect(() => {
   //   const errorData =
@@ -119,13 +99,9 @@ const AddDivision = (props) => {
   // }, [isPostError, isUpdateError]);
 
   useEffect(() => {
-    const hasError =
-      (isPostError || isUpdateError) &&
-      (postError?.status === 422 || updateError?.status === 422);
+    const hasError = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
     const errors = (postError?.data || updateError?.data)?.errors || {};
-    Object.entries(errors).forEach(([name, [message]]) =>
-      setError(name, { type: "validate", message })
-    );
+    Object.entries(errors).forEach(([name, [message]]) => setError(name, { type: "validate", message }));
 
     const showToast = () => {
       dispatch(
@@ -190,22 +166,11 @@ const AddDivision = (props) => {
 
   return (
     <Box className="add-masterlist">
-      <Typography
-        color="secondary.main"
-        sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}
-      >
-        {data.action === "view"
-          ? "View Divisions"
-          : data.status
-          ? "Edit Division"
-          : "Add Division"}
+      <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
+        {data.action === "view" ? "View Divisions" : data.status ? "Edit Division" : "Add Division"}
       </Typography>
 
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmitHandler)}
-        className="add-masterlist__content"
-      >
+      <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} className="add-masterlist__content">
         <CustomAutoComplete
           readOnly={data.action === "view"}
           autoComplete
@@ -219,12 +184,9 @@ const AddDivision = (props) => {
           size="small"
           getOptionLabel={(option) => option.department_name}
           getOptionDisabled={(option) =>
-            option?.division?.division_id !== "-" &&
-            !data?.sync_id?.some((item) => item?.sync_id === option?.sync_id)
+            option?.division?.division_id !== "-" && !data?.sync_id?.some((item) => item?.sync_id === option?.sync_id)
           }
-          isOptionEqualToValue={(option, value) =>
-            option.department_name === value.department_name
-          }
+          isOptionEqualToValue={(option, value) => option.department_name === value.department_name}
           slotProps={{
             popper: {
               placement: "top",
@@ -254,12 +216,7 @@ const AddDivision = (props) => {
           }}
           renderOption={(props, option, { selected }) => (
             <li {...props}>
-              <Checkbox
-                icon={icon}
-                checkedIcon={checkedIcon}
-                style={{ marginRight: 8 }}
-                checked={selected}
-              />
+              <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
               {option.department_name}
             </li>
           )}
@@ -292,9 +249,7 @@ const AddDivision = (props) => {
             variant="contained"
             size="small"
             loading={isUpdateLoading || isPostLoading}
-            disabled={
-              watch("sync_id") === null || watch("division_name") === ""
-            }
+            disabled={watch("sync_id") === null || watch("division_name") === ""}
             sx={data.action === "view" ? { display: "none" } : null}
           >
             {data.status ? "Update" : "Create"}

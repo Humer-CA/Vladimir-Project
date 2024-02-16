@@ -449,6 +449,11 @@ const FixedAsset = (props) => {
                                   {" - "}
                                   {data.department.department_name}
                                 </Typography>
+                                {/* <Typography fontSize="12px" color="gray">
+                                  {data.subunit.subunit_code}
+                                  {" - "}
+                                  {data.subunit.subunit_name}
+                                </Typography> */}
                                 <Typography fontSize="12px" color="gray">
                                   {data.location.location_code} {" - "}
                                   {data.location.location_name}

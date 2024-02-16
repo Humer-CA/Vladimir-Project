@@ -9,11 +9,7 @@ import * as XLSX from "xlsx";
 // RTK
 import { useDispatch } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
-import {
-  openConfirm,
-  closeConfirm,
-  onLoading,
-} from "../../Redux/StateManagement/confirmSlice";
+import { openConfirm, closeConfirm, onLoading } from "../../Redux/StateManagement/confirmSlice";
 import {
   usePostUserStatusApiMutation,
   useResetUserApiMutation,
@@ -120,13 +116,10 @@ const UserAccounts = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const [
-    userDataTrigger,
-    { data: usersAllData, isLoading: usersAllLoading, refetch: usersRefetch },
-  ] = useLazyGetUserAccountAllApiQuery();
+  const [userDataTrigger, { data: usersAllData, isLoading: usersAllLoading, refetch: usersRefetch }] =
+    useLazyGetUserAccountAllApiQuery();
 
-  const [postUserStatusApi, { isLoading: isPostUserLoading }] =
-    usePostUserStatusApiMutation();
+  const [postUserStatusApi, { isLoading: isPostUserLoading }] = usePostUserStatusApiMutation();
 
   const [resetUserApi] = useResetUserApiMutation();
 
@@ -195,17 +188,7 @@ const UserAccounts = () => {
   };
 
   const onUpdateHandler = (props) => {
-    const {
-      id,
-      employee_id,
-      firstname,
-      lastname,
-      department,
-      subunit,
-      username,
-      role,
-      role_id,
-    } = props;
+    const { id, employee_id, firstname, lastname, department, subunit, username, role, role_id } = props;
     setUpdateUser({
       status: true,
       id: id,
@@ -298,7 +281,7 @@ const UserAccounts = () => {
   const handleExport = async () => {
     try {
       const res = await userDataTrigger().unwrap();
-      console.log(res)
+      console.log(res);
       const newObj = res.map((item) => {
         return {
           ID: item?.id,
@@ -343,10 +326,7 @@ const UserAccounts = () => {
 
   return (
     <Box className="mcontainer">
-      <Typography
-        sx={{ fontFamily: "Anton", fontSize: "2rem" }}
-        className="mcontainer__title"
-      >
+      <Typography sx={{ fontFamily: "Anton", fontSize: "2rem" }} className="mcontainer__title">
         User Accounts
       </Typography>
 
@@ -362,7 +342,7 @@ const UserAccounts = () => {
             onSearchChange={setSearch}
             onSetPage={setPage}
             // onImport={() => {}}
-            onAdd={() => { }}
+            onAdd={() => {}}
           />
 
           <Box>
@@ -439,9 +419,7 @@ const UserAccounts = () => {
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Status
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Status</TableCell>
 
                     <TableCell className="tbl-cell text-center">
                       <TableSortLabel
@@ -453,9 +431,7 @@ const UserAccounts = () => {
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Action
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Action</TableCell>
                   </TableRow>
                 </TableHead>
 
@@ -465,101 +441,81 @@ const UserAccounts = () => {
                   ) : (
                     <>
                       {usersSuccess &&
-                        [...users.data]
-                          .sort(comparator(order, orderBy))
-                          .map((users) => (
-                            <TableRow
-                              key={users.id}
-                              hover={true}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {users.id}
-                              </TableCell>
+                        [...users.data].sort(comparator(order, orderBy)).map((users) => (
+                          <TableRow
+                            key={users.id}
+                            hover={true}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell tr-cen-pad45">{users.id}</TableCell>
 
-                              <TableCell
-                                className="tbl-cell"
-                                sx={{ textTransform: "capitalize" }}
-                              >
-                                {users.firstname}
-                              </TableCell>
+                            <TableCell className="tbl-cell" sx={{ textTransform: "capitalize" }}>
+                              {users.firstname}
+                            </TableCell>
 
-                              <TableCell className="tbl-cell">
-                                {users.lastname}
-                              </TableCell>
+                            <TableCell className="tbl-cell">{users.lastname}</TableCell>
 
-                              <TableCell className="tbl-cell">
-                                {users.department?.department_code} -{" "}
-                                {users.department?.department_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell">
+                              {users.department?.department_code} - {users.department?.department_name}
+                            </TableCell>
 
-                              <TableCell className="tbl-cell">
-                                {users.subunit?.subunit_code} -{" "}
-                                {users.subunit?.subunit_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell">
+                              {users.subunit?.subunit_code} - {users.subunit?.subunit_name}
+                            </TableCell>
 
-                              <TableCell
-                                className="tbl-cell capitalized"
-                                sx={{ whiteSpace: "nowrap" }}
-                              >
-                                {users.role.role_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell capitalized" sx={{ whiteSpace: "nowrap" }}>
+                              {users.role.role_name}
+                            </TableCell>
 
-                              <TableCell className="tbl-cell">
-                                {users.username}
-                              </TableCell>
+                            <TableCell className="tbl-cell">{users.username}</TableCell>
 
-                              <TableCell className="tbl-cell text-center">
-                                {users.is_active ? (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#27ff811f",
-                                      color: "active.dark",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="ACTIVE"
-                                  />
-                                ) : (
-                                  <Chip
-                                    size="small"
-                                    variant="contained"
-                                    sx={{
-                                      background: "#fc3e3e34",
-                                      color: "error.light",
-                                      fontSize: "0.7rem",
-                                      px: 1,
-                                    }}
-                                    label="INACTIVE"
-                                  />
-                                )}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {Moment(users.created_at).format(
-                                  "MMM DD, YYYY"
-                                )}
-                              </TableCell>
-
-                              <TableCell className="tbl-cell text-center">
-                                <ActionMenu
-                                  status={status}
-                                  data={users}
-                                  onArchiveRestoreHandler={
-                                    onArchiveRestoreHandler
-                                  }
-                                  onUpdateHandler={onUpdateHandler}
-                                  onResetHandler={onResetHandler}
+                            <TableCell className="tbl-cell text-center">
+                              {users.is_active ? (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#27ff811f",
+                                    color: "active.dark",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="ACTIVE"
                                 />
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                              ) : (
+                                <Chip
+                                  size="small"
+                                  variant="contained"
+                                  sx={{
+                                    background: "#fc3e3e34",
+                                    color: "error.light",
+                                    fontSize: "0.7rem",
+                                    px: 1,
+                                  }}
+                                  label="INACTIVE"
+                                />
+                              )}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell tr-cen-pad45">
+                              {Moment(users.created_at).format("MMM DD, YYYY")}
+                            </TableCell>
+
+                            <TableCell className="tbl-cell text-center">
+                              <ActionMenu
+                                status={status}
+                                data={users}
+                                onArchiveRestoreHandler={onArchiveRestoreHandler}
+                                onUpdateHandler={onUpdateHandler}
+                                onResetHandler={onResetHandler}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </>
                   )}
                 </TableBody>
@@ -586,12 +542,7 @@ const UserAccounts = () => {
             </Button>
 
             <TablePagination
-              rowsPerPageOptions={[
-                5,
-                10,
-                15,
-                { label: "All", value: parseInt(users?.total) },
-              ]}
+              rowsPerPageOptions={[5, 10, 15, { label: "All", value: parseInt(users?.total) }]}
               component="div"
               count={usersSuccess ? users.total : 0}
               page={usersSuccess ? users.current_page - 1 : 0}
@@ -602,11 +553,8 @@ const UserAccounts = () => {
             />
           </Box>
 
-          <Drawer anchor="right" open={drawer} onClose={() => { }}>
-            <AddUserAccounts
-              data={updateUser}
-              onUpdateResetHandler={onUpdateResetHandler}
-            />
+          <Drawer anchor="right" open={drawer} onClose={() => {}}>
+            <AddUserAccounts data={updateUser} onUpdateResetHandler={onUpdateResetHandler} />
           </Drawer>
         </Box>
       )}

@@ -566,9 +566,6 @@ const FixedAssetView = (props) => {
   };
 
   // console.log(dataApi.data?.depreciation_status?.depreciation_status_name);
-
-  // console.log(dataApi?.data);
-
   return (
     <>
       {dataApiLoading && <FixedAssetViewSkeleton onAdd={true} onImport={true} onPrint={true} />}
