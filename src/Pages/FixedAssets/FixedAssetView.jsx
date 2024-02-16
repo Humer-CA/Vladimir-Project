@@ -331,6 +331,7 @@ const FixedAssetView = (props) => {
       voucher,
       voucher_date,
       receipt,
+      po_number,
       quantity,
       asset_status,
       movement_status,
@@ -386,6 +387,7 @@ const FixedAssetView = (props) => {
       voucher: voucher,
       voucher_date,
       receipt,
+      po_number,
       quantity: quantity,
       asset_status,
       movement_status,
@@ -565,7 +567,7 @@ const FixedAssetView = (props) => {
 
   // console.log(dataApi.data?.depreciation_status?.depreciation_status_name);
 
-  console.log(dataApi?.data);
+  // console.log(dataApi?.data);
 
   return (
     <>
