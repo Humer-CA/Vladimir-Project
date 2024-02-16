@@ -86,6 +86,9 @@ import { usePostRequisitionSmsApiMutation } from "../../../Redux/Query/Request/R
 import CustomPatternField from "../../../Components/Reusable/CustomPatternField";
 import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
 import ErrorFetching from "../../ErrorFetching";
+import CustomDatePicker from "../../../Components/Reusable/CustomDatePicker";
+import { useGetFixedAssetAllApiQuery } from "../../../Redux/Query/FixedAsset/FixedAssets";
+import moment from "moment";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -143,6 +146,7 @@ const AddRequisition = (props) => {
 
     asset_description: "",
     asset_specification: "",
+    date_needed: null,
     brand: "",
     accountability: null,
     accountable: null,
@@ -276,6 +280,14 @@ const AddRequisition = (props) => {
     { refetchOnMountOrArgChange: true }
   );
 
+  const {
+    data: vTagNumberData = [],
+    isLoading: isVTagNumberLoading,
+    isSuccess: isVTagNumberSuccess,
+    isError: isVTagNumberError,
+    error: vTagNumberError,
+  } = useGetFixedAssetAllApiQuery();
+
   const [postRequest, { data: postRequestData }] = usePostRequestContainerApiMutation();
   const [upDateRequest, { data: updateRequestData }] = useUpdateRequestContainerApiMutation();
   const [deleteRequest, { data: deleteRequestData }] = useDeleteRequestContainerApiMutation();
@@ -308,6 +320,7 @@ const AddRequisition = (props) => {
 
       asset_description: "",
       asset_specification: "",
+      date_needed: null,
       brand: "",
       accountability: null,
       accountable: null,
@@ -363,6 +376,9 @@ const AddRequisition = (props) => {
   // }, [isPostSuccess, isUpdateSuccess]);
 
   useEffect(() => {
+    if (transactionData?.additionalCost) {
+      setDisable(false);
+    }
     !transactionData && setDisable(false);
     // deleteAllRequest();
   }, []);
@@ -384,6 +400,8 @@ const AddRequisition = (props) => {
 
   useEffect(() => {
     if (updateRequest.id) {
+      const dateNeededFormat = new Date(updateRequest.date_needed);
+
       setValue("type_of_request_id", updateRequest?.type_of_request);
       setValue("attachment_type", updateRequest?.attachment_type);
       setValue("department_id", updateRequest?.department);
@@ -392,11 +410,18 @@ const AddRequisition = (props) => {
       setValue("location_id", updateRequest?.location);
       setValue("account_title_id", updateRequest?.account_title);
       setValue("accountability", updateRequest?.accountability);
-      setValue("accountable", updateRequest?.accountable);
+      setValue("accountable", {
+        general_info: {
+          full_id_number: updateRequest.accountable.split(" ")[0],
+          full_id_number_full_name: updateRequest.accountable,
+        },
+      });
       setValue("acquisition_details", updateRequest?.acquisition_details);
       // ASSET INFO
       setValue("asset_description", updateRequest?.asset_description);
       setValue("asset_specification", updateRequest?.asset_specification);
+      setValue("date_needed", updateRequest.date_needed === "-" ? null : dateNeededFormat);
+
       setValue("quantity", updateRequest?.quantity);
       setValue("brand", updateRequest?.brand);
       setValue("cellphone_number", updateRequest?.cellphone_number === "-" ? "" : updateRequest?.cellphone_number);
@@ -462,6 +487,7 @@ const AddRequisition = (props) => {
 
       asset_description: formData?.asset_description?.toString(),
       asset_specification: formData?.asset_specification?.toString(),
+      date_needed: moment(new Date(formData.date_needed)).format("YYYY-MM-DD"),
       cellphone_number: formData?.cellphone_number === "" ? "" : "09" + formData?.cellphone_number?.toString(),
 
       brand: formData?.brand?.toString(),
@@ -1017,6 +1043,7 @@ const AddRequisition = (props) => {
       acquisition_details,
       asset_description,
       asset_specification,
+      date_needed,
       quantity,
       brand,
       cellphone_number,
@@ -1040,8 +1067,9 @@ const AddRequisition = (props) => {
 
       asset_description,
       asset_specification,
-      quantity,
+      date_needed,
       brand,
+      quantity,
       cellphone_number,
       additional_info,
 
@@ -1068,6 +1096,7 @@ const AddRequisition = (props) => {
 
       asset_description: "",
       asset_specification: "",
+      date_needed: null,
       brand: "",
       accountability: null,
       accountable: null,
@@ -1155,6 +1184,42 @@ const AddRequisition = (props) => {
                 <Stack gap={2}>
                   <Box sx={BoxStyle}>
                     <Typography sx={sxSubtitle}>Request Information</Typography>
+
+                    {transactionData?.additionalCost && (
+                      <CustomAutoComplete
+                        control={control}
+                        name="fixed_asset_id"
+                        options={vTagNumberData}
+                        loading={isVTagNumberLoading}
+                        size="small"
+                        getOptionLabel={(option) =>
+                          "(" + option.vladimir_tag_number + ")" + " - " + option.asset_description
+                        }
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                        renderInput={(params) => (
+                          <TextField
+                            color="secondary"
+                            {...params}
+                            label="Tag Number"
+                            error={!!errors?.vladimir_tag_number}
+                            helperText={errors?.vladimir_tag_number?.message}
+                          />
+                        )}
+                        onChange={(_, value) => {
+                          setValue("type_of_request_id", value?.type_of_request);
+                          setValue("attachment_type", value?.attachment_type);
+                          setValue("department_id", value?.department);
+                          // setValue("company_id", value?.company?.id);
+                          setValue("subunit_id", value?.subunit);
+                          setValue("location_id", value?.location);
+                          setValue("account_title_id", value?.account_title);
+                          setValue("accountability", value?.accountability);
+                          setValue("accountable", value?.accountable);
+                          setValue("acquisition_details", value?.acquisition_details);
+                          return value;
+                        }}
+                      />
+                    )}
 
                     <CustomAutoComplete
                       control={control}
@@ -1351,6 +1416,10 @@ const AddRequisition = (props) => {
                           helperText={errors?.accountability?.message}
                         />
                       )}
+                      onChange={(_, value) => {
+                        setValue("accountable", null);
+                        return value;
+                      }}
                     />
 
                     {watch("accountability") === "Personal Issued" && (
@@ -1421,6 +1490,19 @@ const AddRequisition = (props) => {
                       multiline
                       // disabled={transactionDataApi[0]?.can_edit === 0}
                     />
+
+                    <CustomDatePicker
+                      control={control}
+                      name="date_needed"
+                      label="Date Needed"
+                      size="small"
+                      disabled={updateRequest && disable}
+                      error={!!errors?.date_needed}
+                      helperText={errors?.date_needed?.message}
+                      minDate={new Date()}
+                      reduceAnimations
+                    />
+
                     <CustomTextField
                       control={control}
                       name="brand"
@@ -1442,10 +1524,10 @@ const AddRequisition = (props) => {
                       helperText={errors?.quantity?.message}
                       fullWidth
                       // disabled={transactionDataApi[0]?.can_edit === 0}
-                      // isAllowed={(values) => {
-                      //   const { floatValue } = values;
-                      //   return floatValue >= 1;
-                      // }}
+                      isAllowed={(values) => {
+                        const { floatValue } = values;
+                        return floatValue >= 1;
+                      }}
                     />
                     <CustomPatternField
                       control={control}
@@ -1600,7 +1682,7 @@ const AddRequisition = (props) => {
                 sx={{ gap: 1 }}
               >
                 {transactionData ? <Update /> : <AddToPhotos />}{" "}
-                <Typography variant="p">{transactionData ? "UPDATE" : "ADD"}</Typography>
+                <Typography>{transactionData ? "UPDATE" : "ADD"}</Typography>
               </LoadingButton>
               <Divider orientation="vertical" />
             </Box>
@@ -1633,6 +1715,7 @@ const AddRequisition = (props) => {
                       <TableCell className="tbl-cell">Chart of Accounts</TableCell>
                       <TableCell className="tbl-cell">Accountability</TableCell>
                       <TableCell className="tbl-cell">Asset Information</TableCell>
+                      <TableCell className="tbl-cell">Date Needed</TableCell>
                       <TableCell className="tbl-cell text-center">Quantity</TableCell>
                       <TableCell className="tbl-cell">Cellphone #</TableCell>
                       <TableCell className="tbl-cell">Additional Info.</TableCell>
@@ -1663,6 +1746,7 @@ const AddRequisition = (props) => {
                             <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
                             <TableCell className="tbl-cell">{data.acquisition_details}</TableCell>
                             <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
+
                             <TableCell className="tbl-cell">
                               <Typography fontSize={10} color="gray">
                                 {`(${data.company?.company_code}) - ${data.company?.company_name}`}
@@ -1683,8 +1767,10 @@ const AddRequisition = (props) => {
                             <TableCell className="tbl-cell">
                               {data.accountability === "Personal Issued" ? (
                                 <>
-                                  <Box>{data?.accountable?.general_info?.full_id_number || data?.accountable}</Box>
-                                  <Box>{data?.accountable?.general_info?.full_name}</Box>
+                                  <Typography fontSize={14}>
+                                    {data?.accountable?.general_info?.full_id_number || data?.accountable}
+                                  </Typography>
+                                  <Typography fontSize={14}>{data?.accountable?.general_info?.full_name}</Typography>
                                 </>
                               ) : (
                                 "Common"
@@ -1698,11 +1784,14 @@ const AddRequisition = (props) => {
                                 {data.asset_specification}
                               </Typography>
                             </TableCell>
+
+                            <TableCell className="tbl-cell">{data.date_needed}</TableCell>
                             <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
                             <TableCell className="tbl-cell">
                               {data.cellphone_number === null ? "-" : data.cellphone_number}
                             </TableCell>
                             <TableCell className="tbl-cell">{data.additional_info}</TableCell>
+
                             <TableCell className="tbl-cell">
                               {data?.attachments?.letter_of_request && (
                                 <Stack flexDirection="row" gap={1}>

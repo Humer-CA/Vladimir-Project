@@ -43,6 +43,8 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import {
+  AddBox,
+  AddCircleSharp,
   Help,
   HelpTwoTone,
   IosShareRounded,
@@ -208,6 +210,8 @@ const Requisition = () => {
     dispatch(closeDialog);
   };
 
+  const additionalCost = true;
+
   // * Add Button Settings
   const [anchorElAdd, setAnchorElAdd] = useState(null);
   const openAdd = Boolean(anchorElAdd);
@@ -221,10 +225,16 @@ const Requisition = () => {
   };
 
   const handleEditRequisition = (data) => {
-    navigate(`/asset-requisition/requisition/add-requisition/${data.transaction_number}`, {
-      state: { ...data },
-    });
+    data?.is_addcost === 1
+      ? navigate(`/asset-requisition/requisition/additional-cost/${data.transaction_number}`, {
+          state: { ...data },
+        })
+      : navigate(`/asset-requisition/requisition/add-requisition/${data.transaction_number}`, {
+          state: { ...data },
+        });
   };
+
+  const isAdditionalCost = requisitionData?.data.map((item) => item.is_addcost);
 
   return (
     <Box className="mcontainer">
@@ -266,14 +276,14 @@ const Requisition = () => {
               >
                 <MenuItem onClick={() => navigate(`add-requisition`)} dense>
                   <ListItemIcon>
-                    <HelpTwoTone />
+                    <AddBox />
                   </ListItemIcon>
                   <ListItemText>Request</ListItemText>
                 </MenuItem>
 
-                <MenuItem onClick={() => navigate(`add-requisition`)} dense>
+                <MenuItem onClick={() => navigate(`additional-cost`)} dense>
                   <ListItemIcon>
-                    <Money />
+                    <AddCircleSharp />
                   </ListItemIcon>
                   <ListItemText>Additional Cost</ListItemText>
                 </MenuItem>
@@ -377,7 +387,12 @@ const Requisition = () => {
                                   {data.id}
                                 </TableCell> */}
                               <TableCell className="tbl-cell text-weight">{data.transaction_number}</TableCell>
-                              <TableCell className="tbl-cell">{data.acquisition_details}</TableCell>
+                              <TableCell className="tbl-cell">
+                                <Typography fontSize={14}>{data.acquisition_details}</Typography>
+                                <Typography fontSize={12} color="success.main" fontWeight={600}>
+                                  {data.is_addcost === 1 && "Additional Cost"}
+                                </Typography>
+                              </TableCell>
                               <TableCell className="tbl-cell tr-cen-pad45">{data.item_count}</TableCell>
                               <TableCell className="tbl-cell text-center">
                                 <Tooltip placement="top" title="View Request Information" arrow>
