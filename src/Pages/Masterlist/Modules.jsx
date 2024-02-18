@@ -169,7 +169,7 @@ const Modules = () => {
 
                   <TableBody>
                     {modulesSuccess &&
-                      modules.data.map((modules) => (
+                      modules.data?.map((modules) => (
                         <TableRow
                           key={modules.id}
                           sx={{

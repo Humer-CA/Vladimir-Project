@@ -341,7 +341,7 @@ const AccountTitle = () => {
                     ) : (
                       <>
                         {accountTitleApiSuccess &&
-                          [...accountTitleApiData.data].sort(comparator(order, orderBy)).map((data) => (
+                          [...accountTitleApiData.data].sort(comparator(order, orderBy))?.map((data) => (
                             <TableRow
                               key={data.id}
                               hover={true}

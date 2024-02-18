@@ -114,7 +114,7 @@ const Masterlist = () => {
           <Box className="parentSidebar">
             <Box className="parentSidebar__container">
               <Box className="parentSidebar__wrapper">
-                {MasterlistList.map((data, index) => {
+                {MasterlistList?.map((data, index) => {
                   return <Cards data={data} key={index} />;
                 })}
               </Box>

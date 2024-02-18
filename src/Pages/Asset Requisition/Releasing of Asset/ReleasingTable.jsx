@@ -149,7 +149,7 @@ const ReleasingTable = (props) => {
     if (checked) {
       setValue(
         "warehouse_number_id",
-        releasingData.data.map((item) => item.warehouse_number?.warehouse_number)
+        releasingData.data?.map((item) => item.warehouse_number?.warehouse_number)
       );
     } else {
       reset({ warehouse_number_id: [] });

@@ -279,7 +279,7 @@ const Supplier = () => {
                     ) : (
                       <>
                         {supplierApiSuccess &&
-                          [...supplierApiData.data].sort(comparator(order, orderBy)).map((data) => (
+                          [...supplierApiData.data].sort(comparator(order, orderBy))?.map((data) => (
                             <TableRow
                               key={data.id}
                               hover={true}

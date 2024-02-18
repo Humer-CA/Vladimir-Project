@@ -18,13 +18,7 @@ import {
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 
 const CustomTableCollapse = (props) => {
-  const {
-    data,
-    status,
-    onUpdateHandler,
-    onArchiveRestoreHandler,
-    onAddMinorCategoryHandler,
-  } = props;
+  const { data, status, onUpdateHandler, onArchiveRestoreHandler, onAddMinorCategoryHandler } = props;
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -36,13 +30,9 @@ const CustomTableCollapse = (props) => {
           </IconButton>
         </TableCell>
 
-        <TableCell className="tbl-cell">
-          {data.service_provider.service_provider_name}
-        </TableCell>
+        <TableCell className="tbl-cell">{data.service_provider.service_provider_name}</TableCell>
 
-        <TableCell className="tbl-cell">
-          {data.major_category.major_category_name}
-        </TableCell>
+        <TableCell className="tbl-cell">{data.major_category.major_category_name}</TableCell>
 
         <TableCell className="tbl-cell">
           {data.is_active ? (
@@ -72,9 +62,7 @@ const CustomTableCollapse = (props) => {
           )}
         </TableCell>
 
-        <TableCell className="tbl-cell">
-          {Moment(data.created_at).format("MMM DD, YYYY")}
-        </TableCell>
+        <TableCell className="tbl-cell">{Moment(data.created_at).format("MMM DD, YYYY")}</TableCell>
 
         <TableCell className="tbl-cell">
           <ActionMenu
@@ -88,10 +76,7 @@ const CustomTableCollapse = (props) => {
       </TableRow>
 
       <TableRow sx={{ background: "whitesmoke" }}>
-        <TableCell
-          sx={{ paddingBottom: 0, paddingTop: 0, border: 0 }}
-          colSpan={6}
-        >
+        <TableCell sx={{ paddingBottom: 0, paddingTop: 0, border: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="p" gutterBottom sx={{ fontWeight: "bold" }}>
@@ -106,13 +91,9 @@ const CustomTableCollapse = (props) => {
 
                     <TableCell className="tbl-cell">Urgency Level</TableCell>
 
-                    <TableCell className="tbl-cell text-font">
-                      Personally Assigned
-                    </TableCell>
+                    <TableCell className="tbl-cell text-font">Personally Assigned</TableCell>
 
-                    <TableCell className="tbl-cell text-font">
-                      Evaluated in Every Movement
-                    </TableCell>
+                    <TableCell className="tbl-cell text-font">Evaluated in Every Movement</TableCell>
 
                     <TableCell className="tbl-cell">Status</TableCell>
 
@@ -126,7 +107,7 @@ const CustomTableCollapse = (props) => {
                 </TableHead>
 
                 <TableBody>
-                  {data.category_list_tag.map((data) => (
+                  {data.category_list_tag?.map((data) => (
                     <TableRow
                       key={data.id}
                       sx={{
@@ -137,9 +118,7 @@ const CustomTableCollapse = (props) => {
                     >
                       <TableCell className="tbl-cell">{data.id}</TableCell>
 
-                      <TableCell className="tbl-cell">
-                        {data.minor_category.minor_category_name}
-                      </TableCell>
+                      <TableCell className="tbl-cell">{data.minor_category.minor_category_name}</TableCell>
 
                       <TableCell
                         className="tbl-cell
@@ -153,9 +132,7 @@ const CustomTableCollapse = (props) => {
                       </TableCell>
 
                       <TableCell className="tbl-cell">
-                        {data.minor_category.evaluate_in_every_movement
-                          ? " Yes"
-                          : " No"}
+                        {data.minor_category.evaluate_in_every_movement ? " Yes" : " No"}
                       </TableCell>
 
                       <TableCell className="tbl-cell">

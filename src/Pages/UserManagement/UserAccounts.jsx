@@ -282,7 +282,7 @@ const UserAccounts = () => {
     try {
       const res = await userDataTrigger().unwrap();
       console.log(res);
-      const newObj = res.map((item) => {
+      const newObj = res?.map((item) => {
         return {
           ID: item?.id,
           "Employee ID": item?.employee_id,
@@ -441,7 +441,7 @@ const UserAccounts = () => {
                   ) : (
                     <>
                       {usersSuccess &&
-                        [...users.data].sort(comparator(order, orderBy)).map((users) => (
+                        [...users.data].sort(comparator(order, orderBy))?.map((users) => (
                           <TableRow
                             key={users.id}
                             hover={true}

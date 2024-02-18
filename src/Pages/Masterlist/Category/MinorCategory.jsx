@@ -326,7 +326,7 @@ const MinorCategory = () => {
                   ) : (
                     <>
                       {minorCategorySuccess &&
-                        [...minorCategoryData.data].sort(comparator(order, orderBy)).map((data) => (
+                        [...minorCategoryData.data].sort(comparator(order, orderBy))?.map((data) => (
                           <TableRow
                             key={data.id}
                             hover={true}

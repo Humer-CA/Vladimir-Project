@@ -35,13 +35,7 @@ const AddCategoryList = (props) => {
 
   const [
     postCategoryList,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostCategoryListApiMutation();
 
   const [
@@ -107,9 +101,7 @@ const AddCategoryList = (props) => {
   useEffect(() => {
     if (
       (isPostError || isUpdateError || isUpdateMinorError) &&
-      (postError?.status === 422 ||
-        updateError?.status === 422 ||
-        updateMinorError?.status === 422)
+      (postError?.status === 422 || updateError?.status === 422 || updateMinorError?.status === 422)
     ) {
       setError("service_provider_id", {
         type: "validate",
@@ -146,10 +138,7 @@ const AddCategoryList = (props) => {
       handleCloseDrawer();
       dispatch(
         openToast({
-          message:
-            postData?.message ||
-            updateData?.message ||
-            updateMinorData?.message,
+          message: postData?.message || updateData?.message || updateMinorData?.message,
           duration: 5000,
         })
       );
@@ -175,7 +164,7 @@ const AddCategoryList = (props) => {
       id: formData.id,
       service_provider_id: formData.service_provider_id?.id,
       major_category_id: formData.major_category_id?.id,
-      minor_category_id: formData.minor_category_id.map((item) => {
+      minor_category_id: formData.minor_category_id?.map((item) => {
         return item.id;
       }),
     };
@@ -203,22 +192,11 @@ const AddCategoryList = (props) => {
 
   return (
     <Box className="add-masterlist">
-      <Typography
-        color="secondary.main"
-        sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}
-      >
-        {!data.status
-          ? "Add Category"
-          : data.action === "addMinor"
-          ? "Add Minor Category"
-          : "Update Category"}
+      <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
+        {!data.status ? "Add Category" : data.action === "addMinor" ? "Add Minor Category" : "Update Category"}
       </Typography>
 
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmitHandler)}
-        className="add-masterlist__content"
-      >
+      <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} className="add-masterlist__content">
         <CustomAutoComplete
           required
           autoComplete
@@ -229,9 +207,7 @@ const AddCategoryList = (props) => {
           options={serviceProviderData}
           loading={isServiceProviderLoading}
           getOptionLabel={(option) => option.service_provider_name}
-          isOptionEqualToValue={(option, value) =>
-            option.service_provider_name === value.service_provider_name
-          }
+          isOptionEqualToValue={(option, value) => option.service_provider_name === value.service_provider_name}
           size="small"
           renderInput={(params) => (
             <TextField
@@ -260,9 +236,7 @@ const AddCategoryList = (props) => {
           loading={isMajorCategoryLoading}
           size="small"
           getOptionLabel={(option) => option.major_category_name}
-          isOptionEqualToValue={(option, value) =>
-            option.major_category_name === value.major_category_name
-          }
+          isOptionEqualToValue={(option, value) => option.major_category_name === value.major_category_name}
           renderInput={(params) => (
             <TextField
               color="secondary"
@@ -290,12 +264,8 @@ const AddCategoryList = (props) => {
           options={minorCategoryData}
           size="small"
           getOptionLabel={(option) => option.minor_category_name}
-          getOptionDisabled={(option) =>
-            watch("minor_category_id").some((item) => item.id === option.id)
-          }
-          isOptionEqualToValue={(option, value) =>
-            option.minor_category_name === value.minor_category_name
-          }
+          getOptionDisabled={(option) => watch("minor_category_id").some((item) => item.id === option.id)}
+          isOptionEqualToValue={(option, value) => option.minor_category_name === value.minor_category_name}
           renderInput={(params) => (
             <TextField
               color="secondary"
@@ -330,19 +300,10 @@ const AddCategoryList = (props) => {
               watch("minor_category_id").length === 0
             }
           >
-            {!data.status
-              ? "Create"
-              : data.action === "addMinor"
-              ? "Add"
-              : "Update"}
+            {!data.status ? "Create" : data.action === "addMinor" ? "Add" : "Update"}
           </LoadingButton>
 
-          <Button
-            variant="outlined"
-            color="secondary"
-            size="small"
-            onClick={handleCloseDrawer}
-          >
+          <Button variant="outlined" color="secondary" size="small" onClick={handleCloseDrawer}>
             Cancel
           </Button>
         </Box>

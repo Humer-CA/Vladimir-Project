@@ -729,7 +729,7 @@ const FixedAsset = (props) => {
                   ) : (
                     <>
                       {fixedAssetSuccess &&
-                        [...fixedAssetData.data].sort(comparator(order, orderBy)).map((data, index) => {
+                        [...fixedAssetData.data].sort(comparator(order, orderBy))?.map((data, index) => {
                           return (
                             <TableRow
                               key={index}

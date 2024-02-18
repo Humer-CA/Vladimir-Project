@@ -195,7 +195,7 @@ const Navbar = () => {
               Home
             </LinkRouter>
           )}
-          {pathnames.map((value, index) => {
+          {pathnames?.map((value, index) => {
             const last = index === pathnames.length - 1;
             const to = `/${pathnames.slice(0, index + 1).join("/")}`;
             const breadcrumbName = value.replace(/-/g, " ");

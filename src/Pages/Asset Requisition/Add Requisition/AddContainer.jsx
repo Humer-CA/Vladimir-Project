@@ -286,7 +286,7 @@ const AddContainer = (props) => {
   // SUBMIT HANDLER
   const onSubmitHandler = () => {
     const formData = new FormData();
-    requestList.map((item) => {
+    requestList?.map((item) => {
       formData.append("userRequest[]");
     });
 
@@ -897,7 +897,7 @@ const AddContainer = (props) => {
                     <>
                       {requestList
                         // ?.sort(comparator(order, orderBy))
-                        .map((data, index) => (
+                        ?.map((data, index) => (
                           <TableRow
                             key={index}
                             sx={{

@@ -592,7 +592,7 @@ const Sidebar = () => {
 
       <Box className="sidebar__menus" ref={sidebarRef}>
         <List>
-          {MENU_LIST.map((item) => {
+          {MENU_LIST?.map((item) => {
             return (
               permissions.split(", ").includes(item.permission) && (
                 <ListItem

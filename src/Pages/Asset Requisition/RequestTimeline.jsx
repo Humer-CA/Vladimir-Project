@@ -64,7 +64,7 @@ const RequestTimeline = (props) => {
           {(transactionData?.status === "Returned"
             ? ["Returned", ...transactionData?.steps]
             : transactionData?.steps
-          ).map((label, index) => (
+          )?.map((label, index) => (
             <Step key={label} last>
               <StepLabel
                 icon={transactionData?.status === "Returned" && index === 0 ? <Error /> : null}

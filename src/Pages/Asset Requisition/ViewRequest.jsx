@@ -438,7 +438,7 @@ const ViewRequest = (props) => {
                       <NoRecordsFound />
                     ) : (
                       <>
-                        {(transactionData ? transactionDataApi : addRequestAllApi).map((data, index) => (
+                        {(transactionData ? transactionDataApi : addRequestAllApi)?.map((data, index) => (
                           <TableRow
                             key={index}
                             sx={{

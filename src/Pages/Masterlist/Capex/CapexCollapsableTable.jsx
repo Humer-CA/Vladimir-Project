@@ -417,7 +417,7 @@ const CustomTableCollapse = (props) => {
                     </TableRow>
                   ) : (
                     <>
-                      {[...data.sub_capex].sort(comparator(order, orderBy)).map((subCapex) => (
+                      {[...data.sub_capex].sort(comparator(order, orderBy))?.map((subCapex) => (
                         <TableRow
                           key={subCapex.id}
                           sx={{

@@ -102,7 +102,7 @@ const ExportFixedAsset = () => {
       const res = await trigger(newData);
       // console.log(res);
 
-      const exportData = res.data.map((item) => {
+      const exportData = res.data?.map((item) => {
         // console.log(item);
         return {
           // ID: item.id,

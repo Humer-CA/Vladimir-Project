@@ -410,7 +410,7 @@ const PrintFixedAsset = (props) => {
     if (checked) {
       setValue(
         "tagNumber",
-        fixedAssetData.data.map((item) => item.vladimir_tag_number)
+        fixedAssetData.data?.map((item) => item.vladimir_tag_number)
       );
     } else {
       reset({ tagNumber: [] });
@@ -572,7 +572,7 @@ const PrintFixedAsset = (props) => {
                           size="small"
                           checked={
                             !!fixedAssetData?.data
-                              .map((mapItem) => mapItem.vladimir_tag_number)
+                              ?.map((mapItem) => mapItem.vladimir_tag_number)
                               .every((item) => watch("tagNumber").includes(item))
                           }
                           onChange={(e) => {
@@ -636,7 +636,7 @@ const PrintFixedAsset = (props) => {
                 ) : (
                   <>
                     {fixedAssetSuccess &&
-                      [...fixedAssetData.data].sort(comparator(order, orderBy)).map((data) => {
+                      [...fixedAssetData.data].sort(comparator(order, orderBy))?.map((data) => {
                         return (
                           <TableRow
                             key={data.id}

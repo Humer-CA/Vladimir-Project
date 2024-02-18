@@ -132,7 +132,7 @@ const CategoryList = () => {
       id: id,
       service_provider_id: service_provider,
       major_category_id: major_category,
-      minor_category_id: category_list_tag.map((item) => {
+      minor_category_id: category_list_tag?.map((item) => {
         return item.minor_category;
       }),
     });
@@ -157,7 +157,7 @@ const CategoryList = () => {
       id: id,
       service_provider_id: service_provider,
       major_category_id: major_category,
-      minor_category_id: category_list_tag.map((item) => {
+      minor_category_id: category_list_tag?.map((item) => {
         return item.minor_category;
       }),
     });
@@ -205,7 +205,7 @@ const CategoryList = () => {
 
               <TableBody>
                 {categoryListData &&
-                  categoryListData.data.map((data) => (
+                  categoryListData.data?.map((data) => (
                     <CustomTableCollapse
                       key={data.id}
                       data={data}

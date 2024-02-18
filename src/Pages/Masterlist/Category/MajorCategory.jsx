@@ -287,7 +287,7 @@ const MajorCategory = () => {
                   ) : (
                     <>
                       {majorCategorySuccess &&
-                        [...majorCategoryData.data].sort(comparator(order, orderBy)).map((data) => (
+                        [...majorCategoryData.data].sort(comparator(order, orderBy))?.map((data) => (
                           <TableRow
                             key={data.id}
                             hover={true}

@@ -71,14 +71,8 @@ const ExportFixedAsset = () => {
   const handleExport = async (data) => {
     const newData = {
       ...data,
-      startDate:
-        data.startDate === null
-          ? ""
-          : moment(new Date(data.startDate)).format("YYYY-MM-DD"),
-      endDate:
-        data.endDate === null
-          ? ""
-          : moment(new Date(data.endDate)).format("YYYY-MM-DD"),
+      startDate: data.startDate === null ? "" : moment(new Date(data.startDate)).format("YYYY-MM-DD"),
+      endDate: data.endDate === null ? "" : moment(new Date(data.endDate)).format("YYYY-MM-DD"),
     };
 
     try {
@@ -97,9 +91,9 @@ const ExportFixedAsset = () => {
       //   };
       // });
 
-      const exportData = res.data.flatMap((item) => {
+      const exportData = res.data?.flatMap((item) => {
         if (Array.isArray(item.sub_capex) && item.sub_capex.length > 0) {
-          return item.sub_capex.map((subItem) => ({
+          return item.sub_capex?.map((subItem) => ({
             ID: item.id,
             CAPEX: item.capex,
             "PROJECT NAME": item.project_name,
@@ -136,11 +130,7 @@ const ExportFixedAsset = () => {
   };
 
   const disabledItems = () => {
-    return (
-      watch("search") === "" &&
-      watch("startDate") === null &&
-      watch("endDate") === null
-    );
+    return watch("search") === "" && watch("startDate") === null && watch("endDate") === null;
   };
 
   return (
@@ -236,13 +226,7 @@ const ExportFixedAsset = () => {
             Export
           </LoadingButton>
 
-          <Button
-            variant="outlined"
-            size="small"
-            color="secondary"
-            onClick={handleClose}
-            fullWidth
-          >
+          <Button variant="outlined" size="small" color="secondary" onClick={handleClose} fullWidth>
             Close
           </Button>
         </Box>

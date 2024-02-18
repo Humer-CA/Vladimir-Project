@@ -266,7 +266,7 @@ const AssetMovementStatus = () => {
                   ) : (
                     <>
                       {assetMovementStatusSuccess &&
-                        [...assetMovementStatusData.data].sort(comparator(order, orderBy)).map((data) => (
+                        [...assetMovementStatusData.data].sort(comparator(order, orderBy))?.map((data) => (
                           <TableRow
                             key={data.id}
                             hover={true}

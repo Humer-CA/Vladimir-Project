@@ -264,7 +264,7 @@ const CycleCountStatus = () => {
                   ) : (
                     <>
                       {cycleCountStatusSuccess &&
-                        [...cycleCountStatusData.data].sort(comparator(order, orderBy)).map((data) => (
+                        [...cycleCountStatusData.data].sort(comparator(order, orderBy))?.map((data) => (
                           <TableRow
                             key={data.id}
                             hover={true}

@@ -218,7 +218,7 @@ const Capex = () => {
 
       const exportData = res?.flatMap((item) => {
         if (Array.isArray(item.sub_capex) && item.sub_capex.length > 0) {
-          return item.sub_capex.map((subItem) => ({
+          return item.sub_capex?.map((subItem) => ({
             ID: item.id,
             CAPEX: item.capex,
             "PROJECT NAME": item.project_name,
@@ -365,7 +365,7 @@ const Capex = () => {
                         {capexData &&
                           [...capexData.data]
                             .sort(comparator(order, orderBy))
-                            .map((data) => (
+                            ?.map((data) => (
                               <CapexCollapsableTable
                                 key={data.id}
                                 data={data}

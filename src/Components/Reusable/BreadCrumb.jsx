@@ -1,15 +1,10 @@
-const { primary } = useAppSelector(
-  (state) => state.configuration.settings.colorScheme
-);
+const { primary } = useAppSelector((state) => state.configuration.settings.colorScheme);
 
 const location = useLocation();
 let count = location.pathname.split("/").slice(1).length - 1;
 
 return (
-  <Box
-    sx={{ background: bgColor, padding: "24px 24px 0 24px" }}
-    className="breadcrumbs"
-  >
+  <Box sx={{ background: bgColor, padding: "24px 24px 0 24px" }} className="breadcrumbs">
     <Breadcrumbs
       sx={{
         "ol li a": {
@@ -24,22 +19,19 @@ return (
       {location.pathname
         .split("/")
         .slice(1)
-        .map((item, i) => {
+        ?.map((item, i) => {
           const name = item.split("-").join(" ");
           let link = "";
           const initial = location.pathname.split("/").slice(1);
           const final = initial.reverse().slice(count);
-          final.reverse().map((str) => (link = link + `/${str}`));
+          final.reverse()?.map((str) => (link = link + `/${str}`));
           count--;
           return (
             <Link to={link} key={i}>
               <Typography
                 sx={{
                   textTransform: "capitalize",
-                  color:
-                    location.pathname === link || location.pathname === "/"
-                      ? primary
-                      : "",
+                  color: location.pathname === link || location.pathname === "/" ? primary : "",
                 }}
               >
                 {name}

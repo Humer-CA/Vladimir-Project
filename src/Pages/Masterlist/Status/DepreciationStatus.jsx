@@ -265,7 +265,7 @@ const DepreciationStatus = () => {
                   ) : (
                     <>
                       {depreciationStatusSuccess &&
-                        [...depreciationStatusData.data].sort(comparator(order, orderBy)).map((data) => (
+                        [...depreciationStatusData.data].sort(comparator(order, orderBy))?.map((data) => (
                           <TableRow
                             key={data.id}
                             hover={true}

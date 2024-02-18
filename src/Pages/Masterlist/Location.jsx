@@ -342,7 +342,7 @@ const Location = () => {
                     ) : (
                       <>
                         {locationApiSuccess &&
-                          [...locationApiData.data].sort(comparator(order, orderBy)).map((data) => (
+                          [...locationApiData.data].sort(comparator(order, orderBy))?.map((data) => (
                             <TableRow
                               key={data.id}
                               hover={true}

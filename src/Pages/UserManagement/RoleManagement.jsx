@@ -290,7 +290,7 @@ const Role = () => {
                   ) : (
                     <>
                       {roleSuccess &&
-                        [...roleData.data].sort(comparator(order, orderBy)).map((data) => (
+                        [...roleData.data].sort(comparator(order, orderBy))?.map((data) => (
                           <TableRow
                             key={data.id}
                             hover={true}

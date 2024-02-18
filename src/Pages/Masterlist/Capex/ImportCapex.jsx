@@ -81,7 +81,7 @@ const ImportCapex = (props) => {
 
   useEffect(() => {
     if (isPostError && postError?.status === 422) {
-      const errorArray = Object.entries(postError.data.errors).map(([key, value]) => {
+      const errorArray = Object.entries(postError.data.errors)?.map(([key, value]) => {
         const [row, column] = key.split(".");
         const [message] = value;
 

@@ -6,11 +6,7 @@ import { Outlet } from "react-router";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { Box, Typography, useMediaQuery } from "@mui/material";
-import {
-  AccountBox,
-  ArrowForward,
-  ManageAccountsSharp,
-} from "@mui/icons-material";
+import { AccountBox, ArrowForward, ManageAccountsSharp } from "@mui/icons-material";
 import Cards from "../../Components/Reusable/Cards";
 
 const UserManagementList = [
@@ -52,7 +48,7 @@ const UserManagement = () => {
           <Box className="parentSidebar">
             <Box className="parentSidebar__container">
               <Box className="parentSidebar__wrapper">
-                {UserManagementList.map((data, index) => {
+                {UserManagementList?.map((data, index) => {
                   return <Cards data={data} key={index} />;
                 })}
               </Box>

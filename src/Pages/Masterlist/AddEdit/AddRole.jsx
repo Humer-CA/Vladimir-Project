@@ -180,7 +180,7 @@ const AddRole = (props) => {
 
   const CheckboxGroup = ({ items, ml = 3 }) => (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      {items.map((item) => (
+      {items?.map((item) => (
         <CheckboxItem key={item.value} {...item} />
       ))}
     </Box>

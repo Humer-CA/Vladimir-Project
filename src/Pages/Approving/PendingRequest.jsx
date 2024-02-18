@@ -361,7 +361,7 @@ const PendingRequest = (props) => {
                   ) : (
                     <>
                       {approvalSuccess &&
-                        [...approvalData.data].sort(comparator(order, orderBy)).map((data) => (
+                        [...approvalData.data].sort(comparator(order, orderBy))?.map((data) => (
                           <TableRow
                             key={data.id}
                             hover={true}

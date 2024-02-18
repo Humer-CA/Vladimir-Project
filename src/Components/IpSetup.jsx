@@ -697,7 +697,7 @@ const IpSetup = (props) => {
                   ) : (
                     <>
                       {isIpSuccess &&
-                        [...ipData.data].sort(comparator(order, orderBy)).map((data) => (
+                        [...ipData.data].sort(comparator(order, orderBy))?.map((data) => (
                           <TableRow
                             key={data.id}
                             hover={true}

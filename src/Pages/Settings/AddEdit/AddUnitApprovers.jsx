@@ -191,7 +191,7 @@ const AddUnitApprovers = (props) => {
   const onSubmitHandler = (formData) => {
     const newFormData = {
       subunit_id: formData.subunit_id?.id,
-      approver_id: formData.approver_id.map((item) => item?.id),
+      approver_id: formData.approver_id?.map((item) => item?.id),
     };
 
     if (data.status) {
@@ -400,7 +400,7 @@ const AddUnitApprovers = (props) => {
                 list={watch("approver_id")}
                 setList={setListApprovers}
               >
-                {watch("approver_id").map((approver, index) => (
+                {watch("approver_id")?.map((approver, index) => (
                   <Stack key={index} flexDirection="row" justifyContent="space-between" alignItems="center" my={1}>
                     <Stack
                       flexDirection="row"

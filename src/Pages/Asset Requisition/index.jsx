@@ -78,7 +78,7 @@ const AssetRequisition = () => {
           <Box className="parentSidebar">
             <Box className="parentSidebar__container">
               <Box className="parentSidebar__wrapper">
-                {RequestList.map((data, index) => {
+                {RequestList?.map((data, index) => {
                   return permissions.split(", ").includes(data.permission) && <Cards data={data} key={index} />;
                 })}
               </Box>

@@ -120,21 +120,15 @@ const ErrorsFoundImport = (props) => {
 
           <TableBody>
             {isPostError &&
-              [...importError]
-                .sort(comparator(order, orderBy))
-                .map((item, index) => {
-                  return (
-                    <TableRow key={item.id || index} hover={true}>
-                      <TableCell sx={{ textAlign: "left", pl: "35px" }}>
-                        {parseInt(item.row) + 2}
-                      </TableCell>
-                      <TableCell className="columnErrorName">
-                        {item.column.replace(/_/g, " ")}
-                      </TableCell>
-                      <TableCell>{item.message}</TableCell>
-                    </TableRow>
-                  );
-                })}
+              [...importError].sort(comparator(order, orderBy))?.map((item, index) => {
+                return (
+                  <TableRow key={item.id || index} hover={true}>
+                    <TableCell sx={{ textAlign: "left", pl: "35px" }}>{parseInt(item.row) + 2}</TableCell>
+                    <TableCell className="columnErrorName">{item.column.replace(/_/g, " ")}</TableCell>
+                    <TableCell>{item.message}</TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>

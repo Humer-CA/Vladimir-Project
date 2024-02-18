@@ -249,7 +249,7 @@ const ServiceProvider = () => {
                   ) : (
                     <>
                       {serviceProviderSuccess &&
-                        [...serviceProviderData.data].sort(comparator(order, orderBy)).map((data) => (
+                        [...serviceProviderData.data].sort(comparator(order, orderBy))?.map((data) => (
                           <TableRow
                             key={data.id}
                             hover={true}

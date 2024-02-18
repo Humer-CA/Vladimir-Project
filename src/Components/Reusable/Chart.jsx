@@ -1,23 +1,8 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const DailyTravelDuration = ({ tripData }) => {
   const options = {
@@ -56,7 +41,7 @@ const DailyTravelDuration = ({ tripData }) => {
     datasets: [
       {
         label: "Hours",
-        data: obj.map((item) => {
+        data: obj?.map((item) => {
           let totalMinutes = Math.floor(item.totalDuration / (1000 * 60));
           let hours = Math.floor(totalMinutes / 60);
           return hours;
@@ -65,7 +50,7 @@ const DailyTravelDuration = ({ tripData }) => {
       },
       {
         label: "Minutes",
-        data: obj.map((item) => {
+        data: obj?.map((item) => {
           let totalMinutes = Math.floor(item.totalDuration / (1000 * 60));
           let minutes = totalMinutes % 60;
           return minutes;

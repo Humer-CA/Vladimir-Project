@@ -19,19 +19,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import {
-  Add,
-  ArrowBackIosNewRounded,
-  ArrowForwardIosRounded,
-} from "@mui/icons-material";
+import { Add, ArrowBackIosNewRounded, ArrowForwardIosRounded } from "@mui/icons-material";
 import { createFilterOptions } from "@mui/material/Autocomplete";
 
 import { closeDrawer } from "../../../Redux/StateManagement/booleanStateSlice";
 import { useDispatch } from "react-redux";
-import {
-  usePostUserApiMutation,
-  useUpdateUserApiMutation,
-} from "../../../Redux/Query/UserManagement/UserAccountsApi";
+import { usePostUserApiMutation, useUpdateUserApiMutation } from "../../../Redux/Query/UserManagement/UserAccountsApi";
 import { useGetSedarUsersApiQuery } from "../../../Redux/Query/SedarUserApi";
 import { useGetRoleAllApiQuery } from "../../../Redux/Query/UserManagement/RoleManagementApi";
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
@@ -42,10 +35,7 @@ import { useGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUni
 const schema = yup.object().shape({
   id: yup.string().nullable(),
   employee_id: yup.string().required(),
-  sedar_employee: yup
-    .object()
-    .typeError("Employee ID is a required field")
-    .required(),
+  sedar_employee: yup.object().typeError("Employee ID is a required field").required(),
   firstname: yup.string().required(),
   lastname: yup.string().required(),
   department_id: yup
@@ -64,11 +54,7 @@ const schema = yup.object().shape({
     .label("Subunit"),
   // position: yup.string().required(),
   username: yup.string().required().label("Username"),
-  role_id: yup
-    .object()
-    .required()
-    .label("User permission")
-    .typeError("User Permission is a required field"),
+  role_id: yup.object().required().label("User permission").typeError("User Permission is a required field"),
 });
 
 const AddUserAccount = (props) => {
@@ -77,13 +63,7 @@ const AddUserAccount = (props) => {
 
   const [
     postUser,
-    {
-      data: postData,
-      isLoading: isPostLoading,
-      isSuccess: isPostSuccess,
-      isError: isPostError,
-      error: postError,
-    },
+    { data: postData, isLoading: isPostLoading, isSuccess: isPostSuccess, isError: isPostError, error: postError },
   ] = usePostUserApiMutation();
 
   const [
@@ -118,11 +98,7 @@ const AddUserAccount = (props) => {
     isError: isSubUnitError,
   } = useGetSubUnitAllApiQuery();
 
-  const {
-    data: roleData = [],
-    isLoading: isRoleLoading,
-    isError: isRoleError,
-  } = useGetRoleAllApiQuery();
+  const { data: roleData = [], isLoading: isRoleLoading, isError: isRoleError } = useGetRoleAllApiQuery();
 
   const {
     handleSubmit,
@@ -150,16 +126,12 @@ const AddUserAccount = (props) => {
   });
 
   useEffect(() => {
-    const errorData =
-      (isPostError || isUpdateError) &&
-      (postError?.status === 422 || updateError?.status === 422);
+    const errorData = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
 
     if (errorData) {
       const errors = (postError?.data || updateError?.data)?.errors || {};
 
-      Object.entries(errors).forEach(([name, [message]]) =>
-        setError(name, { type: "validate", message })
-      );
+      Object.entries(errors).forEach(([name, [message]]) => setError(name, { type: "validate", message }));
     }
     const showToast = () => {
       dispatch(
@@ -243,24 +215,14 @@ const AddUserAccount = (props) => {
           <ArrowForwardIosRounded color="secondary" />
         </IconButton>
 
-        <Typography
-          color="secondary.main"
-          sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}
-        >
+        <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
           {data.status ? "EDIT USER" : "ADD USER"}
         </Typography>
       </Box>
 
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmitHandler)}
-        className="add-userAccount__wrapper"
-      >
+      <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} className="add-userAccount__wrapper">
         <Box className="add-userAccount__employee">
-          <Typography
-            color="secondary.main"
-            sx={{ fontFamily: "Anton", fontSize: "1rem" }}
-          >
+          <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1rem" }}>
             EMPLOYEE DETAILS
           </Typography>
 
@@ -288,12 +250,9 @@ const AddUserAccount = (props) => {
               filterOptions={filterOptions}
               options={sedarData}
               loading={isSedarLoading}
-              getOptionLabel={(option) =>
-                option?.general_info?.full_id_number_full_name
-              }
+              getOptionLabel={(option) => option?.general_info?.full_id_number_full_name}
               isOptionEqualToValue={(option, value) =>
-                option?.general_info?.full_id_number ===
-                value?.general_info?.full_id_number
+                option?.general_info?.full_id_number === value?.general_info?.full_id_number
               }
               onChange={(_, value) => {
                 if (value) {
@@ -307,15 +266,12 @@ const AddUserAccount = (props) => {
                     "username",
                     value?.general_info?.first_name
                       .split(" ")
-                      .map((name) => {
+                      ?.map((name) => {
                         return name.charAt(0);
                       })
                       .toString()
                       .replace(",", "")
-                      .toLowerCase() +
-                    value?.general_info?.last_name
-                      .toLowerCase()
-                      .replace(/ /gm, "")
+                      .toLowerCase() + value?.general_info?.last_name.toLowerCase().replace(/ /gm, "")
                   );
                 } else {
                   setValue("employee_id", null);
@@ -333,14 +289,8 @@ const AddUserAccount = (props) => {
                   {...params}
                   label="Employee ID"
                   color="secondary"
-                  error={
-                    !!errors?.sedar_employee?.message ||
-                    !!errors?.employee_id?.message
-                  }
-                  helperText={
-                    errors?.sedar_employee?.message ||
-                    errors?.employee_id?.message
-                  }
+                  error={!!errors?.sedar_employee?.message || !!errors?.employee_id?.message}
+                  helperText={errors?.sedar_employee?.message || errors?.employee_id?.message}
                 />
               )}
             />
@@ -370,10 +320,7 @@ const AddUserAccount = (props) => {
 
           <Divider sx={{ py: 0.5 }} />
 
-          <Typography
-            color="secondary.main"
-            sx={{ fontFamily: "Anton", fontSize: "1rem" }}
-          >
+          <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1rem" }}>
             CHARGING
           </Typography>
 
@@ -407,9 +354,7 @@ const AddUserAccount = (props) => {
             autoComplete
             name="subunit_id"
             control={control}
-            options={subUnitData?.filter(
-              (item) => item?.department?.id === watch("department_id")?.id
-            )}
+            options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
             loading={isSubUnitLoading}
             size="small"
             getOptionLabel={(option) => option.subunit_name}
@@ -427,10 +372,7 @@ const AddUserAccount = (props) => {
 
           <Divider sx={{ py: 0.5 }} />
 
-          <Typography
-            color="secondary.main"
-            sx={{ fontFamily: "Anton", fontSize: "1rem" }}
-          >
+          <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1rem" }}>
             USERNAME AND PERMISSION
           </Typography>
           <CustomTextField
@@ -453,9 +395,7 @@ const AddUserAccount = (props) => {
             loading={isRoleLoading}
             size="small"
             getOptionLabel={(option) => option.role_name}
-            isOptionEqualToValue={(option, value) =>
-              option.role_name === value.role_name
-            }
+            isOptionEqualToValue={(option, value) => option.role_name === value.role_name}
             renderInput={(params) => (
               <TextField
                 color="secondary"
@@ -520,12 +460,7 @@ const AddUserAccount = (props) => {
           </Box> */}
           <Divider sx={{ pb: 0.5 }} />
           <Box className="add-userAccount__buttons">
-            <LoadingButton
-              type="submit"
-              variant="contained"
-              size="small"
-              loading={isUpdateLoading || isPostLoading}
-            >
+            <LoadingButton type="submit" variant="contained" size="small" loading={isUpdateLoading || isPostLoading}>
               {data.status ? "Update" : "Create"}
             </LoadingButton>
 
