@@ -389,7 +389,7 @@ const Requisition = () => {
                               <TableCell className="tbl-cell text-weight">{data.transaction_number}</TableCell>
                               <TableCell className="tbl-cell">
                                 <Typography fontSize={14}>{data.acquisition_details}</Typography>
-                                <Typography fontSize={12} color="success.main" fontWeight={600}>
+                                <Typography fontSize={12} color="primary.main" fontWeight={600}>
                                   {data.is_addcost === 1 && "Additional Cost"}
                                 </Typography>
                               </TableCell>
