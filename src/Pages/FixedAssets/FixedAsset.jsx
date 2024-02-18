@@ -381,7 +381,7 @@ const FixedAsset = (props) => {
                   ) : (
                     <>
                       {fixedAssetSuccess &&
-                        [...fixedAssetData.data].sort(comparator(order, orderBy)).map((data, index) => {
+                        [...fixedAssetData.data].sort(comparator(order, orderBy))?.map((data, index) => {
                           return (
                             <TableRow
                               key={index}
@@ -403,19 +403,19 @@ const FixedAsset = (props) => {
                                   {data.vladimir_tag_number}
                                   {data.is_additional_cost === 1 ? `-${data.add_cost_sequence}` : null}
                                 </Typography>
-                                <Typography fontSize="13px" color="gray">
+                                <Typography fontSize="12px" color="gray">
                                   {data.asset_description}
                                 </Typography>
                                 <Typography
                                   fontSize="12px"
                                   fontWeight="bold"
-                                  color={data.is_additional_cost === 0 ? "black.main" : "success.light"}
+                                  color={data.is_additional_cost === 0 ? "primary.main" : "success.light"}
                                 >
                                   {data.is_additional_cost === 0
                                     ? `Additional Cost Count - ${data.additional_cost_count}`
                                     : `(Additional Cost)`}
                                 </Typography>
-                                <Typography fontSize="12px" color="primary" fontWeight="bold">
+                                <Typography fontSize="12px" color="success.main" fontWeight="bold">
                                   {data.type_of_request.type_of_request_name.toUpperCase()}
                                 </Typography>
                               </TableCell>
@@ -449,11 +449,11 @@ const FixedAsset = (props) => {
                                   {" - "}
                                   {data.department.department_name}
                                 </Typography>
-                                {/* <Typography fontSize="12px" color="gray">
-                                  {data.subunit.subunit_code}
+                                <Typography fontSize="12px" color="gray">
+                                  {data.subunit?.subunit_code}
                                   {" - "}
-                                  {data.subunit.subunit_name}
-                                </Typography> */}
+                                  {data.subunit?.subunit_name}
+                                </Typography>
                                 <Typography fontSize="12px" color="gray">
                                   {data.location.location_code} {" - "}
                                   {data.location.location_name}
