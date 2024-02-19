@@ -198,7 +198,6 @@ const RequestMonitoring = () => {
               requestFilter
               setFilter={setFilter}
               filter={filter}
-              hideArchive
             />
 
             <Box>

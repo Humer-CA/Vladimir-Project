@@ -253,7 +253,6 @@ const Requisition = () => {
               requestFilter
               setFilter={setFilter}
               filter={filter}
-              hideArchive
             />
 
             <Box className="masterlist-toolbar__addBtn" sx={{ mt: 0.25 }}>
@@ -473,13 +472,7 @@ const Requisition = () => {
                                 {Moment(data.created_at).format("MMM DD, YYYY")}
                               </TableCell>
                               <TableCell className="tbl-cell ">
-                                <ActionMenu
-                                  status={data.status}
-                                  data={data}
-                                  hideArchive
-                                  showVoid
-                                  onVoidHandler={onVoidHandler}
-                                />
+                                <ActionMenu status={data.status} data={data} showVoid onVoidHandler={onVoidHandler} />
                               </TableCell>
                             </TableRow>
                           ))}
