@@ -25,7 +25,7 @@ import { notificationApi } from "../../../Redux/Query/Notification";
 
 const schema = yup.object().shape({
   id: yup.string(),
-  po_number: yup.string().required().label("PO Number").typeError("PO Number is a required field"),
+  po_number: yup.number().required().label("PO Number").typeError("PO Number is a required field"),
   rr_number: yup.string().required().label("RR Number").typeError("RR Number is a required field"),
   supplier_id: yup
     .string()
@@ -59,7 +59,7 @@ const ReceivingTable = (props) => {
     resolver: yupResolver(schema),
     defaultValues: {
       id: "",
-      po_number: "",
+      po_number: null,
       rr_number: "",
       supplier_id: null,
       delivery_date: null,
@@ -357,12 +357,11 @@ const ReceivingTable = (props) => {
             </Typography>
 
             <Box className="assetReceiving__form">
-              <CustomTextField
+              <CustomNumberField
                 control={control}
                 name="po_number"
                 label="PO Number"
                 color="secondary"
-                type="text"
                 size="small"
                 error={!!errors?.po_number}
                 helperText={errors?.po_number?.message}
