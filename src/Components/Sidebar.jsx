@@ -334,7 +334,7 @@ const Sidebar = () => {
       icon: FactCheckRounded,
       path: "/asset-requisition",
       permission: "asset-requisition",
-      notification: notifData?.toPr || notifData?.toReceive || notifData?.toRelease,
+      notification: notifData?.toPR || notifData?.toReceive || notifData?.toRelease,
       children: [
         {
           label: "Requisition",
