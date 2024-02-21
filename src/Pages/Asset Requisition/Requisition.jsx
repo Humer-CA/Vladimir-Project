@@ -337,7 +337,7 @@ const Requisition = () => {
                           direction={orderBy === `item_count` ? order : `asc`}
                           onClick={() => onSort(`item_count`)}
                         >
-                          Quantity of PR
+                          Quantity
                         </TableSortLabel>
                       </TableCell>
 
@@ -401,7 +401,7 @@ const Requisition = () => {
                                 </Tooltip>
                               </TableCell>
                               <TableCell className="tbl-cell tr-cen-pad45">
-                                {data.status === "Returned" ? (
+                                {data.status === "Returned" || data.status === "Cancelled" ? (
                                   <Chip
                                     placement="top"
                                     onClick={() => handleViewTimeline(data)}
@@ -469,10 +469,18 @@ const Requisition = () => {
                                 )}
                               </TableCell>
                               <TableCell className="tbl-cell tr-cen-pad45">
-                                {Moment(data.created_at).format("MMM DD, YYYY")}
+                                {data.status === "Cancelled"
+                                  ? Moment(data.deleted_at).format("MMM DD, YYYY")
+                                  : Moment(data.created_at).format("MMM DD, YYYY")}
                               </TableCell>
                               <TableCell className="tbl-cell ">
-                                <ActionMenu status={data.status} data={data} showVoid onVoidHandler={onVoidHandler} />
+                                <ActionMenu
+                                  status={data.status}
+                                  data={data}
+                                  showVoid
+                                  onVoidHandler={onVoidHandler}
+                                  hideArchive
+                                />
                               </TableCell>
                             </TableRow>
                           ))}

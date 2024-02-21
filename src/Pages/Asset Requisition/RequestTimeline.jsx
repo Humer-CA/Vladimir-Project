@@ -22,6 +22,7 @@ import {
   ErrorOutline,
   FactCheck,
   History,
+  HowToReg,
   ManageHistoryTwoTone,
   Timeline,
   TimelineTwoTone,
@@ -34,6 +35,8 @@ import Moment from "moment";
 const RequestTimeline = (props) => {
   const { data: transactionData } = props;
   const dispatch = useDispatch();
+
+  console.log(transactionData?.status);
 
   return (
     <Box className="timelineSteps">
@@ -61,16 +64,35 @@ const RequestTimeline = (props) => {
 
       <Box className="timelineSteps__timeline" alignItems="flex-start">
         <Stepper key={1} activeStep={transactionData ? transactionData?.process_count - 1 : 0} alternativeLabel>
-          {(transactionData?.status === "Returned"
+          {(transactionData?.status === "Cancelled"
+            ? ["Cancelled", ...transactionData?.steps]
+            : transactionData?.status === "Returned"
             ? ["Returned", ...transactionData?.steps]
             : transactionData?.steps
           )?.map((label, index) => (
             <Step key={label} last>
               <StepLabel
-                icon={transactionData?.status === "Returned" && index === 0 ? <Error /> : null}
+                icon={
+                  (transactionData?.status === "Returned" || transactionData?.status === "Cancelled") && index === 0 ? (
+                    <Error />
+                  ) : null
+                }
                 sx={{
-                  ".MuiStepIconRoot.MuiCompleted": "success.main",
-                  ".Mui-active": { color: transactionData?.status === "Returned" && index === 0 ? "error.main" : null },
+                  ".Mui-completed > svg": { color: "success.main" },
+                  ".Mui-completed > p": { color: "text.light" },
+                  ".Mui-active": {
+                    color:
+                      (transactionData?.status === "Returned" || transactionData?.status === "Cancelled") && index === 0
+                        ? "error.main"
+                        : "primary.main",
+                  },
+                  ".Mui-active > p": { color: "secondary.main" },
+                  ".Mui-disabled": {
+                    color: "error.light",
+                  },
+                  ".Mui-disabled > p ": {
+                    color: "text.light",
+                  },
                 }}
               >
                 <Typography fontSize={10} marginTop="-10px" fontWeight={600} textTransform="uppercase" minWidth={80}>
@@ -147,8 +169,10 @@ const RequestTimeline = (props) => {
                     {/* <Box> */}
                     <StepLabel
                       icon={
-                        item?.action === "Declined" || item?.action === "Returned" ? (
+                        item?.action === "Declined" || item?.action === "Returned" || item?.action === "Cancelled" ? (
                           <Error sx={{ color: "error.light" }} />
+                        ) : item?.action === "Claimed" ? (
+                          <HowToReg sx={{ color: "success.main" }} />
                         ) : item?.action === "Approved" ? (
                           <FactCheck sx={{ color: "success.main" }} />
                         ) : item?.action === "Removed PR Number" ? (
@@ -162,9 +186,9 @@ const RequestTimeline = (props) => {
                         className="timelineSteps__box"
                         sx={{
                           backgroundColor:
-                            item?.action === "Declined" || item?.action === "Returned"
+                            item?.action === "Declined" || item?.action === "Returned" || item?.action === "Cancelled"
                               ? "#ff000017"
-                              : item?.action === "Approved"
+                              : item?.action === "Approved" || item?.action === "Claimed"
                               ? "#00800016"
                               : item?.action === "Removed PR Number"
                               ? "#ff000017"
@@ -176,9 +200,9 @@ const RequestTimeline = (props) => {
                           orientation="vertical"
                           sx={{
                             backgroundColor:
-                              item?.action === "Declined" || item?.action === "Returned"
+                              item?.action === "Declined" || item?.action === "Returned" || item?.action === "Cancelled"
                                 ? "error.light"
-                                : item?.action === "Approved"
+                                : item?.action === "Approved" || item?.action === "Claimed"
                                 ? "success.light"
                                 : item?.action === "Removed PR Number"
                                 ? "error.light"
@@ -194,8 +218,12 @@ const RequestTimeline = (props) => {
                           <Typography fontSize={13} fontWeight={600} textTransform="uppercase">
                             {item?.action}
                           </Typography>
+
                           <Typography fontSize={12} color="text.light">
                             {`(${item?.causer?.employee_id}) - ${item?.causer?.firstname}  ${item?.causer?.lastname}`}
+                          </Typography>
+                          <Typography fontSize={12} fontWeight={600} color="text.light">
+                            {item?.action === "Claimed" ? `Received by: ${item?.received_by}` : null}
                           </Typography>
                           <Typography fontSize={12}>{item?.remarks ? `Remarks: ${item?.remarks}` : null}</Typography>
                         </Box>

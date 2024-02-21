@@ -292,7 +292,7 @@ const RequestMonitoring = () => {
                                 </Tooltip>
                               </TableCell>
                               <TableCell className="tbl-cell tr-cen-pad45">
-                                {data.status === "Returned" ? (
+                                {data.status === "Returned" || data.status === "Cancelled" ? (
                                   <Chip
                                     placement="top"
                                     onClick={() => handleViewTimeline(data)}
