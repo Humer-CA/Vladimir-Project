@@ -95,7 +95,7 @@ const ViewRequestReleasing = (props) => {
     }
   );
 
-  console.log(releasingData);
+  // console.log(releasingData);
 
   const handleReleasing = () => {
     dispatch(openDialog());

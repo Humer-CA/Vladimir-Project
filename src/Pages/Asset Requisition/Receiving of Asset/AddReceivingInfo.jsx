@@ -47,6 +47,7 @@ const schema = yup.object().shape({
 const ReceivingTable = (props) => {
   const { data } = props;
   const isSmallScreen = useMediaQuery("(max-width: 720px)");
+  console.log(data);
 
   const {
     handleSubmit,
@@ -68,7 +69,7 @@ const ReceivingTable = (props) => {
     },
   });
 
-  const newData = data?.data?.[0];
+  const newData = data;
   const { data: supplierData = [], isLoading: isSupplierLoading } = useGetSupplierAllApiQuery();
 
   const dispatch = useDispatch();
@@ -186,7 +187,7 @@ const ReceivingTable = (props) => {
       <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} sx={{ display: "flex", flexDirection: "column" }}>
         <Stack flexDirection="row" justifyContent="space-between">
           <Typography fontSize="24px" fontFamily="Anton, Impact, Roboto" color="secondary.main">
-            PURCHASE ORDER
+            RECEIVING OF ASSET
           </Typography>
 
           <IconButton onClick={() => dispatch(closeDialog())} sx={{ top: -10, right: -10 }}>
@@ -197,7 +198,7 @@ const ReceivingTable = (props) => {
         <Divider />
 
         <Box className="assetReceiving" px={2} flexWrap={isSmallScreen ? "wrap" : "noWrap"}>
-          <Stack gap={2} width={isSmallScreen ? "100%" : "inherit"}>
+          <Stack gap={1} width={isSmallScreen ? "100%" : "inherit"} sx={{ overflow: "auto", maxHeight: "440px" }}>
             <Stack gap={1}>
               <Typography className="assetReceiving__title" fontFamily="Anton, Impact, Roboto">
                 Transaction Details
@@ -353,7 +354,7 @@ const ReceivingTable = (props) => {
 
           <Stack gap={2} pl={2} pt={isSmallScreen ? 2 : 0} width={isSmallScreen ? "100%" : "inherit"}>
             <Typography className="assetReceiving__title" fontFamily="Anton, Impact, Roboto">
-              Add Request Information
+              Add Information
             </Typography>
 
             <Box className="assetReceiving__form">

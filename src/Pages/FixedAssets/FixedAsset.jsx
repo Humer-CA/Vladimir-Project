@@ -409,13 +409,13 @@ const FixedAsset = (props) => {
                                 <Typography
                                   fontSize="12px"
                                   fontWeight="bold"
-                                  color={data.is_additional_cost === 0 ? "primary.main" : "success.light"}
+                                  color={data.is_additional_cost === 0 ? "secondary.main" : "success.light"}
                                 >
                                   {data.is_additional_cost === 0
                                     ? `Additional Cost Count - ${data.additional_cost_count}`
                                     : `(Additional Cost)`}
                                 </Typography>
-                                <Typography fontSize="12px" color="success.main" fontWeight="bold">
+                                <Typography fontSize="12px" color="primary.main" fontWeight="bold">
                                   {data.type_of_request.type_of_request_name.toUpperCase()}
                                 </Typography>
                               </TableCell>

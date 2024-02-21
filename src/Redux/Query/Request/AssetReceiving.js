@@ -49,7 +49,7 @@ export const assetReceivingApi = createApi({
       invalidatesTags: ["AssetReceiving"],
     }),
 
-    removeAssetReceivingApi: builder.mutation({
+    cancelAssetReceivingApi: builder.mutation({
       query: (id) => ({
         url: `/adding-po/${id}`,
         method: "DELETE",
@@ -68,5 +68,5 @@ export const {
   useLazyGetAssetReceivingAllApiQuery,
   useLazyGetAssetReceivingApiQuery,
   useAddAssetReceivingApiMutation,
-  useRemoveAssetReceivingApiMutation,
+  useCancelAssetReceivingApiMutation,
 } = assetReceivingApi;

@@ -137,7 +137,7 @@ const FixedAssetView = (props) => {
   });
 
   const { state: data } = useLocation();
-  // const { status } = data;
+
   const { tag_number } = useParams();
 
   const permissions = useSelector((state) => state.userLogin?.user.role.access_permission);
@@ -173,6 +173,8 @@ const FixedAssetView = (props) => {
       refetch: calcDepreApiRefetch,
     },
   ] = usePostCalcDepreApiMutation();
+
+  // console.log("calc", calcDepreApi);
 
   const [patchFixedAssetStatusApi, { isLoading: isPatchLoading }] = useArchiveFixedAssetStatusApiMutation();
 
