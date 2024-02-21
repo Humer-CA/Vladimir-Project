@@ -18,6 +18,7 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { ArrowBackIosRounded, RemoveCircle, Report } from "@mui/icons-material";
@@ -30,7 +31,7 @@ import { openToast } from "../../../Redux/StateManagement/toastSlice";
 import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanStateSlice";
 import {
   useGetItemPerTransactionApiQuery,
-  useRemoveAssetReceivingApiMutation,
+  useCancelAssetReceivingApiMutation,
 } from "../../../Redux/Query/Request/AssetReceiving";
 import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
 
@@ -38,6 +39,7 @@ const ViewRequestReceiving = () => {
   const { state: transactionData } = useLocation();
   const [perPage, setPerPage] = useState(5);
   const [page, setPage] = useState(1);
+  const [viewData, setViewData] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -60,7 +62,7 @@ const ViewRequestReceiving = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const [removePo] = useRemoveAssetReceivingApiMutation();
+  const [cancelPo] = useCancelAssetReceivingApiMutation();
 
   // console.log("receivingData:", receivingData);
   // console.log("transactionData:", transactionData);
@@ -101,9 +103,10 @@ const ViewRequestReceiving = () => {
   };
   const handleTableData = (data) => {
     transactionData?.received || data?.remaining === 0 ? null : dispatch(openDialog());
+    setViewData(data);
   };
 
-  const onRemoveHandler = async (id) => {
+  const onCancelHandler = async (id) => {
     dispatch(
       openConfirm({
         icon: Report,
@@ -118,7 +121,7 @@ const ViewRequestReceiving = () => {
                 fontWeight: "bold",
               }}
             >
-              REMOVE
+              Cancel
             </Typography>{" "}
             this Data?
           </Box>
@@ -127,7 +130,7 @@ const ViewRequestReceiving = () => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            let result = await removePo(id).unwrap();
+            let result = await cancelPo(id).unwrap();
             dispatch(
               openToast({
                 message: result.message,
@@ -385,10 +388,12 @@ const ViewRequestReceiving = () => {
                                 <TableCell className="tbl-cell text-center">
                                   <IconButton
                                     disabled={data?.remaining === 0}
-                                    onClick={() => onRemoveHandler(data?.id)}
+                                    onClick={() => onCancelHandler(data?.id)}
                                     sx={{ color: "error.main", ":hover": { color: "red" } }}
                                   >
-                                    <RemoveCircle />
+                                    <Tooltip title="Cancel Request" placement="top" arrow>
+                                      <RemoveCircle />
+                                    </Tooltip>
                                   </IconButton>
                                 </TableCell>
                               )}
@@ -433,7 +438,7 @@ const ViewRequestReceiving = () => {
               },
             }}
           >
-            <AddReceivingInfo data={receivingData} />
+            <AddReceivingInfo data={viewData} />
           </Dialog>
         </Box>
       )}

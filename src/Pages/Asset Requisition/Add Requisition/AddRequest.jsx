@@ -1703,7 +1703,7 @@ const AddRequisition = (props) => {
                     <TableRow
                       sx={{
                         "& > *": {
-                          fontWeight: "bold!important",
+                          fontWeight: "bold",
                           whiteSpace: "nowrap",
                         },
                       }}
@@ -1716,7 +1716,27 @@ const AddRequisition = (props) => {
                       <TableCell className="tbl-cell">Accountability</TableCell>
                       <TableCell className="tbl-cell">Asset Information</TableCell>
                       <TableCell className="tbl-cell">Date Needed</TableCell>
-                      <TableCell className="tbl-cell text-center">Quantity</TableCell>
+
+                      {addRequestAllApi && !transactionDataApi[0]?.po_number && (
+                        <TableCell className="tbl-cell text-center">Quantity</TableCell>
+                      )}
+                      {transactionData && transactionDataApi[0]?.po_number && (
+                        <>
+                          <TableCell className="tbl-cell text-center">Ordered</TableCell>
+                          <TableCell className="tbl-cell text-center">Delivered</TableCell>
+                          <TableCell className="tbl-cell text-center">Remaining</TableCell>
+                        </>
+                      )}
+                      {transactionData &&
+                        !transactionDataApi[0]?.po_number &&
+                        transactionDataApi[0]?.is_removed === 1 && (
+                          <>
+                            <TableCell className="tbl-cell text-center">Ordered</TableCell>
+                            <TableCell className="tbl-cell text-center">Delivered</TableCell>
+                            <TableCell className="tbl-cell text-center">Remaining</TableCell>
+                          </>
+                        )}
+
                       <TableCell className="tbl-cell">Cellphone #</TableCell>
                       <TableCell className="tbl-cell">Additional Info.</TableCell>
                       <TableCell className="tbl-cell">Attachments</TableCell>
@@ -1738,6 +1758,8 @@ const AddRequisition = (props) => {
                               "&:last-child td, &:last-child th": {
                                 borderBottom: 0,
                               },
+                              bgcolor: data?.is_removed === 1 ? "#ff00002f" : null,
+                              "*": { color: data?.is_removed === 1 ? "black!important" : null },
                             }}
                           >
                             <TableCell className="tbl-cell tr-cen-pad45 text-weight">
@@ -1764,6 +1786,7 @@ const AddRequisition = (props) => {
                                 {`(${data.account_title?.account_title_code}) - ${data.account_title?.account_title_name}`}
                               </Typography>
                             </TableCell>
+
                             <TableCell className="tbl-cell">
                               {data.accountability === "Personal Issued" ? (
                                 <>
@@ -1776,6 +1799,7 @@ const AddRequisition = (props) => {
                                 "Common"
                               )}
                             </TableCell>
+
                             <TableCell className="tbl-cell">
                               <Typography fontWeight={600} fontSize="14px" color="secondary.main">
                                 {data.asset_description}
@@ -1786,7 +1810,26 @@ const AddRequisition = (props) => {
                             </TableCell>
 
                             <TableCell className="tbl-cell">{data.date_needed}</TableCell>
-                            <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
+
+                            {addRequestAllApi && !data.po_number && (
+                              <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
+                            )}
+                            {transactionData && data.po_number && (
+                              <>
+                                <TableCell className="tbl-cell text-center">{data.ordered}</TableCell>
+                                <TableCell className="tbl-cell text-center">{data.delivered}</TableCell>
+                                <TableCell className="tbl-cell text-center">{data.remaining}</TableCell>
+                              </>
+                            )}
+
+                            {transactionData && !data.po_number && data?.is_removed === 1 && (
+                              <>
+                                <TableCell className="tbl-cell text-center">{data.ordered}</TableCell>
+                                <TableCell className="tbl-cell text-center">{data.delivered}</TableCell>
+                                <TableCell className="tbl-cell text-center">{data.remaining}</TableCell>
+                              </>
+                            )}
+
                             <TableCell className="tbl-cell">
                               {data.cellphone_number === null ? "-" : data.cellphone_number}
                             </TableCell>
@@ -1839,36 +1882,38 @@ const AddRequisition = (props) => {
                               )}
                             </TableCell>
                             <TableCell className="tbl-cell">
-                              <ActionMenu
-                                hideArchive
-                                setDisable={setDisable}
-                                status={data?.status}
-                                data={data}
-                                editRequest={
-                                  transactionDataApi[0]?.can_edit === 1 || transactionData?.status === "Return"
-                                    ? true
-                                    : false
-                                }
-                                onDeleteHandler={!transactionData && onDeleteHandler}
-                                onDeleteReferenceHandler={
-                                  transactionData &&
-                                  transactionData.item_count !== 1 &&
-                                  transactionDataApi.length !== 1 &&
-                                  onVoidReferenceHandler
+                              {data?.is_removed === 0 && (
+                                <ActionMenu
+                                  hideArchive
+                                  setDisable={setDisable}
+                                  status={data?.status}
+                                  data={data}
+                                  editRequest={
+                                    transactionDataApi[0]?.can_edit === 1 || transactionData?.status === "Return"
+                                      ? true
+                                      : false
+                                  }
+                                  onDeleteHandler={!transactionData && onDeleteHandler}
+                                  onDeleteReferenceHandler={
+                                    transactionData &&
+                                    transactionData.item_count !== 1 &&
+                                    transactionDataApi.length !== 1 &&
+                                    onVoidReferenceHandler
 
-                                  // // transactionData
-                                  // //   ? transactionData?.item_count !== 1
-                                  // //     ? transactionDataApi.length !== 1
-                                  // //       ? onVoidReferenceHandler
-                                  // //       : false
-                                  // //     : false
-                                  // //   : false
-                                }
-                                onUpdateHandler={onUpdateHandler}
-                                onUpdateResetHandler={onUpdateResetHandler}
-                                setUpdateToggle={setUpdateToggle}
-                                // setShowEdit={setShowEdit}
-                              />
+                                    // // transactionData
+                                    // //   ? transactionData?.item_count !== 1
+                                    // //     ? transactionDataApi.length !== 1
+                                    // //       ? onVoidReferenceHandler
+                                    // //       : false
+                                    // //     : false
+                                    // //   : false
+                                  }
+                                  onUpdateHandler={onUpdateHandler}
+                                  onUpdateResetHandler={onUpdateResetHandler}
+                                  setUpdateToggle={setUpdateToggle}
+                                  // setShowEdit={setShowEdit}
+                                />
+                              )}
                             </TableCell>
                           </TableRow>
                         ))}

@@ -28,10 +28,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { closeConfirm, onLoading, openConfirm } from "../../../Redux/StateManagement/confirmSlice";
 import { openToast } from "../../../Redux/StateManagement/toastSlice";
 import { closeDialog, openDialog } from "../../../Redux/StateManagement/booleanStateSlice";
-import {
-  useGetItemPerTransactionApiQuery,
-  useRemoveAssetReceivingApiMutation,
-} from "../../../Redux/Query/Request/AssetReceiving";
+
 import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
 import {
   useGetItemPerPrApiQuery,
