@@ -457,7 +457,8 @@ const AddRequisition = (props) => {
       company_id:
         // formData?.company_id?.id,
         updateRequest
-          ? formData?.company_id || formData?.company_id?.id
+          ? // ? formData?.company_id || formData?.company_id?.id
+            formData?.company_id?.id || formData?.company_id
           : formData?.company_id?.company?.company_id?.id.toString() ||
             formData?.company_id?.company?.company_id.toString(),
       subunit_id: formData.subunit_id.id?.toString(),
@@ -536,7 +537,7 @@ const AddRequisition = (props) => {
       // //   : formData.other_attachments),
     };
 
-    // console.log("data", data);
+    console.log("data", data);
 
     const payload = new FormData();
     Object.entries(data).forEach((item) => {
@@ -1168,6 +1169,7 @@ const AddRequisition = (props) => {
                       loading={isVTagNumberLoading}
                       disabled={updateRequest || addRequestAllApi?.data === 0 ? disable : false}
                       size="small"
+                      filterOptions={filterOptions}
                       getOptionLabel={(option) =>
                         "(" + option.vladimir_tag_number + ")" + " - " + option.asset_description
                       }
@@ -1672,7 +1674,18 @@ const AddRequisition = (props) => {
                       <TableCell className="tbl-cell">Accountability</TableCell>
                       <TableCell className="tbl-cell">Asset Information</TableCell>
                       <TableCell className="tbl-cell">Date Needed</TableCell>
-                      <TableCell className="tbl-cell text-center">Quantity</TableCell>
+
+                      {addRequestAllApi && !transactionDataApi[0]?.po_number && (
+                        <TableCell className="tbl-cell text-center">Quantity</TableCell>
+                      )}
+                      {transactionData && transactionDataApi[0]?.po_number && (
+                        <>
+                          <TableCell className="tbl-cell text-center">Ordered</TableCell>
+                          <TableCell className="tbl-cell text-center">Delivered</TableCell>
+                          <TableCell className="tbl-cell text-center">Remaining</TableCell>
+                        </>
+                      )}
+
                       <TableCell className="tbl-cell">Cellphone #</TableCell>
                       <TableCell className="tbl-cell">Additional Info.</TableCell>
                       <TableCell className="tbl-cell">Attachments</TableCell>
@@ -1694,6 +1707,8 @@ const AddRequisition = (props) => {
                               "&:last-child td, &:last-child th": {
                                 borderBottom: 0,
                               },
+                              bgcolor: data?.is_removed === 1 ? "#ff00002f" : null,
+                              "*": { color: data?.is_removed === 1 ? "black!important" : null },
                             }}
                           >
                             <TableCell className="tbl-cell tr-cen-pad45 text-weight">
@@ -1751,7 +1766,19 @@ const AddRequisition = (props) => {
                             </TableCell>
 
                             <TableCell className="tbl-cell">{data.date_needed}</TableCell>
-                            <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
+
+                            {addRequestAllApi && !data.po_number && (
+                              <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
+                            )}
+
+                            {transactionData && data.po_number && (
+                              <>
+                                <TableCell className="tbl-cell text-center">{data.ordered}</TableCell>
+                                <TableCell className="tbl-cell text-center">{data.delivered}</TableCell>
+                                <TableCell className="tbl-cell text-center">{data.remaining}</TableCell>
+                              </>
+                            )}
+
                             <TableCell className="tbl-cell">
                               {data.cellphone_number === null ? "-" : data.cellphone_number}
                             </TableCell>
@@ -1803,38 +1830,42 @@ const AddRequisition = (props) => {
                                 </Stack>
                               )}
                             </TableCell>
-
+                            {console.log(data)}
                             <TableCell className="tbl-cell">
-                              <ActionMenu
-                                hideArchive
-                                setDisable={setDisable}
-                                status={data?.status}
-                                data={data}
-                                editRequest={
-                                  transactionDataApi[0]?.can_edit === 1 || transactionData?.status === "Return"
-                                    ? true
-                                    : false
-                                }
-                                onDeleteHandler={!transactionData && onDeleteHandler}
-                                onDeleteReferenceHandler={
-                                  transactionData &&
-                                  transactionData.item_count !== 1 &&
-                                  transactionDataApi.length !== 1 &&
-                                  onVoidReferenceHandler
+                              {data?.can_edit === 1
+                                ? data?.is_removed === 0 && (
+                                    <ActionMenu
+                                      hideArchive
+                                      setDisable={setDisable}
+                                      status={data?.status}
+                                      data={data}
+                                      editRequest={
+                                        transactionDataApi[0]?.can_edit === 1 || transactionData?.status === "Return"
+                                          ? true
+                                          : false
+                                      }
+                                      onDeleteHandler={!transactionData && onDeleteHandler}
+                                      onDeleteReferenceHandler={
+                                        transactionData &&
+                                        transactionData.item_count !== 1 &&
+                                        transactionDataApi.length !== 1 &&
+                                        onVoidReferenceHandler
 
-                                  // // transactionData
-                                  // //   ? transactionData?.item_count !== 1
-                                  // //     ? transactionDataApi.length !== 1
-                                  // //       ? onVoidReferenceHandler
-                                  // //       : false
-                                  // //     : false
-                                  // //   : false
-                                }
-                                onUpdateHandler={onUpdateHandler}
-                                onUpdateResetHandler={onUpdateResetHandler}
-                                setUpdateToggle={setUpdateToggle}
-                                // setShowEdit={setShowEdit}
-                              />
+                                        // // transactionData
+                                        // //   ? transactionData?.item_count !== 1
+                                        // //     ? transactionDataApi.length !== 1
+                                        // //       ? onVoidReferenceHandler
+                                        // //       : false
+                                        // //     : false
+                                        // //   : false
+                                      }
+                                      onUpdateHandler={onUpdateHandler}
+                                      onUpdateResetHandler={onUpdateResetHandler}
+                                      setUpdateToggle={setUpdateToggle}
+                                      // setShowEdit={setShowEdit}
+                                    />
+                                  )
+                                : null}
                             </TableCell>
                           </TableRow>
                         ))}
