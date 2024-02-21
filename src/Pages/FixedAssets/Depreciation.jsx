@@ -23,7 +23,7 @@ const schema = yup.object().shape({
 
 const Depreciation = (props) => {
   const { setViewDepre, calcDepreApi } = props;
-  const { state: data } = useLocation();
+  // const { state: data } = useLocation();
 
   const isSmallScreen = useMediaQuery("(max-width: 730px)");
 
@@ -111,7 +111,7 @@ const Depreciation = (props) => {
     },
   };
 
-  // console.log(data);
+  const data = calcDepreApi?.data;
 
   return (
     <>
@@ -161,7 +161,7 @@ const Depreciation = (props) => {
             gap: "10px",
             px: "5px",
             flexWrap: "wrap",
-            height: "445px",
+            height: "340px",
             overflow: "auto",
           }}
         >
@@ -171,9 +171,10 @@ const Depreciation = (props) => {
               minWidth: "300px",
               height: "maxContent",
               flexGrow: "1",
-              flex: "1",
+              // flex: "1",
               alignSelf: "stretched",
               p: "10px 20px",
+              borderRadius: "5px",
             }}
           >
             <Box>
@@ -193,55 +194,55 @@ const Depreciation = (props) => {
                   flexGrow: 1,
                   display: "flex",
                   flexDirection: "column",
-                  gap: isSmallScreen ? 0 : "15px",
+                  // gap: isSmallScreen ? 0 : "15px",
                 }}
               >
                 <Box className="tableCard__propertiesCapex">
                   Depreciation Method:
                   <Typography className="tableCard__infoCapex" fontSize="14px">
-                    {data.depreciation_method}
+                    {data?.depreciation_method}
                   </Typography>
                 </Box>
 
                 <Box className="tableCard__propertiesCapex">
                   Estimated Useful Life:
                   <Typography className="tableCard__infoCapex" fontSize="14px">
-                    {data.est_useful_life}
+                    {data?.est_useful_life}
                   </Typography>
                 </Box>
 
                 <Box className="tableCard__propertiesCapex">
                   Aquisition Date:
                   <Typography className="tableCard__infoCapex" fontSize="14px">
-                    {data.acquisition_date}
+                    {data?.acquisition_date}
                   </Typography>
                 </Box>
 
                 <Box className="tableCard__propertiesCapex">
                   Aquisition Cost:
                   <Typography className="tableCard__infoCapex" fontSize="14px">
-                    ₱{data.acquisition_cost?.toLocaleString()}
+                    ₱{data?.acquisition_cost?.toLocaleString()}
                   </Typography>
                 </Box>
 
                 <Box className="tableCard__propertiesCapex">
                   Months Depreciated:
                   <Typography className="tableCard__infoCapex" fontSize="14px">
-                    {data.months_depreciated}
+                    {data?.months_depreciated}
                   </Typography>
                 </Box>
 
                 <Box className="tableCard__propertiesCapex">
                   Scrap Value:
                   <Typography className="tableCard__infoCapex" fontSize="14px">
-                    ₱{data.scrap_value?.toLocaleString()}
+                    ₱{data?.scrap_value?.toLocaleString()}
                   </Typography>
                 </Box>
 
                 <Box className="tableCard__propertiesCapex">
                   Depreciable Basis:
                   <Typography className="tableCard__infoCapex" fontSize="14px">
-                    ₱{data.depreciable_basis?.toLocaleString()}
+                    ₱{data?.depreciable_basis?.toLocaleString()}
                   </Typography>
                 </Box>
               </Box>
@@ -304,7 +305,7 @@ const Depreciation = (props) => {
               </Box>
             </Card>
 
-            <Card className="tableCard__card">
+            {/* <Card className="tableCard__card">
               <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "rem" }}>
                 Date Setup
               </Typography>
@@ -338,11 +339,11 @@ const Depreciation = (props) => {
                   helperText={errors?.endDate?.message}
                 />
               </Box>
-            </Card>
+            </Card> */}
           </Box>
         </Box>
 
-        <Box
+        {/* <Box
           sx={{
             display: "flex",
             justifyContent: "flex-end",
@@ -360,7 +361,7 @@ const Depreciation = (props) => {
           >
             Run Depreciation
           </LoadingButton>
-        </Box>
+        </Box> */}
       </Box>
     </>
   );
