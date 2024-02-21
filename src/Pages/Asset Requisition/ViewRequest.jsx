@@ -58,11 +58,11 @@ const ViewRequest = (props) => {
   const navigate = useNavigate();
 
   const dialog = useSelector((state) => state.booleanState.dialog);
-  const dialog1 = useSelector((state) => state.booleanState.dialogMultiple.dialog1);
+  // const dialog1 = useSelector((state) => state.booleanState.dialogMultiple.dialog1);
 
-  const [patchApprovalStatus, { isLoading }] = usePatchApprovalStatusApiMutation();
-  const [getNextRequest, { data: nextData, isLoading: isNextRequestLoading }] = useLazyGetNextRequestQuery();
-  const [removePrNumber] = useRemovePurchaseRequestApiMutation();
+  // const [patchApprovalStatus, { isLoading }] = usePatchApprovalStatusApiMutation();
+  // const [getNextRequest, { data: nextData, isLoading: isNextRequestLoading }] = useLazyGetNextRequestQuery();
+  // const [removePrNumber] = useRemovePurchaseRequestApiMutation();
 
   // CONTAINER
   const {
@@ -72,7 +72,10 @@ const ViewRequest = (props) => {
     isError: isRequestError,
     error: errorData,
     refetch: isRequestRefetch,
-  } = useGetRequestContainerAllApiQuery({ refetchOnMountOrArgChange: true });
+  } = useGetRequestContainerAllApiQuery(
+    { page: page, per_page: perPage, transaction_number: transactionData?.transaction_number },
+    { refetchOnMountOrArgChange: true }
+  );
 
   const {
     data: transactionDataApi = [],
@@ -116,200 +119,200 @@ const ViewRequest = (props) => {
     setOrderBy(property);
   };
 
-  const onApprovalApproveHandler = (id) => {
-    dispatch(
-      openConfirm({
-        icon: Help,
-        iconColor: "info",
-        message: (
-          <Box>
-            <Typography> Are you sure you want to</Typography>
-            <Typography
-              sx={{
-                display: "inline-block",
-                color: "secondary.main",
-                fontWeight: "bold",
-                fontFamily: "Raleway",
-              }}
-            >
-              APPROVE
-            </Typography>{" "}
-            this request?
-          </Box>
-        ),
+  // const onApprovalApproveHandler = (id) => {
+  //   dispatch(
+  //     openConfirm({
+  //       icon: Help,
+  //       iconColor: "info",
+  //       message: (
+  //         <Box>
+  //           <Typography> Are you sure you want to</Typography>
+  //           <Typography
+  //             sx={{
+  //               display: "inline-block",
+  //               color: "secondary.main",
+  //               fontWeight: "bold",
+  //               fontFamily: "Raleway",
+  //             }}
+  //           >
+  //             APPROVE
+  //           </Typography>{" "}
+  //           this request?
+  //         </Box>
+  //       ),
 
-        onConfirm: async () => {
-          try {
-            dispatch(onLoading());
-            const result = await patchApprovalStatus({
-              action: "Approve",
-              asset_approval_id: id,
-            }).unwrap();
-            dispatch(
-              openToast({
-                message: result.message,
-                duration: 5000,
-              })
-            );
-            // console.log(result);
-            const next = await getNextRequest().unwrap();
-            navigate(`/approving/${next?.[0].transaction_number}`, { state: next?.[0], replace: true });
-          } catch (err) {
-            if (err?.status === 404) {
-              navigate(`/approving`);
-            } else if (err?.status === 422) {
-              dispatch(
-                openToast({
-                  // message: err.data.message,
-                  message: err.data.errors?.detail,
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            } else if (err?.status !== 422) {
-              dispatch(
-                openToast({
-                  message: "Something went wrong. Please try again.",
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            }
-          }
-        },
-      })
-    );
-  };
+  //       onConfirm: async () => {
+  //         try {
+  //           dispatch(onLoading());
+  //           const result = await patchApprovalStatus({
+  //             action: "Approve",
+  //             asset_approval_id: id,
+  //           }).unwrap();
+  //           dispatch(
+  //             openToast({
+  //               message: result.message,
+  //               duration: 5000,
+  //             })
+  //           );
+  //           // console.log(result);
+  //           const next = await getNextRequest().unwrap();
+  //           navigate(`/approving/${next?.[0].transaction_number}`, { state: next?.[0], replace: true });
+  //         } catch (err) {
+  //           if (err?.status === 404) {
+  //             navigate(`/approving`);
+  //           } else if (err?.status === 422) {
+  //             dispatch(
+  //               openToast({
+  //                 // message: err.data.message,
+  //                 message: err.data.errors?.detail,
+  //                 duration: 5000,
+  //                 variant: "error",
+  //               })
+  //             );
+  //           } else if (err?.status !== 422) {
+  //             dispatch(
+  //               openToast({
+  //                 message: "Something went wrong. Please try again.",
+  //                 duration: 5000,
+  //                 variant: "error",
+  //               })
+  //             );
+  //           }
+  //         }
+  //       },
+  //     })
+  //   );
+  // };
 
-  const onApprovalReturnHandler = (id) => {
-    dispatch(
-      openConfirm({
-        icon: Report,
-        iconColor: "warning",
-        message: (
-          <Stack gap={2}>
-            <Box>
-              <Typography> Are you sure you want to</Typography>
-              <Typography
-                sx={{
-                  display: "inline-block",
-                  color: "secondary.main",
-                  fontWeight: "bold",
-                  fontFamily: "Raleway",
-                }}
-              >
-                RETURN
-              </Typography>{" "}
-              this request?
-            </Box>
-          </Stack>
-        ),
-        remarks: true,
+  // const onApprovalReturnHandler = (id) => {
+  //   dispatch(
+  //     openConfirm({
+  //       icon: Report,
+  //       iconColor: "warning",
+  //       message: (
+  //         <Stack gap={2}>
+  //           <Box>
+  //             <Typography> Are you sure you want to</Typography>
+  //             <Typography
+  //               sx={{
+  //                 display: "inline-block",
+  //                 color: "secondary.main",
+  //                 fontWeight: "bold",
+  //                 fontFamily: "Raleway",
+  //               }}
+  //             >
+  //               RETURN
+  //             </Typography>{" "}
+  //             this request?
+  //           </Box>
+  //         </Stack>
+  //       ),
+  //       remarks: true,
 
-        onConfirm: async (data) => {
-          try {
-            dispatch(onLoading());
-            const result = await patchApprovalStatus({
-              action: "Return",
-              asset_approval_id: id,
-              remarks: data,
-            }).unwrap();
+  //       onConfirm: async (data) => {
+  //         try {
+  //           dispatch(onLoading());
+  //           const result = await patchApprovalStatus({
+  //             action: "Return",
+  //             asset_approval_id: id,
+  //             remarks: data,
+  //           }).unwrap();
 
-            dispatch(
-              openToast({
-                message: result.message,
-                duration: 5000,
-              })
-            );
-            const next = await getNextRequest().unwrap();
-            navigate(`/approving/${next?.[0].transaction_number}`, { state: next?.[0], replace: true });
-          } catch (err) {
-            if (err?.status === 404) {
-              navigate(`/approving`);
-            } else if (err?.status === 422) {
-              dispatch(
-                openToast({
-                  // message: err.data.message,
-                  message: err?.data?.errors?.detail,
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            } else if (err?.status !== 422) {
-              dispatch(
-                openToast({
-                  message: "Something went wrong. Please try again.",
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            }
-          }
-        },
-      })
-    );
-  };
+  //           dispatch(
+  //             openToast({
+  //               message: result.message,
+  //               duration: 5000,
+  //             })
+  //           );
+  //           const next = await getNextRequest().unwrap();
+  //           navigate(`/approving/${next?.[0].transaction_number}`, { state: next?.[0], replace: true });
+  //         } catch (err) {
+  //           if (err?.status === 404) {
+  //             navigate(`/approving`);
+  //           } else if (err?.status === 422) {
+  //             dispatch(
+  //               openToast({
+  //                 // message: err.data.message,
+  //                 message: err?.data?.errors?.detail,
+  //                 duration: 5000,
+  //                 variant: "error",
+  //               })
+  //             );
+  //           } else if (err?.status !== 422) {
+  //             dispatch(
+  //               openToast({
+  //                 message: "Something went wrong. Please try again.",
+  //                 duration: 5000,
+  //                 variant: "error",
+  //               })
+  //             );
+  //           }
+  //         }
+  //       },
+  //     })
+  //   );
+  // };
 
-  const onRemovePrHandler = (id) => {
-    dispatch(
-      openConfirm({
-        icon: Report,
-        iconColor: "warning",
-        message: (
-          <Stack gap={2}>
-            <Box>
-              <Typography> Are you sure you want to</Typography>
-              <Typography
-                sx={{
-                  display: "inline-block",
-                  color: "secondary.main",
-                  fontWeight: "bold",
-                  fontFamily: "Raleway",
-                }}
-              >
-                REMOVE
-              </Typography>{" "}
-              the PR Number?
-            </Box>
-          </Stack>
-        ),
+  // const onRemovePrHandler = (id) => {
+  //   dispatch(
+  //     openConfirm({
+  //       icon: Report,
+  //       iconColor: "warning",
+  //       message: (
+  //         <Stack gap={2}>
+  //           <Box>
+  //             <Typography> Are you sure you want to</Typography>
+  //             <Typography
+  //               sx={{
+  //                 display: "inline-block",
+  //                 color: "secondary.main",
+  //                 fontWeight: "bold",
+  //                 fontFamily: "Raleway",
+  //               }}
+  //             >
+  //               REMOVE
+  //             </Typography>{" "}
+  //             the PR Number?
+  //           </Box>
+  //         </Stack>
+  //       ),
 
-        onConfirm: async () => {
-          try {
-            dispatch(onLoading());
-            const result = await removePrNumber(id).unwrap();
+  //       onConfirm: async () => {
+  //         try {
+  //           dispatch(onLoading());
+  //           const result = await removePrNumber(id).unwrap();
 
-            dispatch(
-              openToast({
-                message: result.message,
-                duration: 5000,
-              })
-            );
-            navigate(-1);
-          } catch (err) {
-            if (err?.status === 422) {
-              dispatch(
-                openToast({
-                  // message: err.data.message,
-                  message: err?.data?.errors?.detail,
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            } else if (err?.status !== 422) {
-              dispatch(
-                openToast({
-                  message: "Something went wrong. Please try again.",
-                  duration: 5000,
-                  variant: "error",
-                })
-              );
-            }
-          }
-        },
-      })
-    );
-  };
+  //           dispatch(
+  //             openToast({
+  //               message: result.message,
+  //               duration: 5000,
+  //             })
+  //           );
+  //           navigate(-1);
+  //         } catch (err) {
+  //           if (err?.status === 422) {
+  //             dispatch(
+  //               openToast({
+  //                 // message: err.data.message,
+  //                 message: err?.data?.errors?.detail,
+  //                 duration: 5000,
+  //                 variant: "error",
+  //               })
+  //             );
+  //           } else if (err?.status !== 422) {
+  //             dispatch(
+  //               openToast({
+  //                 message: "Something went wrong. Please try again.",
+  //                 duration: 5000,
+  //                 variant: "error",
+  //               })
+  //             );
+  //           }
+  //         }
+  //       },
+  //     })
+  //   );
+  // };
 
   const handleCloseDialog = () => {
     dispatch(closeDialog()) || dispatch(closeDialog1());
@@ -345,55 +348,6 @@ const ViewRequest = (props) => {
             <Typography color="secondary.main">Back</Typography>
           </Button>
 
-          {/* {transactionData?.pr_number === "-" &&
-            location.pathname === `/asset-requisition/purchase-request/${transactionData?.transaction_number}` && (
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                startIcon={<InsertDriveFile color="secondary" />}
-                onClick={() => {
-                  dispatch(openDialog());
-                }}
-                sx={{ position: "absolute", right: 10, height: "30px" }}
-              >
-                <Typography fontWeight={400} fontSize={14}>
-                  Add PR
-                </Typography>
-              </Button>
-            )} */}
-
-          {/* {(transactionData?.pr_number !== "-" || transactionData?.pr_number === null) &&
-            location.pathname === `/asset-requisition/purchase-request/${transactionData?.transaction_number}` && (
-              <Button
-                variant="contained"
-                color="error"
-                size="small"
-                startIcon={<RemoveShoppingCart color="secondary" />}
-                onClick={() => onRemovePrHandler(transactionData)}
-                sx={{ position: "absolute", right: 10, height: "30px" }}
-              >
-                <Typography fontWeight={500} fontSize={14}>
-                  Remove PR
-                </Typography>
-              </Button>
-            )}
-
-          {location.pathname === `/asset-requisition/requisition-receiving/${transactionData?.transaction_number}` && (
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              startIcon={<InsertDriveFile color="secondary" />}
-              onClick={() => dispatch(openDialog1())}
-              sx={{ position: "absolute", right: 10, height: "30px" }}
-            >
-              <Typography fontWeight={400} fontSize={14}>
-                Input
-              </Typography>
-            </Button>
-          )} */}
-
           <Box className="request mcontainer__wrapper" p={2} pb={0}>
             {/* TABLE */}
             <Box className="request__table">
@@ -419,7 +373,6 @@ const ViewRequest = (props) => {
                       <TableCell className="tbl-cell">Ref. No.</TableCell>
                       <TableCell className="tbl-cell">Type of Request</TableCell>
                       <TableCell className="tbl-cell">Acquisition Details</TableCell>
-                      {transactionData?.pr_number && <TableCell className="tbl-cell">PR Number</TableCell>}
                       <TableCell className="tbl-cell">Attachment Type</TableCell>
                       <TableCell className="tbl-cell">Chart of Accounts</TableCell>
                       <TableCell className="tbl-cell">Accountability</TableCell>
@@ -450,7 +403,6 @@ const ViewRequest = (props) => {
                             <TableCell className="tbl-cell tr-cen-pad45 text-weight">{data.reference_number}</TableCell>
                             <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
                             <TableCell className="tbl-cell">{data.acquisition_details}</TableCell>
-                            <TableCell className="tbl-cell">{data.pr_number}</TableCell>
                             <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
                             <TableCell className="tbl-cell">
                               <Typography fontSize={10} color="gray">
@@ -560,33 +512,6 @@ const ViewRequest = (props) => {
                 >
                   Transactions : {transactionData ? transactionDataApi.length : addRequestAllApi.length} request
                 </Typography>
-
-                {/* {location.pathname === `/approving/${transactionData?.transaction_number}` && (
-                  <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      color="secondary"
-                      onClick={() => onApprovalApproveHandler(transactionData?.asset_approval_id)}
-                      startIcon={<Check color="primary" />}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      onClick={() => onApprovalReturnHandler(transactionData?.asset_approval_id)}
-                      startIcon={<Undo sx={{ color: "#5f3030" }} />}
-                      sx={{
-                        color: "white",
-                        backgroundColor: "error.main",
-                        ":hover": { backgroundColor: "error.dark" },
-                      }}
-                    >
-                      Return
-                    </Button>
-                  </Stack>
-                )} */}
               </Stack>
             </Box>
           </Box>
