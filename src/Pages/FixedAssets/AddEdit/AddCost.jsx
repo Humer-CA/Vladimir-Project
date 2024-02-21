@@ -193,7 +193,7 @@ const schema = yup.object().shape({
   voucher: yup.string(),
   voucher_date: yup.string().nullable().label("Voucher Date").typeError("Voucher Date is a required field"),
   receipt: yup.string().required(),
-  po_number: yup.string().required(),
+  po_number: yup.string().required().label("PO Number"),
 
   quantity: yup.number().required().typeError("Quantity is a required field"),
 
@@ -451,6 +451,7 @@ const AddCost = (props) => {
       voucher: "",
       voucher_date: null,
       receipt: "",
+      po_number: null,
       quantity: 1,
       asset_status_id: null,
       cycle_count_status_id: null,
@@ -598,6 +599,7 @@ const AddCost = (props) => {
       setValue("voucher", data.voucher);
       setValue("voucher_date", data.voucher_date === "-" ? null : voucherDateFormat);
       setValue("receipt", data.receipt);
+      setValue("po_number", data.po_number);
       setValue("quantity", data.quantity);
       setValue("asset_status_id", data.asset_status);
       setValue("cycle_count_status_id", data.cycle_count_status);

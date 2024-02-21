@@ -424,7 +424,7 @@ const AddFixedAsset = (props) => {
       voucher: "",
       voucher_date: null,
       receipt: "",
-      po_number: null,
+      po_number: "",
       quantity: 1,
       asset_status_id: null,
       cycle_count_status_id: null,
@@ -764,6 +764,7 @@ const AddFixedAsset = (props) => {
               />
             ) : null} */}
           </Box>
+
           {/* 
           <CustomAutoComplete
             autoComplete
