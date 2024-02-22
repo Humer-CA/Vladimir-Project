@@ -338,7 +338,7 @@ const AddRequisition = (props) => {
     },
   });
 
-  console.log(addRequestAllApi?.data);
+  // console.log(addRequestAllApi?.data);
 
   useEffect(() => {
     if (isPostError) {
@@ -412,7 +412,7 @@ const AddRequisition = (props) => {
     }
   }, [updateRequest]);
 
-  console.log("errors", errors);
+  // console.log("errors", errors);
 
   // Table Sorting --------------------------------
   const [order, setOrder] = useState("desc");
@@ -537,7 +537,7 @@ const AddRequisition = (props) => {
       // //   : formData.other_attachments),
     };
 
-    console.log("data", data);
+    // console.log("data", data);
 
     const payload = new FormData();
     Object.entries(data).forEach((item) => {
@@ -635,37 +635,37 @@ const AddRequisition = (props) => {
 
     const validation = () => {
       if (transactionData) {
-        console.log("UPDATE trigger");
+        // console.log("UPDATE trigger");
 
         // if (transactionDataApi.every((item) => item?.fixed_asset?.id !== watch("fixed_asset_id")?.id)) {
         //   console.log("change the tag_number");
         //   return true;
         // }
         if (transactionDataApi.every((item) => item?.department?.id !== watch("department_id")?.id)) {
-          console.log("change the department");
+          // console.log("change the department");
           return true;
         }
         if (transactionDataApi.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
-          console.log("change the subunit");
+          // console.log("change the subunit");
           return true;
         }
         if (transactionDataApi.every((item) => item?.location?.id !== watch("location_id")?.id)) {
-          console.log("change the location");
+          // console.log("change the location");
           return true;
         }
         return false;
       } else {
         console.log("ADD trigger");
         if (addRequestAllApi?.data.every((item) => item?.department?.id !== watch("department_id")?.id)) {
-          console.log("change the department");
+          // console.log("change the department");
           return true;
         }
         if (addRequestAllApi?.data.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
-          console.log("change the subunit");
+          // console.log("change the subunit");
           return true;
         }
         if (addRequestAllApi?.data.every((item) => item?.location?.id !== watch("location_id")?.id)) {
-          console.log("change the location");
+          // console.log("change the location");
           return true;
         }
         return false;
@@ -751,7 +751,7 @@ const AddRequisition = (props) => {
             if (transactionData) {
               if (transactionDataApi[0]?.can_resubmit === 0) {
                 const res = await resubmitRequest(...transactionDataApi).unwrap();
-                console.log(res?.message);
+                // console.log(res?.message);
 
                 navigate(-1);
                 deleteAllRequest();
@@ -766,7 +766,7 @@ const AddRequisition = (props) => {
               }
             } else {
               const res = await postRequisition(addRequestAllApi).unwrap();
-              console.log(res?.message);
+              // console.log(res?.message);
               deleteAllRequest();
               reset({
                 letter_of_request: null,
@@ -1719,7 +1719,7 @@ const AddRequisition = (props) => {
                                 {data.fixed_asset?.vladimir_tag_number || data.fixed_asset}
                               </Typography>
 
-                              <Typography fontSize={12} fontWeight={600}>
+                              <Typography fontSize={12} fontWeight={600} color="success.main">
                                 {data.is_addcost === 1 && "Additional Cost"}
                               </Typography>
                             </TableCell>
@@ -1767,7 +1767,7 @@ const AddRequisition = (props) => {
 
                             <TableCell className="tbl-cell">{data.date_needed}</TableCell>
 
-                            {addRequestAllApi && !data.po_number && (
+                            {addRequestAllApi && !data.po_number && data?.is_removed === 0 && (
                               <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
                             )}
 
@@ -1830,7 +1830,7 @@ const AddRequisition = (props) => {
                                 </Stack>
                               )}
                             </TableCell>
-                            {console.log(data)}
+
                             <TableCell className="tbl-cell">
                               {data?.can_edit === 1
                                 ? data?.is_removed === 0 && (
