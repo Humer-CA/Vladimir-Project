@@ -325,11 +325,11 @@ const PendingRequest = (props) => {
 
                     <TableCell className="tbl-cell-category">
                       <TableSortLabel
-                        active={orderBy === `division_id`}
-                        direction={orderBy === `division_id` ? order : `asc`}
-                        onClick={() => onSort(`division_id`)}
+                        active={orderBy === `quantity`}
+                        direction={orderBy === `quantity` ? order : `asc`}
+                        onClick={() => onSort(`quantity`)}
                       >
-                        Quantity of PO
+                        Quantity
                       </TableSortLabel>
                     </TableCell>
 

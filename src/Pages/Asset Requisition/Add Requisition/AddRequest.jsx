@@ -1728,7 +1728,7 @@ const AddRequisition = (props) => {
                         </>
                       )}
                       {transactionData &&
-                        !transactionDataApi[0]?.po_number &&
+                        // transactionDataApi[0]?.po_number &&
                         transactionDataApi[0]?.is_removed === 1 && (
                           <>
                             <TableCell className="tbl-cell text-center">Ordered</TableCell>
@@ -1811,7 +1811,7 @@ const AddRequisition = (props) => {
 
                             <TableCell className="tbl-cell">{data.date_needed}</TableCell>
 
-                            {addRequestAllApi && !data.po_number && (
+                            {addRequestAllApi && !data.po_number && data?.is_removed === 0 && (
                               <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
                             )}
                             {transactionData && data.po_number && (
