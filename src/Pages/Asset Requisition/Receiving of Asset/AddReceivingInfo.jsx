@@ -22,11 +22,12 @@ import CustomAutoComplete from "../../../Components/Reusable/CustomAutoComplete"
 import CustomNumberField from "../../../Components/Reusable/CustomNumberField";
 import { useGetSupplierAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Supplier";
 import { notificationApi } from "../../../Redux/Query/Notification";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object().shape({
   id: yup.string(),
   po_number: yup.number().required().label("PO Number").typeError("PO Number is a required field"),
-  rr_number: yup.string().required().label("RR Number").typeError("RR Number is a required field"),
+  rr_number: yup.string().required().label("RR Number"),
   supplier_id: yup
     .string()
     .required()
@@ -47,6 +48,7 @@ const schema = yup.object().shape({
 const ReceivingTable = (props) => {
   const { data } = props;
   const isSmallScreen = useMediaQuery("(max-width: 720px)");
+  const navigate = useNavigate();
   console.log(data);
 
   const {
@@ -69,7 +71,7 @@ const ReceivingTable = (props) => {
     },
   });
 
-  const newData = data;
+  console.log(data);
   const { data: supplierData = [], isLoading: isSupplierLoading } = useGetSupplierAllApiQuery();
 
   const dispatch = useDispatch();
@@ -115,11 +117,11 @@ const ReceivingTable = (props) => {
   const onSubmitHandler = (formData) => {
     const newFormData = {
       ...formData,
-      id: newData?.id,
+      id: data?.id,
       delivery_date: moment(new Date(formData.delivery_date)).format("YYYY-MM-DD"),
     };
 
-    console.log(newFormData);
+    // console.log(newFormData);
 
     dispatch(
       openConfirm({
@@ -156,13 +158,13 @@ const ReceivingTable = (props) => {
             dispatch(notificationApi.util.invalidateTags(["Notif"]));
             dispatch(closeDialog());
             dispatch(closeConfirm());
-            navigate(-1);
+            data?.total_remaining === 0 && navigate(-1);
           } catch (err) {
-            console.log(err.data.message);
+            console.log(err);
             if (err?.status === 403 || err?.status === 404 || err?.status === 422) {
               dispatch(
                 openToast({
-                  message: err.data?.message,
+                  message: err.data?.errors?.po_number || err.data?.errors?.rr_number || err.data?.message,
                   duration: 5000,
                   variant: "error",
                 })
@@ -208,13 +210,13 @@ const ReceivingTable = (props) => {
                   <Typography fontSize={14} fontWeight={600}>
                     Transaction Number :
                   </Typography>
-                  <Typography fontSize={14}>{newData?.transaction_number}</Typography>
+                  <Typography fontSize={14}>{data?.transaction_number}</Typography>
                 </Stack>
                 <Stack flexDirection="row" gap={1}>
                   <Typography fontSize={14} fontWeight={600}>
                     Reference Number :
                   </Typography>
-                  <Typography fontSize={14}>{newData?.reference_number}</Typography>
+                  <Typography fontSize={14}>{data?.reference_number}</Typography>
                 </Stack>
               </Stack>
             </Stack>
@@ -230,7 +232,7 @@ const ReceivingTable = (props) => {
                   <Typography fontSize={14} fontWeight={600}>
                     PR Number :
                   </Typography>
-                  <Typography fontSize={14}>{newData?.pr_number}</Typography>
+                  <Typography fontSize={14}>{data?.pr_number}</Typography>
                 </Stack>
 
                 <Stack flexDirection="row" gap={1}>
@@ -240,7 +242,7 @@ const ReceivingTable = (props) => {
                   <Typography
                     fontSize={14}
                     noWrap
-                  >{`(${newData?.requestor?.employee_id}) - ${newData?.requestor?.firstname} ${newData?.requestor?.lastname}`}</Typography>
+                  >{`(${data?.requestor?.employee_id}) - ${data?.requestor?.firstname} ${data?.requestor?.lastname}`}</Typography>
                 </Stack>
 
                 <Stack flexDirection="row" gap={1}>
@@ -248,7 +250,7 @@ const ReceivingTable = (props) => {
                     Item Description:
                   </Typography>
                   <Typography fontSize={14} noWrap>
-                    {newData?.asset_description}
+                    {data?.asset_description}
                   </Typography>
                 </Stack>
 
@@ -257,7 +259,7 @@ const ReceivingTable = (props) => {
                     Quantity Ordered:
                   </Typography>
                   <Typography fontSize={14} noWrap>
-                    {newData?.quantity}
+                    {data?.quantity}
                   </Typography>
                 </Stack>
 
@@ -266,7 +268,7 @@ const ReceivingTable = (props) => {
                     Quantity Remaining:
                   </Typography>
                   <Typography fontSize={14} noWrap>
-                    {newData?.remaining}
+                    {data?.remaining}
                   </Typography>
                 </Stack>
 
@@ -293,7 +295,7 @@ const ReceivingTable = (props) => {
                   <Typography
                     fontSize={14}
                     noWrap
-                  >{`(${newData?.company?.company_code}) - ${newData?.company?.company_name}`}</Typography>
+                  >{`(${data?.company?.company_code}) - ${data?.company?.company_name}`}</Typography>
                 </Stack>
 
                 <Stack flexDirection="row" gap={1}>
@@ -303,7 +305,7 @@ const ReceivingTable = (props) => {
                   <Typography
                     fontSize={14}
                     noWrap
-                  >{`(${newData?.department?.department_code}) - ${newData?.department?.department_name}`}</Typography>
+                  >{`(${data?.department?.department_code}) - ${data?.department?.department_name}`}</Typography>
                 </Stack>
 
                 <Stack flexDirection="row" gap={1}>
@@ -313,7 +315,7 @@ const ReceivingTable = (props) => {
                   <Typography
                     fontSize={14}
                     noWrap
-                  >{`(${newData?.subunit?.subunit_code}) - ${newData?.subunit?.subunit_name}`}</Typography>
+                  >{`(${data?.subunit?.subunit_code}) - ${data?.subunit?.subunit_name}`}</Typography>
                 </Stack>
 
                 <Stack flexDirection="row" gap={1}>
@@ -323,7 +325,7 @@ const ReceivingTable = (props) => {
                   <Typography
                     fontSize={14}
                     noWrap
-                  >{`(${newData?.location?.location_code}) - ${newData?.location?.location_name}`}</Typography>
+                  >{`(${data?.location?.location_code}) - ${data?.location?.location_name}`}</Typography>
                 </Stack>
 
                 <Stack flexDirection="row" gap={1}>
@@ -332,7 +334,7 @@ const ReceivingTable = (props) => {
                   </Typography>
                   <Typography
                     fontSize={14}
-                  >{`(${newData?.account_title?.account_title_code}) - ${newData?.account_title?.account_title_name}`}</Typography>
+                  >{`(${data?.account_title?.account_title_code}) - ${data?.account_title?.account_title_name}`}</Typography>
                 </Stack>
 
                 <Stack flexDirection="row" gap={1}>
@@ -340,7 +342,7 @@ const ReceivingTable = (props) => {
                     Organization :
                   </Typography>
                   <Typography fontSize={14}>
-                    {/* {`(${newData?.account_title?.account_title_code}) - ${newData?.account_title?.account_title_name}`} */}
+                    {/* {`(${data?.account_title?.account_title_code}) - ${data?.account_title?.account_title_name}`} */}
                     Organization
                   </Typography>
                 </Stack>
@@ -374,7 +376,7 @@ const ReceivingTable = (props) => {
                 color="secondary"
                 type="text"
                 size="small"
-                error={!!errors?.rr_number}
+                errors={!!errors?.rr_number}
                 helperText={errors?.rr_number?.message}
               />
               <CustomAutoComplete
@@ -417,7 +419,7 @@ const ReceivingTable = (props) => {
                 size="small"
                 isAllowed={(values) => {
                   const { floatValue } = values;
-                  return floatValue >= 1 && floatValue <= newData?.remaining;
+                  return floatValue >= 1 && floatValue <= data?.remaining;
                 }}
                 error={!!errors?.quantity_delivered}
                 helperText={errors?.quantity_delivered?.message}
