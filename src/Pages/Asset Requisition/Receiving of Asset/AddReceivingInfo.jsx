@@ -49,7 +49,7 @@ const ReceivingTable = (props) => {
   const { data } = props;
   const isSmallScreen = useMediaQuery("(max-width: 720px)");
   const navigate = useNavigate();
-  console.log(data);
+  // console.log(data);
 
   const {
     handleSubmit,
@@ -71,7 +71,6 @@ const ReceivingTable = (props) => {
     },
   });
 
-  console.log(data);
   const { data: supplierData = [], isLoading: isSupplierLoading } = useGetSupplierAllApiQuery();
 
   const dispatch = useDispatch();
