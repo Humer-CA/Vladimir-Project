@@ -157,7 +157,7 @@ const ReceivingTable = (props) => {
             dispatch(notificationApi.util.invalidateTags(["Notif"]));
             dispatch(closeDialog());
             dispatch(closeConfirm());
-            data?.total_remaining === 0 && navigate(-1);
+            result?.total_remaining === 0 && navigate(-1);
           } catch (err) {
             console.log(err);
             if (err?.status === 403 || err?.status === 404 || err?.status === 422) {
