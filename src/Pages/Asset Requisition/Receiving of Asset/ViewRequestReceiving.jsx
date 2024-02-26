@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../../index.scss";
 import NoRecordsFound from "../../../Layout/NoRecordsFound";
 import ErrorFetching from "../../ErrorFetching";
@@ -106,7 +106,8 @@ const ViewRequestReceiving = () => {
     setViewData(data);
   };
 
-  const onCancelHandler = async (id) => {
+  const onCancelHandler = async (data) => {
+    console.log("data", data);
     dispatch(
       openConfirm({
         icon: Report,
@@ -130,15 +131,16 @@ const ViewRequestReceiving = () => {
         onConfirm: async () => {
           try {
             dispatch(onLoading());
-            let result = await cancelPo(id).unwrap();
+            let result = await cancelPo(data?.id).unwrap();
             dispatch(
               openToast({
-                message: result.message,
+                message: result?.message,
                 duration: 5000,
               })
             );
 
             dispatch(closeConfirm());
+            result?.data?.total_remaining === 0 && navigate(-1);
           } catch (err) {
             console.error(err);
             if (err?.status === 422) {
@@ -163,6 +165,12 @@ const ViewRequestReceiving = () => {
       })
     );
   };
+
+  useEffect(() => {
+    if (receivingData?.total_remaining === 0) {
+      navigate(-1);
+    }
+  }, [receivingData]);
 
   return (
     <>
@@ -388,7 +396,7 @@ const ViewRequestReceiving = () => {
                                 <TableCell className="tbl-cell text-center">
                                   <IconButton
                                     disabled={data?.remaining === 0}
-                                    onClick={() => onCancelHandler(data?.id)}
+                                    onClick={() => onCancelHandler(data)}
                                     sx={{ color: "error.main", ":hover": { color: "red" } }}
                                   >
                                     <Tooltip title="Cancel Request" placement="top" arrow>
