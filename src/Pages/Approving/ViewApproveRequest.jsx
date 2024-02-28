@@ -320,6 +320,7 @@ const ViewApproveRequest = (props) => {
                     >
                       <TableCell className="tbl-cell">Ref. No.</TableCell>
                       <TableCell className="tbl-cell">Type of Request</TableCell>
+                      <TableCell className="tbl-cell">Acquisition Details</TableCell>
                       <TableCell className="tbl-cell">Attachment Type</TableCell>
                       <TableCell className="tbl-cell">Chart of Accounts</TableCell>
                       <TableCell className="tbl-cell">Accountability</TableCell>
@@ -348,6 +349,7 @@ const ViewApproveRequest = (props) => {
                           >
                             <TableCell className="tbl-cell tr-cen-pad45 text-weight">{data.reference_number}</TableCell>
                             <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
+                            <TableCell className="tbl-cell">{data.acquisition_details}</TableCell>
                             <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
                             <TableCell className="tbl-cell">
                               <Typography fontSize={10} color="gray">
