@@ -143,7 +143,7 @@ const RequestMonitoring = () => {
           // ID: item?.id,
           "Transaction No.": item?.transaction_number,
           "Acuisition Details": item?.acquisition_details,
-          "Quantity of PR": item?.item_count,
+          Quantity: item?.item_count,
           Status: item?.status,
           "Current Approver": `${item?.current_approver?.firstname} ${item?.current_approver?.lastname}`,
           "Date Requested": moment(item?.created_at).format("MMM DD, YYYY"),
@@ -232,13 +232,25 @@ const RequestMonitoring = () => {
                         </TableSortLabel>
                       </TableCell>
 
+                      {requisitionData?.pr_number !== "-" && (
+                        <TableCell className="tbl-cell">
+                          <TableSortLabel
+                            active={orderBy === `pr_number`}
+                            direction={orderBy === `pr_number` ? order : `asc`}
+                            onClick={() => onSort(`pr_number`)}
+                          >
+                            PR Number
+                          </TableSortLabel>
+                        </TableCell>
+                      )}
+
                       <TableCell className="tbl-cell text-center">
                         <TableSortLabel
                           active={orderBy === `item_count`}
                           direction={orderBy === `item_count` ? order : `asc`}
                           onClick={() => onSort(`item_count`)}
                         >
-                          Quantity of PR
+                          Quantity
                         </TableSortLabel>
                       </TableCell>
 
@@ -283,6 +295,7 @@ const RequestMonitoring = () => {
                             >
                               <TableCell className="tbl-cell text-weight">{data.transaction_number}</TableCell>
                               <TableCell className="tbl-cell">{data.acquisition_details}</TableCell>
+                              <TableCell className="tbl-cell">{data.pr_number}</TableCell>
                               <TableCell className="tbl-cell text-weight tr-cen-pad45">{data.item_count}</TableCell>
                               <TableCell className="tbl-cell text-weight text-center">
                                 <Tooltip placement="top" title="View Request Information" arrow>
