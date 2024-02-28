@@ -1885,6 +1885,7 @@ const AddRequisition = (props) => {
                               {data?.is_removed === 0 && (
                                 <ActionMenu
                                   hideArchive
+                                  disableDelete={data.status !== "For Approval of Approver 1" ? true : false}
                                   setDisable={setDisable}
                                   status={data?.status}
                                   data={data}

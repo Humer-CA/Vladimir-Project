@@ -254,7 +254,6 @@ const Requisition = () => {
               setFilter={setFilter}
               filter={filter}
             />
-
             <Box className="masterlist-toolbar__addBtn" sx={{ mt: 0.25 }}>
               <Button
                 onClick={handleOpenAdd}
@@ -288,7 +287,6 @@ const Requisition = () => {
                 </MenuItem>
               </Menu>
             </Box>
-
             <Box>
               <TableContainer className="mcontainer__th-body">
                 <Table className="mcontainer__table" stickyHeader>
@@ -475,6 +473,7 @@ const Requisition = () => {
                               </TableCell>
                               <TableCell className="tbl-cell ">
                                 <ActionMenu
+                                  disableVoid={data.status !== "For Approval of Approver 1" ? true : false}
                                   status={data.status}
                                   data={data}
                                   showVoid
