@@ -49,6 +49,8 @@ const ActionMenu = (props) => {
     // setShowEdit
     setUpdateToggle,
     setDisable,
+    disableVoid,
+    disableDelete,
   } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -221,7 +223,7 @@ const ActionMenu = (props) => {
           )}
 
           {showVoid && (
-            <MenuItem onClick={handleVoid} dense>
+            <MenuItem onClick={handleVoid} dense disabled={disableVoid}>
               <ListItemIcon>
                 <Cancel />
               </ListItemIcon>
@@ -232,7 +234,7 @@ const ActionMenu = (props) => {
           )}
 
           {onDeleteReferenceHandler && (
-            <MenuItem onClick={handleVoidReference} dense>
+            <MenuItem onClick={handleVoidReference} dense disabled={disableDelete}>
               <ListItemIcon>
                 <Delete />
               </ListItemIcon>
