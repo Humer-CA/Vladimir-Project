@@ -1683,8 +1683,19 @@ const AddRequisition = (props) => {
                           <TableCell className="tbl-cell text-center">Ordered</TableCell>
                           <TableCell className="tbl-cell text-center">Delivered</TableCell>
                           <TableCell className="tbl-cell text-center">Remaining</TableCell>
+                          <TableCell className="tbl-cell text-center">Cancelled</TableCell>
                         </>
                       )}
+                      {transactionData &&
+                        // transactionDataApi[0]?.po_number &&
+                        transactionDataApi[0]?.is_removed === 1 && (
+                          <>
+                            <TableCell className="tbl-cell text-center">Ordered</TableCell>
+                            <TableCell className="tbl-cell text-center">Delivered</TableCell>
+                            <TableCell className="tbl-cell text-center">Remaining</TableCell>
+                            <TableCell className="tbl-cell text-center">Cancelled</TableCell>
+                          </>
+                        )}
 
                       <TableCell className="tbl-cell">Cellphone #</TableCell>
                       <TableCell className="tbl-cell">Additional Info.</TableCell>
@@ -1770,12 +1781,21 @@ const AddRequisition = (props) => {
                             {addRequestAllApi && !data.po_number && data?.is_removed === 0 && (
                               <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
                             )}
-
                             {transactionData && data.po_number && (
                               <>
                                 <TableCell className="tbl-cell text-center">{data.ordered}</TableCell>
                                 <TableCell className="tbl-cell text-center">{data.delivered}</TableCell>
                                 <TableCell className="tbl-cell text-center">{data.remaining}</TableCell>
+                                <TableCell className="tbl-cell text-center">{data.cancelled}</TableCell>
+                              </>
+                            )}
+
+                            {transactionData && !data.po_number && data?.is_removed === 1 && (
+                              <>
+                                <TableCell className="tbl-cell text-center">{data.ordered}</TableCell>
+                                <TableCell className="tbl-cell text-center">{data.delivered}</TableCell>
+                                <TableCell className="tbl-cell text-center">{data.remaining}</TableCell>
+                                <TableCell className="tbl-cell text-center">{data.cancelled}</TableCell>
                               </>
                             )}
 
