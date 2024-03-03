@@ -1,30 +1,14 @@
 import React from "react";
 import "../../Style/Request/timeline.scss";
-import {
-  Box,
-  Divider,
-  IconButton,
-  Stack,
-  Step,
-  StepIcon,
-  StepLabel,
-  Stepper,
-  TableCell,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, IconButton, Stack, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import {
   CancelOutlined,
-  CheckBox,
   CheckCircleOutlineTwoTone,
   Close,
   Error,
-  ErrorOutline,
   FactCheck,
-  History,
   HowToReg,
   ManageHistoryTwoTone,
-  Timeline,
   TimelineTwoTone,
 } from "@mui/icons-material";
 import { closeDialog } from "../../Redux/StateManagement/booleanStateSlice";
@@ -35,8 +19,6 @@ import Moment from "moment";
 const RequestTimeline = (props) => {
   const { data: transactionData } = props;
   const dispatch = useDispatch();
-
-  console.log(transactionData?.status);
 
   return (
     <Box className="timelineSteps">
