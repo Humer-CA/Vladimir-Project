@@ -23,6 +23,11 @@ export const requisitionApi = createApi({
       providesTags: ["Requisition"],
     }),
 
+    getRequisitionPerItemApi: builder.query({
+      query: (params) => `Item-Detail/${params.reference_number}?&per_page=${params.per_page}&page=${params.page}`,
+      providesTags: ["Requisition"],
+    }),
+
     getRequisitionMonitoringApi: builder.query({
       query: (params) =>
         `asset-request?&search=${params.search}&per_page=${params.per_page}&status=${params.status}&page=${params.page}&for_monitoring=1&filter=${params.filter}`,
@@ -135,6 +140,7 @@ export const requisitionApi = createApi({
 
 export const {
   useGetRequisitionApiQuery,
+  useGetRequisitionPerItemApiQuery,
   useGetRequisitionMonitoringApiQuery,
   useLazyGetRequisitionMonitoringApiQuery,
   useGetRequisitionAllApiQuery,
