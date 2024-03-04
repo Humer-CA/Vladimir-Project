@@ -641,11 +641,6 @@ const AddRequisition = (props) => {
     const validation = () => {
       if (transactionData) {
         // console.log("UPDATE trigger");
-
-        // if (transactionDataApi.every((item) => item?.fixed_asset?.id !== watch("fixed_asset_id")?.id)) {
-        //   console.log("change the tag_number");
-        //   return true;
-        // }
         if (transactionDataApi.every((item) => item?.department?.id !== watch("department_id")?.id)) {
           // console.log("change the department");
           return true;
@@ -1107,8 +1102,8 @@ const AddRequisition = (props) => {
   const formInputs = () => {
     return (
       <Box>
-        <Typography color="secondary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
-          ASSET
+        <Typography color="primary.main" sx={{ fontFamily: "Anton", fontSize: "1.5rem" }}>
+          ADDITIONAL COST
         </Typography>
 
         <Divider />
@@ -1118,39 +1113,40 @@ const AddRequisition = (props) => {
             <Box sx={BoxStyle}>
               <Typography sx={sxSubtitle}>Request Information</Typography>
 
-              {transactionData?.additionalCost && (
-                <CustomAutoComplete
-                  control={control}
-                  name="fixed_asset_id"
-                  options={vTagNumberData}
-                  loading={isVTagNumberLoading}
-                  size="small"
-                  getOptionLabel={(option) => "(" + option.vladimir_tag_number + ")" + " - " + option.asset_description}
-                  isOptionEqualToValue={(option, value) => option.id === value.id}
-                  renderInput={(params) => (
-                    <TextField
-                      color="secondary"
-                      {...params}
-                      label="Tag Number"
-                      error={!!errors?.vladimir_tag_number}
-                      helperText={errors?.vladimir_tag_number?.message}
-                    />
-                  )}
-                  onChange={(_, value) => {
-                    setValue("type_of_request_id", value?.type_of_request);
-                    setValue("attachment_type", value?.attachment_type);
-                    setValue("department_id", value?.department);
-                    // setValue("company_id", value?.company?.id);
-                    setValue("subunit_id", value?.subunit);
-                    setValue("location_id", value?.location);
-                    setValue("account_title_id", value?.account_title);
-                    setValue("accountability", value?.accountability);
-                    setValue("accountable", value?.accountable);
-                    setValue("acquisition_details", value?.acquisition_details);
-                    return value;
-                  }}
-                />
-              )}
+              <CustomAutoComplete
+                control={control}
+                name="fixed_asset_id"
+                options={vTagNumberData}
+                loading={isVTagNumberLoading}
+                disabled={updateRequest || addRequestAllApi?.data === 0 ? disable : false}
+                size="small"
+                filterOptions={filterOptions}
+                getOptionLabel={(option) => "(" + option.vladimir_tag_number + ")" + " - " + option.asset_description}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderInput={(params) => (
+                  <TextField
+                    color="secondary"
+                    {...params}
+                    label="Tag Number"
+                    error={!!errors?.fixed_asset_id}
+                    helperText={errors?.fixed_asset_id?.message}
+                  />
+                )}
+                onChange={(_, value) => {
+                  setValue("type_of_request_id", value?.type_of_request);
+                  setValue("attachment_type", value?.attachment_type);
+                  setValue("department_id", value?.department);
+                  setValue("company_id", value?.company);
+                  setValue("subunit_id", value?.subunit);
+                  setValue("location_id", value?.location);
+                  setValue("account_title_id", value?.account_title);
+                  setValue("accountability", value?.accountability);
+                  value?.accountability !== "Common" && setValue("accountable", value?.accountable);
+
+                  // console.log("value", value);
+                  return value;
+                }}
+              />
 
               <CustomAutoComplete
                 control={control}
@@ -1225,7 +1221,7 @@ const AddRequisition = (props) => {
                   const companyValue = Company.find((item) => item?.company_id === value.company.company_id);
 
                   if (value) {
-                    setValue("company_id", companyValue?.company_id);
+                    setValue("company_id", companyValue?.company_id || companyValue?.company_id?.id);
                   } else {
                     setValue("company_id", null);
                   }
@@ -1258,31 +1254,6 @@ const AddRequisition = (props) => {
                   />
                 )}
               />
-
-              {/* <CustomAutoComplete
-      autoComplete
-      name="company_id"
-      control={control}
-      options={companyData}
-      loading={isCompanyLoading}
-      
-      getOptionLabel={(option) =>
-        option.company_code + " - " + option.company_name
-      }
-      isOptionEqualToValue={(option, value) =>
-        option.company_id === value.company_id
-      }
-      renderInput={(params) => (
-        <TextField
-          color="secondary"
-          {...params}
-          label="Company"
-          error={!!errors?.company_id}
-          helperText={errors?.company_id?.message}
-        />
-      )}
-      // disabled
-    /> */}
 
               <CustomAutoComplete
                 autoComplete
@@ -1357,27 +1328,31 @@ const AddRequisition = (props) => {
                 <CustomAutoComplete
                   name="accountable"
                   control={control}
+                  size="small"
                   includeInputInList
                   disablePortal
-                  disabled={transactionDataApi[0]?.can_edit === 0}
                   filterOptions={filterOptions}
                   options={sedarData}
                   loading={isSedarLoading}
-                  getOptionLabel={(option) => option.general_info?.full_id_number_full_name}
+                  getOptionLabel={
+                    (option) => option.general_info?.full_id_number_full_name
+                    // `(${option.general_info?.full_id_number}) - ${option.general_info?.full_name}`
+                  }
                   isOptionEqualToValue={(option, value) =>
                     option.general_info?.full_id_number === value.general_info?.full_id_number
                   }
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      color="secondary"
                       label="Accountable"
+                      color="secondary"
                       error={!!errors?.accountable?.message}
                       helperText={errors?.accountable?.message}
                     />
                   )}
                 />
               )}
+
               <CustomTextField
                 control={control}
                 name="acquisition_details"
@@ -1455,10 +1430,10 @@ const AddRequisition = (props) => {
                 helperText={errors?.quantity?.message}
                 fullWidth
                 // disabled={transactionDataApi[0]?.can_edit === 0}
-                isAllowed={(values) => {
-                  const { floatValue } = values;
-                  return floatValue >= 1;
-                }}
+                // isAllowed={(values) => {
+                //   const { floatValue } = values;
+                //   return floatValue >= 1;
+                // }}
               />
               <CustomPatternField
                 control={control}
@@ -1612,7 +1587,8 @@ const AddRequisition = (props) => {
           fullWidth
           sx={{ gap: 1 }}
         >
-          {transactionData ? <Update /> : <AddToPhotos />} <Typography>{transactionData ? "UPDATE" : "ADD"}</Typography>
+          {transactionData ? <Update /> : <AddToPhotos />}{" "}
+          <Typography variant="p">{transactionData ? "UPDATE" : "ADD"}</Typography>
         </LoadingButton>
         <Divider orientation="vertical" />
       </Box>
@@ -1646,6 +1622,8 @@ const AddRequisition = (props) => {
 
   // console.log(transactionDataApi);
   // console.log("watch", watch("fixed_asset_id"));
+
+  console.log(errors);
 
   return (
     <>
@@ -1728,6 +1706,7 @@ const AddRequisition = (props) => {
                       <TableCell className="tbl-cell">Cellphone #</TableCell>
                       <TableCell className="tbl-cell">Additional Info.</TableCell>
                       <TableCell className="tbl-cell">Attachments</TableCell>
+                      <TableCell className="tbl-cell">Action</TableCell>
                     </TableRow>
                   </TableHead>
 
@@ -1741,7 +1720,6 @@ const AddRequisition = (props) => {
                         {(transactionData ? transactionDataApi : addRequestAllApi?.data)?.map((data, index) => (
                           <TableRow
                             key={index}
-                            onClick={() => handleShowItems(data)}
                             sx={{
                               "&:last-child td, &:last-child th": {
                                 borderBottom: 0,
@@ -1750,10 +1728,10 @@ const AddRequisition = (props) => {
                               "*": { color: data?.is_removed === 1 ? "black!important" : null },
                             }}
                           >
-                            <TableCell className="tbl-cell tr-cen-pad45 ">
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell tr-cen-pad45 ">
                               {transactionData ? data?.reference_number : index + 1}
                             </TableCell>
-                            <TableCell className="tbl-cell">
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
                               <Typography fontSize={14} fontWeight={600}>
                                 {data.fixed_asset?.vladimir_tag_number || data.fixed_asset}
                               </Typography>
@@ -1762,11 +1740,17 @@ const AddRequisition = (props) => {
                                 {data.is_addcost === 1 && "Additional Cost"}
                               </Typography>
                             </TableCell>
-                            <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
-                            <TableCell className="tbl-cell">{data.acquisition_details}</TableCell>
-                            <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
+                              {data.type_of_request?.type_of_request_name}
+                            </TableCell>
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
+                              {data.acquisition_details}
+                            </TableCell>
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
+                              {data.attachment_type}
+                            </TableCell>
 
-                            <TableCell className="tbl-cell">
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
                               <Typography fontSize={10} color="gray">
                                 {`(${data.company?.company_code}) - ${data.company?.company_name}`}
                               </Typography>
@@ -1783,7 +1767,7 @@ const AddRequisition = (props) => {
                                 {`(${data.account_title?.account_title_code}) - ${data.account_title?.account_title_name}`}
                               </Typography>
                             </TableCell>
-                            <TableCell className="tbl-cell">
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
                               {data.accountability === "Personal Issued" ? (
                                 <>
                                   <Typography fontSize={14}>
@@ -1795,7 +1779,7 @@ const AddRequisition = (props) => {
                                 "Common"
                               )}
                             </TableCell>
-                            <TableCell className="tbl-cell">
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
                               <Typography fontWeight={600} fontSize="14px" color="secondary.main">
                                 {data.asset_description}
                               </Typography>
@@ -1804,35 +1788,57 @@ const AddRequisition = (props) => {
                               </Typography>
                             </TableCell>
 
-                            <TableCell className="tbl-cell">{data.date_needed}</TableCell>
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
+                              {data.date_needed}
+                            </TableCell>
 
                             {addRequestAllApi && !data.po_number && data?.is_removed === 0 && (
-                              <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
+                              <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                {data.quantity}
+                              </TableCell>
                             )}
                             {transactionData && data.po_number && (
                               <>
-                                <TableCell className="tbl-cell text-center">{data.ordered}</TableCell>
-                                <TableCell className="tbl-cell text-center">{data.delivered}</TableCell>
-                                <TableCell className="tbl-cell text-center">{data.remaining}</TableCell>
-                                <TableCell className="tbl-cell text-center">{data.cancelled}</TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.ordered}
+                                </TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.delivered}
+                                </TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.remaining}
+                                </TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.cancelled}
+                                </TableCell>
                               </>
                             )}
 
                             {transactionData && !data.po_number && data?.is_removed === 1 && (
                               <>
-                                <TableCell className="tbl-cell text-center">{data.ordered}</TableCell>
-                                <TableCell className="tbl-cell text-center">{data.delivered}</TableCell>
-                                <TableCell className="tbl-cell text-center">{data.remaining}</TableCell>
-                                <TableCell className="tbl-cell text-center">{data.cancelled}</TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.ordered}
+                                </TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.delivered}
+                                </TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.remaining}
+                                </TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.cancelled}
+                                </TableCell>
                               </>
                             )}
 
-                            <TableCell className="tbl-cell">
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
                               {data.cellphone_number === null ? "-" : data.cellphone_number}
                             </TableCell>
-                            <TableCell className="tbl-cell">{data.additional_info}</TableCell>
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
+                              {data.additional_info}
+                            </TableCell>
 
-                            <TableCell className="tbl-cell">
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
                               {data?.attachments?.letter_of_request && (
                                 <Stack flexDirection="row" gap={1}>
                                   <Typography fontSize={12} fontWeight={600}>
@@ -1876,6 +1882,41 @@ const AddRequisition = (props) => {
                                   </Typography>
                                   {data?.attachments?.other_attachments?.file_name}
                                 </Stack>
+                              )}
+                            </TableCell>
+                            <TableCell className="tbl-cell">
+                              {data?.is_removed === 0 && (
+                                <ActionMenu
+                                  hideArchive
+                                  disableDelete={data.status !== "For Approval of Approver 1" ? true : false}
+                                  setDisable={setDisable}
+                                  status={data?.status}
+                                  data={data}
+                                  editRequest={
+                                    transactionDataApi[0]?.can_edit === 1 || transactionData?.status === "Return"
+                                      ? true
+                                      : false
+                                  }
+                                  onDeleteHandler={!transactionData && onDeleteHandler}
+                                  onDeleteReferenceHandler={
+                                    transactionData &&
+                                    transactionData.item_count !== 1 &&
+                                    transactionDataApi.length !== 1 &&
+                                    onVoidReferenceHandler
+
+                                    // // transactionData
+                                    // //   ? transactionData?.item_count !== 1
+                                    // //     ? transactionDataApi.length !== 1
+                                    // //       ? onVoidReferenceHandler
+                                    // //       : false
+                                    // //     : false
+                                    // //   : false
+                                  }
+                                  onUpdateHandler={onUpdateHandler}
+                                  onUpdateResetHandler={onUpdateResetHandler}
+                                  setUpdateToggle={setUpdateToggle}
+                                  // setShowEdit={setShowEdit}
+                                />
                               )}
                             </TableCell>
                           </TableRow>
@@ -1952,7 +1993,7 @@ const AddRequisition = (props) => {
         open={dialog}
         onClose={() => dispatch(closeDialog())}
         PaperProps={{
-          sx: { borderRadius: "10px", width: "100%", maxWidth: "80%", height: "500px", p: 2 },
+          sx: { borderRadius: "10px", width: "100%", maxWidth: "80%", p: 2, pb: 0 },
         }}
       >
         <ViewItemRequest data={itemData} />

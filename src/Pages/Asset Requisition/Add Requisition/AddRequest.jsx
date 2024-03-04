@@ -23,6 +23,7 @@ import { openToast } from "../../../Redux/StateManagement/toastSlice";
 import {
   Box,
   Button,
+  Dialog,
   Divider,
   IconButton,
   InputAdornment,
@@ -55,8 +56,8 @@ import {
 import { LoadingButton } from "@mui/lab";
 
 // RTK
-import { useDispatch } from "react-redux";
-import { closeDrawer } from "../../../Redux/StateManagement/booleanStateSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { closeDialog, closeDrawer, openDialog } from "../../../Redux/StateManagement/booleanStateSlice";
 import { useGetCompanyAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Company";
 import { useGetDepartmentAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Department";
 import { useGetLocationAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Location";
@@ -89,6 +90,7 @@ import ErrorFetching from "../../ErrorFetching";
 import CustomDatePicker from "../../../Components/Reusable/CustomDatePicker";
 import { useGetFixedAssetAllApiQuery } from "../../../Redux/Query/FixedAsset/FixedAssets";
 import moment from "moment";
+import ViewItemRequest from "../ViewItemRequest";
 
 const schema = yup.object().shape({
   id: yup.string(),
@@ -165,8 +167,10 @@ const AddRequisition = (props) => {
   const [page, setPage] = useState(1);
   const [updateToggle, setUpdateToggle] = useState(true);
   const [disable, setDisable] = useState(true);
+  const [itemData, setItemData] = useState(null);
 
   const { state: transactionData } = useLocation();
+  const dialog = useSelector((state) => state.booleanState.dialog);
 
   const isFullWidth = useMediaQuery("(max-width: 600px)");
   const dispatch = useDispatch();
@@ -1660,7 +1664,11 @@ const AddRequisition = (props) => {
     );
   };
 
-  console.log(transactionData);
+  const handleShowItems = (data) => {
+    dispatch(openDialog());
+    setItemData(data);
+  };
+
   return (
     <>
       {errorRequest && errorTransaction ? (
@@ -1764,14 +1772,23 @@ const AddRequisition = (props) => {
                               "*": { color: data?.is_removed === 1 ? "black!important" : null },
                             }}
                           >
-                            <TableCell className="tbl-cell tr-cen-pad45 text-weight">
+                            <TableCell
+                              onClick={() => handleShowItems(data)}
+                              className="tbl-cell tr-cen-pad45 text-weight"
+                            >
                               {transactionData ? data?.reference_number : index + 1}
                             </TableCell>
-                            <TableCell className="tbl-cell">{data.type_of_request?.type_of_request_name}</TableCell>
-                            <TableCell className="tbl-cell">{data.acquisition_details}</TableCell>
-                            <TableCell className="tbl-cell">{data.attachment_type}</TableCell>
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
+                              {data.type_of_request?.type_of_request_name}
+                            </TableCell>
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
+                              {data.acquisition_details}
+                            </TableCell>
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
+                              {data.attachment_type}
+                            </TableCell>
 
-                            <TableCell className="tbl-cell">
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
                               <Typography fontSize={10} color="gray">
                                 {`(${data.company?.company_code}) - ${data.company?.company_name}`}
                               </Typography>
@@ -1789,7 +1806,7 @@ const AddRequisition = (props) => {
                               </Typography>
                             </TableCell>
 
-                            <TableCell className="tbl-cell">
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
                               {data.accountability === "Personal Issued" ? (
                                 <>
                                   <Typography fontSize={14}>
@@ -1802,7 +1819,7 @@ const AddRequisition = (props) => {
                               )}
                             </TableCell>
 
-                            <TableCell className="tbl-cell">
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
                               <Typography fontWeight={600} fontSize="14px" color="secondary.main">
                                 {data.asset_description}
                               </Typography>
@@ -1811,35 +1828,57 @@ const AddRequisition = (props) => {
                               </Typography>
                             </TableCell>
 
-                            <TableCell className="tbl-cell">{data.date_needed}</TableCell>
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
+                              {data.date_needed}
+                            </TableCell>
 
                             {addRequestAllApi && !data.po_number && data?.is_removed === 0 && (
-                              <TableCell className="tbl-cell text-center">{data.quantity}</TableCell>
+                              <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                {data.quantity}
+                              </TableCell>
                             )}
                             {transactionData && data.po_number && (
                               <>
-                                <TableCell className="tbl-cell text-center">{data.ordered}</TableCell>
-                                <TableCell className="tbl-cell text-center">{data.delivered}</TableCell>
-                                <TableCell className="tbl-cell text-center">{data.remaining}</TableCell>
-                                <TableCell className="tbl-cell text-center">{data.cancelled}</TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.ordered}
+                                </TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.delivered}
+                                </TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.remaining}
+                                </TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.cancelled}
+                                </TableCell>
                               </>
                             )}
 
                             {transactionData && !data.po_number && data?.is_removed === 1 && (
                               <>
-                                <TableCell className="tbl-cell text-center">{data.ordered}</TableCell>
-                                <TableCell className="tbl-cell text-center">{data.delivered}</TableCell>
-                                <TableCell className="tbl-cell text-center">{data.remaining}</TableCell>
-                                <TableCell className="tbl-cell text-center">{data.cancelled}</TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.ordered}
+                                </TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.delivered}
+                                </TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.remaining}
+                                </TableCell>
+                                <TableCell onClick={() => handleShowItems(data)} className="tbl-cell text-center">
+                                  {data.cancelled}
+                                </TableCell>
                               </>
                             )}
 
-                            <TableCell className="tbl-cell">
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
                               {data.cellphone_number === null ? "-" : data.cellphone_number}
                             </TableCell>
-                            <TableCell className="tbl-cell">{data.additional_info}</TableCell>
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
+                              {data.additional_info}
+                            </TableCell>
 
-                            <TableCell className="tbl-cell">
+                            <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
                               {data?.attachments?.letter_of_request && (
                                 <Stack flexDirection="row" gap={1}>
                                   <Typography fontSize={12} fontWeight={600}>
@@ -1989,6 +2028,16 @@ const AddRequisition = (props) => {
           </Box>
         </Box>
       )}
+
+      <Dialog
+        open={dialog}
+        onClose={() => dispatch(closeDialog())}
+        PaperProps={{
+          sx: { borderRadius: "10px", width: "100%", maxWidth: "80%", p: 2, pb: 0 },
+        }}
+      >
+        <ViewItemRequest data={itemData} />
+      </Dialog>
     </>
   );
 };
