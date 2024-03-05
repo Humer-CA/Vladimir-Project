@@ -671,15 +671,15 @@ const AddRequisition = (props) => {
       } else {
         console.log("ADD trigger");
         if (addRequestAllApi?.data.every((item) => item?.department?.id !== watch("department_id")?.id)) {
-          console.log("change the department");
+          // console.log("change the department");
           return true;
         }
         if (addRequestAllApi?.data.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
-          console.log("change the subunit");
+          // console.log("change the subunit");
           return true;
         }
         if (addRequestAllApi?.data.every((item) => item?.location?.id !== watch("location_id")?.id)) {
-          console.log("change the location");
+         // console.log("change the location");
           return true;
         }
         return false;
