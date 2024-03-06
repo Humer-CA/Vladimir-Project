@@ -70,8 +70,7 @@ const AddPr = (props) => {
         }) ||
         dispatch(
           openToast({
-            message: postError?.data?.errors.detail || postError?.data?.errors.pr_number[0],
-
+            message: postError?.data?.errors.detail || Object.entries(postError?.data?.errors).at(0).at(1).at(0),
             duration: 5000,
             variant: "error",
           })
