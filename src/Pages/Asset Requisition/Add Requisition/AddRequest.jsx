@@ -679,7 +679,7 @@ const AddRequisition = (props) => {
           return true;
         }
         if (addRequestAllApi?.data.every((item) => item?.location?.id !== watch("location_id")?.id)) {
-         // console.log("change the location");
+          // console.log("change the location");
           return true;
         }
         return false;
@@ -1665,8 +1665,7 @@ const AddRequisition = (props) => {
   };
 
   const handleShowItems = (data) => {
-    dispatch(openDialog());
-    setItemData(data);
+    data?.is_removed === 0 && dispatch(openDialog()) && setItemData(data);
   };
 
   return (

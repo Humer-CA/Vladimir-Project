@@ -1706,7 +1706,7 @@ const AddRequisition = (props) => {
                       <TableCell className="tbl-cell">Cellphone #</TableCell>
                       <TableCell className="tbl-cell">Additional Info.</TableCell>
                       <TableCell className="tbl-cell">Attachments</TableCell>
-                      <TableCell className="tbl-cell">Action</TableCell>
+                      {transactionDataApi[0]?.is_removed === 1 && <TableCell className="tbl-cell">Action</TableCell>}
                     </TableRow>
                   </TableHead>
 
