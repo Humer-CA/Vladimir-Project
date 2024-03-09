@@ -17,6 +17,8 @@ import {
   MonetizationOn,
   FactCheck,
   Segment,
+  Ballot,
+  BusinessCenter,
 } from "@mui/icons-material";
 import Cards from "../../Components/Reusable/Cards";
 
@@ -29,10 +31,24 @@ const MasterlistList = [
   },
 
   {
+    icon: <BusinessCenter />,
+    label: "Business Unit",
+    description: "Synching of Business Unit Masterlist from Ymir to Vladimir",
+    path: "/masterlist/business-unit",
+  },
+
+  {
     icon: <Schema />,
     label: "Department",
     description: "Synching of Department Masterlist from Fisto to Vladimir",
     path: "/masterlist/department",
+  },
+
+  {
+    icon: <Ballot />,
+    label: "Unit",
+    description: "Synching of Unit Masterlist from Ymir to Vladimir",
+    path: "/masterlist/unit",
   },
 
   {

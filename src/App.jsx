@@ -23,7 +23,9 @@ import Modules from "./Pages/Masterlist/Modules";
 
 import Masterlist from "./Pages/Masterlist";
 import Company from "./Pages/Masterlist/Company";
+import BusinessUnit from "./Pages/Masterlist/BusinessUnit";
 import Department from "./Pages/Masterlist/Department";
+import Unit from "./Pages/Masterlist/Unit";
 import Location from "./Pages/Masterlist/Location";
 import AccountTitle from "./Pages/Masterlist/AccountTitle";
 import Supplier from "./Pages/Masterlist/Supplier";
@@ -115,8 +117,18 @@ const router = createBrowserRouter([
               },
 
               {
+                path: "business-unit",
+                element: <BusinessUnit />,
+              },
+
+              {
                 path: "department",
                 element: <Department />,
+              },
+
+              {
+                path: "-unit",
+                element: <Unit />,
               },
 
               {

@@ -324,6 +324,18 @@ const AddRole = (props) => {
 
           <FormControlLabel
             disabled={data.action === "view"}
+            label="Business Unit"
+            value="business-unit"
+            control={
+              <Checkbox
+                {...register("access_permission")}
+                checked={watch("access_permission")?.includes("business-unit")}
+              />
+            }
+          />
+
+          <FormControlLabel
+            disabled={data.action === "view"}
             label="Department"
             value="department"
             control={
@@ -331,6 +343,15 @@ const AddRole = (props) => {
                 {...register("access_permission")}
                 checked={watch("access_permission")?.includes("department")}
               />
+            }
+          />
+
+          <FormControlLabel
+            disabled={data.action === "view"}
+            label="Unit"
+            value="unit"
+            control={
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("unit")} />
             }
           />
 
@@ -357,15 +378,6 @@ const AddRole = (props) => {
 
           <FormControlLabel
             disabled={data.action === "view"}
-            label="Supplier"
-            value="supplier"
-            control={
-              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("supplier")} />
-            }
-          />
-
-          <FormControlLabel
-            disabled={data.action === "view"}
             label="Sub Unit"
             value="sub-unit"
             control={
@@ -381,6 +393,15 @@ const AddRole = (props) => {
             mx: 2,
           }}
         >
+          <FormControlLabel
+            disabled={data.action === "view"}
+            label="Supplier"
+            value="supplier"
+            control={
+              <Checkbox {...register("access_permission")} checked={watch("access_permission")?.includes("supplier")} />
+            }
+          />
+
           <FormControlLabel
             disabled={data.action === "view"}
             label="Division"
@@ -707,7 +728,9 @@ const AddRole = (props) => {
 
     // COA
     "company",
+    "business-unit",
     "department",
+    "unit",
     "subunit",
     "location",
     "account-title",
@@ -748,7 +771,9 @@ const AddRole = (props) => {
 
   const masterlistValue = [
     "company",
+    "business-unit",
     "department",
+    "unit",
     "location",
     "account-title",
     "division",
@@ -863,7 +888,9 @@ const AddRole = (props) => {
                                     ...watch("access_permission"),
                                     "masterlist",
                                     "company",
+                                    "business-unit",
                                     "department",
+                                    "unit",
                                     "subunit",
                                     "location",
                                     "account-title",

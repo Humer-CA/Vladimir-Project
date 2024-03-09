@@ -40,12 +40,16 @@ import { fistoAccountTitleApi } from "../Query/Masterlist/FistoCoa/FistoAccountT
 import { fistoSupplierApi } from "../Query/Masterlist/FistoCoa/FistoSupplier";
 
 import { companyApi } from "../Query/Masterlist/FistoCoa/Company";
+import { businessUnitApi } from "../Query/Masterlist/YmirCoa/BusinessUnit";
 import { departmentApi } from "../Query/Masterlist/FistoCoa/Department";
+import { unitApi } from "../Query/Masterlist/YmirCoa/Unit";
 import { subUnitApi } from "../Query/Masterlist/SubUnit";
 import { locationApi } from "../Query/Masterlist/FistoCoa/Location";
 import { accountTitleApi } from "../Query/Masterlist/FistoCoa/AccountTitle";
 import { supplierApi } from "../Query/Masterlist/FistoCoa/Supplier";
 import { divisionApi } from "../Query/Masterlist/Division";
+
+import { ymirApi } from "../Query/Masterlist/YmirCoa/YmirApi";
 
 // User Management
 import { userAccountsApi } from "../Query/UserManagement/UserAccountsApi";
@@ -112,13 +116,19 @@ export const store = configureStore({
     // [categoryListApi.reducerPath]: categoryListApi.reducer,
 
     [fistoCompanyApi.reducerPath]: fistoCompanyApi.reducer,
+    // [ymirBusinessUnitApi.reducerPath]: ymirApi.reducer,
     [fistoDepartmentApi.reducerPath]: fistoDepartmentApi.reducer,
+    // [ymirUnitApi.reducerPath]: ymirApi.reducer,
     [fistoLocationApi.reducerPath]: fistoLocationApi.reducer,
     [fistoAccountTitleApi.reducerPath]: fistoAccountTitleApi.reducer,
     [fistoSupplierApi.reducerPath]: fistoSupplierApi.reducer,
 
+    [ymirApi.reducerPath]: ymirApi.reducer,
+
     [companyApi.reducerPath]: companyApi.reducer,
+    [businessUnitApi.reducerPath]: businessUnitApi.reducer,
     [departmentApi.reducerPath]: departmentApi.reducer,
+    [unitApi.reducerPath]: unitApi.reducer,
     [locationApi.reducerPath]: locationApi.reducer,
     [accountTitleApi.reducerPath]: accountTitleApi.reducer,
     [supplierApi.reducerPath]: supplierApi.reducer,
@@ -176,13 +186,19 @@ export const store = configureStore({
       minorCategoryApi.middleware,
       // categoryListApi.middleware,
       fistoCompanyApi.middleware,
+      // ymirBusinessUnitApi.middleware,
       fistoDepartmentApi.middleware,
+      // ymirUnitApi.middleware,
       fistoLocationApi.middleware,
       fistoAccountTitleApi.middleware,
       fistoSupplierApi.middleware,
 
+      ymirApi.middleware,
+
       companyApi.middleware,
+      businessUnitApi.middleware,
       departmentApi.middleware,
+      unitApi.middleware,
       locationApi.middleware,
       accountTitleApi.middleware,
       supplierApi.middleware,

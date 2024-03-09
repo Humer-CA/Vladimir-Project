@@ -78,6 +78,8 @@ import {
   RuleFolder,
   OpenInBrowserOutlined,
   Output,
+  BusinessCenter,
+  Ballot,
 } from "@mui/icons-material";
 import { useGetNotificationApiQuery } from "../Redux/Query/Notification";
 
@@ -157,12 +159,25 @@ const Sidebar = () => {
         },
 
         {
+          label: "Business Unit",
+          icon: BusinessCenter,
+          path: "/masterlist/business-unit",
+          permission: "business-unit",
+        },
+
+        {
           label: "Department",
           icon: Schema,
           path: "/masterlist/department",
           permission: "department",
         },
 
+        {
+          label: "Unit",
+          icon: Ballot,
+          path: "/masterlist/unit",
+          permission: "unit",
+        },
         {
           label: "Location",
           icon: LocationOn,
