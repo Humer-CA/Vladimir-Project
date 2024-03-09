@@ -24,7 +24,7 @@ export const requisitionApi = createApi({
     }),
 
     getRequisitionPerItemApi: builder.query({
-      query: (params) => `Item-Detail/${params.reference_number}?&per_page=${params.per_page}&page=${params.page}`,
+      query: (params) => `item-detail/${params.reference_number}?&per_page=${params.per_page}&page=${params.page}`,
       providesTags: ["Requisition"],
     }),
 
