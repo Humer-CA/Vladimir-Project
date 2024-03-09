@@ -77,6 +77,7 @@ import NoRecordsFound from "../../../Layout/NoRecordsFound";
 import { useGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUnit";
 import ActionMenu from "../../../Components/Reusable/ActionMenu";
 import {
+  // useGetRequestContainerAllApiQuery,
   useGetRequestContainerAllApiQuery,
   usePostRequestContainerApiMutation,
   useUpdateRequestContainerApiMutation,
@@ -472,6 +473,22 @@ const AddRequisition = (props) => {
     dispatch(closeDrawer());
   };
 
+  const attachmentValidation = (fieldName, formData) => {
+    const validate = transactionDataApi.find((item) => item.id === updateRequest.id);
+
+    if (watch(`${fieldName}`) === null) {
+      return "";
+    } else if (updateRequest[fieldName] !== null)
+      if (validate?.attachments?.[fieldName]?.file_name === updateRequest?.[fieldName]?.file_name) {
+        return "x";
+      } else {
+        return formData?.[fieldName];
+      }
+    else {
+      return formData?.[fieldName];
+    }
+  };
+
   //  * CONTAINER
   // Adding of Request
   const addRequestHandler = (formData) => {
@@ -499,62 +516,19 @@ const AddRequisition = (props) => {
       additional_info: formData?.additional_info?.toString(),
 
       letter_of_request:
-        updateRequest &&
-        (watch("letter_of_request") === null
-          ? ""
-          : updateRequest.letter_of_request !== null
-          ? transactionDataApi[0]?.attachments?.letter_of_request?.file_name ===
-            updateRequest?.letter_of_request?.file_name
-            ? "x"
-            : formData.letter_of_request
-          : formData.letter_of_request),
+        // updateRequest && watch("letter_of_request") === null
+        //     ? ""
+        //     : updateRequest.letter_of_request !== null
+        //     ? transactionDataApi[0]?.attachments?.letter_of_request?.file_name === updateRequest?.letter_of_request?.file_name
+        //       ? "x"
+        //       : formData.letter_of_request
+        //     : formData.letter_of_request,
+        updateRequest && attachmentValidation("letter_of_request", formData),
 
-      quotation:
-        updateRequest && watch("quotation") === null
-          ? ""
-          : updateRequest.quotation !== null
-          ? transactionDataApi[0]?.attachments?.quotation?.file_name === updateRequest?.quotation?.file_name
-            ? "x"
-            : formData.quotation
-          : formData.quotation,
-
-      specification_form:
-        updateRequest && watch("specification_form") === null
-          ? ""
-          : updateRequest.specification_form !== null
-          ? transactionDataApi[0]?.attachments?.specification_form?.file_name ===
-            updateRequest?.specification_form?.file_name
-            ? "x"
-            : formData.specification_form
-          : formData.specification_form,
-
-      tool_of_trade:
-        updateRequest && watch("tool_of_trade") === null
-          ? ""
-          : updateRequest.tool_of_trade !== null
-          ? transactionDataApi[0]?.attachments?.tool_of_trade?.file_name === updateRequest?.tool_of_trade?.file_name
-            ? "x"
-            : formData.tool_of_trade
-          : formData.tool_of_trade,
-
-      other_attachments:
-        updateRequest && watch("other_attachments") === null
-          ? ""
-          : updateRequest.other_attachments !== null
-          ? transactionDataApi[0]?.attachments?.other_attachments?.file_name ===
-            updateRequest?.other_attachments?.file_name
-            ? "x"
-            : formData.other_attachments
-          : formData.other_attachments,
-
-      // // (watch("other_attachments") === null
-      // //   ? ""
-      // //   : updateRequest.other_attachments !== null
-      // //   ? transactionDataApi[0]?.attachments?.other_attachments?.file_name ===
-      // //     updateRequest?.other_attachments?.file_name
-      // //     ? "x"
-      // //     : formData.other_attachments
-      // //   : formData.other_attachments),
+      quotation: updateRequest && attachmentValidation("quotation", formData),
+      specification_form: updateRequest && attachmentValidation("specification_form", formData),
+      tool_of_trade: updateRequest && attachmentValidation("tool_of_trade", formData),
+      other_attachments: updateRequest && attachmentValidation("other_attachments", formData),
     };
 
     // console.log("data", data);
@@ -654,7 +628,7 @@ const AddRequisition = (props) => {
 
     const validation = () => {
       if (transactionData) {
-        console.log("UPDATE trigger");
+        // console.log("UPDATE trigger");
         if (transactionDataApi.every((item) => item?.department?.id !== watch("department_id")?.id)) {
           console.log("change the department");
           return true;
@@ -669,7 +643,7 @@ const AddRequisition = (props) => {
         }
         return false;
       } else {
-        console.log("ADD trigger");
+        // console.log("ADD trigger");
         if (addRequestAllApi?.data.every((item) => item?.department?.id !== watch("department_id")?.id)) {
           // console.log("change the department");
           return true;
@@ -682,8 +656,24 @@ const AddRequisition = (props) => {
           // console.log("change the location");
           return true;
         }
+
         return false;
       }
+    };
+
+    const detailsValidation = () => {
+      if (transactionData) {
+        if (transactionDataApi.every((item) => item?.acquisition_details !== watch("acquisition_details"))) {
+          console.log("change the Acquisition Details");
+          return true;
+        }
+      } else {
+        if (addRequestAllApi?.data.every((item) => item?.acquisition_details !== watch("acquisition_details"))) {
+          console.log("change the Acquisition Details");
+          return true;
+        }
+      }
+      return false;
     };
 
     // !GPT Validation
@@ -1116,6 +1106,7 @@ const AddRequisition = (props) => {
     });
   };
 
+  // console.log(updateEntries.map((item) => item[1]?.attachments?.letter_of_request?.file_name));
   // * Page / Limit
   const perPageHandler = (e) => {
     setPage(1);
@@ -1404,7 +1395,8 @@ const AddRequisition = (props) => {
                   control={control}
                   includeInputInList
                   disablePortal
-                  disabled={transactionDataApi[0]?.can_edit === 0}
+                  // disabled={transactionDataApi[0]?.can_edit === 0}
+                  disabled={updateRequest && disable}
                   filterOptions={filterOptions}
                   options={sedarData}
                   loading={isSedarLoading}
