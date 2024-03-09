@@ -107,7 +107,7 @@ const ViewRequestReceiving = () => {
   };
 
   const onCancelHandler = async (data) => {
-    console.log("data", data);
+    // console.log("data", data);
     dispatch(
       openConfirm({
         icon: Report,
@@ -127,11 +127,12 @@ const ViewRequestReceiving = () => {
             this Data?
           </Box>
         ),
+        remarks: true,
 
-        onConfirm: async () => {
+        onConfirm: async (remarks) => {
           try {
             dispatch(onLoading());
-            let result = await cancelPo(data?.id).unwrap();
+            let result = await cancelPo({ id: data?.id, remarks: remarks }).unwrap();
             dispatch(
               openToast({
                 message: result?.message,
@@ -140,6 +141,7 @@ const ViewRequestReceiving = () => {
             );
 
             dispatch(closeConfirm());
+            console.log(result);
             result?.data?.total_remaining === 0 && navigate(-1);
           } catch (err) {
             console.error(err);
