@@ -548,8 +548,8 @@ const AddFixedAsset = (props) => {
       setValue("tag_number_old", data.tag_number_old);
 
       // setValue("division_id", data.division);
-      setValue("major_category_id", data.major_category);
-      setValue("minor_category_id", data.minor_category);
+      setValue("major_category_id", data.major_category.major_category_name === "-" ? null : data.major_category);
+      setValue("minor_category_id", data.minor_category.minor_category_name === "-" ? null : data.minor_category);
 
       setValue("company_id", data.company);
       setValue("department_id", data.department);
@@ -580,9 +580,12 @@ const AddFixedAsset = (props) => {
       setValue("cycle_count_status_id", data.cycle_count_status);
       setValue("movement_status_id", data.movement_status);
 
-      setValue("depreciation_method", data.depreciation_method);
+      setValue("depreciation_method", data.depreciation_method === "-" ? null : data.depreciation_method);
       setValue("est_useful_life", data.est_useful_life);
-      setValue("depreciation_status_id", data.depreciation_status);
+      setValue(
+        "depreciation_status_id",
+        data.depreciation_status.depreciation_status_name === "-" ? null : data.depreciation_status
+      );
       setValue("release_date", data.release_date === "-" ? null : releaseDateFormat);
       setValue("acquisition_cost", data.acquisition_cost);
       setValue("months_depreciated", data.months_depreciated);
