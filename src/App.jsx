@@ -127,7 +127,7 @@ const router = createBrowserRouter([
               },
 
               {
-                path: "-unit",
+                path: "unit",
                 element: <Unit />,
               },
 
