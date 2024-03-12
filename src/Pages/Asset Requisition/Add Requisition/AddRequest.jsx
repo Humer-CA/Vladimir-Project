@@ -661,21 +661,6 @@ const AddRequisition = (props) => {
       }
     };
 
-    const detailsValidation = () => {
-      if (transactionData) {
-        if (transactionDataApi.every((item) => item?.acquisition_details !== watch("acquisition_details"))) {
-          console.log("change the Acquisition Details");
-          return true;
-        }
-      } else {
-        if (addRequestAllApi?.data.every((item) => item?.acquisition_details !== watch("acquisition_details"))) {
-          console.log("change the Acquisition Details");
-          return true;
-        }
-      }
-      return false;
-    };
-
     // !GPT Validation
     // const validation = () => {
     //   const data = transactionData ? transactionDataApi : addRequestAllApi?.data;
@@ -722,16 +707,6 @@ const AddRequisition = (props) => {
         })
       );
     };
-
-    // transactionData
-    //   ? validation()
-    //     ? addConfirmation()
-    //     : submitData()
-    //   : addRequestAllApi?.data.length === 0
-    //   ? console.log("submit update") && submitData()
-    //   : validation()
-    //   ? addConfirmation()
-    //   : console.log("submit add") && submitData();
 
     transactionData // check if update
       ? validation() // if update check validation
