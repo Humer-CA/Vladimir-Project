@@ -21,6 +21,7 @@ import {
   BusinessCenter,
 } from "@mui/icons-material";
 import Cards from "../../Components/Reusable/Cards";
+import { useSelector } from "react-redux";
 
 const MasterlistList = [
   {
@@ -28,6 +29,7 @@ const MasterlistList = [
     label: "Company",
     description: "Synching of Company Masterlist from Fisto to Vladimir",
     path: "/masterlist/company",
+    permission: "company",
   },
 
   {
@@ -35,6 +37,7 @@ const MasterlistList = [
     label: "Business Unit",
     description: "Synching of Business Unit Masterlist from Ymir to Vladimir",
     path: "/masterlist/business-unit",
+    permission: "business-unit",
   },
 
   {
@@ -42,6 +45,7 @@ const MasterlistList = [
     label: "Department",
     description: "Synching of Department Masterlist from Fisto to Vladimir",
     path: "/masterlist/department",
+    permission: "department",
   },
 
   {
@@ -49,6 +53,7 @@ const MasterlistList = [
     label: "Unit",
     description: "Synching of Unit Masterlist from Ymir to Vladimir",
     path: "/masterlist/unit",
+    permission: "unit",
   },
 
   {
@@ -56,6 +61,7 @@ const MasterlistList = [
     label: "Location",
     description: "Synching of Location Masterlist from Fisto to Vladimir",
     path: "/masterlist/location",
+    permission: "location",
   },
 
   {
@@ -63,6 +69,7 @@ const MasterlistList = [
     label: "Account Title",
     description: "Synching of Account Title Masterlist from Fisto to Vladimir",
     path: "/masterlist/account-title",
+    permission: "account-title",
   },
 
   {
@@ -70,6 +77,7 @@ const MasterlistList = [
     label: "Sub Unit",
     description: "Adding, editing and archiving of Sub Unit masterlist",
     path: "/masterlist/sub-unit",
+    permission: "sub-unit",
   },
 
   {
@@ -77,6 +85,7 @@ const MasterlistList = [
     label: "Division",
     description: "Adding, editing and archiving of Division masterlist",
     path: "/masterlist/division",
+    permission: "division",
   },
 
   {
@@ -84,12 +93,14 @@ const MasterlistList = [
     label: "Type of Request",
     description: "Adding, editing and archiving of Type of Request masterlist",
     path: "/masterlist/type-of-request",
+    permission: "type-of-request",
   },
   {
     icon: <MonetizationOn />,
     label: "Capex",
     description: "Adding, editing and archiving of Capex and Sub Capex masterlist",
     path: "/masterlist/capex",
+    permission: "capex",
   },
 
   {
@@ -97,6 +108,7 @@ const MasterlistList = [
     label: "Category",
     description: "Adding of Major and Minor Category masterlist",
     path: "/masterlist/category",
+    permission: "category",
   },
 
   {
@@ -104,6 +116,7 @@ const MasterlistList = [
     label: "Status Category",
     description: "Setting up of Fixed Asset status masterlist",
     path: "/masterlist/status-category",
+    permission: "status-category",
   },
 ];
 
@@ -111,6 +124,7 @@ const Masterlist = () => {
   const location = useLocation();
   const isSmallScreen = useMediaQuery("(max-width: 590px)");
   // console.log(location.pathname);
+  const permissions = useSelector((state) => state.userLogin?.user.role.access_permission);
 
   return (
     <>
@@ -131,7 +145,7 @@ const Masterlist = () => {
             <Box className="parentSidebar__container">
               <Box className="parentSidebar__wrapper">
                 {MasterlistList?.map((data, index) => {
-                  return <Cards data={data} key={index} />;
+                  return permissions.split(", ").includes(data.permission) && <Cards data={data} key={index} />;
                 })}
               </Box>
             </Box>
