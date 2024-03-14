@@ -123,6 +123,7 @@ const schema = yup.object().shape({
 
   asset_description: yup.string().required().label("Asset Description"),
   asset_specification: yup.string().required().label("Asset Specification"),
+  date_needed: yup.date().required().label("Date Needed").typeError("Date Needed is a required field"),
   brand: yup.string().required().label("Brand"),
   quantity: yup.number().required().label("Quantity"),
   cellphone_number: yup.string().nullable().label("Cellphone Number"),
@@ -542,90 +543,6 @@ const AddRequisition = (props) => {
 
     const token = localStorage.getItem("token");
 
-    const submitData = () => {
-      setIsLoading(true);
-      axios
-        .post(
-          `${process.env.VLADIMIR_BASE_URL}/${
-            transactionData ? `update-request/${updateRequest?.reference_number}` : "request-container"
-          }`,
-          payload,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              // Authorization: `Bearer 583|KavZ7vEXyUY7FiHQGIMcTImftzyRnZorxbtn4S9a`,
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((result) => {
-          dispatch(
-            openToast({
-              message: result?.data?.message || result?.data?.message,
-              duration: 5000,
-            })
-          );
-        })
-        .then(() => {
-          transactionData ? setDisable(true) : setDisable(false);
-          setUpdateToggle(true);
-          isTransactionRefetch();
-          dispatch(requestContainerApi.util.invalidateTags(["RequestContainer"]));
-
-          transactionData
-            ? reset()
-            : reset({
-                type_of_request_id: formData?.type_of_request_id,
-                attachment_type: formData?.attachment_type,
-                company_id: formData?.company_id,
-                department_id: formData?.department_id,
-                subunit_id: formData?.subunit_id,
-                location_id: formData?.location_id,
-                account_title_id: formData?.account_title_id,
-                acquisition_details: formData?.acquisition_details,
-                letter_of_request: null,
-                quotation: null,
-                specification_form: null,
-                tool_of_trade: null,
-                other_attachments: null,
-              });
-          // setShowEdit(false)
-        })
-        .catch((err) => {
-          // console.log(err);
-          setIsLoading(false);
-          dispatch(
-            openToast({
-              message:
-                err?.response?.data?.errors?.detail ||
-                err?.response?.data?.errors[0]?.detail ||
-                err?.response?.data?.message,
-              duration: 5000,
-              variant: "error",
-            })
-          );
-        })
-        .finally(() => {
-          setIsLoading(false);
-          // updateRequest
-          //   ? reset()
-          //   :
-          // reset({
-          //   company_id: formData?.company_id,
-          //   department_id: formData?.department_id,
-          //   subunit_id: formData?.subunit_id,
-          //   location_id: formData?.location_id,
-          //   account_title_id: formData?.account_title_id,
-          //   acquisition_details: formData?.acquisition_details,
-          //   letter_of_request: null,
-          //   quotation: null,
-          //   specification_form: null,
-          //   tool_of_trade: null,
-          //   other_attachments: null,
-          // });
-        });
-    };
-
     const validation = () => {
       if (transactionData) {
         // console.log("UPDATE trigger");
@@ -661,22 +578,71 @@ const AddRequisition = (props) => {
       }
     };
 
-    // !GPT Validation
-    // const validation = () => {
-    //   const data = transactionData ? transactionDataApi : addRequestAllApi?.data;
-    //   console.log(transactionData ? "UPDATE trigger" : "ADD trigger");
-
-    //   const fieldsToCheck = ["department_id", "subunit_id", "location_id"];
-
-    //   for (const field of fieldsToCheck) {
-    //     if (data.every((item) => item?.[field]?.id !== watch(field)?.id)) {
-    //       console.log(`change the ${field}`);
-    //       return true || { field };
-    //     }
-    //   }
-
-    //   return false;
-    // };
+    const submitData = () => {
+      setIsLoading(true);
+      axios
+        .post(
+          `${process.env.VLADIMIR_BASE_URL}/${
+            transactionData ? `update-request/${updateRequest?.reference_number}` : "request-container"
+          }`,
+          payload,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              // Authorization: `Bearer 583|KavZ7vEXyUY7FiHQGIMcTImftzyRnZorxbtn4S9a`,
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((result) => {
+          dispatch(
+            openToast({
+              message: result?.data?.message || result?.data?.message,
+              duration: 5000,
+            })
+          );
+        })
+        .then(() => {
+          transactionData ? setDisable(true) : setDisable(false);
+          setUpdateToggle(true);
+          isTransactionRefetch();
+          dispatch(requestContainerApi.util.invalidateTags(["RequestContainer"]));
+        })
+        .catch((err) => {
+          // console.log(err);
+          setIsLoading(false);
+          dispatch(
+            openToast({
+              message:
+                err?.response?.data?.errors?.detail ||
+                err?.response?.data?.errors[0]?.detail ||
+                err?.response?.data?.message,
+              duration: 5000,
+              variant: "error",
+            })
+          );
+        })
+        .finally(() => {
+          setIsLoading(false);
+          transactionData
+            ? reset()
+            : reset({
+                type_of_request_id: formData?.type_of_request_id,
+                attachment_type: formData?.attachment_type,
+                company_id: formData?.company_id,
+                department_id: formData?.department_id,
+                subunit_id: formData?.subunit_id,
+                location_id: formData?.location_id,
+                account_title_id: formData?.account_title_id,
+                acquisition_details: formData?.acquisition_details,
+                letter_of_request: null,
+                quotation: null,
+                specification_form: null,
+                tool_of_trade: null,
+                other_attachments: null,
+              });
+        });
+    };
 
     const addConfirmation = () => {
       dispatch(
@@ -708,16 +674,15 @@ const AddRequisition = (props) => {
       );
     };
 
-    transactionData // check if update
-      ? validation() // if update check validation
-        ? addConfirmation() // if validation is true show confirmation
-        : submitData() // else submit the update
+    transactionData
+      ? validation()
+        ? addConfirmation()
+        : submitData()
       : addRequestAllApi?.data.length === 0
       ? submitData()
       : validation()
       ? addConfirmation()
       : submitData();
-    // : console.log("submit add") && submitData();
   };
 
   const onSubmitHandler = () => {
@@ -1632,7 +1597,7 @@ const AddRequisition = (props) => {
   };
 
   const handleShowItems = (data) => {
-    data?.is_removed === 0 && dispatch(openDialog()) && setItemData(data);
+    transactionData && data?.is_removed === 0 && dispatch(openDialog()) && setItemData(data);
   };
 
   return (

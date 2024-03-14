@@ -120,6 +120,7 @@ const schema = yup.object().shape({
 
   asset_description: yup.string().required().label("Asset Description"),
   asset_specification: yup.string().required().label("Asset Specification"),
+  date_needed: yup.date().required().label("Date Needed").typeError("Date Needed is a required field"),
   brand: yup.string().required().label("Brand"),
   quantity: yup.number().required().label("Quantity"),
   cellphone_number: yup.string().nullable().label("Cellphone Number"),
@@ -400,7 +401,7 @@ const AddRequisition = (props) => {
       // ASSET INFO
       setValue("asset_description", updateRequest?.asset_description);
       setValue("asset_specification", updateRequest?.asset_specification);
-      setValue("date_needed", updateRequest.date_needed === "-" ? null : dateNeededFormat);
+      setValue("date_needed", dateNeededFormat);
       setValue("quantity", updateRequest?.quantity);
       setValue("brand", updateRequest?.brand);
       setValue("cellphone_number", updateRequest?.cellphone_number === "-" ? "" : updateRequest?.cellphone_number);
@@ -417,7 +418,7 @@ const AddRequisition = (props) => {
     }
   }, [updateRequest]);
 
-  // console.log("errors", errors);
+  console.log("errors", errors);
 
   // Table Sorting --------------------------------
   const [order, setOrder] = useState("desc");
@@ -582,7 +583,23 @@ const AddRequisition = (props) => {
           setUpdateToggle(true);
           isTransactionRefetch();
           dispatch(requestContainerApi.util.invalidateTags(["RequestContainer"]));
-
+        })
+        .catch((err) => {
+          // console.log(err);
+          setIsLoading(false);
+          dispatch(
+            openToast({
+              message:
+                err?.response?.data?.errors?.detail ||
+                err?.response?.data?.errors[0]?.detail ||
+                err?.response?.data?.message,
+              duration: 5000,
+              variant: "error",
+            })
+          );
+        })
+        .finally(() => {
+          setIsLoading(false);
           transactionData
             ? reset()
             : reset({
@@ -601,40 +618,6 @@ const AddRequisition = (props) => {
                 tool_of_trade: null,
                 other_attachments: null,
               });
-          // setShowEdit(false)
-        })
-        .catch((err) => {
-          // console.log(err);
-          setIsLoading(false);
-          dispatch(
-            openToast({
-              message:
-                err?.response?.data?.errors?.detail ||
-                err?.response?.data?.errors[0]?.detail ||
-                err?.response?.data?.message,
-              duration: 5000,
-              variant: "error",
-            })
-          );
-        })
-        .finally(() => {
-          setIsLoading(false);
-          // updateRequest
-          //   ? reset()
-          //   :
-          // reset({
-          //   company_id: formData?.company_id,
-          //   department_id: formData?.department_id,
-          //   subunit_id: formData?.subunit_id,
-          //   location_id: formData?.location_id,
-          //   account_title_id: formData?.account_title_id,
-          //   acquisition_details: formData?.acquisition_details,
-          //   letter_of_request: null,
-          //   quotation: null,
-          //   specification_form: null,
-          //   tool_of_trade: null,
-          //   other_attachments: null,
-          // });
         });
     };
 
@@ -712,10 +695,10 @@ const AddRequisition = (props) => {
     //   ? addConfirmation()
     //   : console.log("submit add") && submitData();
 
-    transactionData // check if update
-      ? validation() // if update check validation
-        ? addConfirmation() // if validation is true show confirmation
-        : submitData() // else submit the update
+    transactionData
+      ? validation()
+        ? addConfirmation()
+        : submitData()
       : addRequestAllApi?.data.length === 0
       ? submitData()
       : validation()
@@ -1596,8 +1579,7 @@ const AddRequisition = (props) => {
   };
 
   const handleShowItems = (data) => {
-    dispatch(openDialog());
-    setItemData(data);
+    transactionData && data?.is_removed === 0 && dispatch(openDialog()) && setItemData(data);
   };
 
   const filterOptions = createFilterOptions({
