@@ -43,6 +43,7 @@ import { ExpandCircleDown, ExpandCircleDownOutlined, Help, IosShareRounded, Repo
 import useExcel from "../../Hooks/Xlsx";
 
 import { openExport, closeImport } from "../../Redux/StateManagement/booleanStateSlice";
+import { LoadingButton } from "@mui/lab";
 
 const Capex = () => {
   const [search, setSearch] = useState("");
@@ -55,6 +56,8 @@ const Capex = () => {
     capex: "",
     project_name: "",
   });
+
+  const [isExportLoading, setIsExportLoading] = useState(false);
 
   const { excelExport } = useExcel();
 
@@ -117,7 +120,8 @@ const Capex = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const [capexExportTrigger, { data: capexAllData, refetch: capexRefetchAll }] = useLazyGetCapexAllApiQuery();
+  const [capexExportTrigger, { data: capexAllData, isLoading: isCapexLoading, refetch: capexRefetchAll }] =
+    useLazyGetCapexAllApiQuery();
 
   const [patchCapexStatusApi, { isLoading }] = usePatchCapexStatusApiMutation();
 
@@ -208,6 +212,7 @@ const Capex = () => {
   };
 
   const handleExport = async () => {
+    setIsExportLoading(true);
     try {
       const res = await capexExportTrigger().unwrap();
 
@@ -241,8 +246,10 @@ const Capex = () => {
       });
 
       excelExport(exportData, `Vladimir-Capex.xlsx`);
+      setIsExportLoading(false);
     } catch (err) {
       console.log(err.message);
+      setIsExportLoading(false);
     }
   };
 
@@ -382,12 +389,13 @@ const Capex = () => {
             </Box>
 
             <Box className="mcontainer__pagination-export">
-              <Button
+              <LoadingButton
                 className="mcontainer__export"
                 variant="outlined"
                 size="small"
                 color="text"
-                startIcon={<IosShareRounded color="primary" />}
+                startIcon={isExportLoading ? null : <IosShareRounded color="primary" />}
+                loading={isExportLoading}
                 onClick={handleExport}
                 sx={{
                   display: "flex",
@@ -397,7 +405,7 @@ const Capex = () => {
                 }}
               >
                 EXPORT
-              </Button>
+              </LoadingButton>
 
               <TablePagination
                 rowsPerPageOptions={[
