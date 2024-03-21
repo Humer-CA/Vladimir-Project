@@ -153,11 +153,8 @@ const schema = yup.object().shape({
     .label("Account Title"),
 
   asset_description: yup.string().required().label("Asset Description"),
-
   asset_specification: yup.string().required().label("Asset Specification"),
-
   acquisition_date: yup.string().required().label("Acquisition Date").typeError("Acquisition Date is a required field"),
-
   accountability: yup.string().typeError("Accountability is a required field").required().label("Accountability"),
 
   accountable: yup
@@ -173,11 +170,9 @@ const schema = yup.object().shape({
   cellphone_number: yup.string().nullable(),
   brand: yup.string(),
   care_of: yup.string().label("Care Of"),
-
   voucher: yup.string(),
   voucher_date: yup.string().nullable().label("Voucher Date").typeError("Voucher Date is a required field"),
   receipt: yup.string(),
-
   quantity: yup.number().required().typeError("Quantity is a required field"),
 
   asset_status_id: yup
@@ -202,7 +197,7 @@ const schema = yup.object().shape({
     .required()
     .label("Asset Movement Status"),
 
-  po_number: yup.string().required().label("PO Number"),
+  po_number: yup.string().label("PO Number"),
 
   depreciation_status_id: yup
     .string()
@@ -219,9 +214,7 @@ const schema = yup.object().shape({
     .label("Depreciation Method"),
 
   est_useful_life: yup.string().required().label("Estimated Useful Life"),
-
   release_date: yup.string().nullable().typeError("Release Date is a required field").label("Release Date"),
-
   acquisition_cost: yup.number().required().typeError("Acquisition Cost is a required field"),
   months_depreciated: yup.number().required().typeError("Months Depreciated is a required field"),
   scrap_value: yup.number().required().typeError("Scrap Value is a required field"),
@@ -546,7 +539,6 @@ const AddFixedAsset = (props) => {
       setValue("is_old_asset", data.is_old_asset?.toString());
       setValue("tag_number", data.tag_number);
       setValue("tag_number_old", data.tag_number_old);
-
       // setValue("division_id", data.division);
       setValue("major_category_id", data.major_category.major_category_name === "-" ? null : data.major_category);
       setValue("minor_category_id", data.minor_category.minor_category_name === "-" ? null : data.minor_category);
@@ -560,7 +552,6 @@ const AddFixedAsset = (props) => {
       setValue("asset_specification", data.asset_specification);
       setValue("acquisition_date", acquisitionDateFormat);
       setValue("accountability", data.accountability);
-
       setValue("accountable", {
         general_info: {
           full_id_number: data.accountable.split(" ")[0],
@@ -678,7 +669,6 @@ const AddFixedAsset = (props) => {
 
   // console.log(errors);
   // console.log(watch("depreciation_method"));
-  console.log(data);
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} className="addFixedAsset">
@@ -1141,6 +1131,14 @@ const AddFixedAsset = (props) => {
                 helperText={errors?.accountability?.message}
               />
             )}
+            onChange={(_, value) => {
+              if (value === "Personal Issued") {
+                setValue("accountable", value.accountable);
+              } else {
+                setValue("accountable", null);
+              }
+              return value;
+            }}
           />
 
           {/* {watch("type_of_request_id")?.type_of_request_name === "Capex" ? (
@@ -1166,10 +1164,7 @@ const AddFixedAsset = (props) => {
               filterOptions={filterOptions}
               options={sedarData}
               loading={isSedarLoading}
-              getOptionLabel={
-                (option) => option.general_info?.full_id_number_full_name
-                // `(${option.general_info?.full_id_number}) - ${option.general_info?.full_name}`
-              }
+              getOptionLabel={(option) => option.general_info?.full_id_number_full_name}
               isOptionEqualToValue={(option, value) =>
                 option.general_info?.full_id_number === value.general_info?.full_id_number
               }
@@ -1268,12 +1263,12 @@ const AddFixedAsset = (props) => {
             fullWidth
           />
 
-          <CustomTextField
+          <CustomNumberField
             autoComplete="off"
             control={control}
             name="po_number"
             label="Purchase Order #"
-            type="text"
+            disabled
             color="secondary"
             size="small"
             error={!!errors?.po_number}

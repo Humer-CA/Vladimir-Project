@@ -18,13 +18,7 @@ import {
   Box,
   Button,
   Divider,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
   IconButton,
-  Paper,
-  Radio,
-  RadioGroup,
   Stack,
   TextField,
   Typography,
@@ -64,6 +58,7 @@ const schema = yup.object().shape({
 
   fixed_asset_id: yup
     .string()
+    .required()
     .transform((value) => {
       return value?.id.toString();
     })
@@ -169,11 +164,8 @@ const schema = yup.object().shape({
     .label("Account Title"),
 
   asset_description: yup.string().required().label("Asset Description"),
-
   asset_specification: yup.string().required().label("Asset Specification"),
-
   acquisition_date: yup.string().required().label("Acquisition Date").typeError("Acquisition Date is a required field"),
-
   accountability: yup.string().typeError("Accountability is a required field").required().label("Accountability"),
 
   accountable: yup
@@ -191,10 +183,9 @@ const schema = yup.object().shape({
   care_of: yup.string().label("Care Of"),
 
   voucher: yup.string(),
-  voucher_date: yup.string().nullable().label("Voucher Date").typeError("Voucher Date is a required field"),
-  receipt: yup.string().required(),
-  po_number: yup.string().required().label("PO Number"),
-
+  voucher_date: yup.date().nullable().label("Voucher Date").typeError("Voucher Date is a required field"),
+  receipt: yup.string(),
+  po_number: yup.number().label("PO Number").typeError("PO Number is a required field"),
   quantity: yup.number().required().typeError("Quantity is a required field"),
 
   asset_status_id: yup
@@ -236,9 +227,7 @@ const schema = yup.object().shape({
     .label("Depreciation Method"),
 
   est_useful_life: yup.string().required().label("Estimated Useful Life"),
-
   release_date: yup.string().nullable().typeError("Release Date is a required field").label("Release Date"),
-
   acquisition_cost: yup.number().required().typeError("Acquisition Cost is a required field"),
   months_depreciated: yup.number().required().typeError("Months Depreciated is a required field"),
   scrap_value: yup.number().required().typeError("Scrap Value is a required field"),
@@ -464,54 +453,9 @@ const AddCost = (props) => {
       acquisition_cost: "",
       months_depreciated: "",
       scrap_value: "",
-      depreciable_basis: "",
-      // accumulated_cost: "",
-      // start_depreciation: null,
-      // end_depreciation: null,
-      // depreciation_per_year: "",
-      // depreciation_per_month: "",
-      // remaining_book_value: "",
+      depreciable_basis: null,
     },
   });
-
-  // setError fetching ----------------------------------------------------------
-  // useEffect(() => {
-  //   if (
-  //     (isPostError || isUpdateError) &&
-  //     (postError?.status === 422 || updateError?.status === 422)
-  //   ) {
-  //     if (isPostError || isUpdateError) {
-  //       const { errors } = postError?.data || updateError?.data;
-
-  //       Object.entries(errors).forEach((errorData) => {
-  //         const [name, [message]] = errorData;
-
-  //         setError(name, { type: "validate", message: message });
-  //       });
-  //     }
-
-  //     dispatch(
-  //       openToast({
-  //         message: "Something went wrong. Please try again.",
-  //         duration: 5000,
-  //         variant: "error",
-  //       })
-  //     );
-  //   } else if (
-  //     (isPostError && postError?.faStatus !== 422) ||
-  //     (isUpdateError && updateError?.faStatus !== 422)
-  //   ) {
-  //     dispatch(
-  //       openToast({
-  //         message: "Something went wrong. Please try again.",
-  //         duration: 5000,
-  //         variant: "error",
-  //       })
-  //     );
-  //   }
-  // }, [isPostError, isUpdateError]);
-
-  // GPT error fetching ----------------------------------------------------------
 
   useEffect(() => {
     const errorData = (isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422);
@@ -563,11 +507,6 @@ const AddCost = (props) => {
       setValue("id", data.id);
       setValue("fixed_asset_id", data.fixed_asset);
       setValue("type_of_request_id", data.type_of_request);
-      // setValue("sub_capex_id", {
-      //   id: data.sub_capex?.id,
-      //   sub_capex: data?.sub_capex?.sub_capex,
-      //   sub_project: data?.sub_capex?.sub_project,
-      // });
       setValue("sub_capex_id", data.sub_capex);
       // setValue("project_name", data.sub_capex?.sub_project);
       setValue("charging", data.department);
@@ -576,8 +515,8 @@ const AddCost = (props) => {
       setValue("tag_number_old", data.tag_number_old);
 
       // setValue("division_id", data.division);
-      setValue("major_category_id", data.major_category);
-      setValue("minor_category_id", data.minor_category);
+      setValue("major_category_id", data.major_category.major_category_name === "-" ? null : data.major_category);
+      setValue("minor_category_id", data.minor_category.minor_category_name === "-" ? null : data.minor_category);
 
       setValue("company_id", data.company);
       setValue("department_id", data.department);
@@ -590,9 +529,11 @@ const AddCost = (props) => {
       setValue("accountability", data.accountability);
       setValue("accountable", {
         general_info: {
+          full_id_number: data.accountable.split(" ")[0],
           full_id_number_full_name: data.accountable,
         },
       });
+
       setValue("cellphone_number", data.cellphone_number === "-" ? null : data.cellphone_number.slice(2));
       setValue("brand", data.brand);
       setValue("care_of", data.care_of);
@@ -605,10 +546,13 @@ const AddCost = (props) => {
       setValue("cycle_count_status_id", data.cycle_count_status);
       setValue("movement_status_id", data.movement_status);
 
-      setValue("depreciation_method", data.depreciation_method);
+      setValue("depreciation_method", data.depreciation_method === "-" ? null : data.depreciation_method);
       setValue("est_useful_life", data.est_useful_life);
-      setValue("depreciation_status_id", data.depreciation_status);
-      setValue("release_date", data.voucher_date === "-" ? null : releaseDateFormat);
+      setValue(
+        "depreciation_status_id",
+        data.depreciation_status.depreciation_status_name === "-" ? null : data.depreciation_status
+      );
+      setValue("release_date", data.release_date === "-" ? null : releaseDateFormat);
       setValue("acquisition_cost", data.acquisition_cost);
       setValue("months_depreciated", data.months_depreciated);
       setValue("scrap_value", data.scrap_value);
@@ -645,23 +589,16 @@ const AddCost = (props) => {
       ...formData,
       cellphone_number: formData.cellphone_number ? "09" + formData.cellphone_number : null,
       acquisition_date: moment(new Date(formData.acquisition_date)).format("YYYY-MM-DD"),
-
       release_date:
         formData.release_date === null ? null : moment(new Date(formData.release_date)).format("YYYY-MM-DD"),
-
       voucher_date:
         formData.voucher_date === null ? null : moment(new Date(formData.voucher_date)).format("YYYY-MM-DD"),
-
       start_depreciation: moment(new Date(formData.start_depreciation)).format("YYYY-MM"),
       end_depreciation: moment(new Date(formData.end_depreciation)).format("YYYY-MM"),
       accountable: formData.accountable === null ? null : formData.accountable,
-
       months_depreciated: formData.months_depreciated === null ? 0 : formData.months_depreciated,
-
       acquisition_cost: formData.acquisition_cost === null ? 0 : formData.acquisition_cost,
-
       scrap_value: formData.scrap_value === null ? 0 : formData.scrap_value,
-
       depreciable_basis: formData.depreciable_basis === null ? 0 : formData.depreciable_basis,
     };
 
@@ -691,13 +628,6 @@ const AddCost = (props) => {
     limit: 100,
     matchFrom: "any",
   });
-
-  // console.log(vTagNumberData);
-  // console.log(sedarData);
-  // console.log(watch("accountable"));
-  // console.log(data);
-
-  console.log(errors);
 
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmitHandler)} className="addFixedAsset">
@@ -729,16 +659,22 @@ const AddCost = (props) => {
                   color="secondary"
                   {...params}
                   label="Tag Number"
-                  error={!!errors?.vladimir_tag_number}
-                  helperText={errors?.vladimir_tag_number?.message}
+                  error={!!errors?.fixed_asset_id}
+                  helperText={errors?.fixed_asset_id?.message}
                 />
               )}
               onChange={(_, value) => {
                 setValue("type_of_request_id", value.type_of_request);
                 setValue("sub_capex_id", value.sub_capex);
                 setValue("charging", value.charging);
-                setValue("major_category_id", value.major_category);
-                setValue("minor_category_id", value.minor_category);
+                setValue(
+                  "major_category_id",
+                  value.major_category.major_category_name === "-" ? null : value.major_category
+                );
+                setValue(
+                  "minor_category_id",
+                  value.minor_category.minor_category_name === "-" ? null : value.minor_category
+                );
                 setValue("company_id", value.company);
                 setValue("department_id", value.department);
                 setValue("location_id", value.location);
@@ -800,140 +736,12 @@ const AddCost = (props) => {
                     helperText={errors?.sub_capex_id?.message}
                   />
                 )}
-                // onChange={(_, value) => {
-                //   setValue("project_name", value.project_name);
-                //   return value;
-                // }}
               />
             )}
-
-            {/* {watch("type_of_request_id")?.type_of_request_name === "Capex" ? (
-              <CustomTextField
-                control={control}
-                disabled
-                name="project_name"
-                label="Project Name"
-                type="text"
-                color="secondary"
-                size="small"
-                fullWidth
-              />
-            ) : null} */}
           </Box>
-          {/* 
-          <CustomAutoComplete
-            autoComplete
-            name="charging"
-            control={control}
-            options={departmentData}
-            loading={isDepartmentLoading}
-            size="small"
-            fullWidth
-            getOptionLabel={(option) => option.department_name}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            renderInput={(params) => (
-              <TextField
-                color="secondary"
-                {...params}
-                label="Charged Department"
-                error={!!errors?.charging}
-                helperText={errors?.charging?.message}
-              />
-            )}
-          /> */}
         </Box>
 
         <Divider />
-
-        {/* <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-          }}
-        >
-          <Typography sx={sxSubtitle}>Asset Status</Typography>
-          <CustomRadioGroup control={control} name="is_old_asset">
-            <FormControlLabel
-              value={0}
-              label="New Asset"
-              control={<Radio size="small" />}
-              onChange={(_, value) => {
-                setValue("tag_number", "");
-                setValue("tag_number_old", "");
-                return value;
-              }}
-            />
-
-            {parseInt(watch("is_old_asset")) === 0 ? (
-              <Box className="addFixedAsset__status" sx={{ my: "5px" }}>
-                <CustomAutoComplete
-                  autoComplete
-                  name="charging"
-                  control={control}
-                  options={departmentData}
-                  loading={isDepartmentLoading}
-                  size="small"
-                  getOptionLabel={(option) => option.department_name}
-                  isOptionEqualToValue={(option, value) =>
-                    option.department_name === value.department_name
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      color="secondary"
-                      {...params}
-                      label="Charged Department"
-                      error={!!errors?.charging}
-                      helperText={errors?.charging?.message}
-                    />
-                  )}
-                  fullWidth
-                />
-              </Box>
-            ) : null}
-
-            <FormControlLabel
-              value={1}
-              label="Old Asset"
-              control={<Radio size="small" />}
-              onChange={(_, value) => {
-                if (data.status) {
-                  setValue("tag_number", data.tag_number);
-                  setValue("tag_number_old", data.tag_number_old);
-                  return value;
-                }
-              }}
-            />
-
-            {parseInt(watch("is_old_asset")) ? (
-              <Box className="addFixedAsset__status" sx={{ mt: "5px" }}>
-                <CustomNumberField
-                  control={control}
-                  name="tag_number"
-                  label="Tag Number"
-                  color="secondary"
-                  size="small"
-                  error={!!errors?.tag_number}
-                  helperText={errors?.tag_number?.message}
-                  fullWidth
-                />
-
-                <CustomNumberField
-                  control={control}
-                  name="tag_number_old"
-                  label="Old Tag Number"
-                  color="secondary"
-                  size="small"
-                  error={!!errors?.tag_number_old}
-                  helperText={errors?.tag_number_old?.message}
-                  fullWidth
-                />
-              </Box>
-            ) : null}
-          </CustomRadioGroup>
-        </Box>
-
-        <Divider /> */}
 
         <Box
           sx={{
@@ -1191,20 +999,15 @@ const AddCost = (props) => {
                 helperText={errors?.accountability?.message}
               />
             )}
+            onChange={(_, value) => {
+              if (value === "Personal Issued") {
+                setValue("accountable", value.accountable);
+              } else {
+                setValue("accountable", null);
+              }
+              return value;
+            }}
           />
-
-          {/* {watch("type_of_request_id")?.type_of_request_name === "Capex" ? (
-              <CustomTextField
-                control={control}
-                disabled
-                name="project_name"
-                label="Project Name"
-                type="text"
-                color="secondary"
-                size="small"
-                fullWidth
-              />
-            ) : null} */}
 
           {watch("accountability") === "Personal Issued" && (
             <CustomAutoComplete
@@ -1282,7 +1085,6 @@ const AddCost = (props) => {
               control={control}
               name="voucher"
               label="Voucher (optional)"
-              type="text"
               color="secondary"
               size="small"
               error={!!errors?.voucher}
@@ -1310,7 +1112,6 @@ const AddCost = (props) => {
             control={control}
             name="receipt"
             label="Receipt (optional)"
-            type="text"
             color="secondary"
             size="small"
             error={!!errors?.receipt}
@@ -1318,14 +1119,13 @@ const AddCost = (props) => {
             fullWidth
           />
 
-          <CustomTextField
+          <CustomNumberField
             autoComplete="off"
             control={control}
+            disabled
             name="po_number"
             label="Purchase Order #"
-            type="text"
             color="secondary"
-            size="small"
             error={!!errors?.po_number}
             helperText={errors?.po_number?.message}
             fullWidth
@@ -1340,10 +1140,6 @@ const AddCost = (props) => {
               type="number"
               color="secondary"
               size="small"
-              // isAllowed={(values) => {
-              //   const { floatValue } = values;
-              //   return floatValue >= 1;
-              // }}
               disabled
               error={!!errors?.quantity}
               helperText={errors?.quantity?.message}
@@ -1415,54 +1211,6 @@ const AddCost = (props) => {
               fullWidth
             />
           </Box>
-
-          {/* <Box className="addFixedAsset__status">
-            <CustomAutoComplete
-              autoComplete
-              name="cycle_count_status"
-              control={control}
-              options={cycleCountStatusData}
-              size="small"
-              isOptionEqualToValue={(option, value) => option === value}
-              renderInput={(params) => (
-                <TextField
-                  color="secondary"
-                  {...params}
-                  label="Cycle Count Status"
-                  error={!!errors?.faStatus}
-                  helperText={errors?.faStatus?.message}
-                />
-              )}
-              fullWidth
-            />
-
-            <CustomAutoComplete
-              autoComplete
-              name="faStatus"
-              control={control}
-              options={[
-                "Good",
-                "For Disposal",
-                // "Disposed",
-                "For Repair",
-                "Spare",
-                "Sold",
-                "Write Off",
-              ]}
-              size="small"
-              isOptionEqualToValue={(option, value) => option === value}
-              renderInput={(params) => (
-                <TextField
-                  color="secondary"
-                  {...params}
-                  label="Asset Status"
-                  error={!!errors?.faStatus}
-                  helperText={errors?.faStatus?.message}
-                />
-              )}
-              fullWidth
-            />fixedAssetLoading
-          </Box> */}
         </Box>
 
         <Divider />
@@ -1545,19 +1293,7 @@ const AddCost = (props) => {
                 helperText={errors?.release_date?.message}
                 fullWidth={isFullWidth ? true : false}
                 minDate={watch("acquisition_date")}
-                maxDate={
-                  new Date()
-                  // moment()
-                  //   .add(parseInt(watch("est_useful_life")) * 12, "months")
-                  //   .format("YYYY-MM-DD")
-                }
-                // onChange={(e) => {
-                //   setValue(
-                //     "months_depreciated",
-                //     moment().diff(moment(e).add(1, "months"), "months")
-                //   );
-                //   return e;
-                // }}
+                maxDate={new Date()}
                 onChange={(e) => {
                   const selectedDate = new Date(e);
                   const today = new Date();
@@ -1624,10 +1360,6 @@ const AddCost = (props) => {
                   size="small"
                   error={!!errors?.months_depreciated}
                   helperText={errors?.months_depreciated?.message}
-                  // isAllowed={(values) => {
-                  //   const { floatValue } = values;
-                  //   return floatValue >= 1;
-                  // }}
                   thousandSeparator
                   fullWidth={isFullWidth ? true : false}
                 />
@@ -1693,105 +1425,8 @@ const AddCost = (props) => {
                 fullWidth
                 error={!!errors?.depreciable_basis}
                 helperText={errors?.depreciable_basis?.message}
-                // isAllowed={(values) => {
-                //   const { floatValue } = values;
-                //   return floatValue >= 1;
-                // }}
               />
             )}
-
-            {/* <CustomNumberField
-                autoComplete="off"
-                control={control}
-                name="accumulated_cost"
-                label="Accumulated Cost"
-                color="secondary"
-                size="small"
-                error={!!errors?.accumulated_cost?.message}
-                helperText={errors?.accumulated_cost?.message}
-                prefix="₱"
-                isAllowed={(values) => {
-                  const { floatValue } = values;
-                  return floatValue >= 1;
-                }}
-                thousandSeparator
-                fullWidth
-              /> */}
-
-            {/* <Box className="addFixedAsset__status">
-              <CustomDatePicker
-                control={control}
-                name="start_depreciation"
-                label="Start Depreciation"
-                size="small"
-                views={["month", "year"]}
-                error={!!errors?.start_depreciation}
-                helperText={errors?.start_depreciation?.message}
-                fullWidth={isFullWidth ? true : false}
-              />
-
-              <CustomDatePicker
-                control={control}
-                name="end_depreciation"
-                label="End Depreciation"
-                views={["month", "year"]}
-                error={!!errors?.end_depreciation}
-                helperText={errors?.end_depreciation?.message}
-                fullWidth={isFullWidth ? true : false}
-              />
-            </Box> */}
-
-            {/* <CustomNumberField
-                control={control}
-                name="depreciation_per_year"
-                label="Depreciation per Year"
-                color="secondary"
-                size="small"
-                error={!!errors?.depreciation_per_year}
-                helperText={errors?.depreciation_per_year?.message}
-                prefix="₱"
-                isAllowed={(values) => {
-                  const { floatValue } = values;
-                  return floatValue >= 1;
-                }}
-                thousandSeparator
-                fullWidth
-              />
-
-              <CustomNumberField
-                control={control}
-                name="depreciation_per_month"
-                label="Depreciation per Month"
-                color="secondary"
-                size="small"
-                error={!!errors?.depreciation_per_month}
-                helperText={errors?.depreciation_per_month?.message}
-                prefix="₱"
-                isAllowed={(values) => {
-                  const { floatValue } = values;
-                  return floatValue >= 1;
-                }}
-                thousandSeparator
-                fullWidth
-              />
-
-              <CustomNumberField
-                autoComplete="off"
-                control={control}
-                name="remaining_book_value"
-                label="Remaining Book Value"
-                color="secondary"
-                size="small"
-                error={!!errors?.remaining_book_value}
-                helperText={errors?.remaining_book_value?.message}
-                prefix="₱"
-                isAllowed={(values) => {
-                  const { floatValue } = values;
-                  return floatValue >= 1;
-                }}
-                thousandSeparator
-                fullWidth
-              /> */}
           </Box>
         </Box>
       </Box>
