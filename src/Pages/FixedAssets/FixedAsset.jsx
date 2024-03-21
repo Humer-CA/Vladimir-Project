@@ -103,9 +103,10 @@ const FixedAsset = (props) => {
     cellphone_number: "",
     brand: "",
     care_of: "",
+    po_number: null,
     voucher: "",
     receipt: "",
-    quantity: "",
+    quantity: null,
     // faStatus: "Good",
 
     depreciation_method: null,
@@ -217,9 +218,10 @@ const FixedAsset = (props) => {
       cellphone_number: "",
       brand: "",
       care_of: "",
+      po_number: null,
       voucher: "",
       receipt: "",
-      quantity: "",
+      quantity: null,
       // faStatus: "Good",
 
       depreciation_method: null,

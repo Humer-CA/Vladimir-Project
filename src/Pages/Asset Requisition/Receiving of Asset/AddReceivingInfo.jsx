@@ -365,6 +365,10 @@ const ReceivingTable = (props) => {
                 label="PO Number"
                 color="secondary"
                 size="small"
+                isAllowed={(values) => {
+                  const { floatValue } = values;
+                  return floatValue >= 0;
+                }}
                 error={!!errors?.po_number}
                 helperText={errors?.po_number?.message}
               />
