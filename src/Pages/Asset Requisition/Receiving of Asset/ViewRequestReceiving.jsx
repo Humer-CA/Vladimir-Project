@@ -105,7 +105,6 @@ const ViewRequestReceiving = () => {
     transactionData?.received || data?.remaining === 0 ? null : dispatch(openDialog());
     setViewData(data);
   };
-
   const onCancelHandler = async (data) => {
     // console.log("data", data);
     dispatch(
@@ -124,7 +123,7 @@ const ViewRequestReceiving = () => {
             >
               CANCEL
             </Typography>{" "}
-            this Data?
+            {data?.delivered !== 0 ? "remaining Items?" : "this Item?"}
           </Box>
         ),
         remarks: true,
@@ -141,7 +140,7 @@ const ViewRequestReceiving = () => {
             );
 
             dispatch(closeConfirm());
-            console.log(result);
+            // console.log(result);
             result?.data?.total_remaining === 0 && navigate(-1);
           } catch (err) {
             console.error(err);
@@ -307,20 +306,23 @@ const ViewRequestReceiving = () => {
                     ) : (
                       <>
                         {isReceivingSuccess &&
-                          [...receivingData?.data]?.sort(comparator(order, orderBy))?.map((data) => (
+                          [...receivingData?.data]?.sort(comparator(order, orderBy))?.map((data, index) => (
                             <Tooltip
-                              title={data?.remaining === 0 ? null : "Click the row to Receive Items"}
-                              placement="bottom-start"
-                              sx={{ position: "absolute", display: "flex" }}
+                              key={index}
+                              title={data?.remaining === 0 ? null : "Click to Receive Items"}
+                              placement="left"
+                              arrow
                             >
                               <TableRow
                                 key={data.id}
-                                hover
+                                hover={data?.is_removed === 1 ? false : true}
                                 sx={{
                                   cursor: transactionData?.received ? null : "pointer",
                                   "&:last-child td, &:last-child th": {
                                     borderBottom: 0,
                                   },
+                                  bgcolor: data?.is_removed === 1 ? "#ff00002f" : null,
+                                  "*": { color: data?.is_removed === 1 ? "black!important" : null },
                                 }}
                               >
                                 <TableCell onClick={() => handleTableData(data)} className="tbl-cell text-weight">
@@ -384,15 +386,21 @@ const ViewRequestReceiving = () => {
                                 </TableCell>
                                 {!transactionData?.received && (
                                   <TableCell className="tbl-cell text-center">
-                                    <IconButton
-                                      disabled={data?.remaining === 0}
-                                      onClick={() => onCancelHandler(data)}
-                                      sx={{ color: "error.main", ":hover": { color: "red" } }}
-                                    >
-                                      <Tooltip title="Cancel Request" placement="top" arrow>
-                                        <RemoveCircle />
-                                      </Tooltip>
-                                    </IconButton>
+                                    {data?.is_removed !== 1 && (
+                                      <IconButton
+                                        disabled={data?.remaining === 0}
+                                        onClick={() => onCancelHandler(data)}
+                                        sx={{ color: "error.main", ":hover": { color: "red" } }}
+                                      >
+                                        <Tooltip
+                                          title={data?.delivered !== 0 ? "Cancel Remaining" : "Cancel Request"}
+                                          placement="top"
+                                          arrow
+                                        >
+                                          <RemoveCircle />
+                                        </Tooltip>
+                                      </IconButton>
+                                    )}
                                   </TableCell>
                                 )}
                               </TableRow>

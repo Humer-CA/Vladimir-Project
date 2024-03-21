@@ -1134,7 +1134,6 @@ const AddRequisition = (props) => {
                 options={typeOfRequestData}
                 loading={isTypeOfRequestLoading}
                 // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-
                 disabled={updateRequest && disable}
                 getOptionLabel={(option) => option.type_of_request_name}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -1182,7 +1181,6 @@ const AddRequisition = (props) => {
                 loading={isDepartmentLoading}
                 disabled={updateRequest && disable}
                 // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-
                 getOptionLabel={(option) => option.department_name}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 renderInput={(params) => (
@@ -1217,7 +1215,6 @@ const AddRequisition = (props) => {
                 name="subunit_id"
                 control={control}
                 // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-
                 options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
                 loading={isSubUnitLoading}
                 disabled={updateRequest && disable}
@@ -1264,7 +1261,6 @@ const AddRequisition = (props) => {
                 name="location_id"
                 control={control}
                 // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-
                 options={locationData?.filter((item) => {
                   return item.departments.some((department) => {
                     return department?.sync_id === watch("department_id")?.sync_id;
@@ -1288,7 +1284,6 @@ const AddRequisition = (props) => {
                 name="account_title_id"
                 control={control}
                 // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-
                 options={accountTitleData}
                 loading={isAccountTitleLoading}
                 disabled={updateRequest && disable}
@@ -1359,7 +1354,6 @@ const AddRequisition = (props) => {
                 type="text"
                 disabled={updateRequest && disable}
                 // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
-
                 error={!!errors?.acquisition_details}
                 helperText={errors?.acquisition_details?.message}
                 fullWidth
