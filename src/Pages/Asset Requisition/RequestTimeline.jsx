@@ -9,6 +9,7 @@ import {
   FactCheck,
   HowToReg,
   ManageHistoryTwoTone,
+  RemoveCircleOutline,
   TimelineTwoTone,
 } from "@mui/icons-material";
 import { closeDialog } from "../../Redux/StateManagement/booleanStateSlice";
@@ -141,10 +142,10 @@ const RequestTimeline = (props) => {
                     {/* Date and Time */}
                     <Stack className="timelineSteps__dateAndTime">
                       <Typography fontSize="12px" color="secondary" fontWeight={600}>
-                        {Moment(transactionData.created_at).format("ll")}
+                        {Moment(item?.created_at).format("ll")}
                       </Typography>
                       <Typography fontSize="12px" color="gray" marginTop="-2px">
-                        {Moment(transactionData.created_at).format("LT")}
+                        {Moment(item?.created_at).format("LT")}
                       </Typography>
                     </Stack>
 
@@ -159,6 +160,8 @@ const RequestTimeline = (props) => {
                           <FactCheck sx={{ color: "success.main" }} />
                         ) : item?.action === "Removed PR Number" ? (
                           <CancelOutlined sx={{ color: "error.main" }} />
+                        ) : item.action === "Cancelled Remaining Items" || item.action === "Cancelled Item To PO" ? (
+                          <RemoveCircleOutline sx={{ color: "error.main" }} />
                         ) : (
                           <CheckCircleOutlineTwoTone sx={{ color: "secondary.main" }} />
                         )
@@ -168,7 +171,11 @@ const RequestTimeline = (props) => {
                         className="timelineSteps__box"
                         sx={{
                           backgroundColor:
-                            item?.action === "Declined" || item?.action === "Returned" || item?.action === "Cancelled"
+                            item?.action === "Declined" ||
+                            item?.action === "Returned" ||
+                            item?.action === "Cancelled" ||
+                            item?.action === "Cancelled Remaining Items" ||
+                            item.action === "Cancelled Item To PO"
                               ? "#ff000017"
                               : item?.action === "Approved" || item?.action === "Claimed"
                               ? "#00800016"
@@ -182,7 +189,11 @@ const RequestTimeline = (props) => {
                           orientation="vertical"
                           sx={{
                             backgroundColor:
-                              item?.action === "Declined" || item?.action === "Returned" || item?.action === "Cancelled"
+                              item?.action === "Declined" ||
+                              item?.action === "Returned" ||
+                              item?.action === "Cancelled" ||
+                              item?.action === "Cancelled Remaining Items" ||
+                              item.action === "Cancelled Item To PO"
                                 ? "error.light"
                                 : item?.action === "Approved" || item?.action === "Claimed"
                                 ? "success.light"
@@ -190,24 +201,58 @@ const RequestTimeline = (props) => {
                                 ? "error.light"
                                 : "secondary.light",
                             width: "3px",
-                            height: "30px",
+                            height: item?.action === "Claimed" ? "70px" : "50px",
                             ml: "5px",
                             borderRadius: "20px",
                             border: "none",
                           }}
                         />
                         <Box>
-                          <Typography fontSize={13} fontWeight={600} textTransform="uppercase">
+                          <Typography fontSize={14} fontWeight={600} textTransform="uppercase" color="text.main">
                             {item?.action}
                           </Typography>
 
                           <Typography fontSize={12} color="text.light">
                             {`(${item?.causer?.employee_id}) - ${item?.causer?.firstname}  ${item?.causer?.lastname}`}
                           </Typography>
-                          <Typography fontSize={12} fontWeight={600} color="text.light">
-                            {item?.action === "Claimed" ? `Received by: ${item?.received_by}` : null}
-                          </Typography>
-                          <Typography fontSize={12}>{item?.remarks ? `Remarks: ${item?.remarks}` : null}</Typography>
+
+                          {/* PO */}
+                          {item?.action === "Added PO Number and RR Number" && (
+                            <Typography fontSize={12} fontWeight={600} color="text.light">
+                              Asset Description: {item?.asset_description}
+                            </Typography>
+                          )}
+
+                          {/* CLAIMED */}
+                          {item?.action === "Claimed" && (
+                            <>
+                              <Typography fontSize={12} fontWeight={600} color="text.light">
+                                Tag Number: {item?.vladimir_tag_number}
+                              </Typography>
+                              <Typography fontSize={12} fontWeight={400} color="text.light">
+                                Asset Description: {item?.asset_description}
+                              </Typography>
+                            </>
+                          )}
+
+                          {item?.action === "Claimed" && (
+                            <Typography fontSize={12} fontWeight={600} color="primary.dark">
+                              Received by: {item?.received_by}
+                            </Typography>
+                          )}
+
+                          {/* CANCELLED */}
+                          {(item?.action === "Cancelled Remaining Items" || item.action === "Cancelled Item To PO") && (
+                            <Typography fontSize={12} fontWeight={600} color="text.light">
+                              Asset Description: {item?.asset_description}
+                            </Typography>
+                          )}
+
+                          {item?.remarks && (
+                            <Typography fontSize={12} fontWeight={600}>
+                              Remarks: {item?.remarks}
+                            </Typography>
+                          )}
                         </Box>
                       </Box>
                     </StepLabel>
