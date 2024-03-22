@@ -70,7 +70,10 @@ import ErrorFetchFA from "./ErrorFetchFA";
 import FixedAssetViewSkeleton from "./FixedAssetViewSkeleton";
 import { useForm } from "react-hook-form";
 import AddCost from "./AddEdit/AddCost";
-import { useArchiveAdditionalCostApiMutation } from "../../Redux/Query/FixedAsset/AdditionalCost";
+import {
+  useArchiveAdditionalCostApiMutation,
+  usePostCalcDepreAddCostApiMutation,
+} from "../../Redux/Query/FixedAsset/AdditionalCost";
 import useScanDetection from "use-scan-detection-react18";
 import { useGetIpApiQuery } from "../../Redux/Query/IpAddressSetup";
 
@@ -155,29 +158,15 @@ const FixedAssetView = (props) => {
     isSuccess: dataApiSuccess,
     isFetching: dataApiFetching,
     isError: dataApiError,
-
     refetch: dataApiRefetch,
   } = useGetFixedAssetIdApiQuery(data, {
     refetchOnMountOrArgChange: true,
   });
 
-  const [
-    postCalcDepreApi,
-    {
-      data: calcDepreApi,
-      isLoading: calcDepreApiLoading,
-      isSuccess: calcDepreApiSuccess,
-      isFetching: calcDepreApiFetching,
-      isError: calcDepreApiError,
-
-      refetch: calcDepreApiRefetch,
-    },
-  ] = usePostCalcDepreApiMutation();
-
-  // console.log("calc", calcDepreApi);
+  const [postCalcDepreApi, { data: calcDepreApi }] = usePostCalcDepreApiMutation();
+  const [postCalcDepreAddCostApi, { data: calcDepreAddCostApi }] = usePostCalcDepreAddCostApiMutation();
 
   const [patchFixedAssetStatusApi, { isLoading: isPatchLoading }] = useArchiveFixedAssetStatusApiMutation();
-
   const [patchAdditionalCostStatusApi, { isLoading: isAdditionalCostLoading }] = useArchiveAdditionalCostApiMutation();
 
   const { data: ip } = useGetIpApiQuery();
@@ -539,7 +528,7 @@ const FixedAssetView = (props) => {
       ...data,
       date: moment(new Date(currentDate)).format("YYYY-MM"),
     };
-    postCalcDepreApi(newDate);
+    dataApi.data?.is_additional_cost === 1 ? postCalcDepreAddCostApi(newDate) : postCalcDepreApi(newDate);
     // console.log(newDate);
     setViewDepre(true);
   };
@@ -1280,7 +1269,7 @@ const FixedAssetView = (props) => {
           },
         }}
       >
-        <Depreciation calcDepreApi={calcDepreApi} setViewDepre={setViewDepre} />
+        <Depreciation calcDepreApi={calcDepreApi || calcDepreAddCostApi} setViewDepre={setViewDepre} />
       </Dialog>
 
       {/* <Dialog
