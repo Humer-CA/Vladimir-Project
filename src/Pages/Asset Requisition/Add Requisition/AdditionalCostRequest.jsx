@@ -133,7 +133,7 @@ const schema = yup.object().shape({
   other_attachments: yup.mixed().label("Other Attachment"),
 });
 
-const AddRequisition = (props) => {
+const AdditionalCostRequest = (props) => {
   const [updateRequest, setUpdateRequest] = useState({
     id: null,
     fixed_asset_id: null,
@@ -1921,4 +1921,4 @@ const AddRequisition = (props) => {
   );
 };
 
-export default AddRequisition;
+export default AdditionalCostRequest;
