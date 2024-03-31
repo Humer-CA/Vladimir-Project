@@ -26,8 +26,8 @@ export const requestContainerApi = createApi({
   endpoints: (builder) => ({
     getRequestContainerAllApi: builder.query({
       query: (params) => ({
-        url: `/request-container?per_page=${params.per_page}&page=${params.page}`,
-        // url: `/request-container?pagination=none`,
+        // url: `/request-container?per_page=${params.per_page}&page=${params.page}`,
+        url: `/request-container?pagination=none`,
         method: "GET",
       }),
       // transformResponse: (response) => response.data,
