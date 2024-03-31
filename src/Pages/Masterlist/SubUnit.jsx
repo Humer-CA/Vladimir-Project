@@ -8,15 +8,8 @@ import ActionMenu from "../../Components/Reusable/ActionMenu";
 
 import { useDispatch, useSelector } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
-import {
-  useGetSubUnitApiQuery,
-  usePatchSubUnitApiMutation,
-} from "../../Redux/Query/Masterlist/SubUnit";
-import {
-  closeConfirm,
-  onLoading,
-  openConfirm,
-} from "../../Redux/StateManagement/confirmSlice";
+import { useGetSubUnitApiQuery, usePatchSubUnitApiMutation } from "../../Redux/Query/Masterlist/SubUnit";
+import { closeConfirm, onLoading, openConfirm } from "../../Redux/StateManagement/confirmSlice";
 
 import {
   Box,
@@ -81,7 +74,7 @@ const SubUnit = () => {
   // Table Properties --------------------------------
   const limitHandler = (e) => {
     setPage(1);
-    setLimit(parseInt(e.target.value));
+    setPerPage(parseInt(e.target.value));
   };
 
   const pageHandler = (_, page) => {
@@ -198,10 +191,7 @@ const SubUnit = () => {
 
   return (
     <Box className="mcontainer">
-      <Typography
-        className="mcontainer__title"
-        sx={{ fontFamily: "Anton", fontSize: "2rem" }}
-      >
+      <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "2rem" }}>
         Sub Unit
       </Typography>
 
@@ -259,9 +249,7 @@ const SubUnit = () => {
                       </TableSortLabel>
                     </TableCell>
 
-                    <TableCell className="tbl-cell text-center">
-                      Status
-                    </TableCell>
+                    <TableCell className="tbl-cell text-center">Status</TableCell>
 
                     <TableCell className="tbl-cell text-center">
                       <TableSortLabel
@@ -283,51 +271,44 @@ const SubUnit = () => {
                   ) : (
                     <>
                       {subUnitSuccess &&
-                        [...subUnitData?.data]
-                          ?.sort(comparator(order, orderBy))
-                          ?.map((data) => (
-                            <TableRow
-                              key={data.id}
-                              hover={true}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  borderBottom: 0,
-                                },
-                              }}
-                            >
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {data.id}
-                              </TableCell>
+                        [...subUnitData?.data]?.sort(comparator(order, orderBy))?.map((data) => (
+                          <TableRow
+                            key={data.id}
+                            hover={true}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                borderBottom: 0,
+                              },
+                            }}
+                          >
+                            <TableCell className="tbl-cell tr-cen-pad45">{data.id}</TableCell>
 
-                              <TableCell className="tbl-cell text-weight">
-                                ({data.subunit_code}) - {data.subunit_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell text-weight">
+                              ({data.subunit_code}) - {data.subunit_name}
+                            </TableCell>
 
-                              <TableCell className="tbl-cell">
-                                ({data?.department?.department_code}) -{" "}
-                                {data?.department?.department_name}
-                              </TableCell>
+                            <TableCell className="tbl-cell">
+                              ({data?.department?.department_code}) - {data?.department?.department_name}
+                            </TableCell>
 
-                              <TableCell className="tbl-cell text-center">
-                                <CustomChip status={status} />
-                              </TableCell>
+                            <TableCell className="tbl-cell text-center">
+                              <CustomChip status={status} />
+                            </TableCell>
 
-                              <TableCell className="tbl-cell tr-cen-pad45">
-                                {Moment(data.created_at).format("MMM DD, YYYY")}
-                              </TableCell>
+                            <TableCell className="tbl-cell tr-cen-pad45">
+                              {Moment(data.created_at).format("MMM DD, YYYY")}
+                            </TableCell>
 
-                              <TableCell className="tbl-cell ">
-                                <ActionMenu
-                                  status={status}
-                                  data={data}
-                                  onUpdateHandler={onUpdateHandler}
-                                  onArchiveRestoreHandler={
-                                    onArchiveRestoreHandler
-                                  }
-                                />
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                            <TableCell className="tbl-cell ">
+                              <ActionMenu
+                                status={status}
+                                data={data}
+                                onUpdateHandler={onUpdateHandler}
+                                onArchiveRestoreHandler={onArchiveRestoreHandler}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
                     </>
                   )}
                 </TableBody>
@@ -346,10 +327,7 @@ const SubUnit = () => {
         </Box>
       )}
       <Dialog open={drawer} PaperProps={{ sx: { borderRadius: "10px" } }}>
-        <AddSubUnit
-          data={updateSubUnit}
-          onUpdateResetHandler={onUpdateResetHandler}
-        />
+        <AddSubUnit data={updateSubUnit} onUpdateResetHandler={onUpdateResetHandler} />
       </Dialog>
     </Box>
   );
