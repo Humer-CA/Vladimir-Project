@@ -344,7 +344,7 @@ const AdditionalCostRequest = (props) => {
     },
   });
 
-  // console.log(addRequestAllApi?.data);
+  // console.log(addRequestAllApi);
 
   useEffect(() => {
     if (isPostError) {
@@ -577,6 +577,7 @@ const AdditionalCostRequest = (props) => {
                 location_id: formData?.location_id,
                 account_title_id: formData?.account_title_id,
                 acquisition_details: formData?.acquisition_details,
+                accountable: null,
                 letter_of_request: null,
                 quotation: null,
                 specification_form: null,
@@ -604,15 +605,15 @@ const AdditionalCostRequest = (props) => {
         return false;
       } else {
         console.log("ADD trigger");
-        if (addRequestAllApi?.data.every((item) => item?.department?.id !== watch("department_id")?.id)) {
+        if (addRequestAllApi.every((item) => item?.department?.id !== watch("department_id")?.id)) {
           // console.log("change the department");
           return true;
         }
-        if (addRequestAllApi?.data.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
+        if (addRequestAllApi.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
           // console.log("change the subunit");
           return true;
         }
-        if (addRequestAllApi?.data.every((item) => item?.location?.id !== watch("location_id")?.id)) {
+        if (addRequestAllApi.every((item) => item?.location?.id !== watch("location_id")?.id)) {
           // console.log("change the location");
           return true;
         }
@@ -654,7 +655,7 @@ const AdditionalCostRequest = (props) => {
     //   ? validation()
     //     ? addConfirmation()
     //     : submitData()
-    //   : addRequestAllApi?.data.length === 0
+    //   : addRequestAllApi.length === 0
     //   ? console.log("submit update") && submitData()
     //   : validation()
     //   ? addConfirmation()
@@ -664,7 +665,7 @@ const AdditionalCostRequest = (props) => {
       ? validation()
         ? addConfirmation()
         : submitData()
-      : addRequestAllApi?.data.length === 0
+      : addRequestAllApi.length === 0
       ? submitData()
       : validation()
       ? addConfirmation()
@@ -1076,7 +1077,7 @@ const AdditionalCostRequest = (props) => {
                 name="fixed_asset_id"
                 options={vTagNumberData}
                 loading={isVTagNumberLoading}
-                disabled={updateRequest || addRequestAllApi?.data === 0 ? disable : false}
+                disabled={updateRequest || addRequestAllApi === 0 ? disable : false}
                 size="small"
                 filterOptions={filterOptions}
                 getOptionLabel={(option) => "(" + option.vladimir_tag_number + ")" + " - " + option.asset_description}
@@ -1100,10 +1101,11 @@ const AdditionalCostRequest = (props) => {
                   setValue("account_title_id", value?.account_title);
                   setValue("accountability", value?.accountability);
                   value.accountability === "Personal Issued" &&
+                    watch("accountability") !== null &&
                     setValue("accountable", {
                       general_info: {
-                        full_id_number: value.accountable.split(" ")[0],
-                        full_id_number_full_name: value.accountable,
+                        full_id_number: value?.accountable.split(" ")[0],
+                        full_id_number_full_name: value?.accountable,
                       },
                     });
 
@@ -1175,7 +1177,7 @@ const AdditionalCostRequest = (props) => {
                 fullWidth
                 onChange={(_, value) => {
                   const Company = departmentData?.map((mapitem) => mapitem?.company);
-                  const companyValue = Company.find((item) => item?.company_id === value.company.company_id);
+                  const companyValue = Company.find((item) => item?.company_id === value?.company.company_id);
 
                   if (value) {
                     setValue("company_id", companyValue?.company_id || companyValue?.company_id?.id);
@@ -1270,7 +1272,7 @@ const AdditionalCostRequest = (props) => {
                 )}
                 onChange={(_, value) => {
                   if (value === "Personal Issued") {
-                    setValue("accountable", value.accountable);
+                    setValue("accountable", value?.accountable);
                   } else {
                     setValue("accountable", null);
                   }
@@ -1644,18 +1646,18 @@ const AdditionalCostRequest = (props) => {
                       <TableCell className="tbl-cell">Cellphone #</TableCell>
                       <TableCell className="tbl-cell">Additional Info.</TableCell>
                       <TableCell className="tbl-cell">Attachments</TableCell>
-                      {transactionDataApi[0]?.is_removed === 0 && <TableCell className="tbl-cell">Action</TableCell>}
+                      <TableCell className="tbl-cell">Action</TableCell>
                     </TableRow>
                   </TableHead>
 
                   <TableBody>
                     {(updateRequest && isTransactionLoading) || isRequestLoading ? (
                       <LoadingData />
-                    ) : (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.data?.length === 0) ? (
+                    ) : (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.length === 0) ? (
                       <NoRecordsFound request />
                     ) : (
                       <>
-                        {(transactionData ? transactionDataApi : addRequestAllApi?.data)?.map((data, index) => (
+                        {(transactionData ? transactionDataApi : addRequestAllApi)?.map((data, index) => (
                           <TableRow
                             key={index}
                             sx={{
@@ -1865,7 +1867,7 @@ const AdditionalCostRequest = (props) => {
                   sx={{ pt: "10px" }}
                 >
                   {transactionData ? "Transactions" : "Added"} :{" "}
-                  {transactionData ? transactionDataApi?.length : addRequestAllApi?.data?.length} request
+                  {transactionData ? transactionDataApi?.length : addRequestAllApi?.length} request
                 </Typography>
                 <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
                   {transactionDataApi[0]?.can_edit === 1 ? (
@@ -1895,7 +1897,7 @@ const AdditionalCostRequest = (props) => {
                       size="small"
                       color="secondary"
                       startIcon={<Create color={"primary"} />}
-                      disabled={isRequestLoading || addRequestAllApi?.data?.length === 0}
+                      disabled={isRequestLoading || addRequestAllApi?.length === 0}
                       loading={isPostLoading || isUpdateLoading}
                     >
                       Create

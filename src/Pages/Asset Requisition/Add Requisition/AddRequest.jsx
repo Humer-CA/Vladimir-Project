@@ -272,8 +272,10 @@ const AddRequisition = (props) => {
     isError: isRequestError,
     error: errorRequest,
     refetch: isRequestRefetch,
-  } = useGetRequestContainerAllApiQuery({ page: page, per_page: perPage }, { refetchOnMountOrArgChange: true });
+  } = useGetRequestContainerAllApiQuery({}, { refetchOnMountOrArgChange: true });
+  // } = useGetRequestContainerAllApiQuery({ page: page, per_page: perPage }, { refetchOnMountOrArgChange: true });
 
+  console.log(addRequestAllApi);
   const {
     data: transactionDataApi = [],
     isLoading: isTransactionLoading,
@@ -561,15 +563,15 @@ const AddRequisition = (props) => {
         return false;
       } else {
         // console.log("ADD trigger");
-        if (addRequestAllApi?.data.every((item) => item?.department?.id !== watch("department_id")?.id)) {
+        if (addRequestAllApi.every((item) => item?.department?.id !== watch("department_id")?.id)) {
           // console.log("change the department");
           return true;
         }
-        if (addRequestAllApi?.data.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
+        if (addRequestAllApi.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
           // console.log("change the subunit");
           return true;
         }
-        if (addRequestAllApi?.data.every((item) => item?.location?.id !== watch("location_id")?.id)) {
+        if (addRequestAllApi.every((item) => item?.location?.id !== watch("location_id")?.id)) {
           // console.log("change the location");
           return true;
         }
@@ -623,7 +625,6 @@ const AddRequisition = (props) => {
           );
         })
         .finally(() => {
-          setIsLoading(false);
           transactionData
             ? reset()
             : reset({
@@ -641,6 +642,7 @@ const AddRequisition = (props) => {
                 tool_of_trade: null,
                 other_attachments: null,
               });
+          setIsLoading(false);
         });
     };
 
@@ -678,7 +680,7 @@ const AddRequisition = (props) => {
       ? validation()
         ? addConfirmation()
         : submitData()
-      : addRequestAllApi?.data.length === 0
+      : addRequestAllApi.length === 0
       ? submitData()
       : validation()
       ? addConfirmation()
@@ -1133,7 +1135,7 @@ const AddRequisition = (props) => {
                 name="type_of_request_id"
                 options={typeOfRequestData}
                 loading={isTypeOfRequestLoading}
-                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.length !== 0}
                 disabled={updateRequest && disable}
                 getOptionLabel={(option) => option.type_of_request_name}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -1152,7 +1154,7 @@ const AddRequisition = (props) => {
                 control={control}
                 name="attachment_type"
                 options={attachmentType}
-                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.length !== 0}
 
                 disabled={updateRequest && disable}
                 renderInput={(params) => (
@@ -1180,7 +1182,7 @@ const AddRequisition = (props) => {
                 options={departmentData}
                 loading={isDepartmentLoading}
                 disabled={updateRequest && disable}
-                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.length !== 0}
                 getOptionLabel={(option) => option.department_name}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 renderInput={(params) => (
@@ -1195,7 +1197,7 @@ const AddRequisition = (props) => {
                 fullWidth
                 onChange={(_, value) => {
                   const Company = departmentData?.map((mapitem) => mapitem?.company);
-                  const companyValue = Company.find((item) => item?.company_id === value.company.company_id);
+                  const companyValue = Company.find((item) => item?.company_id === value?.company.company_id);
 
                   if (value) {
                     setValue("company_id", companyValue?.company_id);
@@ -1214,7 +1216,7 @@ const AddRequisition = (props) => {
                 autoComplete
                 name="subunit_id"
                 control={control}
-                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.length !== 0}
                 options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
                 loading={isSubUnitLoading}
                 disabled={updateRequest && disable}
@@ -1260,7 +1262,7 @@ const AddRequisition = (props) => {
                 autoComplete
                 name="location_id"
                 control={control}
-                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.length !== 0}
                 options={locationData?.filter((item) => {
                   return item.departments.some((department) => {
                     return department?.sync_id === watch("department_id")?.sync_id;
@@ -1283,7 +1285,7 @@ const AddRequisition = (props) => {
               <CustomAutoComplete
                 name="account_title_id"
                 control={control}
-                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.length !== 0}
                 options={accountTitleData}
                 loading={isAccountTitleLoading}
                 disabled={updateRequest && disable}
@@ -1321,7 +1323,7 @@ const AddRequisition = (props) => {
                   return value;
                 }}
               />
-
+              {console.log(watch())}
               {watch("accountability") === "Personal Issued" && (
                 <CustomAutoComplete
                   name="accountable"
@@ -1334,7 +1336,7 @@ const AddRequisition = (props) => {
                   loading={isSedarLoading}
                   getOptionLabel={(option) => option.general_info?.full_id_number_full_name}
                   isOptionEqualToValue={(option, value) =>
-                    option.general_info?.full_id_number === value.general_info?.full_id_number
+                    option?.general_info?.full_id_number === value?.general_info?.full_id_number
                   }
                   renderInput={(params) => (
                     <TextField
@@ -1353,7 +1355,7 @@ const AddRequisition = (props) => {
                 label="Acquisition Details"
                 type="text"
                 disabled={updateRequest && disable}
-                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.data?.length !== 0}
+                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.length !== 0}
                 error={!!errors?.acquisition_details}
                 helperText={errors?.acquisition_details?.message}
                 fullWidth
@@ -1668,11 +1670,11 @@ const AddRequisition = (props) => {
                   <TableBody>
                     {(updateRequest && isTransactionLoading) || isRequestLoading ? (
                       <LoadingData />
-                    ) : (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.data?.length === 0) ? (
+                    ) : (transactionData ? transactionDataApi?.length === 0 : addRequestAllApi?.length === 0) ? (
                       <NoRecordsFound request />
                     ) : (
                       <>
-                        {(transactionData ? transactionDataApi : addRequestAllApi?.data)?.map((data, index) => (
+                        {(transactionData ? transactionDataApi : addRequestAllApi)?.map((data, index) => (
                           <TableRow
                             key={index}
                             sx={{
@@ -1896,7 +1898,7 @@ const AddRequisition = (props) => {
                   sx={{ pt: "10px" }}
                 >
                   {transactionData ? "Transactions" : "Added"} :{" "}
-                  {transactionData ? transactionDataApi?.length : addRequestAllApi?.data?.length} request
+                  {transactionData ? transactionDataApi?.length : addRequestAllApi?.length} request
                 </Typography>
                 <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
                   {/* {transactionData && transactionDataApi[0]?.can_edit === 1 && ( */}
@@ -1927,7 +1929,7 @@ const AddRequisition = (props) => {
                       size="small"
                       color="secondary"
                       startIcon={<Create color={"primary"} />}
-                      disabled={isRequestLoading || addRequestAllApi?.data?.length === 0}
+                      disabled={isRequestLoading || addRequestAllApi?.length === 0}
                       loading={isPostLoading || isUpdateLoading}
                     >
                       Create
