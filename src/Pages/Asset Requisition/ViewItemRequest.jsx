@@ -213,8 +213,12 @@ const ViewItemRequest = (props) => {
                         <TableCell className="tbl-cell">
                           {data.accountability === "Personal Issued" ? (
                             <>
-                              <Box>{data?.accountable?.general_info?.full_id_number}</Box>
-                              <Box>{data?.accountable?.general_info?.full_name}</Box>
+                              <Typography fontSize={10} color="gray" noWrap>
+                                {data?.accountable?.general_info?.full_id_number}
+                              </Typography>
+                              <Typography fontSize={10} color="gray" noWrap>
+                                {data?.accountable?.general_info?.full_name}
+                              </Typography>
                             </>
                           ) : (
                             "Common"
