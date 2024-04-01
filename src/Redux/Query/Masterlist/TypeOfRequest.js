@@ -67,6 +67,7 @@ export const typeOfRequestApi = createApi({
 
 export const {
   useGetTypeOfRequestApiQuery,
+  useLazyGetTypeOfRequestAllApiQuery,
   useGetTypeOfRequestAllApiQuery,
   useGetTypeOfRequestIdApiQuery,
   usePostTypeOfRequestStatusApiMutation,

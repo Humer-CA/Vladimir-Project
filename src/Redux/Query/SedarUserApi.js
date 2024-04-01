@@ -25,4 +25,4 @@ export const sedarUsersApi = createApi({
   }),
 });
 
-export const { useGetSedarUsersApiQuery } = sedarUsersApi;
+export const { useGetSedarUsersApiQuery, useLazyGetSedarUsersApiQuery } = sedarUsersApi;

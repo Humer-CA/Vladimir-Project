@@ -40,4 +40,9 @@ export const departmentApi = createApi({
   }),
 });
 
-export const { useGetDepartmentApiQuery, useGetDepartmentAllApiQuery, usePostDepartmentApiMutation } = departmentApi;
+export const {
+  useGetDepartmentApiQuery,
+  useLazyGetDepartmentAllApiQuery,
+  useGetDepartmentAllApiQuery,
+  usePostDepartmentApiMutation,
+} = departmentApi;

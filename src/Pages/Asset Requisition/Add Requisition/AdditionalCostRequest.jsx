@@ -5,7 +5,7 @@ import CustomNumberField from "../../../Components/Reusable/CustomNumberField";
 import CustomAutoComplete from "../../../Components/Reusable/CustomAutoComplete";
 import CustomAttachment from "../../../Components/Reusable/CustomAttachment";
 import { LoadingData } from "../../../Components/LottieFiles/LottieComponents";
-import { useGetSedarUsersApiQuery } from "../../../Redux/Query/SedarUserApi";
+import { useGetSedarUsersApiQuery, useLazyGetSedarUsersApiQuery } from "../../../Redux/Query/SedarUserApi";
 import {
   requestContainerApi,
   useDeleteRequestContainerAllApiMutation,
@@ -59,9 +59,18 @@ import { LoadingButton } from "@mui/lab";
 import { useDispatch, useSelector } from "react-redux";
 import { closeDialog, closeDrawer, openDialog } from "../../../Redux/StateManagement/booleanStateSlice";
 import { useGetCompanyAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Company";
-import { useGetDepartmentAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Department";
-import { useGetLocationAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Location";
-import { useGetAccountTitleAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/AccountTitle";
+import {
+  useGetDepartmentAllApiQuery,
+  useLazyGetDepartmentAllApiQuery,
+} from "../../../Redux/Query/Masterlist/FistoCoa/Department";
+import {
+  useGetLocationAllApiQuery,
+  useLazyGetLocationAllApiQuery,
+} from "../../../Redux/Query/Masterlist/FistoCoa/Location";
+import {
+  useGetAccountTitleAllApiQuery,
+  useLazyGetAccountTitleAllApiQuery,
+} from "../../../Redux/Query/Masterlist/FistoCoa/AccountTitle";
 import {
   useGetByTransactionApiQuery,
   usePostRequisitionApiMutation,
@@ -71,10 +80,13 @@ import {
   useGetByTransactionPageApiQuery,
 } from "../../../Redux/Query/Request/Requisition";
 
-import { useGetTypeOfRequestAllApiQuery } from "../../../Redux/Query/Masterlist/TypeOfRequest";
+import {
+  useGetTypeOfRequestAllApiQuery,
+  useLazyGetTypeOfRequestAllApiQuery,
+} from "../../../Redux/Query/Masterlist/TypeOfRequest";
 import { useLocation, useNavigate } from "react-router-dom";
 import NoRecordsFound from "../../../Layout/NoRecordsFound";
-import { useGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUnit";
+import { useGetSubUnitAllApiQuery, useLazyGetSubUnitAllApiQuery } from "../../../Redux/Query/Masterlist/SubUnit";
 import ActionMenu from "../../../Components/Reusable/ActionMenu";
 import {
   useGetRequestContainerAllApiQuery,
@@ -88,7 +100,10 @@ import CustomPatternField from "../../../Components/Reusable/CustomPatternField"
 import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
 import ErrorFetching from "../../ErrorFetching";
 import CustomDatePicker from "../../../Components/Reusable/CustomDatePicker";
-import { useGetFixedAssetAllApiQuery } from "../../../Redux/Query/FixedAsset/FixedAssets";
+import {
+  useGetFixedAssetAllApiQuery,
+  useLazyGetFixedAssetAllApiQuery,
+} from "../../../Redux/Query/FixedAsset/FixedAssets";
 import moment from "moment";
 import ViewItemRequest from "../ViewItemRequest";
 
@@ -218,51 +233,60 @@ const AdditionalCostRequest = (props) => {
     { data: smsData, isLoading: isSmsLoading, isSuccess: isSmsSuccess, isError: isSmsError, error: smsError },
   ] = usePostRequisitionSmsApiMutation();
 
-  const {
-    data: typeOfRequestData = [],
-    isLoading: isTypeOfRequestLoading,
-    isSuccess: isTypeOfRequestSuccess,
-    isError: isTypeOfRequestError,
-    refetch: isTypeOfRequestRefetch,
-  } = useGetTypeOfRequestAllApiQuery();
+  const [
+    TypeOfRequestTrigger,
+    {
+      data: typeOfRequestData = [],
+      isLoading: isTypeOfRequestLoading,
+      isSuccess: isTypeOfRequestSuccess,
+      isError: isTypeOfRequestError,
+      refetch: isTypeOfRequestRefetch,
+    },
+  ] = useLazyGetTypeOfRequestAllApiQuery();
 
-  const {
-    data: departmentData = [],
-    isLoading: isDepartmentLoading,
-    isSuccess: isDepartmentSuccess,
-    isError: isDepartmentError,
-    refetch: isDepartmentRefetch,
-  } = useGetDepartmentAllApiQuery();
+  const [
+    departmentTrigger,
+    {
+      data: departmentData = [],
+      isLoading: isDepartmentLoading,
+      isSuccess: isDepartmentSuccess,
+      isError: isDepartmentError,
+      refetch: isDepartmentRefetch,
+    },
+  ] = useLazyGetDepartmentAllApiQuery();
 
-  const {
-    data: subUnitData = [],
-    isLoading: isSubUnitLoading,
-    isSuccess: isSubUnitSuccess,
-    isError: isSubUnitError,
-  } = useGetSubUnitAllApiQuery();
+  const [
+    subunitTrigger,
+    { data: subUnitData = [], isLoading: isSubUnitLoading, isSuccess: isSubUnitSuccess, isError: isSubUnitError },
+  ] = useLazyGetSubUnitAllApiQuery();
 
-  const {
-    data: locationData = [],
-    isLoading: isLocationLoading,
-    isSuccess: isLocationSuccess,
-    isError: isLocationError,
-    refetch: isLocationRefetch,
-  } = useGetLocationAllApiQuery();
+  const [
+    locationTrigger,
+    ,
+    {
+      data: locationData = [],
+      isLoading: isLocationLoading,
+      isSuccess: isLocationSuccess,
+      isError: isLocationError,
+      refetch: isLocationRefetch,
+    },
+  ] = useLazyGetLocationAllApiQuery();
 
-  const {
-    data: accountTitleData = [],
-    isLoading: isAccountTitleLoading,
-    isSuccess: isAccountTitleSuccess,
-    isError: isAccountTitleError,
-    refetch: isAccountTitleRefetch,
-  } = useGetAccountTitleAllApiQuery();
+  const [
+    accountTitleTrigger,
+    {
+      data: accountTitleData = [],
+      isLoading: isAccountTitleLoading,
+      isSuccess: isAccountTitleSuccess,
+      isError: isAccountTitleError,
+      refetch: isAccountTitleRefetch,
+    },
+  ] = useLazyGetAccountTitleAllApiQuery();
 
-  const {
-    data: sedarData = [],
-    isLoading: isSedarLoading,
-    isSuccess: isSedarSuccess,
-    isError: isSedarError,
-  } = useGetSedarUsersApiQuery();
+  const [
+    sedarTrigger,
+    { data: sedarData = [], isLoading: isSedarLoading, isSuccess: isSedarSuccess, isError: isSedarError },
+  ] = useLazyGetSedarUsersApiQuery();
 
   const {
     data: addRequestAllApi = [],
@@ -285,13 +309,16 @@ const AdditionalCostRequest = (props) => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const {
-    data: vTagNumberData = [],
-    isLoading: isVTagNumberLoading,
-    isSuccess: isVTagNumberSuccess,
-    isError: isVTagNumberError,
-    error: vTagNumberError,
-  } = useGetFixedAssetAllApiQuery();
+  const [
+    fixedAssetTrigger,
+    {
+      data: vTagNumberData = [],
+      isLoading: isVTagNumberLoading,
+      isSuccess: isVTagNumberSuccess,
+      isError: isVTagNumberError,
+      error: vTagNumberError,
+    },
+  ] = useLazyGetFixedAssetAllApiQuery();
 
   // console.log("vtagnumber", vTagNumberData);
 
@@ -372,8 +399,8 @@ const AdditionalCostRequest = (props) => {
     if (transactionData?.additionalCost) {
       setDisable(false);
     }
-    !transactionData && setDisable(false);
     // deleteAllRequest();
+    !transactionData && setDisable(false);
   }, [transactionData]);
 
   // console.log("updateRequest", updateRequest);
@@ -542,6 +569,39 @@ const AdditionalCostRequest = (props) => {
               duration: 5000,
             })
           );
+          setIsLoading(false);
+          transactionData
+            ? reset()
+            : reset({
+                fixed_asset_id: formData?.fixed_asset_id,
+                type_of_request_id: formData?.type_of_request_id,
+                attachment_type: formData?.attachment_type,
+                acquisition_details: formData?.acquisition_details,
+
+                company_id: formData?.company_id,
+                business_unit_id: formData?.business_unit_id,
+                department_id: formData?.department_id,
+                unit_id: formData?.unit_id,
+                subunit_id: formData?.subunit_id,
+                location_id: formData?.location_id,
+                account_title_id: formData?.account_title_id,
+
+                asset_description: "",
+                asset_specification: "",
+                date_needed: null,
+                brand: "",
+                accountability: null,
+                accountable: null,
+                cellphone_number: "",
+                quantity: 1,
+                additional_info: "",
+
+                letter_of_request: null,
+                quotation: null,
+                specification_form: null,
+                tool_of_trade: null,
+                other_attachments: null,
+              });
         })
         .then(() => {
           transactionData ? setDisable(true) : setDisable(false);
@@ -562,28 +622,6 @@ const AdditionalCostRequest = (props) => {
               variant: "error",
             })
           );
-        })
-        .finally(() => {
-          setIsLoading(false);
-          transactionData
-            ? reset()
-            : reset({
-                fixed_asset_id: formData?.fixed_asset_id,
-                type_of_request_id: formData?.type_of_request_id,
-                attachment_type: formData?.attachment_type,
-                company_id: formData?.company_id,
-                department_id: formData?.department_id,
-                subunit_id: formData?.subunit_id,
-                location_id: formData?.location_id,
-                account_title_id: formData?.account_title_id,
-                acquisition_details: formData?.acquisition_details,
-                accountable: null,
-                letter_of_request: null,
-                quotation: null,
-                specification_form: null,
-                tool_of_trade: null,
-                other_attachments: null,
-              });
         });
     };
 
@@ -1076,6 +1114,7 @@ const AdditionalCostRequest = (props) => {
                 control={control}
                 name="fixed_asset_id"
                 options={vTagNumberData}
+                onOpen={() => (isVTagNumberSuccess ? null : fixedAssetTrigger())}
                 loading={isVTagNumberLoading}
                 disabled={updateRequest || addRequestAllApi === 0 ? disable : false}
                 size="small"
@@ -1118,6 +1157,7 @@ const AdditionalCostRequest = (props) => {
                 control={control}
                 name="type_of_request_id"
                 options={typeOfRequestData}
+                onOpen={() => (isTypeOfRequestSuccess ? null : TypeOfRequestTrigger())}
                 loading={isTypeOfRequestLoading}
                 disabled={updateRequest && disable}
                 getOptionLabel={(option) => option.type_of_request_name}
@@ -1148,6 +1188,18 @@ const AdditionalCostRequest = (props) => {
                   />
                 )}
               />
+
+              <CustomTextField
+                control={control}
+                name="acquisition_details"
+                label="Acquisition Details"
+                type="text"
+                disabled={updateRequest && disable}
+                error={!!errors?.acquisition_details}
+                helperText={errors?.acquisition_details?.message}
+                fullWidth
+                multiline
+              />
             </Box>
 
             <Divider />
@@ -1161,6 +1213,7 @@ const AdditionalCostRequest = (props) => {
                 name="department_id"
                 control={control}
                 options={departmentData}
+                onOpen={() => (isDepartmentSuccess ? null : (departmentTrigger(), subunitTrigger(), locationTrigger()))}
                 loading={isDepartmentLoading}
                 disabled={updateRequest && disable}
                 getOptionLabel={(option) => option.department_name}
@@ -1239,6 +1292,7 @@ const AdditionalCostRequest = (props) => {
                 name="account_title_id"
                 control={control}
                 options={accountTitleData}
+                onOpen={() => (isAccountTitleSuccess ? null : accountTitleTrigger())}
                 loading={isAccountTitleLoading}
                 disabled={updateRequest && disable}
                 getOptionLabel={(option) => option.account_title_code + " - " + option.account_title_name}
@@ -1289,6 +1343,7 @@ const AdditionalCostRequest = (props) => {
                   disablePortal
                   filterOptions={filterOptions}
                   options={sedarData}
+                  onOpen={() => (isSedarSuccess ? null : sedarTrigger())}
                   loading={isSedarLoading}
                   getOptionLabel={
                     (option) => option.general_info?.full_id_number_full_name
@@ -1308,18 +1363,6 @@ const AdditionalCostRequest = (props) => {
                   )}
                 />
               )}
-
-              <CustomTextField
-                control={control}
-                name="acquisition_details"
-                label="Acquisition Details"
-                type="text"
-                disabled={updateRequest && disable}
-                error={!!errors?.acquisition_details}
-                helperText={errors?.acquisition_details?.message}
-                fullWidth
-                multiline
-              />
             </Box>
 
             <Divider />
@@ -1578,7 +1621,7 @@ const AdditionalCostRequest = (props) => {
             startIcon={<ArrowBackIosRounded color="secondary" />}
             onClick={() => {
               navigate(-1);
-              deleteAllRequest();
+              // deleteAllRequest();
             }}
             disableRipple
             sx={{ width: "90px", ml: "-15px", mt: "-5px", pb: "10px", "&:hover": { backgroundColor: "transparent" } }}

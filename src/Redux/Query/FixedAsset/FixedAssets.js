@@ -164,6 +164,7 @@ export const fixedAssetApi = createApi({
 
 export const {
   useGetFixedAssetApiQuery,
+  useLazyGetFixedAssetAllApiQuery,
   useGetFixedAssetAllApiQuery,
   useGetFixedAssetIdApiQuery,
   useArchiveFixedAssetStatusApiMutation,
