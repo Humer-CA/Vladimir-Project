@@ -9,7 +9,7 @@ const CustomTablePagination = (props) => {
       className="mcontainer__pagination"
       component="div"
       rowsPerPageOptions={[
-        5, 10, 15, 100,
+        5, 10, 15, 25,
         // {
         //   label: "All",
         //   value: parseInt(total),
