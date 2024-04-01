@@ -32,6 +32,7 @@ import {
 import { Help, ReportProblem, Visibility } from "@mui/icons-material";
 import { useGetApprovalApiQuery, usePatchApprovalStatusApiMutation } from "../../Redux/Query/Approving/Approval";
 import { useNavigate } from "react-router-dom";
+import CustomTablePagination from "../../Components/Reusable/CustomTablePagination";
 
 const ApprovedRequest = (props) => {
   const [search, setSearch] = useState("");
@@ -311,7 +312,7 @@ const ApprovedRequest = (props) => {
           </Box>
 
           <Box className="mcontainer__pagination">
-            <TablePagination
+            {/* <TablePagination
               rowsPerPageOptions={[
                 5, 10, 15, 50,
                 // {
@@ -323,6 +324,15 @@ const ApprovedRequest = (props) => {
               count={approvalSuccess ? approvalData.total : 0}
               page={approvalSuccess ? approvalData.current_page - 1 : 0}
               rowsPerPage={approvalSuccess ? parseInt(approvalData?.per_page) : 5}
+              onPageChange={pageHandler}
+              onRowsPerPageChange={perPageHandler}
+            /> */}
+
+            <CustomTablePagination
+              total={approvalData.total}
+              success={approvalSuccess}
+              current_page={approvalData.current_page}
+              per_page={per_page}
               onPageChange={pageHandler}
               onRowsPerPageChange={perPageHandler}
             />

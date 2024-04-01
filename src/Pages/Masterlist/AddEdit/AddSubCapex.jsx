@@ -166,6 +166,7 @@ const AddSubCapex = (props) => {
             inputProps={{
               maxLength: 3,
             }}
+            fullWidth={false}
           />
         </Stack>
 
