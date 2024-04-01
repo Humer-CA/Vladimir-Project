@@ -57,6 +57,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { closeDialog, openDialog } from "../../Redux/StateManagement/booleanStateSlice";
 import RequestTimeline from "./RequestTimeline";
+import { useDeleteRequestContainerAllApiMutation } from "../../Redux/Query/Request/RequestContainer";
 
 const Requisition = () => {
   const [search, setSearch] = useState("");
@@ -130,8 +131,8 @@ const Requisition = () => {
   );
 
   const [postRequisitionStatusApi, { isLoading }] = usePatchRequisitionStatusApiMutation();
-
   const [voidRequisitionApi, { isVoidLoading }] = useVoidRequisitionApiMutation();
+  const [deleteAllRequest, { data: deleteAllRequestData }] = useDeleteRequestContainerAllApiMutation();
 
   const dispatch = useDispatch();
 
@@ -217,6 +218,7 @@ const Requisition = () => {
   const openAdd = Boolean(anchorElAdd);
 
   const handleOpenAdd = (event) => {
+    deleteAllRequest();
     setAnchorElAdd(event.currentTarget);
   };
 
