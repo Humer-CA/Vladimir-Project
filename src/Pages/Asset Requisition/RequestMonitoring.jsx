@@ -137,7 +137,7 @@ const RequestMonitoring = () => {
       };
 
       const res = await requestDataTrigger(apiParams).unwrap();
-      console.log(res);
+      // console.log(res);
       const newObj = res?.data?.map((item) => {
         return {
           // ID: item?.id,

@@ -74,7 +74,7 @@ const AddRole = (props) => {
       access_permission: [],
     },
   });
-  console.log(watch("access_permission"));
+  // console.log(watch("access_permission"));
 
   useEffect(() => {
     if ((isPostError || isUpdateError) && (postError?.status === 422 || updateError?.status === 422)) {
