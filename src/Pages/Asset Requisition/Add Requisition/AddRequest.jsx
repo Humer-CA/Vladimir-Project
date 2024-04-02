@@ -428,7 +428,10 @@ const AddRequisition = (props) => {
 
       setValue("quantity", updateRequest?.quantity);
       setValue("brand", updateRequest?.brand);
-      setValue("cellphone_number", updateRequest?.cellphone_number === "-" ? "" : updateRequest?.cellphone_number);
+      setValue(
+        "cellphone_number",
+        updateRequest.cellphone_number === "-" ? null : updateRequest.cellphone_number.slice(2)
+      );
       setValue("additional_info", updateRequest?.additional_info);
       // ATTACHMENTS
       setValue("letter_of_request", updateRequest?.letter_of_request === "-" ? "" : updateRequest?.letter_of_request);
@@ -545,15 +548,15 @@ const AddRequisition = (props) => {
       if (transactionData) {
         // console.log("UPDATE trigger");
         if (transactionDataApi.every((item) => item?.department?.id !== watch("department_id")?.id)) {
-          console.log("change the department");
+          // console.log("change the department");
           return true;
         }
         if (transactionDataApi.every((item) => item?.subunit?.id !== watch("subunit_id")?.id)) {
-          console.log("change the subunit");
+          // console.log("change the subunit");
           return true;
         }
         if (transactionDataApi.every((item) => item?.location?.id !== watch("location_id")?.id)) {
-          console.log("change the location");
+          // console.log("change the location");
           return true;
         }
         return false;
@@ -1087,8 +1090,6 @@ const AddRequisition = (props) => {
     pb: "10px",
   };
 
-  console.log("subUnitData", subUnitData);
-
   const formInputs = () => {
     return (
       <Box>
@@ -1287,7 +1288,7 @@ const AddRequisition = (props) => {
                   return value;
                 }}
               />
-              {console.log(watch())}
+
               {watch("accountability") === "Personal Issued" && (
                 <CustomAutoComplete
                   name="accountable"

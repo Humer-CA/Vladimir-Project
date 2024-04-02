@@ -430,7 +430,10 @@ const AdditionalCostRequest = (props) => {
       setValue("date_needed", dateNeededFormat);
       setValue("quantity", updateRequest?.quantity);
       setValue("brand", updateRequest?.brand);
-      setValue("cellphone_number", updateRequest?.cellphone_number === "-" ? "" : updateRequest?.cellphone_number);
+      setValue(
+        "cellphone_number",
+        updateRequest?.cellphone_number === "-" ? "" : updateRequest?.cellphone_number.slice(2)
+      );
       setValue("additional_info", updateRequest?.additional_info);
       // ATTACHMENTS
       setValue("letter_of_request", updateRequest?.letter_of_request === "-" ? "" : updateRequest?.letter_of_request);
@@ -641,7 +644,7 @@ const AdditionalCostRequest = (props) => {
         }
         return false;
       } else {
-        console.log("ADD trigger");
+        // console.log("ADD trigger");
         if (addRequestAllApi.every((item) => item?.department?.id !== watch("department_id")?.id)) {
           // console.log("change the department");
           return true;
