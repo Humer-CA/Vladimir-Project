@@ -332,7 +332,7 @@ const ApprovedRequest = (props) => {
               total={approvalData.total}
               success={approvalSuccess}
               current_page={approvalData.current_page}
-              per_page={per_page}
+              per_page={perPage}
               onPageChange={pageHandler}
               onRowsPerPageChange={perPageHandler}
             />
