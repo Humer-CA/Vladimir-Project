@@ -165,27 +165,9 @@ const PrintFixedAsset = (props) => {
 
   const [printAsset, { data: printData, isLoading, isError: isPostError, isSuccess: isPostSuccess, error: postError }] =
     usePostPrintApiMutation();
-
   // usePostLocalPrintApiMutation();
 
   // console.log(isLocalIp);
-
-  // const {
-  //   data: fixedAssetData,
-  //   isLoading: fixedAssetLoading,
-  //   isSuccess: fixedAssetSuccess,
-  //   isError: fixedAssetError,
-  //   error: errorData,
-  //   refetch: fixedAssetRefetch,
-  // } = useGetFixedAssetApiQuery(
-  //   {
-  //     page: page,
-  //     perPage: perPage,
-  //     status: status,
-  //     search: search,
-  //   },
-  //   { refetchOnMountOrArgChange: true }
-  // );
 
   const {
     data: fixedAssetData,
@@ -206,16 +188,6 @@ const PrintFixedAsset = (props) => {
     },
     { refetchOnMountOrArgChange: true }
   );
-
-  // console.log(fixedAssetData);
-
-  // const {
-  //   data: typeOfRequestData = [],
-  //   isLoading: isTypeOfRequestLoading,
-  //   isSuccess: isTypeOfRequestSuccess,
-  //   isError: isTypeOfRequestError,
-  //   refetch: isTypeOfRequestRefetch,
-  // } = useGetTypeOfRequestAllApiQuery();
 
   const {
     handleSubmit,
