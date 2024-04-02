@@ -654,6 +654,7 @@ const AddCost = (props) => {
               size="small"
               getOptionLabel={(option) => "(" + option.vladimir_tag_number + ")" + " - " + option.asset_description}
               isOptionEqualToValue={(option, value) => option.id === value.id}
+              filterOptions={filterOptions}
               renderInput={(params) => (
                 <TextField
                   color="secondary"
