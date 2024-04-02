@@ -262,7 +262,6 @@ const AdditionalCostRequest = (props) => {
 
   const [
     locationTrigger,
-    ,
     {
       data: locationData = [],
       isLoading: isLocationLoading,
@@ -1288,6 +1287,7 @@ const AdditionalCostRequest = (props) => {
                   />
                 )}
               />
+
               <CustomAutoComplete
                 name="account_title_id"
                 control={control}

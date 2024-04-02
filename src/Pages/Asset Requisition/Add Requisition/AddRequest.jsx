@@ -255,7 +255,6 @@ const AddRequisition = (props) => {
 
   const [
     subunitTrigger,
-    ,
     { data: subUnitData = [], isLoading: isSubUnitLoading, isSuccess: isSubUnitSuccess, isError: isSubUnitError },
   ] = useLazyGetSubUnitAllApiQuery();
 
@@ -1088,6 +1087,8 @@ const AddRequisition = (props) => {
     pb: "10px",
   };
 
+  console.log("subUnitData", subUnitData);
+
   const formInputs = () => {
     return (
       <Box>
@@ -1203,9 +1204,8 @@ const AddRequisition = (props) => {
                 autoComplete
                 name="subunit_id"
                 control={control}
-                // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.length !== 0}
                 options={subUnitData?.filter((item) => item?.department?.id === watch("department_id")?.id)}
-                loading={isSubUnitLoading}
+                // loading={isSubUnitLoading}
                 disabled={updateRequest && disable}
                 getOptionLabel={(option) => option.subunit_name}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -1244,11 +1244,13 @@ const AddRequisition = (props) => {
                   />
                 )}
               />
+
               <CustomAutoComplete
                 name="account_title_id"
                 control={control}
                 // disabled={transactionData ? transactionData?.length !== 0 : addRequestAllApi?.length !== 0}
                 options={accountTitleData}
+                onOpen={() => (isAccountTitleSuccess ? null : accountTitleTrigger())}
                 loading={isAccountTitleLoading}
                 disabled={updateRequest && disable}
                 getOptionLabel={(option) => option.account_title_code + " - " + option.account_title_name}
