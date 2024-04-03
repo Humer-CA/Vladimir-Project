@@ -523,7 +523,10 @@ const AdditionalCostRequest = (props) => {
       asset_description: formData?.asset_description?.toString(),
       asset_specification: formData?.asset_specification?.toString(),
       date_needed: moment(new Date(formData.date_needed)).format("YYYY-MM-DD"),
-      cellphone_number: formData?.cellphone_number === "" ? "" : "09" + formData?.cellphone_number?.toString(),
+      cellphone_number:
+        formData?.cellphone_number === "" || formData?.cellphone_number === null
+          ? ""
+          : "09" + formData?.cellphone_number?.toString(),
 
       brand: formData?.brand?.toString(),
       quantity: formData?.quantity?.toString(),
@@ -617,6 +620,7 @@ const AdditionalCostRequest = (props) => {
           dispatch(
             openToast({
               message:
+                Object.entries(err?.response?.data?.errors).at(0).at(1).at(0) ||
                 err?.response?.data?.errors?.detail ||
                 err?.response?.data?.errors[0]?.detail ||
                 err?.response?.data?.message,

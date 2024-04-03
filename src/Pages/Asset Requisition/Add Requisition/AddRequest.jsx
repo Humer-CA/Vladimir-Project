@@ -360,7 +360,7 @@ const AddRequisition = (props) => {
       if (postError?.status === 422) {
         dispatch(
           openToast({
-            message: postError?.data?.errors.detail || postError?.data?.errors.pr_number[0],
+            message: Object.entries(postError?.data?.errors).at(0).at(1).at(0) || postError?.data?.errors.detail,
             duration: 5000,
             variant: "error",
           })
@@ -430,7 +430,7 @@ const AddRequisition = (props) => {
       setValue("brand", updateRequest?.brand);
       setValue(
         "cellphone_number",
-        updateRequest.cellphone_number === "-" ? null : updateRequest.cellphone_number.slice(2)
+        updateRequest.cellphone_number === "-" ? "" : updateRequest.cellphone_number.slice(2)
       );
       setValue("additional_info", updateRequest?.additional_info);
       // ATTACHMENTS
@@ -444,6 +444,8 @@ const AddRequisition = (props) => {
       setValue("other_attachments", updateRequest?.other_attachments === "-" ? "" : updateRequest?.other_attachments);
     }
   }, [updateRequest]);
+
+  console.log(updateRequest);
 
   // Table Sorting --------------------------------
   const [order, setOrder] = useState("desc");
@@ -511,7 +513,10 @@ const AddRequisition = (props) => {
       asset_description: formData?.asset_description?.toString(),
       asset_specification: formData?.asset_specification?.toString(),
       date_needed: moment(new Date(formData.date_needed)).format("YYYY-MM-DD"),
-      cellphone_number: formData?.cellphone_number === "" ? "" : "09" + formData?.cellphone_number?.toString(),
+      cellphone_number:
+        formData?.cellphone_number === "" || formData?.cellphone_number === null
+          ? ""
+          : "09" + formData?.cellphone_number?.toString(),
 
       brand: formData?.brand?.toString(),
       quantity: formData?.quantity?.toString(),
@@ -533,7 +538,7 @@ const AddRequisition = (props) => {
       other_attachments: updateRequest && attachmentValidation("other_attachments", formData),
     };
 
-    // console.log("data", data);
+    console.log("data", data?.cellphone_number);
 
     const payload = new FormData();
     Object.entries(data).forEach((item) => {
@@ -647,6 +652,7 @@ const AddRequisition = (props) => {
           dispatch(
             openToast({
               message:
+                Object.entries(err?.response?.data?.errors).at(0).at(1).at(0) ||
                 err?.response?.data?.errors?.detail ||
                 err?.response?.data?.errors[0]?.detail ||
                 err?.response?.data?.message,
@@ -1738,7 +1744,7 @@ const AddRequisition = (props) => {
                             )}
 
                             <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
-                              {data.cellphone_number === null ? "-" : data.cellphone_number}
+                              {data.cellphone_number === "" ? "-" : data.cellphone_number}
                             </TableCell>
                             <TableCell onClick={() => handleShowItems(data)} className="tbl-cell">
                               {data.additional_info}
