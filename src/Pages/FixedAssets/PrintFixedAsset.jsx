@@ -147,25 +147,15 @@ const PrintFixedAsset = (props) => {
 
   // const isStalwart = `http://stalwart:8069/VladimirPrinting/public/index.php/api`;
 
-  // const [
-  //   printAsset,
-  //   {
-  //     data: printData,
-  //     isLoading,
-  //     isError: isPostError,
-  //     isSuccess: isPostSuccess,
-  //     error: postError,
-  //   },
-  // ] = isLocalIp
-  //   ? usePostPrintApiMutation()
-  //   : usePostPrintStalwartDateApiMutation();
+  // const [printAsset, { data: printData, isLoading, isError: isPostError, isSuccess: isPostSuccess, error: postError }] =
+  //   isLocalIp ? usePostPrintApiMutation() : usePostPrintStalwartDateApiMutation();
 
   const { data: ip } = useGetIpApiQuery();
   // console.log(ip);
 
   const [printAsset, { data: printData, isLoading, isError: isPostError, isSuccess: isPostSuccess, error: postError }] =
-    usePostPrintApiMutation();
-  // usePostLocalPrintApiMutation();
+    // usePostPrintApiMutation();
+    usePostLocalPrintApiMutation();
 
   // console.log(isLocalIp);
 
