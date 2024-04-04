@@ -503,6 +503,7 @@ const AdditionalCostRequest = (props) => {
       fixed_asset_id: formData?.fixed_asset_id?.id?.toString(),
       type_of_request_id: formData?.type_of_request_id?.id?.toString(),
       attachment_type: formData?.attachment_type?.toString(),
+      acquisition_details: formData?.acquisition_details?.toString(),
 
       department_id: formData?.department_id.id?.toString(),
       company_id:
@@ -518,7 +519,6 @@ const AdditionalCostRequest = (props) => {
       accountability: formData?.accountability?.toString(),
       accountable:
         formData?.accountable === null ? "" : formData?.accountable?.general_info?.full_id_number_full_name?.toString(),
-      acquisition_details: formData?.acquisition_details?.toString(),
 
       asset_description: formData?.asset_description?.toString(),
       asset_specification: formData?.asset_specification?.toString(),
@@ -533,7 +533,6 @@ const AdditionalCostRequest = (props) => {
       additional_info: formData?.additional_info?.toString(),
 
       letter_of_request: updateRequest && attachmentValidation("letter_of_request", formData),
-
       quotation: updateRequest && attachmentValidation("quotation", formData),
       specification_form: updateRequest && attachmentValidation("specification_form", formData),
       tool_of_trade: updateRequest && attachmentValidation("tool_of_trade", formData),
@@ -545,7 +544,6 @@ const AdditionalCostRequest = (props) => {
     const payload = new FormData();
     Object.entries(data).forEach((item) => {
       const [name, value] = item;
-
       payload.append(name, value);
     });
 
@@ -744,32 +742,35 @@ const AdditionalCostRequest = (props) => {
             if (transactionData) {
               if (transactionDataApi[0]?.can_resubmit === 0) {
                 const res = await resubmitRequest(...transactionDataApi).unwrap();
+                // console.log(res?.message);
+                navigate(-1);
+                deleteAllRequest();
 
                 dispatch(
                   openToast({
-                    message: "Successfully Resubmitted",
+                    message: res?.message,
                     duration: 5000,
                   })
                 );
-                navigate(-1);
-                deleteAllRequest();
+                return;
               } else if (transactionDataApi[0]?.can_resubmit === 1) {
                 const res = await resubmitRequest({
                   transaction_number: transactionData?.transaction_number,
                   ...transactionDataApi,
-                });
+                }).unwrap();
+                navigate(-1);
+
                 dispatch(
                   openToast({
-                    message: "Successfully Resubmitted",
+                    message: res?.message,
                     duration: 5000,
                   })
                 );
-                navigate(-1);
                 return;
               }
             } else {
               const res = await postRequisition(addRequestAllApi).unwrap();
-              // console.log(res?.message);
+              console.log(res?.message);
               deleteAllRequest();
               reset({
                 letter_of_request: null,

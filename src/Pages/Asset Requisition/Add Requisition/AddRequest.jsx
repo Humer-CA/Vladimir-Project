@@ -445,7 +445,7 @@ const AddRequisition = (props) => {
     }
   }, [updateRequest]);
 
-  console.log(updateRequest);
+  // console.log(updateRequest);
 
   // Table Sorting --------------------------------
   const [order, setOrder] = useState("desc");
@@ -731,17 +731,30 @@ const AddRequisition = (props) => {
             if (transactionData) {
               if (transactionDataApi[0]?.can_resubmit === 0) {
                 const res = await resubmitRequest(...transactionDataApi).unwrap();
-                console.log(res?.message);
-
+                // console.log(res?.message);
                 navigate(-1);
                 deleteAllRequest();
+
+                dispatch(
+                  openToast({
+                    message: res?.message,
+                    duration: 5000,
+                  })
+                );
+                return;
               } else if (transactionDataApi[0]?.can_resubmit === 1) {
-                resubmitRequest({
+                const res = await resubmitRequest({
                   transaction_number: transactionData?.transaction_number,
                   ...transactionDataApi,
-                });
+                }).unwrap();
                 navigate(-1);
 
+                dispatch(
+                  openToast({
+                    message: res?.message,
+                    duration: 5000,
+                  })
+                );
                 return;
               }
             } else {
@@ -772,7 +785,7 @@ const AddRequisition = (props) => {
 
             postRequestSms(smsData);
           } catch (err) {
-            console.log(err);
+            // console.log(err);
             if (err?.status === 422) {
               dispatch(
                 openToast({
