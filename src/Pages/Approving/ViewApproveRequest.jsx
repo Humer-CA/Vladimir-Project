@@ -81,6 +81,8 @@ const ViewApproveRequest = (props) => {
     { refetchOnMountOrArgChange: true }
   );
 
+  console.log(transactionData);
+
   const {
     data: nextDataApi,
     isLoading: isNextDataLoading,
@@ -491,6 +493,7 @@ const ViewApproveRequest = (props) => {
               </TableContainer>
 
               {/* Buttons */}
+
               <Stack flexDirection="row" justifyContent="space-between" alignItems={"center"}>
                 <Typography
                   fontFamily="Anton, Impact, Roboto"
@@ -501,30 +504,32 @@ const ViewApproveRequest = (props) => {
                   Transactions : {approveRequestData?.data?.length} request
                 </Typography>
 
-                <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    color="secondary"
-                    onClick={() => onApprovalApproveHandler(transactionData?.asset_approval_id)}
-                    startIcon={<Check color="primary" />}
-                  >
-                    Approve
-                  </Button>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={() => onApprovalReturnHandler(transactionData?.asset_approval_id)}
-                    startIcon={<Undo sx={{ color: "#5f3030" }} />}
-                    sx={{
-                      color: "white",
-                      backgroundColor: "error.main",
-                      ":hover": { backgroundColor: "error.dark" },
-                    }}
-                  >
-                    Return
-                  </Button>
-                </Stack>
+                {transactionData.status === "For Approval" && (
+                  <Stack flexDirection="row" justifyContent="flex-end" gap={2} sx={{ pt: "10px" }}>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      color="secondary"
+                      onClick={() => onApprovalApproveHandler(transactionData?.asset_approval_id)}
+                      startIcon={<Check color="primary" />}
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => onApprovalReturnHandler(transactionData?.asset_approval_id)}
+                      startIcon={<Undo sx={{ color: "#5f3030" }} />}
+                      sx={{
+                        color: "white",
+                        backgroundColor: "error.main",
+                        ":hover": { backgroundColor: "error.dark" },
+                      }}
+                    >
+                      Return
+                    </Button>
+                  </Stack>
+                )}
               </Stack>
             </Box>
           </Box>
