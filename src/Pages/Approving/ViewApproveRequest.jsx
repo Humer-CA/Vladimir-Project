@@ -81,8 +81,6 @@ const ViewApproveRequest = (props) => {
     { refetchOnMountOrArgChange: true }
   );
 
-  console.log(transactionData);
-
   const {
     data: nextDataApi,
     isLoading: isNextDataLoading,

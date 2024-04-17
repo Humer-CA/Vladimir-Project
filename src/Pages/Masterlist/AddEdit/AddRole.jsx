@@ -200,7 +200,7 @@ const AddRole = (props) => {
   //           <CheckboxItem label="Dashboard" value="dashboard" />
   //           <CheckboxItem label="Masterlist" value="masterlist" />
   //           <CheckboxItem label="User Management" value="user-management" />
-  //           <CheckboxItem label="Fixed Assets" value="fixed-assets" />
+  //           <CheckboxItem label="Fixed Asset" value="fixed-assets" />
   //           <CheckboxItem label="Printing of Tag" value="print-fa" />
   //           <CheckboxItem label="Settings" value="settings" />
   //           <CheckboxItem label="Request" value="request" />
@@ -279,7 +279,7 @@ const AddRole = (props) => {
       { label: "Dashboard", value: "dashboard" },
       { label: "Masterlist", value: "masterlist" },
       { label: "User Management", value: "user-management" },
-      { label: "Fixed Assets", value: "fixed-assets" },
+      { label: "Fixed Asset", value: "fixed-asset" },
       { label: "Printing of Tag", value: "print-fa" },
       { label: "Settings", value: "settings" },
       { label: "Request Monitoring", value: "request-monitoring" },
