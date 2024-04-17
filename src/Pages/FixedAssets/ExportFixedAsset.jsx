@@ -18,7 +18,7 @@ import { useDispatch } from "react-redux";
 
 import { useGetTypeOfRequestAllApiQuery } from "../../Redux/Query/Masterlist/TypeOfRequest";
 import { closeExport } from "../../Redux/StateManagement/booleanStateSlice";
-import { useLazyGetExportApiQuery } from "../../Redux/Query/FixedAsset/FixedAssets";
+import { useLazyGetExportApiQuery } from "../../Redux/Query/FixedAssets/FixedAsset";
 import ExportIcon from "../../Img/SVG/ExportIcon.svg";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
 
@@ -167,7 +167,7 @@ const ExportFixedAsset = () => {
           "Remaining Book Value": item.remaining_book_value,
         };
       });
-      await excelExport(exportData, `Vladimir-FixedAssets.xlsx`);
+      await excelExport(exportData, `Vladimir-FixedAsset.xlsx`);
 
       // console.log(res);
     } catch (err) {

@@ -303,10 +303,10 @@ const Sidebar = () => {
     },
 
     {
-      label: "Fixed Assets",
+      label: "Fixed Asset",
       icon: InventoryRounded,
-      path: "/fixed-assets",
-      permission: "fixed-assets",
+      path: "/fixed-asset",
+      permission: "fixed-asset",
       notification: notifData?.toTagCount,
       setter: closeCollapse,
     },

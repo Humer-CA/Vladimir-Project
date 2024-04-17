@@ -38,7 +38,7 @@ import { useGetCompanyAllApiQuery } from "../../../Redux/Query/Masterlist/FistoC
 import { useGetDepartmentAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Department";
 import { useGetLocationAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/Location";
 import { useGetAccountTitleAllApiQuery } from "../../../Redux/Query/Masterlist/FistoCoa/AccountTitle";
-import { useGetFixedAssetAllApiQuery } from "../../../Redux/Query/FixedAsset/FixedAssets";
+import { useGetFixedAssetAllApiQuery } from "../../../Redux/Query/FixedAssets/FixedAsset";
 
 import moment from "moment";
 // import { useGetCapexAllApiQuery } from "../../../../Redux/Query/Masterlist/Capex";
@@ -51,7 +51,7 @@ import { useGetDepreciationStatusAllApiQuery } from "../../../Redux/Query/Master
 import {
   usePostAdditionalCostApiMutation,
   useUpdateAdditionalCostApiMutation,
-} from "../../../Redux/Query/FixedAsset/AdditionalCost";
+} from "../../../Redux/Query/FixedAssets/AdditionalCost";
 
 const schema = yup.object().shape({
   id: yup.string(),

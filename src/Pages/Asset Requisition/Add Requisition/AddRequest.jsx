@@ -101,7 +101,7 @@ import CustomPatternField from "../../../Components/Reusable/CustomPatternField"
 import CustomTablePagination from "../../../Components/Reusable/CustomTablePagination";
 import ErrorFetching from "../../ErrorFetching";
 import CustomDatePicker from "../../../Components/Reusable/CustomDatePicker";
-import { useGetFixedAssetAllApiQuery } from "../../../Redux/Query/FixedAsset/FixedAssets";
+import { useGetFixedAssetAllApiQuery } from "../../../Redux/Query/FixedAssets/FixedAsset";
 import moment from "moment";
 import ViewItemRequest from "../ViewItemRequest";
 

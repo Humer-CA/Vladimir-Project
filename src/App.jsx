@@ -209,7 +209,7 @@ const router = createBrowserRouter([
           },
 
           {
-            path: "fixed-assets",
+            path: "fixed-asset",
             index: false,
             element: <FixedAsset />,
             children: [],

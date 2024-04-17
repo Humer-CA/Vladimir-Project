@@ -7,7 +7,7 @@ import { closeTableModal } from "../../Redux/StateManagement/tableDialogSlice";
 import { Box, Button, Card, Chip, Divider, IconButton, Typography } from "@mui/material";
 import { CheckCircleRounded, Circle, Close, PriceChange, Print } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { usePostPrintApiMutation } from "../../Redux/Query/FixedAsset/FixedAssets";
+import { usePostPrintApiMutation } from "../../Redux/Query/FixedAssets/FixedAsset";
 
 const TableDialog = (props) => {
   const { data } = props;

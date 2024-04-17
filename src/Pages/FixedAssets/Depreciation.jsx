@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { useLocation, useParams } from "react-router-dom";
-import { usePostCalcDepreApiMutation } from "../../Redux/Query/FixedAsset/FixedAssets";
+import { usePostCalcDepreApiMutation } from "../../Redux/Query/FixedAssets/FixedAsset";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 import { openToast } from "../../Redux/StateManagement/toastSlice";
 import { LoadingButton } from "@mui/lab";
 import CustomDatePicker from "../../Components/Reusable/CustomDatePicker";
-import { usePostCalcDepreAddCostApiMutation } from "../../Redux/Query/FixedAsset/AdditionalCost";
+import { usePostCalcDepreAddCostApiMutation } from "../../Redux/Query/FixedAssets/AdditionalCost";
 
 const schema = yup.object().shape({
   id: yup.string(),

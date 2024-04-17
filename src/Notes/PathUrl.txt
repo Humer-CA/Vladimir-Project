@@ -17,7 +17,7 @@
 //   "/user-management": "User Management",
 //   "/user-management/user-accounts": "User Accounts",
 //   "/user-management/role-management": "Role Management",
-//   "/fixed-assets": "Fixed Assets",
+//   "/fixed-assets": "Fixed Asset",
 //   "/fixed-assets/asset": "Asset",
 //   "/settings": "Settings",
 //   "/settings/approver-settings": "Approver Settings",

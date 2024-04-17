@@ -36,7 +36,7 @@
 // import {
 //   usePostFixedAssetApiMutation,
 //   useUpdateFixedAssetApiMutation,
-// } from "../../../../Redux/Query/FixedAsset/FixedAssets";
+// } from "../../../../Redux/Query/FixedAssets/FixedAsset";
 
 // import { LoadingButton } from "@mui/lab";
 // import { ArrowForwardIosRounded } from "@mui/icons-material";

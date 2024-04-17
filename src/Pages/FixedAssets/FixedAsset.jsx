@@ -21,7 +21,7 @@ import {
   useGetFixedAssetApiQuery,
   useLazyGetExportApiQuery,
   useGetFixedAssetIdApiQuery,
-} from "../../Redux/Query/FixedAsset/FixedAssets";
+} from "../../Redux/Query/FixedAssets/FixedAsset";
 
 // RTK
 import { useDispatch } from "react-redux";
@@ -63,7 +63,7 @@ import {
 import { Help, IosShareRounded, ReportProblem } from "@mui/icons-material";
 import ScanFixedAsset from "./ScanFixedAsset";
 import AddCost from "./AddEdit/AddCost";
-import { useGetAdditionalCostIdApiQuery } from "../../Redux/Query/FixedAsset/AdditionalCost";
+import { useGetAdditionalCostIdApiQuery } from "../../Redux/Query/FixedAssets/AdditionalCost";
 import ImportCost from "./ImportCost";
 import useScanDetection from "use-scan-detection-react18";
 
@@ -268,7 +268,7 @@ const FixedAsset = (props) => {
   return (
     <Box className="mcontainer">
       <Typography className="mcontainer__title" sx={{ fontFamily: "Anton", fontSize: "2rem" }}>
-        Fixed Assets
+        Fixed Asset
       </Typography>
       {fixedAssetLoading && <MasterlistSkeleton onAdd={true} onImport={true} onPrint={true} />}
       {fixedAssetError && <ErrorFetching refetch={fixedAssetRefetch} error={errorData} />}

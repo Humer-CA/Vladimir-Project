@@ -40,7 +40,7 @@ import { useGetAccountTitleAllApiQuery } from "../../../Redux/Query/Masterlist/F
 import {
   usePostFixedAssetApiMutation,
   useUpdateFixedAssetApiMutation,
-} from "../../../Redux/Query/FixedAsset/FixedAssets";
+} from "../../../Redux/Query/FixedAssets/FixedAsset";
 
 import moment from "moment";
 // import { useGetCapexAllApiQuery } from "../../../../Redux/Query/Masterlist/Capex";

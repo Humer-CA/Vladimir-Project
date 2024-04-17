@@ -103,7 +103,7 @@ import CustomDatePicker from "../../../Components/Reusable/CustomDatePicker";
 import {
   useGetFixedAssetAllApiQuery,
   useLazyGetFixedAssetAllApiQuery,
-} from "../../../Redux/Query/FixedAsset/FixedAssets";
+} from "../../../Redux/Query/FixedAssets/FixedAsset";
 import moment from "moment";
 import ViewItemRequest from "../ViewItemRequest";
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { usePostImportApiMutation } from "../../Redux/Query/FixedAsset/AdditionalCost";
+import { usePostImportApiMutation } from "../../Redux/Query/FixedAssets/AdditionalCost";
 
 import { closeDialog } from "../../Redux/StateManagement/dialogSlice";
 import { useDispatch } from "react-redux";

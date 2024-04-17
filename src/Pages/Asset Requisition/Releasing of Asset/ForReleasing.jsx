@@ -41,9 +41,9 @@
 //   useGetPrintViewingApiQuery,
 //   usePostPrintApiMutation,
 //   usePostLocalPrintApiMutation,
-// } from "../../../Redux/Query/FixedAsset/FixedAssets";
-// import { usePostPrintOfflineApiMutation } from "../../../Redux/Query/FixedAsset/OfflinePrintingFA";
-// import { usePostPrintStalwartDateApiMutation } from "../../../Redux/Query/FixedAsset/StalwartPrintingFA";
+// } from "../../../Redux/Query/FixedAssets/FixedAsset";
+// import { usePostPrintOfflineApiMutation } from "../../../Redux/Query/FixedAssets/OfflinePrintingFA";
+// import { usePostPrintStalwartDateApiMutation } from "../../../Redux/Query/FixedAssets/StalwartPrintingFA";
 // import { useGetTypeOfRequestAllApiQuery } from "../../../Redux/Query/Masterlist/TypeOfRequest";
 // import CustomDatePicker from "../../../Components/Reusable/CustomDatePicker";
 // import CustomTextField from "../../../Components/Reusable/CustomTextField";

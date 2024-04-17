@@ -7,7 +7,7 @@ import {
   useArchiveFixedAssetStatusApiMutation,
   useGetFixedAssetIdApiQuery,
   usePostCalcDepreApiMutation,
-} from "../../Redux/Query/FixedAsset/FixedAssets";
+} from "../../Redux/Query/FixedAssets/FixedAsset";
 import FaStatusChange from "../../Components/Reusable/FaStatusComponent";
 import NoDataFile from "../../Img/PNG/no-data.png";
 import moment from "moment";
@@ -54,16 +54,16 @@ import {
 } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 
-import { usePostPrintApiMutation } from "../../Redux/Query/FixedAsset/FixedAssets";
+import { usePostPrintApiMutation } from "../../Redux/Query/FixedAssets/FixedAsset";
 import ActionMenu from "../../Components/Reusable/ActionMenu";
-import { usePostPrintOfflineApiMutation } from "../../Redux/Query/FixedAsset/OfflinePrintingFA";
+import { usePostPrintOfflineApiMutation } from "../../Redux/Query/FixedAssets/OfflinePrintingFA";
 import { closeConfirm, onLoading, openConfirm } from "../../Redux/StateManagement/confirmSlice";
 
 import { openToast } from "../../Redux/StateManagement/toastSlice";
 import {
   usePostPrintStalwartDateApiMutation,
   usePostPrintStalwartIdApiMutation,
-} from "../../Redux/Query/FixedAsset/StalwartPrintingFA";
+} from "../../Redux/Query/FixedAssets/StalwartPrintingFA";
 import MasterlistSkeleton from "../Skeleton/MasterlistSkeleton";
 import ErrorFetching from "../ErrorFetching";
 import ErrorFetchFA from "./ErrorFetchFA";
@@ -73,7 +73,7 @@ import AddCost from "./AddEdit/AddCost";
 import {
   useArchiveAdditionalCostApiMutation,
   usePostCalcDepreAddCostApiMutation,
-} from "../../Redux/Query/FixedAsset/AdditionalCost";
+} from "../../Redux/Query/FixedAssets/AdditionalCost";
 import useScanDetection from "use-scan-detection-react18";
 import { useGetIpApiQuery } from "../../Redux/Query/IpAddressSetup";
 
